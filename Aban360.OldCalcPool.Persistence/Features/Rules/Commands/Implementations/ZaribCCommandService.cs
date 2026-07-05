@@ -1,68 +1,84 @@
-﻿using Aban360.Common.Db.Dapper;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
-using Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Contracts;
 using Dapper;
-using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementations
 {
-    internal sealed class ZaribCCommandService : AbstractBaseConnection, IZaribCCommandService
+    public sealed class ZaribCCommandService
     {
-        public ZaribCCommandService(IConfiguration configuration)
-            : base(configuration)
-        { }
+        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
+        public ZaribCCommandService(
+            IDbConnection connection,
+            IDbTransaction transaction)
+        {
+            _connection = connection;
+            _connection.NotNull(nameof(connection));
+
+            _transaction = transaction;
+            _transaction.NotNull(nameof(transaction));
+        }
 
         public async Task Update(ZaribCUpdateDto input)
         {
-            string zaribCUpdateQueryString = GetZaribCUpdateQuery();
-            var @params = new
+            string command = GetZaribCUpdateQuery();
+            int effectedRecord = await _connection.ExecuteAsync(command, input, _transaction);
+            if (effectedRecord <= 0)
             {
-                id = input.Id,
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                c = input.C,
-                conditionGroup = input.ConditionGroup,
-                isDeleted = input.IsDeleted,
-            };
-            await _sqlReportConnection.ExecuteAsync(zaribCUpdateQueryString, @params);
-
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidUpdateZaribC);
+            }
         }
-        public async Task Create(ZaribCCreateDto input)
+        public async Task Insert(ZaribCCreateDto input)
         {
-            string zaribCCreateQueryString = GetZaribCCreateQuery();
-            var @params = new
+            string command = GetZaribCCreateQuery();
+            int effectedRecord = await _connection.ExecuteAsync(command, input, _transaction);
+            if (effectedRecord <= 0)
             {
-                fromDate = input.FromDateJalali,
-                toDate = input.ToDateJalali,
-                c = input.C,
-                conditionGroup = input.ConditionGroup,
-                isDeleted = input.IsDeleted,
-            };
-            await _sqlReportConnection.ExecuteAsync(zaribCCreateQueryString, @params);
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidInsertZaribC);
+            }
         }
-        
         public async Task Delete(int id)
         {
-            string zaribCDeleteQueryString = GetZaribCDeleteQuery();
-            await _sqlReportConnection.ExecuteAsync(zaribCDeleteQueryString, new {id=id});
+            string command = GetZaribCDeleteQuery();
+            int effectedRecord = await _connection.ExecuteAsync(command, new { id = id }, _transaction);
+            if (effectedRecord <= 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidRemoveZaribC);
+            }
         }
 
         private string GetZaribCUpdateQuery()
         {
             return @"Update [OldCalc].dbo.Zarib_C
-                    Set FromDateJalali=@fromDate, ToDateJalali=@toDate ,C=@c ,ConditionGroup=@conditionGroup , IsDeleted=@isDeleted
+                    Set 
+                        FromDateJalali=@fromDateJalali, 
+                        ToDateJalali=@toDateJalali ,
+                        C=@c ,
+                        ConditionGroup=@conditionGroup , 
+                        IsDeleted=@isDeleted
                     Where Id=@id";
         }
-
         private string GetZaribCCreateQuery()
         {
-            return @"Insert Into [OldCalc].dbo.Zarib_C(FromDateJalali,ToDateJalali,C,ConditionGroup,IsDeleted)
-                    Values(@fromDate,@toDate,@c,@conditionGroup,@isDeleted);";
+            return @"Insert Into [OldCalc].dbo.Zarib_C
+                    (
+                        FromDateJalali,ToDateJalali,
+                        C,ConditionGroup,IsDeleted
+                    )
+                    Values
+                    (
+                        @fromDateJalali,@toDateJalali,
+                        @c,@conditionGroup,@isDeleted
+                    );";
         }
-        
         private string GetZaribCDeleteQuery()
         {
-            return @"Delete From [OldCalc].dbo.Zarib_C
+            return @"Update [OldCalc].dbo.Zarib_C
+                    Set 
+                        IsDeleted=1
                     Where Id=@id";
         }
 

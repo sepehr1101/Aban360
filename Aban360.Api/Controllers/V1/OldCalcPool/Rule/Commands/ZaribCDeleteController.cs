@@ -20,7 +20,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
-            await _zaribCDeleteHandler.Handle(id, cancellationToken);
+            await _zaribCDeleteHandler.Handle(id, CurrentUser, cancellationToken);
             return Ok(id);
         }
     }

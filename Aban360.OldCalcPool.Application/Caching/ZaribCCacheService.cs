@@ -35,7 +35,7 @@
             return await _cache.GetOrCreateAsync(key, async entry =>
             {
                 entry.SetOptions(_cacheOptions);
-                return await _queryService.GetZaribC(from, to);
+                return await _queryService.Get(from, to);
             });
         }
 
@@ -46,7 +46,7 @@
             return await _cache.GetOrCreateAsync(key, async entry =>
             {
                 entry.SetOptions(_cacheOptions);
-                return await _queryService.GetZaribC(currentDateJalali);
+                return await _queryService.Get(currentDateJalali);
             });
         }
 

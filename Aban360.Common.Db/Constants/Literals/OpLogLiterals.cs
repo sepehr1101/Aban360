@@ -50,6 +50,11 @@
         public static string SInserstOpLog => @"الگو(S) ایجاد شد. الگو:{0}  ناحیه:{1}   از تاریخ:{2}   تا تاریخ:{3}";
         public static string SUpdateOpLog => @"الگو() ویرایش شد. الگو: از {0} به {1}  /  ناحیه: از {2} به {3}  /  از تاریخ: از {4} به {5}  /  تا تاریخ: از {6} به {7}";
         public static string SDeleteOpLog => @"الگو(S) حذف شد. شناسه:{0}  الگو:{1}  ناحیه:{2}   از تاریخ:{3}   تا تاریخ:{4}";
+        public static string ZaribCInserstOpLog => @"ظریبC ایجاد شد. C:{0}  از تاریخ:{1}   تا تاریخ:{2}";
+        public static string ZaribCUpdateOpLog => @"ظریبC ویرایش شد. C: از {0} به {1}  /  از تاریخ: {2} به {3}  /  تا تاریخ: {4} به {5}";
+        public static string ZaribCDeleteOpLog => @"ظریبC حذف شد. شناسه:{0}";
+        public static string ZaribInserstOpLog => @"ظریب ایجاد شد. ناحیه:{0}  ظریب بها:{1} ";
+        public static string ZaribUpdateOpLog => @"ظریب ویرایش شد. ناحیه: از {0} به {1}  /  ظریب بها: از {2} به {3} ";
 
     }
 }

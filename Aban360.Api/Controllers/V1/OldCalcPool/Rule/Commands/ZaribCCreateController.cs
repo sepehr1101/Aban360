@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<ZaribCCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create(ZaribCCreateDto CreateDto, CancellationToken cancellationToken)
         {
-            await _zaribCCreateHandler.Handle(CreateDto, cancellationToken);
+            await _zaribCCreateHandler.Handle(CreateDto, CurrentUser, cancellationToken);
             return Ok(CreateDto);
         }
     }

@@ -1,24 +1,52 @@
-﻿using Aban360.Common.Exceptions;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Constants.Literals;
+using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Delete.Contracts;
-using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
-using Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Contracts;
+using Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementations;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Delete.Implementations
 {
-    internal sealed class ZaribCDeleteHandler : IZaribCDeleteHandler
+    internal sealed class ZaribCDeleteHandler : AbstractBaseConnection, IZaribCDeleteHandler
     {
-        private readonly IZaribCCommandService _zaribCCommandService;
-
-        public ZaribCDeleteHandler(IZaribCCommandService zaribCCommandService)
+        private readonly IHttpContextAccessor _contextAccessor;
+        public ZaribCDeleteHandler(
+            IHttpContextAccessor contextAccessor,
+            IConfiguration configuration)
+                : base(configuration)
         {
-            _zaribCCommandService = zaribCCommandService;
-            _zaribCCommandService.NotNull(nameof(zaribCCommandService));
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
         }
-        public async Task Handle(int id, CancellationToken cancellationToken)
+        public async Task Handle(int id, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await _zaribCCommandService.Delete(id);
+            string opLogText = string.Format(OpLogLiterals.ZaribCDeleteOpLog, id);
+            await ExecSql(id, appUser, opLogText);
+        }
+        private async Task ExecSql(int id, IAppUser appUser, string opLogText)
+        {
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ZaribCCommandService zaribCCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+
+                    await zaribCCommandService.Delete(id);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
         }
     }
 }
