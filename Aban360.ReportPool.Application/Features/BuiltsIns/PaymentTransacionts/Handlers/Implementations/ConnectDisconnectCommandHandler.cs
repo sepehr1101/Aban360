@@ -31,6 +31,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IConnectDisconnectQueryService _connectDisconnectQueryService;
         private readonly ICustomerGeneralInfoQueryService _customerGeneralInfoQueryService;
+        private readonly IConCompanyQueryService _conCompanyQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly ILocationInfoGetHandler _locationInfoService;
         private readonly IT51QueryService _t51QueryService;
@@ -44,6 +45,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             IHttpContextAccessor contextAccessor,
             IConnectDisconnectQueryService connectDisconnectQueryService,
             ICustomerGeneralInfoQueryService customerGeneralInfoQueryService,
+            IConCompanyQueryService conCompanyQueryService,
             ICommonMemberQueryService commonMemberQueryService,
             ILocationInfoGetHandler locationInfoService,
             IT51QueryService t51QueryService,
@@ -59,6 +61,9 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 
             _customerGeneralInfoQueryService = customerGeneralInfoQueryService;
             _customerGeneralInfoQueryService.NotNull(nameof(customerGeneralInfoQueryService));
+
+            _conCompanyQueryService = conCompanyQueryService;
+            _conCompanyQueryService.NotNull(nameof(conCompanyQueryService));
 
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
@@ -77,10 +82,12 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         {
             ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await ValidateAndGetCustomerGeneral(inputDto, isConnect);
             NumericDictionary? connectDisconnectCause = GetCasues().Where(c => c.Id == (inputDto.Why ?? 0)).FirstOrDefault();
-            var (messageText, opLogText, title) = GetStringsValue(customerInfo, inputDto, isConnect, connectDisconnectCause?.Title);
+            ConCompanyGetDto companyInfo = await _conCompanyQueryService.Get(inputDto.CompanyId);
+            ConCompanyPersonnelPersonalGetDto personnelInfo = await _conCompanyQueryService.GetPersonnelById(inputDto.CompanyId, inputDto.PersonnelId);
+            var (messageText, opLogText, title) = GetStringsValue(customerInfo, inputDto, personnelInfo, isConnect, connectDisconnectCause?.Title);
 
-            ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await GetResult(customerInfo, inputDto, title, messageText, cancellationToken);
-            ConnectDisconnectInsertDto connectDisconnectInsertDto = GetConnectDisconnectInsertDto(customerInfo, inputDto, appUser, connectDisconnectCause?.Title ?? string.Empty, isConnect);
+            ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await GetResult(customerInfo, inputDto, title, messageText, companyInfo.CompanyName, cancellationToken);
+            ConnectDisconnectInsertDto connectDisconnectInsertDto = GetConnectDisconnectInsertDto(customerInfo, inputDto, appUser, connectDisconnectCause?.Title ?? string.Empty, companyInfo.CompanyName, isConnect);
 
             await SqlCommands(connectDisconnectInsertDto, appUser, opLogText);
 
@@ -106,7 +113,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 }
             }
         }
-        private async Task<ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>> GetResult(ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo, ConnectDisconnectPrintInputDto inputDto, string title, string messageText, CancellationToken cancellationToken)
+        private async Task<ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>> GetResult(ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo, ConnectDisconnectPrintInputDto inputDto, string title, string messageText, string companyName, CancellationToken cancellationToken)
         {
             string? zoneAddress = await _t51QueryService.GetAddress(customerInfo.ReportData?.FirstOrDefault()?.ZoneId ?? 0, true);
             ICollection<ConnectDisconnectPrintDataOutputDto> data = new List<ConnectDisconnectPrintDataOutputDto>();
@@ -135,7 +142,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 MeterDiameterId = customerInfo.ReportHeader?.MeterDiameterId ?? 0,
                 MeterDiameterTitle = customerInfo.ReportHeader?.MeterDiameterTitle ?? string.Empty,
                 BranchTypeTitle = customerInfo.ReportHeader?.BranchTypeTitle ?? string.Empty,
-                CompanyTitle = inputDto.Who,
+                CompanyTitle = companyName,
                 CauseTitle = inputDto.Why.HasValue ? GetCasues().Where(c => c.Id == inputDto.Why).FirstOrDefault()?.Title ?? string.Empty : string.Empty,
                 Base64 = locInfo.Item2,
                 X = locInfo.Item1.X,
@@ -151,7 +158,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             };
             return new ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>(title, header, data);
         }
-        private ConnectDisconnectInsertDto GetConnectDisconnectInsertDto(ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo, ConnectDisconnectPrintInputDto inputDto, IAppUser appUser, string causeTitle, bool isConnect)
+        private ConnectDisconnectInsertDto GetConnectDisconnectInsertDto(ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo, ConnectDisconnectPrintInputDto inputDto, IAppUser appUser, string causeTitle, string companyName, bool isConnect)
         {
             return new ConnectDisconnectInsertDto()
             {
@@ -170,16 +177,16 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 MeterDiameterId = customerInfo.ReportHeader.MeterDiameterId,
                 MeterDiameterTitle = customerInfo.ReportHeader.MeterDiameterTitle,
                 CompanyId = 0,
-                CompanyTitle = inputDto.Who,
+                CompanyTitle = companyName,
                 TypeId = isConnect ? ReportLiterals.ConnectId : ReportLiterals.DisconnectId,
                 TypeTitle = isConnect ? ReportLiterals.Connect : ReportLiterals.Disconnect,
                 Description = inputDto.Description ?? string.Empty,
             };
         }
-        private (string, string, string) GetStringsValue(ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo, ConnectDisconnectPrintInputDto inputDto, bool isConnect, string? causeTitle)
+        private (string, string, string) GetStringsValue(ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo, ConnectDisconnectPrintInputDto inputDto, ConCompanyPersonnelPersonalGetDto personnelInfo, bool isConnect, string? causeTitle)
         {
-            string disconnectText = string.Format(SmsTemplates.ServiceLinkDisconnectAlert, customerInfo.ReportData.FirstOrDefault().ZoneTitle, customerInfo.ReportHeader.BillId, causeTitle ?? string.Empty, inputDto.When, Environment.NewLine);
-            string connectText = string.Format(SmsTemplates.ServiceLinkConnectAlert, customerInfo.ReportData.FirstOrDefault().ZoneTitle, customerInfo.ReportHeader.BillId, inputDto.When, Environment.NewLine);
+            string disconnectText = string.Format(SmsTemplates.ServiceLinkDisconnectAlert, customerInfo.ReportData.FirstOrDefault().ZoneTitle, customerInfo.ReportHeader.FullName, customerInfo.ReportHeader.BillId, causeTitle ?? string.Empty, inputDto.When, personnelInfo.FullName, personnelInfo.MobileNumber, Environment.NewLine);
+            string connectText = string.Format(SmsTemplates.ServiceLinkConnectAlert, customerInfo.ReportData.FirstOrDefault().ZoneTitle, customerInfo.ReportHeader.FullName, customerInfo.ReportHeader.BillId, inputDto.When, inputDto.When, personnelInfo.FullName, Environment.NewLine);
             string messageText = isConnect ? connectText : disconnectText;
 
             string connectLog = string.Format(OpLogLiterals.ServiceLinkConnectInsertOpLog, inputDto.BillId);

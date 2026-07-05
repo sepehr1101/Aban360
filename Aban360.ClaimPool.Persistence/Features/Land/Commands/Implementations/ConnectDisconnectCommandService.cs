@@ -70,11 +70,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         {
             return $@"Update [CustomerWarehouse].dbo.ConnectDisconnect 
                     Set  
-                        ResultDateTime=@ResultDateTime ,
-                        ResultBy=@ResultBy ,
-                        ResultId=@ResultId ,
-                        ResultTitle=@ResultTitle ,
-                        Description=@Description
+                        ResultDateTime = @ResultDateTime ,
+                        ResultBy = @ResultBy ,
+                        ResultId = @ResultId ,
+                        ResultTitle = @ResultTitle ,
+                        JudicialNoticeId = @JudicialNoticeId ,
+                        Description = @Description
                     Where Id=@Id";
         }
         private string GetRemoveQuery()

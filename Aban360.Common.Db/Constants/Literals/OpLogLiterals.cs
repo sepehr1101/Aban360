@@ -36,6 +36,7 @@
         public static string ConCompanyPersonnelUpdateOpLog => @"مامور وصول پیمانکار قطع/وصل ویرایش شد. نام مامور:{0}  کدملی:{1}";
         public static string ConCompanyPersonnelRemoveOpLog => @"مامور وصول پیمانکار قطع/وصل حذف شد. نام مامور:{0}  کدملی:{1}";
         public static string JudicalNoticeCommandInsertOpLog => @"دستور اسناد رسمی ایجاد شد. شناسه قبض:{0}  مبلغ بدهی:{1}  نام شرکت:{2}  نام نماینده:{3}";
+        public static string JudicalNoticeSetResultOpLog => @"نتیجه اسناد رسمی ثبت شد. شناسه قبض:{0}  نتیجه:{1}  کد پیگیری قوه قضاییه:{2}";
 
         public static string UserCreate => @"کاربر ایجاد شد. نام کامل:{0}  نام کاربری:{1}  تلفن همراه:{2}";
         public static string UserUpdate => @"کاربر ویرایش شد. شناسه کاربر:{0}  نام کامل :از {1} به {2}  نام کاربری:از {3} به {4}  تلفن همراه:از {5} به {6}";
