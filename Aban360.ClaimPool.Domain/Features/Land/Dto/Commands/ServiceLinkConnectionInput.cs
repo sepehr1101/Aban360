@@ -6,7 +6,5 @@ namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
         public string? Description { get; set; }
         public int? Why { get; set; }
         public string When { get; set; }//dateJalali
-        public int CompanyId {  get; set; }
-        public Guid PersonnelId { get; set; }
     }
 }

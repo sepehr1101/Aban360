@@ -87,13 +87,13 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             var (messageText, opLogText, title) = GetStringsValue(customerInfo, inputDto, personnelInfo, isConnect, connectDisconnectCause?.Title);
 
             ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await GetResult(customerInfo, inputDto, title, messageText, companyInfo.CompanyName, cancellationToken);
-            ConnectDisconnectInsertDto connectDisconnectInsertDto = GetConnectDisconnectInsertDto(customerInfo, inputDto, appUser, connectDisconnectCause?.Title ?? string.Empty, companyInfo.CompanyName, isConnect);
+            ConnectDisconnectInsertDto connectDisconnectInsertDto = GetConnectDisconnectInsertDto(customerInfo, inputDto, companyInfo, personnelInfo, appUser, connectDisconnectCause?.Title ?? string.Empty, isConnect);
 
-            await SqlCommands(connectDisconnectInsertDto, appUser, opLogText);
+            await ExecSql(connectDisconnectInsertDto, appUser, opLogText);
 
             return result;
         }
-        private async Task SqlCommands(ConnectDisconnectInsertDto connectDisconnectInsertDto, IAppUser appUser, string logTex)
+        private async Task ExecSql(ConnectDisconnectInsertDto connectDisconnectInsertDto, IAppUser appUser, string logTex)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -158,7 +158,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             };
             return new ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto>(title, header, data);
         }
-        private ConnectDisconnectInsertDto GetConnectDisconnectInsertDto(ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo, ConnectDisconnectPrintInputDto inputDto, IAppUser appUser, string causeTitle, string companyName, bool isConnect)
+        private ConnectDisconnectInsertDto GetConnectDisconnectInsertDto(ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo, ConnectDisconnectPrintInputDto inputDto, ConCompanyGetDto companyInfo, ConCompanyPersonnelPersonalGetDto personnelInfo, IAppUser appUser, string causeTitle, bool isConnect)
         {
             return new ConnectDisconnectInsertDto()
             {
@@ -176,8 +176,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 ResultTitle = null,
                 MeterDiameterId = customerInfo.ReportHeader.MeterDiameterId,
                 MeterDiameterTitle = customerInfo.ReportHeader.MeterDiameterTitle,
-                CompanyId = 0,
-                CompanyTitle = companyName,
+                CompanyId = companyInfo.Id,
+                CompanyTitle = companyInfo.CompanyName,
+                PersonnelId = personnelInfo.Id,
+                PersonnelName = personnelInfo.FullName,
                 TypeId = isConnect ? ReportLiterals.ConnectId : ReportLiterals.DisconnectId,
                 TypeTitle = isConnect ? ReportLiterals.Connect : ReportLiterals.Disconnect,
                 Description = inputDto.Description ?? string.Empty,

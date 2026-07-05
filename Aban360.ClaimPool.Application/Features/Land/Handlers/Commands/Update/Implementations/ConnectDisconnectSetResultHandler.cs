@@ -67,10 +67,9 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             ConnectDisconnectGetDto connectDisconnectInfo = await _connectDisconnectQueryService.Get(inputDto.Id, isConnect ? _connectTypeId : _disconnectTypeId);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(connectDisconnectInfo.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
-            ConCompanyPersonnelPersonalGetDto personnelInfo = await _conCompanyQueryService.GetPersonnelById(inputDto.CompanyId, inputDto.PersonnelId);
 
             Validate(memberInfo, connectDisconnectInfo, deletionStateId, inputDto, isConnect);
-            var (resultId, resultTitle, opLogText, message, isSendMessage) = GetConnectOrDisconnectValue(connectDisconnectInfo, memberInfo, inputDto, personnelInfo, isConnect);
+            var (resultId, resultTitle, opLogText, message, isSendMessage) = GetConnectOrDisconnectValue(connectDisconnectInfo, memberInfo, inputDto, isConnect);
 
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, memberInfo);
             ConnectDisconnectUpdateDto connectDiscnnectUpdateDto = new(inputDto.Id, appUser.UserId, resultId, resultTitle, null, string.Join("_", new string[] { connectDisconnectInfo.Description ?? string.Empty, inputDto.Description ?? string.Empty }));
@@ -190,7 +189,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             }
             return string.IsNullOrWhiteSpace(inputDate) || inputDate.Trim().Length != 10 ? string.Empty : inputDate.Trim();
         }
-        private (int, string, string, string, bool) GetConnectOrDisconnectValue(ConnectDisconnectGetDto connectDisconnectInfo, MemberInfoGetDto memberInfo, ServiceLinkConnectionInput inputDto, ConCompanyPersonnelPersonalGetDto personnelInfo, bool isConnect)
+        private (int, string, string, string, bool) GetConnectOrDisconnectValue(ConnectDisconnectGetDto connectDisconnectInfo, MemberInfoGetDto memberInfo, ServiceLinkConnectionInput inputDto,  bool isConnect)
         {
             ICollection<NumericDictionary> disconnectResults = GetDisconnectResults();
             NumericDictionary? result = isConnect ? new NumericDictionary(0, string.Empty) : disconnectResults.Where(d => d.Id == (inputDto.Why)).FirstOrDefault();
@@ -201,8 +200,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             string disconnectLogText = string.Format(OpLogLiterals.ServiceLinkDisconnectSetResultOpLog, connectDisconnectInfo.BillId, result.Title);
             string opLogText = isConnect ? connectLogText : disconnectLogText;
 
-            string connectMessage = string.Format(SmsTemplates.ServiceLinkConnected, memberInfo.ZoneTitle, memberInfo.FullName, memberInfo.BillId, inputDto.When, personnelInfo.FullName, Environment.NewLine);
-            string disconnectMessage = string.Format(SmsTemplates.ServiceLinkDisconnected, memberInfo.ZoneTitle, memberInfo.FullName, memberInfo.BillId, inputDto.When, personnelInfo.FullName, Environment.NewLine);
+            string connectMessage = string.Format(SmsTemplates.ServiceLinkConnected, memberInfo.ZoneTitle, memberInfo.FullName, memberInfo.BillId, inputDto.When, connectDisconnectInfo.PersonnelName, Environment.NewLine);
+            string disconnectMessage = string.Format(SmsTemplates.ServiceLinkDisconnected, memberInfo.ZoneTitle, memberInfo.FullName, memberInfo.BillId, inputDto.When, connectDisconnectInfo.PersonnelName, Environment.NewLine);
             string message = isConnect ? connectMessage : disconnectMessage;
 
             bool isSendMessage = isConnect ? true : _allowedSendMessageDisconnectResult.Contains(result.Id);
