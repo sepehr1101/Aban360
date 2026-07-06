@@ -4,8 +4,9 @@
     {
         public string BillId { get; set; } = default!;
         public int? Why { get; set; }
-        public string Who { get; set; } = default!;
         public int When { get; set; }//hour
+        public int CompanyId { get; set; } 
+        public Guid PersonnelId { get; set; } 
         public string? Description { get; set; }
     }
 }

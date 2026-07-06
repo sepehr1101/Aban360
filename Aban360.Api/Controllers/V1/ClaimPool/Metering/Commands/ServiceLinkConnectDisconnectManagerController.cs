@@ -141,7 +141,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         [HttpPost]
         [Route("remove")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ConnectDisconnectRemoveInputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Remove([FromBody]ConnectDisconnectRemoveInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Remove([FromBody] ConnectDisconnectRemoveInputDto inputDto, CancellationToken cancellationToken)
         {
             await _connectDisconnectNoResultDeleteHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
@@ -156,7 +156,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
             int disconnectReportCode = 2071;
             ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await _connectDisconnectGetStiHandler.Handle(id, CurrentUser, cancellationToken);
             int reportCode = result?.ReportData?.FirstOrDefault()?.IsConnect ?? false ? connectReportCode : disconnectReportCode;
-          
+
             JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
 
             return Ok(reportId);

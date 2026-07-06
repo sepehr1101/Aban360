@@ -4,6 +4,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Contracts
 {
     public interface IZaribCreateService
     {
-        Task Create(ZaribCreateDto input);
+        Task Create(ZaribCreateInputDto input);
     }
 }

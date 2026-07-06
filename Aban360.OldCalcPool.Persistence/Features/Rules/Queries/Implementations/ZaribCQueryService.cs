@@ -12,7 +12,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             : base(configuration)
         {
         }
-        public async Task<ZaribCQueryDto> GetZaribC(string @from, string @to)
+        public async Task<ZaribCQueryDto> Get(string @from, string @to)
         {
             string query = GetQueryByFromTo();
             var @params = new
@@ -23,7 +23,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
             ZaribCQueryDto zaribCQueryDto = await _sqlReportConnection.QueryFirstAsync<ZaribCQueryDto>(query, @params);
             return zaribCQueryDto;
         }
-        public async Task<ZaribCQueryDto> GetLatestZaribC(string @from, string @to)
+        public async Task<ZaribCQueryDto> GetLatest(string @from, string @to)
         {
             string query = GetLatestQuery();
             ZaribCQueryDto zaribCQueryDto = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZaribCQueryDto>(query, null);
@@ -36,10 +36,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 
             return zaribCQueryDto;
         }
-        public async Task<ZaribCQueryDto> GetZaribC(string currentDateJalali)
+        public async Task<ZaribCQueryDto> Get(string currentDateJalali)
         {
             string query = GetQueryByDate();
             ZaribCQueryDto zaribCQueryDto = await _sqlReportConnection.QueryFirstAsync<ZaribCQueryDto>(query, new { currentDateJalali });
+            return zaribCQueryDto;
+        }
+        public async Task<ZaribCQueryDto> Get(int id)
+        {
+            string query = GetQueryByIdQuery();
+            ZaribCQueryDto zaribCQueryDto = await _sqlReportConnection.QueryFirstAsync<ZaribCQueryDto>(query, new { id });
             return zaribCQueryDto;
         }
         
@@ -89,6 +95,18 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 FROM [OldCalc].dbo.Zarib_C
                 WHERE 
 	               @currentDateJalali BETWEEN FromDateJalali AND ToDateJalali AND
+	                IsDeleted=0";
+        }
+        private string GetQueryByIdQuery()
+        {
+            return @"SELECT 
+	                    Id,
+	                    FromDateJalali,
+	                    ToDateJalali,
+	                    C
+                FROM [OldCalc].dbo.Zarib_C
+                WHERE 
+	                Id=@id AND
 	                IsDeleted=0";
         }
     }
