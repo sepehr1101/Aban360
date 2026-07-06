@@ -72,6 +72,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             IEnumerable<ConnectDisconnectDetailByCompanyDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectDetailByCompanyDataOutputDto>(query, inputDto);
             return result;
         }
+        public async Task<IEnumerable<ConnectDisconnectVeryDetailDataOutputDto>> Get(ConnectDisconnectVeryDetailInputDto input)
+        {
+            string query = GetByDateConditionQuery();
+            IEnumerable<ConnectDisconnectVeryDetailDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectVeryDetailDataOutputDto>(query, input);
+            return result;
+        }
 
         private string GetQuery()
         {
@@ -92,6 +98,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         MeterDiameterId ,
                         MeterDiameterTitle , 
                         CompanyTitle ,
+	                    CompanyId,
+	                    PersonnelId,
+	                    PersonnelName,
+	                    JudicialNoticeId,
                         TypeId , 
                         TypeTitle ,
                         Description ,
@@ -155,6 +165,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         MeterDiameterId ,
                         MeterDiameterTitle , 
                         CompanyTitle ,
+	                    CompanyId,
+	                    PersonnelId,
+	                    PersonnelName,
+	                    JudicialNoticeId,
                         TypeId , 
                         TypeTitle ,
                         Description ,
@@ -186,6 +200,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         MeterDiameterId ,
                         MeterDiameterTitle , 
                         CompanyTitle ,
+	                    CompanyId,
+	                    PersonnelId,
+	                    PersonnelName,
+	                    JudicialNoticeId,
                         TypeId , 
                         TypeTitle ,
                         Description ,
@@ -245,6 +263,36 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         TypeTitle,
 	                    CommandCauseTitle,
 	                    ResultTitle";
+        }
+        private string GetByDateConditionQuery()
+        {
+            return $@"Select 
+                    	Id,
+						BillId,
+                    	ZoneId,
+                    	ZoneTitle,
+                    	WaterDebt,
+                    	CommandDateTime,
+                    	CommandBy,
+                    	CommandCauseId,
+                    	CommandCauseTitle,
+                    	ResultDateTime,
+                    	ResultBy,
+                    	ResultId,
+                    	ResultTitle,
+                    	CompanyId,
+                    	CompanyTitle,
+                    	PersonnelId,
+                    	PersonnelName,
+                    	TypeId,
+                    	TypeTitle, 
+                    	JudicialNoticeId,
+                    	RemovedBy,
+                    	RemovedDateTime
+                    From CustomerWarehouse.dbo.ConnectDisconnect
+                    Where 
+                    	ZoneId=@ZoneId AND
+                    	FORMAT(CAST(CommandDateTime AS DATE),'yyyy/MM/dd','fa') BETWEEN @FromDateJalali AND @ToDateJalali ";
         }
     }
 }

@@ -14,5 +14,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts
         Task<IEnumerable<ConnectDisconnectMainByCompanyDataOutputDto>> GetWithCompany(ConnectDisconnectMainInputDto inputDto);
         Task<IEnumerable<ConnectDisconnectDetailDataOutputDto>> Get(ConnectDisconnectDetailInputDto inputDto);
         Task<IEnumerable<ConnectDisconnectDetailByCompanyDataOutputDto>> GetWithCompany(ConnectDisconnectDetailInputDto inputDto);
+        Task<IEnumerable<ConnectDisconnectVeryDetailDataOutputDto>> Get(ConnectDisconnectVeryDetailInputDto input);
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 {
-    [Route("v1/connect-disconnect-main")]
+    [Route("v1/connect-disconnect-report")]
     public class ConnectDisconnectMainController : BaseController
     {
         private readonly IConnectDisconnectMainHandler _connectDisconnectMainHandler;
@@ -27,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         }
 
         [HttpPost, HttpGet]
-        [Route("raw")]
+        [Route("main-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ConnectDisconnectMainHeaderOutputDto, ConnectDisconnectMainDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ConnectDisconnectMainInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -36,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         }
 
         [HttpPost, HttpGet]
-        [Route("excel/{connectionId}")]
+        [Route("main-excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, ConnectDisconnectMainInputDto inputDto, CancellationToken cancellationToken)
         {
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _connectDisconnectMainHandler.Handle, CurrentUser, ReportLiterals.ConnectDisconnectMain, connectionId);
@@ -44,7 +44,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         }
 
         [HttpPost]
-        [Route("sti")]
+        [Route("main-sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStiReport(ConnectDisconnectMainInputDto inputDto, CancellationToken cancellationToken)
         {

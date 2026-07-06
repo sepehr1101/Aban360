@@ -276,6 +276,7 @@
         public static string NoResultConnectDisconnect { get { return "دستورات قطع و وصل بدون نتیجه"; }  }
         public static string ConnectDisconnectMain { get { return "خلاصه دستورات قطع/وصل/اسناد رسمی"; }  }
         public static string ConnectDisconnectDetail { get { return "جزئیات دستورات قطع/وصل/اسناد رسمی"; }  }
+        public static string ConnectDisconnectVeryDetail { get { return "جزئیات دستورات قطع/وصل/اسناد رسمی"; }  }
        
         
         public static string UnconfirmedBillReturn { get { return "قبوض برگشتی تایید نشده."; }  }
