@@ -1,6 +1,6 @@
 ﻿namespace Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries
 {
-    public class ZaribCQueryDto
+    public record ZaribCQueryDto
     {
         public int Id { get; set; }
         public string FromDateJalali { get; set; } = default!;

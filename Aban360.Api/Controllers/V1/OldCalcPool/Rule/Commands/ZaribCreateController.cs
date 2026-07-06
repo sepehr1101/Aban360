@@ -18,10 +18,10 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Commands
 
         [HttpPost]
         [Route("create")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ZaribCreateDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create(ZaribCreateDto createDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ZaribCreateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Create(ZaribCreateInputDto createDto, CancellationToken cancellationToken)
         {
-            await _zaribCreateHandler.Handle(createDto, cancellationToken);
+            await _zaribCreateHandler.Handle(createDto, CurrentUser, cancellationToken);
             return Ok(createDto);
         }
     }

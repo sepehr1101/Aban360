@@ -1,10 +1,10 @@
 ﻿namespace Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands
 {
-    public record ZaribCreateDto
+    public record ZaribCreateInputDto
     {
         public int Town{ get; set; }
-        public string ZoneTitle1 { get; set; }
-        public string ZoneTitle2 { get; set; }
+        public int ZoneId1 { get; set; }
+        public int ZoneId2 { get; set; }
         public float Zarib_baha { get; set; }
         public string Date1 { get; set; }
         public string Date2 { get; set; }

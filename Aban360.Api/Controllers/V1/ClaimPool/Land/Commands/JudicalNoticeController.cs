@@ -14,16 +14,20 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
     public class JudicalNoticeController : BaseController
     {
         private readonly IJudicalNoticeCommandHandler _judicalNoticeCommandHandler;
+        private readonly IJudicialNoticeSetResultHandler _judicialNoticeSetResultHandler;
         private readonly ISmsOldHandler _smsHandler;
         private readonly IBackgroundJobClient _jobClient;
-
         public JudicalNoticeController(
             IJudicalNoticeCommandHandler judicalNoticeCommandHandler,
+            IJudicialNoticeSetResultHandler judicialNoticeSetResultHandler,
             ISmsOldHandler smsHandler,
             IBackgroundJobClient jobClient)
         {
             _judicalNoticeCommandHandler = judicalNoticeCommandHandler;
             _judicalNoticeCommandHandler.NotNull(nameof(judicalNoticeCommandHandler));
+
+            _judicialNoticeSetResultHandler = judicialNoticeSetResultHandler;
+            _judicialNoticeSetResultHandler.NotNull(nameof(smsHandler));
 
             _smsHandler = smsHandler;
             _smsHandler.NotNull(nameof(smsHandler));
@@ -43,6 +47,24 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 
             JsonReportId jsonReport = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
             return Ok(jsonReport);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("set-result")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JudicalNoticeSetResultInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetResult([FromBody] JudicalNoticeSetResultInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _judicialNoticeSetResultHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(inputDto);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("result")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<NumericDictionary>>), StatusCodes.Status200OK)]
+        public IActionResult GetResults(CancellationToken cancellationToken)
+        {
+            ICollection<NumericDictionary> results = _judicialNoticeSetResultHandler.GetJudicialResults();
+            return Ok(results);
         }
     }
 }

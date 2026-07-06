@@ -1,9 +1,10 @@
-﻿using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
 
 namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Contracts
 {
     public interface IZaribUpdateHandler
     {
-        Task Handle(ZaribUpdateDto UpdateDto, CancellationToken cancellationToken);
+        Task Handle(ZaribUpdateInputDto UpdateDto, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

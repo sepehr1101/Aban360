@@ -232,7 +232,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             SGetDto s = await _sQueryService.Get(fromDate, toDate, zoneId);
             int olgo = s is null || s.Olgo <= 0 ? 14 : s.Olgo;
 
-            ZaribCQueryDto zaribC = await _zaribCQueryService.GetLatestZaribC(fromDate, toDate);
+            ZaribCQueryDto zaribC = await _zaribCQueryService.GetLatest(fromDate, toDate);
             int c = zaribC is null || zaribC.C <= 0 ? throw new ReturnedBillException(ExceptionLiterals.CantReturn) : zaribC.C;
 
             return (olgo, c);

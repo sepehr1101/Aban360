@@ -21,8 +21,9 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<ZaribCUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update(ZaribCUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _zaribCUpdateHandler.Handle(updateDto, cancellationToken);
+            await _zaribCUpdateHandler.Handle(updateDto, CurrentUser, cancellationToken);
             return Ok(updateDto);
         }
     }
 }
+    

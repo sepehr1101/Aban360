@@ -126,6 +126,7 @@
         public static string CantGenarateExcelWithNullData => "اطلاعاتی برای ذخیره در فایل اکسل وجود ندارد";
         public static string Header => "سرآیند";
         public static string Page(int i) => $"صفحه {i}";
+        public static string NotFoundFolder => "پوشه پیدا نشد";
         public static string NotFoundFile => "فایل پیدا نشد";
         public static string NotFoundAddress => "آدرس پیدا نشد";
 
@@ -267,6 +268,11 @@
         public static string InvalidInsertS => "خطا در ایجاد الگو(S)";
         public static string InvalidUpdateS => " خطا در ویرایش الگو(S) ";
         public static string InvalidRemoveS => " خطا در حذف الگو(S) ";
+        public static string InvalidInsertZaribC => "خطا در ایجاد ظریبC";
+        public static string InvalidUpdateZaribC => " خطا در ویرایش ظریبC ";
+        public static string InvalidRemoveZaribC => " خطا در حذف ظریبC ";
+        public static string InvalidInsertZarib => "خطا در ایجاد ظریب";
+        public static string InvalidUpdateZarib => " خطا در ویرایش ظریب ";
 
     }
 }

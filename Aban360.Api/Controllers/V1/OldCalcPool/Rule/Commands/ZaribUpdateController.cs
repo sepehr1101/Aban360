@@ -18,10 +18,10 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Commands
 
         [HttpPost]
         [Route("update")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ZaribUpdateDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update(ZaribUpdateDto UpdateDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ZaribUpdateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Update(ZaribUpdateInputDto UpdateDto, CancellationToken cancellationToken)
         {
-            await _zaribUpdateHandler.Handle(UpdateDto, cancellationToken);
+            await _zaribUpdateHandler.Handle(UpdateDto, CurrentUser, cancellationToken);
             return Ok(UpdateDto);
         }
     }

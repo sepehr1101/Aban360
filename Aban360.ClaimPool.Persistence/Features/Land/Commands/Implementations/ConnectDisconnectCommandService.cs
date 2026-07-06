@@ -57,24 +57,27 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                         ZoneId,ZoneTitle,BillId,WaterDebt,
                         CommandDateTime,CommandBy,CommandCauseId,CommandCauseTitle,
                         ResultDateTime,ResultBy,ResultId,ResultTitle,
-                        MeterDiameterId,MeterDiameterTitle,CompanyId,CompanyTitle,TypeId,TypeTitle,Description
+                        MeterDiameterId,MeterDiameterTitle,CompanyId,CompanyTitle,
+                        PersonnelId,PersonnelName,TypeId,TypeTitle,Description
                     )
                     VALUES (
                         @ZoneId,@ZoneTitle,@BillId,@WaterDebt,
                         @CommandDateTime,@CommandBy,@CommandCauseId,@CommandCauseTitle,
                         @ResultDateTime,@ResultBy,@ResultId,@ResultTitle,
-                        @MeterDiameterId,@MeterDiameterTitle,@CompanyId,@CompanyTitle,@TypeId,@TypeTitle,@Description
+                        @MeterDiameterId,@MeterDiameterTitle,@CompanyId,@CompanyTitle,
+                        @PersonnelId,@PersonnelName,@TypeId,@TypeTitle,@Description
                     )";
         }
         private string GetUpdateQuery()
         {
             return $@"Update [CustomerWarehouse].dbo.ConnectDisconnect 
                     Set  
-                        ResultDateTime=@ResultDateTime ,
-                        ResultBy=@ResultBy ,
-                        ResultId=@ResultId ,
-                        ResultTitle=@ResultTitle ,
-                        Description=@Description
+                        ResultDateTime = @ResultDateTime ,
+                        ResultBy = @ResultBy ,
+                        ResultId = @ResultId ,
+                        ResultTitle = @ResultTitle ,
+                        JudicialNoticeId = @JudicialNoticeId ,
+                        Description = @Description
                     Where Id=@Id";
         }
         private string GetRemoveQuery()

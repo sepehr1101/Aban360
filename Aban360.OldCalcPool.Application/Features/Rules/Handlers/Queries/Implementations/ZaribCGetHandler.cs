@@ -16,7 +16,7 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implem
 
         public async Task<ZaribCQueryDto> Handle(string fromDateJalali, string toDateJalali, CancellationToken cancellationToken)
         {
-            ZaribCQueryDto result = await _zaribCQueryService.GetZaribC(fromDateJalali, toDateJalali);
+            ZaribCQueryDto result = await _zaribCQueryService.Get(fromDateJalali, toDateJalali);
             return result;
         }
     }

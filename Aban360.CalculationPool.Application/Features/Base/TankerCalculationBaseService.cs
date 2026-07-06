@@ -66,7 +66,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
 
-            ZaribCQueryDto zaribC = await _zaribCQueryService.GetZaribC(currentDateJalali);
+            ZaribCQueryDto zaribC = await _zaribCQueryService.Get(currentDateJalali);
             ZaribGetDto zarib = await _zaribGetService.Get(zoneId, currentDateJalali);
 
             return (zaribC.C, zarib.Zb);
