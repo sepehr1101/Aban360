@@ -213,7 +213,7 @@ namespace Aban360.Common.Extensions
                     {"Field4", "4"},
                     {"Field5", "5"},
                     {"MoreThan6", "6 و بالاتر"},
-                    {"Count", ""},
+                    {"Count", "تعداد"},
                     {"RegisterDayJalali", "تاریخ ثبت انشعاب آب"},
                     {"HouseholdDateJalali", "از تاریخ خانواری"},
                     {"HouseholdCount", "تعداد خانواری"},
@@ -323,7 +323,7 @@ namespace Aban360.Common.Extensions
                     {"UnitOther", "آحاد سایر"},
                     {"SumPremisesImprovement", "جمع عرصه و اعیان"},
                     {"InheritedFromCustomerNumber", "سهم رسیده از شماره ردیف"},
-                    {"TypeTitle", ""},
+                    {"TypeTitle", "نوع"},
                     {"ItemTitle", "عنوان"},
                     {"ItemId", "کد"},
                     {"InstallmentNumber", "شمراه قسط"},
@@ -562,6 +562,9 @@ namespace Aban360.Common.Extensions
                     { "JavazemKahande", "قسط لوازم کاهنده مصرف"},
                     { "AvarezSanati", "عوارض صنعتی"},
                     { "ZoneAddress", "آدرس ناحیه"},
+                    { "CommandCauseTitle", "علت دستور"},
+                    { "ResultTitle", "نتیجه"},
+                    { "CompanyTitle", "نام شرکت"},
             };
         }
     }
