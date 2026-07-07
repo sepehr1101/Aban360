@@ -79,7 +79,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         {
             string fromReadingNumber = latestBills?.Min(m => m.ReadingNumber) ?? string.Empty;
             string toReadingNumber = latestBills?.Max(m => m.ReadingNumber) ?? string.Empty;
-            MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, fileName, input.ZoneId, fromReadingNumber, toReadingNumber, appUser.UserId, string.Empty);
+            MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, fileName, input.ZoneId, fromReadingNumber, toReadingNumber, latestBills?.Count() ??0, appUser.UserId, string.Empty);
             IEnumerable<ZoneIdAndCustomerNumber> customersByInvalidPreviousBedBes = new List<ZoneIdAndCustomerNumber>();
             CustomersInfoGetDto customersInfo;
             int meterFlowId = 0;
@@ -96,7 +96,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
                     meterFlowId = await meterflowCommandService.Insert(importedMeterFlow);
                     customersInfo = await _customerInfoService.GetByBulkCopy(connection, transaction, input.ZoneId, latestBills.Select(m => m.CustomerNumber).ToList());
-                   
+
                     transaction.Commit();
                 }
             }
@@ -167,7 +167,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        LastSumItems = latestBill?.PreviousSumItems ?? 0
                    };
         }
-        private MeterFlowCreateDto GetMeterFlowCreateDto(MeterFlowStepEnum step, string fileName, int zoneId, string fromReadingNumber, string toReadingNumber, Guid userId, string description)
+        private MeterFlowCreateDto GetMeterFlowCreateDto(MeterFlowStepEnum step, string fileName, int zoneId, string fromReadingNumber, string toReadingNumber, int primaryCount, Guid userId, string description)
         {
             return new MeterFlowCreateDto()
             {
@@ -176,6 +176,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 ZoneId = zoneId,
                 FromReadingNumber = fromReadingNumber,
                 ToReadingNumber = toReadingNumber,
+                PrimaryCount = primaryCount,
                 InsertByUserId = userId,
                 InsertDateTime = DateTime.Now,
                 Description = description

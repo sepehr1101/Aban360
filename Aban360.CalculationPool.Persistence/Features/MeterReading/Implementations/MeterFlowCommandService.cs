@@ -74,13 +74,13 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             return @"INSERT [Atlas].[dbo].[MeterFlow] 
                         (
                             MeterFlowStepId,FileName,ZoneId,
-                            FromReadingNumber,ToReadingNumber,
+                            FromReadingNumber,ToReadingNumber,PrimaryCount,
                             InsertDateTime,InsertByUserId,Description
                         )
                     VALUES 
                         (
                             @MeterFlowStepId,@FileName,@ZoneId,
-                            @FromReadingNumber,@ToReadingNumber,
+                            @FromReadingNumber,@ToReadingNumber,@PrimaryCount,
                             @InsertDateTime,@InsertByUserId,@Description
                         );
                     SELECT CAST(SCOPE_IDENTITY() AS int);";

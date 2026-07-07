@@ -273,20 +273,24 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
             return $@";With Cte As(
                         	Select 
-                        		BillId,
-                        		FlowImportedId
-                        	From Atlas.dbo.MeterReadingDetail 
+                        		md.BillId,
+                        		md.FlowImportedId
+                        	From Atlas.dbo.MeterReadingDetail md 
+							Join Atlas.dbo.MeterFlow mf1
+								ON mf1.Id=md.FlowImportedId 
+							Join Atlas.dbo.MeterFlow mf2
+								ON mf2.FileName=mf1.FileName
                         	Where 
-                        		ZoneId=@ZoneId AND
-                        		(FORMAT(CAST(RemovedDateTime AS date),'yyyy/MM/dd','fa')  BETWEEN @FromDateJalali AND @ToDateJalali) AND
-                        		RemovedDateTime IS NOT NULL AND
-                        		(@FromReadingNumber IS NULL OR
-                        		@ToReadingNumber IS NULL OR
-                        		ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber)
-                        	Group By BillId,FlowImportedId
+                        		md.ZoneId = @ZoneId AND
+                        		(FORMAT(CAST(md.RemovedDateTime AS date),'yyyy/MM/dd','fa')  BETWEEN @FromDateJalali AND @ToDateJalali) AND
+                                (@FromReadingNumber IS NUll OR
+                                @ToReadingNumber IS NULL OR
+                                md.ReadingNumber  BETWEEN @FromReadingNumber AND @ToReadingNumber) AND
+                        		md.RemovedDateTime IS NOT NULL AND
+								mf2.RemovedDateTime IS NULL 
                         )
                         Select 
-                        	 mr.Id,
+                        	mr.Id,
                         	t46.C0 RegionId,
                         	t46.C2 RegionTitle,
                         	mr.ZoneId,
@@ -321,9 +325,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                         	mr.TavizDateJalali,
                         	mr.MeterDiameterId,
                         	t5.C2 MeterDiameterTitle
-                        From Cte c
-                        Join Atlas.dbo.MeterReadingDetail mr
-                        	On c.BillId=mr.BillId AND c.FlowImportedId=mr.FlowImportedId
+                        From Atlas.dbo.MeterReadingDetail mr
                         Join [Db70].dbo.T51 t51 
                         	ON mr.ZoneId=t51.C0
                         Join [Db70].dbo.T46 t46 
@@ -338,7 +340,13 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                         	ON mr.MeterDiameterId=t5.C0
                         Join [Db70].dbo.CounterVaziat cv
                         	ON mr.CurrentCounterStateCode=cv.MoshtarakinId
-                        Order By mr.BillId,mr.InsertDateTime Desc";
+						Where 
+							EXISTS(
+								Select 1 
+								From cte 
+								Where cte.BillId=mr.BillId AND cte.FlowImportedId=mr.FlowImportedId
+							)
+                        Order By mr.BillId,mr.FlowImportedId,mr.InsertDateTime Desc";
         }
     }
 }
