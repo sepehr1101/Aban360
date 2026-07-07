@@ -65,20 +65,27 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 var row = (IDictionary<string, object>)item;
 
-                //0:CurrentNumber 1:CurretnDate 2:CurrentCounterState 3:AgentCode 4:ZoneId 5:ZoneTitle
-                //6:CustomerNumber 7:BillId 8:ReadingNumber 9:PriNumber 10:PriDate 
-                int customerNumber = Convert.ToInt32(row.ElementAt(6).Value);
-                string readingNumber = row.ElementAt(8).Value.ToString();
-                string previousDay = row.ElementAt(10).Value.ToString();
-                string currentDay = row.ElementAt(1).Value.ToString();
-                int previousNumber = Convert.ToInt32(row.ElementAt(9).Value);
-                int currentNumber = Convert.ToInt32(row.ElementAt(0).Value);
-                short counterStateCode = Convert.ToInt16(row.ElementAt(2).Value);
-                int agentCode = Convert.ToInt32(row.ElementAt(3).Value);
-                int zoneId = Convert.ToInt32(row.ElementAt(4).Value);
+                try
+                {
+                    //0:CurrentNumber 1:CurretnDate 2:CurrentCounterState 3:AgentCode 4:ZoneId 5:ZoneTitle
+                    //6:CustomerNumber 7:BillId 8:ReadingNumber 9:PriNumber 10:PriDate 
+                    int customerNumber = Convert.ToInt32(row.ElementAt(6).Value);
+                    string readingNumber = row.ElementAt(8).Value.ToString();
+                    string previousDay = row.ElementAt(10).Value.ToString();
+                    string currentDay = row.ElementAt(1).Value.ToString();
+                    int previousNumber = Convert.ToInt32(row.ElementAt(9).Value);
+                    int currentNumber = Convert.ToInt32(row.ElementAt(0).Value);
+                    short counterStateCode = Convert.ToInt16(row.ElementAt(2).Value);
+                    int agentCode = Convert.ToInt32(row.ElementAt(3).Value);
+                    int zoneId = Convert.ToInt32(row.ElementAt(4).Value);
 
-                MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
-                meterReadingFileDetail.Add(meterDetail);
+                    MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
+                    meterReadingFileDetail.Add(meterDetail);
+                }
+                catch
+                {
+                    throw new ReadingException(ExceptionLiterals.NotNull);
+                }
             }
 
             return meterReadingFileDetail;

@@ -77,6 +77,7 @@
         public static string InvalidZoneTitle => "ناحیه یافت نشد!";
         public static string InvalidNotEqualMeterNumberInWithoutConsumption => "در وضعیت -بدون مصرف- رقم قبلی و فعلی باید یکی باشد.";
         public static string InvalidBedBesPreviousNumberAndDate(string billId) => $"آخرین تاریخ قرائت و رقم کنتور برای شناسه قبض{billId} قابل جستجو نیست.";
+        public static string InvalidBedBesPreviousNumberAndDateAndInstallationDate(string billId) => $"علاوه بر آخرین تاریخ قرائت و رقم کنتور، تاریخ نصب انشعاب برای شناسه قبض{billId} قابل جستجو نیست.";
 
         public static string InvlaidStringLength => "طول رشته نامعتبر است.";
         public static string InvalidEmailFormat => "فرمت ایمیل نامعتبر است.";

@@ -69,7 +69,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                 CounterStateTitle = b.CounterStateTitle,
 
             });
-            BedBesPreviousNumberAndDateOutputDto bedBesPreviousNumberAndDate = await _bedBesQueryService.GetPreviousDateAndNumber(zoneIdAndCustomerNumber, billId);
+            BedBesPreviousNumberAndDateOutputDto bedBesPreviousNumberAndDate = await _bedBesQueryService.GetPreviousDateAndNumber(zoneIdAndCustomerNumber, billId, true);
 
             BillTransactionDetailHeaderOutputDto header = new()
             {
