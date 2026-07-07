@@ -298,15 +298,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             IEnumerable<BedBesWithDelOutputDto> result = await _sqlReportConnection.QueryAsync<BedBesWithDelOutputDto>(query, input);
             return result;
         }
-        public async Task<BedBesPreviousNumberAndDateOutputDto> GetPreviousDateAndNumber(ZoneIdAndCustomerNumber input, string billId)
+        public async Task<BedBesPreviousNumberAndDateOutputDto?> GetPreviousDateAndNumber(ZoneIdAndCustomerNumber input, string billId, bool hasException)
         {
             string dbName = GetDbName(input.ZoneId);
             string query = GetPreviousMeterDateAndNumberQuery(dbName);
             BedBesPreviousNumberAndDateOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesPreviousNumberAndDateOutputDto>(query, input);
-            if (result is null)
+            if (result is null && hasException)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidBedBesPreviousNumberAndDate(billId));
             }
+
             return result;
         }
         public async Task<IEnumerable<ZoneIdAndCustomerNumber>> GetPreviousDateAndNumberWithSqlBulk(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers)

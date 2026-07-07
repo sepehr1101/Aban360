@@ -21,10 +21,7 @@
         public int? CompanyId { get; set; }
         public Guid? PersonnelId { get; set; }
         public string? PersonnelName { get; set; }
-<<<<<<< HEAD
-=======
-        public string JudicialNoticeId { get; set; }
->>>>>>> hotfix
+        public string? JudicialNoticeId { get; set; }
         public int TypeId { get; set; }
         public string TypeTitle { get; set; }
         public string? Description { get; set; }

@@ -4,5 +4,13 @@
     {
         public string PreviousDateJalali { get; set; }
         public int PreviousNumber { get; set; }
+        public BedBesPreviousNumberAndDateOutputDto(string previousDateJalali, int previousNumber)
+        {
+            PreviousDateJalali = previousDateJalali;
+            PreviousNumber = previousNumber;
+        }
+        public BedBesPreviousNumberAndDateOutputDto()
+        {
+        }
     }
 }
