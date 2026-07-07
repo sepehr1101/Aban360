@@ -165,16 +165,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         MeterDiameterId ,
                         MeterDiameterTitle , 
                         CompanyTitle ,
-<<<<<<< HEAD
-                        CompanyId,
-                        PersonnelId,
-                        PersonnelName,
-=======
 	                    CompanyId,
 	                    PersonnelId,
 	                    PersonnelName,
 	                    JudicialNoticeId,
->>>>>>> hotfix
                         TypeId , 
                         TypeTitle ,
                         Description ,
@@ -206,16 +200,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         MeterDiameterId ,
                         MeterDiameterTitle , 
                         CompanyTitle ,
-<<<<<<< HEAD
-                        CompanyId,
-                        PersonnelId,
-                        PersonnelName,
-=======
 	                    CompanyId,
 	                    PersonnelId,
 	                    PersonnelName,
 	                    JudicialNoticeId,
->>>>>>> hotfix
                         TypeId , 
                         TypeTitle ,
                         Description ,
