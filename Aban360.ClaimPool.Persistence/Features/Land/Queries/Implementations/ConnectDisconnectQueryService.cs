@@ -1,8 +1,10 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Constants.Literals;
+using Aban360.ClaimPool.Persistence.DbSeeder.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
@@ -46,6 +48,37 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             ConnectDisconnectGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ConnectDisconnectGetDto>(query, inputDto);
             return result;
         }
+        public async Task<IEnumerable<ConnectDisconnectMainDataOutputDto>> Get(ConnectDisconnectMainInputDto inputDto)
+        {
+            string query = GetMainReportQuery(false);
+            IEnumerable<ConnectDisconnectMainDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectMainDataOutputDto>(query, inputDto);
+            return result;
+        }
+        public async Task<IEnumerable<ConnectDisconnectMainByCompanyDataOutputDto>> GetWithCompany(ConnectDisconnectMainInputDto inputDto)
+        {
+            string query = GetMainReportQuery(true);
+            IEnumerable<ConnectDisconnectMainByCompanyDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectMainByCompanyDataOutputDto>(query, inputDto);
+            return result;
+        }
+        public async Task<IEnumerable<ConnectDisconnectDetailDataOutputDto>> Get(ConnectDisconnectDetailInputDto inputDto)
+        {
+            string query = GetDetailReportQuery(false);
+            IEnumerable<ConnectDisconnectDetailDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectDetailDataOutputDto>(query, inputDto);
+            return result;
+        }
+        public async Task<IEnumerable<ConnectDisconnectDetailByCompanyDataOutputDto>> GetWithCompany(ConnectDisconnectDetailInputDto inputDto)
+        {
+            string query = GetDetailReportQuery(true);
+            IEnumerable<ConnectDisconnectDetailByCompanyDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectDetailByCompanyDataOutputDto>(query, inputDto);
+            return result;
+        }
+        public async Task<IEnumerable<ConnectDisconnectVeryDetailDataOutputDto>> Get(ConnectDisconnectVeryDetailInputDto input)
+        {
+            string query = GetByDateConditionQuery();
+            IEnumerable<ConnectDisconnectVeryDetailDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectVeryDetailDataOutputDto>(query, input);
+            return result;
+        }
+
         private string GetQuery()
         {
             return @$"Select 
@@ -65,6 +98,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         MeterDiameterId ,
                         MeterDiameterTitle , 
                         CompanyTitle ,
+	                    CompanyId,
+	                    PersonnelId,
+	                    PersonnelName,
+	                    JudicialNoticeId,
                         TypeId , 
                         TypeTitle ,
                         Description ,
@@ -128,9 +165,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         MeterDiameterId ,
                         MeterDiameterTitle , 
                         CompanyTitle ,
+<<<<<<< HEAD
                         CompanyId,
                         PersonnelId,
                         PersonnelName,
+=======
+	                    CompanyId,
+	                    PersonnelId,
+	                    PersonnelName,
+	                    JudicialNoticeId,
+>>>>>>> hotfix
                         TypeId , 
                         TypeTitle ,
                         Description ,
@@ -162,9 +206,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         MeterDiameterId ,
                         MeterDiameterTitle , 
                         CompanyTitle ,
+<<<<<<< HEAD
                         CompanyId,
                         PersonnelId,
                         PersonnelName,
+=======
+	                    CompanyId,
+	                    PersonnelId,
+	                    PersonnelName,
+	                    JudicialNoticeId,
+>>>>>>> hotfix
                         TypeId , 
                         TypeTitle ,
                         Description ,
@@ -176,6 +227,84 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 						TypeId=@TypeId 
 						{resultCondition}
                         {removedCondition}";
+        }
+        private string GetMainReportQuery(bool hasCompany)
+        {
+            string companyCondition = hasCompany ? " CompanyTitle, " : string.Empty;
+            return $@"Select 
+                    	ZoneTitle,
+                        {companyCondition}
+                    	TypeTitle,
+                    	COUNT(1) Count
+                    From CustomerWarehouse.dbo.ConnectDisconnect
+                    Where 
+                    	ZoneId IN @ZoneIds AND
+                    	FORMAT(CAST(CommandDateTime AS DATE),'yyyy/MM/dd','fa') BETWEEN @FromDateJalali AND @ToDateJalali
+                    GROUP BY 
+                    	ZoneTitle,
+                        {companyCondition}
+                    	TypeTitle
+                    ORDER BY 
+                        ZoneTitle,
+                        {companyCondition}
+                        TypeTitle";
+        }
+        private string GetDetailReportQuery(bool hasCompany)
+        {
+            string companyCondition = hasCompany ? " CompanyTitle, " : string.Empty;
+            return $@"Select 
+                    	ZoneTitle,
+                        {companyCondition}
+                    	TypeTitle,
+	                    CommandCauseTitle,
+	                    ResultTitle,
+                    	COUNT(1) Count
+                    From CustomerWarehouse.dbo.ConnectDisconnect
+                    Where 
+                    	ZoneId = @ZoneId AND
+                    	FORMAT(CAST(CommandDateTime AS DATE),'yyyy/MM/dd','fa') BETWEEN @FromDateJalali AND @ToDateJalali
+                    GROUP BY 
+                    	ZoneTitle,
+                        {companyCondition}
+                    	TypeTitle,
+	                    CommandCauseTitle,
+	                    ResultTitle
+                    ORDER BY 
+                        ZoneTitle,
+                        {companyCondition}
+                        TypeTitle,
+	                    CommandCauseTitle,
+	                    ResultTitle";
+        }
+        private string GetByDateConditionQuery()
+        {
+            return $@"Select 
+                    	Id,
+						BillId,
+                    	ZoneId,
+                    	ZoneTitle,
+                    	WaterDebt,
+                    	CommandDateTime,
+                    	CommandBy,
+                    	CommandCauseId,
+                    	CommandCauseTitle,
+                    	ResultDateTime,
+                    	ResultBy,
+                    	ResultId,
+                    	ResultTitle,
+                    	CompanyId,
+                    	CompanyTitle,
+                    	PersonnelId,
+                    	PersonnelName,
+                    	TypeId,
+                    	TypeTitle, 
+                    	JudicialNoticeId,
+                    	RemovedBy,
+                    	RemovedDateTime
+                    From CustomerWarehouse.dbo.ConnectDisconnect
+                    Where 
+                    	ZoneId=@ZoneId AND
+                    	FORMAT(CAST(CommandDateTime AS DATE),'yyyy/MM/dd','fa') BETWEEN @FromDateJalali AND @ToDateJalali ";
         }
     }
 }

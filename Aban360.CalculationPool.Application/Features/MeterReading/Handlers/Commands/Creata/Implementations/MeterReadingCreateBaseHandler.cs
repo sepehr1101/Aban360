@@ -253,9 +253,22 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 if (item.IsReturned || _invalidLatestCounterStateCode.Contains(item.LastCounterStateCode ?? 0))
                 {
-                    BedBesPreviousNumberAndDateOutputDto previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId);
-                    item.LastMeterNumber = previousInfo.PreviousNumber;
-                    item.LastMeterDateJalali = previousInfo.PreviousDateJalali;
+                    BedBesPreviousNumberAndDateOutputDto? previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId, false);
+                    if (previousInfo is null)
+                    {
+                        string? waterInstallationDateJalali = customersInfo?.MembersInfo?.Where(c => c.CustomerNumber == item.CustomerNumber)?.FirstOrDefault()?.WaterInstallationDateJalali ?? string.Empty;
+                        if (string.IsNullOrWhiteSpace(waterInstallationDateJalali))
+                        {
+                            throw new InvalidBillCommandException(ExceptionLiterals.InvalidBedBesPreviousNumberAndDateAndInstallationDate(item.BillId));
+                        }
+                        item.LastMeterNumber = 0;
+                        item.LastMeterDateJalali = waterInstallationDateJalali;
+                    }
+                    else
+                    {
+                        item.LastMeterNumber = previousInfo.PreviousNumber;
+                        item.LastMeterDateJalali = previousInfo.PreviousDateJalali;
+                    }
                 }
             }
 

@@ -39,7 +39,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
             IEnumerable<BillLatestListDataOutputDto> data = await _billQueryService.GetLatestList(inputDto);
             foreach (var item in data)
             {
-                BedBesPreviousNumberAndDateOutputDto billInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId);
+                BedBesPreviousNumberAndDateOutputDto billInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId, true);
                 item.PreviousNumber = billInfo.PreviousNumber;
                 item.PreviousDateJalali = billInfo.PreviousDateJalali;
             }
@@ -59,12 +59,12 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         {
             await _commonZoneService.IsUserInZone(appUser, inputDto.ZoneId);
             IEnumerable<BillLatestListDataOutputDto> data = await _billQueryService.GetLatestListByBedBes(inputDto);
-        
+
             foreach (var item in data)
             {
                 if (item.IsReturned)
                 {
-                    BedBesPreviousNumberAndDateOutputDto billInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId);
+                    BedBesPreviousNumberAndDateOutputDto billInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId, true);
                     item.PreviousNumber = billInfo.PreviousNumber;
                     item.PreviousDateJalali = billInfo.PreviousDateJalali;
                 }

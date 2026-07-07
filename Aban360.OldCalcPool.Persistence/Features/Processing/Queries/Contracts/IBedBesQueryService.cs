@@ -20,7 +20,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
         Task<float> GetPreviousBill(int zoneId, int customerNumber, string dateJalali);
         Task<float?> GetAverage(int zoneId, int customerNumber, string fromDate, string toDate);
         Task<IEnumerable<BedBesCreateDto>> Get(ZoneCustomerFromToDateDto input);
-        Task<int> GetCountInDateBed(int zoneId, int customernumber, string date,bool isPreviousDate);
+        Task<int> GetCountInDateBed(int zoneId, int customernumber, string date, bool isPreviousDate);
         Task<int?> GetLatestJalaseNumber(ZoneIdAndCustomerNumberOutputDto input);
         Task<BedBesSmsDto> GetSmsDto(string billId, int zoneId, int customerNumber);
         Task<BedBesWithConsumptionOutputDto> GetPrevious(ZoneIdAndCustomerNumberOutputDto input, string dateJalali);
@@ -28,7 +28,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
         Task<IEnumerable<string>> GetDuplicateBill(ICollection<BedBesCreateDto> inputDto);
         Task<BedBesItemsOutputDto> GetLatestByCustomerNumber(ZoneIdAndCustomerNumber input);
         Task<IEnumerable<BedBesWithDelOutputDto>> GetByDateInterval(ZoneCustomerFromToDateDto input, string dbName);
-        Task<BedBesPreviousNumberAndDateOutputDto> GetPreviousDateAndNumber(ZoneIdAndCustomerNumber input, string billId);
+        Task<BedBesPreviousNumberAndDateOutputDto?> GetPreviousDateAndNumber(ZoneIdAndCustomerNumber input, string billId, bool hasException);
         Task<IEnumerable<ZoneIdAndCustomerNumber>> GetPreviousDateAndNumberWithSqlBulk(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers);
     }
 }

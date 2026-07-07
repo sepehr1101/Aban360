@@ -582,7 +582,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         }
         private async Task InputPreviousDataValidate(FreeGenerateBillInputDto inputDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber)
         {
-            BedBesPreviousNumberAndDateOutputDto previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(zoneIdAndCustomerNumber, inputDto.BillId);
+            BedBesPreviousNumberAndDateOutputDto previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(zoneIdAndCustomerNumber, inputDto.BillId, true);
             if (inputDto.PreviousDateJalali.CompareTo(previousInfo.PreviousDateJalali) != 0)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidPreviousDateJalali);
