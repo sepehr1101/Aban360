@@ -108,6 +108,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                         FileName = meterFlow.FileName,
                         FromReadingNumber= meterFlow.FromReadingNumber,
                         ToReadingNumber=meterFlow.ToReadingNumber,
+                        PrimaryCount = meterFlow.PrimaryCount,
                         InsertByUserId = appUser.UserId,
                         InsertDateTime = DateTime.Now,
                     };

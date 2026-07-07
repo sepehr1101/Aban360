@@ -10,6 +10,7 @@ namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
         public int ZoneId { get; set; }
         public string? FromReadingNumber { get; set; }
         public string? ToReadingNumber { get; set; }
+        public int PrimaryCount { get; set; }
         public DateTime InsertDateTime { get; set; }
         public DateTime? RemovedDateTime { get; set; }
         public string? Description { get; set; }
