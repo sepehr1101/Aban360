@@ -8,8 +8,8 @@
         public string ReadingNumber { get; set; }
         public string RegisterDateJalali { get; set; }
         public int Amount { get; set; }
-        public int DiscountTypeId { get; set; }
-        public string DiscountTypeTitle { get; set; }
+        public int DescriptionCode{ get; set; }//DiscountTypeId 
+        public string DescriptionTitle { get; set; }//DiscountTypeTitle
         public int DiscountAmount { get; set; }
         public int Type { get; set; }
         public string TypeTitle { get; set; }

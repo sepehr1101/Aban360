@@ -1,4 +1,5 @@
-﻿using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queries.Contracts;
+﻿using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Contracts;
+using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.ServiceLink;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
@@ -14,11 +15,13 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly ICommonZoneService _commonZoneQueryServcice;
         private readonly IKartQueryService _kartQueryService;
+        private readonly IServiceLinkReturnHandler _serviceLinkReturnHandler;
         private string _title = ReportLiterals.ServiceLinkUnconfirmed;
         public ServiceLinkUnconfirmedGetHandler(
             ICommonMemberQueryService commonMemberQueryService,
             ICommonZoneService commonZoneQueryService,
-            IKartQueryService kartQueryService)
+            IKartQueryService kartQueryService,
+            IServiceLinkReturnHandler serviceLinkReturnHandler)
         {
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
@@ -28,6 +31,9 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
 
             _kartQueryService = kartQueryService;
             _kartQueryService.NotNull(nameof(kartQueryService));
+
+            _serviceLinkReturnHandler = serviceLinkReturnHandler;
+            _serviceLinkReturnHandler.NotNull(nameof(serviceLinkReturnHandler));
         }
 
         public async Task<ReportOutput<ServiceLinkUnconfirmedHeaderOutputDto, ServiceLinkUnconfirmedDataOutputDto>> Handle(string billId, IAppUser appUser, CancellationToken cancellationToken)
@@ -36,7 +42,14 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
             await _commonZoneQueryServcice.IsUserInZone(appUser, memberInfo.ZoneId);
 
+            IEnumerable<NumericDictionary> descriptionsInfo = _serviceLinkReturnHandler.ReturnCodes();
             IEnumerable<ServiceLinkUnconfirmedDataOutputDto> KartsData = await _kartQueryService.GetTodayInfoByCustomerNumber(memberInfo.CustomerNumber, memberInfo.ZoneId);
+            KartsData.ForEach(k =>
+            {
+                NumericDictionary? descriptionInfo = descriptionsInfo.Where(d => d.Id == k.DescriptionCode).FirstOrDefault();
+                k.DescriptionCode = descriptionInfo?.Id ?? 0;
+                k.DescriptionTitle = descriptionInfo?.Title ?? string.Empty;
+            });
             ServiceLinkUnconfirmedHeaderOutputDto header = new()
             {
                 ZoneId = zoneIdAndCustomerNumber.ZoneId,
