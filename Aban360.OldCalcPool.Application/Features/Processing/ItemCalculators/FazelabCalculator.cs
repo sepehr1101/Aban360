@@ -15,8 +15,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     }
 
     internal sealed class FazelabCalculator : IFazelabCalculator
-    {
-        private const string date_1404_02_31 = "1404/02/31";
+    {       
         private const string _minimumValidDate = "1330/01/01";
         private const int _withoutSewage = 0;
         private const int _firstCalculation = 1;

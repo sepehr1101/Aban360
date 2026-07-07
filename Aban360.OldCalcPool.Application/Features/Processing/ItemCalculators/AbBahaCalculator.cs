@@ -46,10 +46,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0;
             double duration = consumptionPartialInfo.Duration;
-            string formula = GetFormula(nerkh, nerkh1403, consumptionPartialInfo);
-            abBahaFromExpression = CalcFormulaByRate(formula, monthlyConsumption, _olgoo, c, tagIds);
             decimal multiplierAbBaha = GetMultiplier(zarib, _olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
             villageMultiplier = GetVillageMultiplier(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption, _olgoo);
+
+            string formula = GetFormula(nerkh, nerkh1403, consumptionPartialInfo);
+            abBahaFromExpression = CalcFormulaByRate(formula, monthlyConsumption, _olgoo, c, tagIds);
 
             //case 1: is zero
             if (CheckZero(duration, monthlyConsumption, formula))
@@ -239,10 +240,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         private bool IsGardenOrDweltyAfter1400_12_24OrIsDomestic(CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo)
         {
             return IsGardenOrDweltyAfter1400_12_24(customerInfo.UsageId, consumptionPartialInfo.StartDateJalali) || IsDomestic(customerInfo.UsageId);
-        }
-        private bool IsBefore1403_06_26(string date2)
-        {
-            return date2.CompareTo(date_1403_06_25) <= 0;
         }
         private bool IsBefore1403_09_13(string date2)
         {
