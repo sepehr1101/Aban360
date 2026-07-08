@@ -33,7 +33,7 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Creat
         public async Task Handle(AbonmanCreateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await InputValidate(inputDto, cancellationToken);
-            string opLogText = string.Format(OpLogLiterals.AbonmanInserstOpLog, inputDto.Code, inputDto.Vaj, inputDto.Date1, inputDto.Date2);
+            string opLogText = string.Format(OpLogLiterals.AbonmanInsertOpLog, inputDto.Code, inputDto.Vaj, inputDto.Date1, inputDto.Date2);
             await ExecSql(inputDto, appUser, opLogText);
         }
         private async Task ExecSql(AbonmanCreateDto createDto, IAppUser appUser, string opLogText)

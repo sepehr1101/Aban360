@@ -274,6 +274,7 @@
         public static string InvalidRemoveZaribC => " خطا در حذف ظریبC ";
         public static string InvalidInsertZarib => "خطا در ایجاد ظریب";
         public static string InvalidUpdateZarib => " خطا در ویرایش ظریب ";
+        public static string InvalidDuplicateUsageGroup => "خطا در گروه کاربری تکراری";
 
     }
 }

@@ -44,18 +44,29 @@
 
         public static string MeterFlowRemoveOpLog => @"فایل قرائت حذف شد. نام قبلی فایل:{0}  نام فعلی فایل:{1} ناحیه:{2}";
 
-        public static string AbonmanInserstOpLog => @"فرمول آبونمان ایجاد شد.کاربری:{0}  فرمول:{1}  از تاریخ:{2}  تا تاریخ:{3}";
+        public static string AbonmanInsertOpLog => @"فرمول آبونمان ایجاد شد.کاربری:{0}  فرمول:{1}  از تاریخ:{2}  تا تاریخ:{3}";
         public static string AbonmanUpdateOpLog => @"فرمول آبونمان ویرایش شد.کاربری از {0} به {1} / فرمول از {2} به {3}  /  از تاریخ {4} به {5}  / تا تاریخ {6} به {7}";
-        public static string NerkhInserstOpLog => @"نرخ کاربری ایجاد شد.کاربری:{0}  فرمول:{1}  از تاریخ:{2}  تا تاریخ:{3}";
+        public static string NerkhInsertOpLog => @"نرخ کاربری ایجاد شد.کاربری:{0}  فرمول:{1}  از تاریخ:{2}  تا تاریخ:{3}";
         public static string NerkhUpdateOpLog => @"نرخ کاربری ویرایش شد.کاربری از {0} به {1} / فرمول از {2} به {3}  /  از تاریخ {4} به {5}  / تا تاریخ {6} به {7}";
-        public static string SInserstOpLog => @"الگو(S) ایجاد شد. الگو:{0}  ناحیه:{1}   از تاریخ:{2}   تا تاریخ:{3}";
+        public static string SInsertOpLog => @"الگو(S) ایجاد شد. الگو:{0}  ناحیه:{1}   از تاریخ:{2}   تا تاریخ:{3}";
         public static string SUpdateOpLog => @"الگو() ویرایش شد. الگو: از {0} به {1}  /  ناحیه: از {2} به {3}  /  از تاریخ: از {4} به {5}  /  تا تاریخ: از {6} به {7}";
         public static string SDeleteOpLog => @"الگو(S) حذف شد. شناسه:{0}  الگو:{1}  ناحیه:{2}   از تاریخ:{3}   تا تاریخ:{4}";
-        public static string ZaribCInserstOpLog => @"ظریبC ایجاد شد. C:{0}  از تاریخ:{1}   تا تاریخ:{2}";
+        public static string ZaribCInsertOpLog => @"ظریبC ایجاد شد. C:{0}  از تاریخ:{1}   تا تاریخ:{2}";
         public static string ZaribCUpdateOpLog => @"ظریبC ویرایش شد. C: از {0} به {1}  /  از تاریخ: {2} به {3}  /  تا تاریخ: {4} به {5}";
         public static string ZaribCDeleteOpLog => @"ظریبC حذف شد. شناسه:{0}";
-        public static string ZaribInserstOpLog => @"ظریب ایجاد شد. ناحیه:{0}  ظریب بها:{1} ";
+        public static string ZaribInsertOpLog => @"ظریب ایجاد شد. ناحیه:{0}  ظریب بها:{1} ";
         public static string ZaribUpdateOpLog => @"ظریب ویرایش شد. ناحیه: از {0} به {1}  /  ظریب بها: از {2} به {3} ";
+
+        public static string UsageGroup1InsertOpLog => @"گروه کاربری1 ایجاد شد. نام گروه:{0}";
+        public static string UsageGroup1UpdateOpLog => @"گروه کاربری1 ویرایش شد. نام گروه: از {0} به {1}";
+        public static string UsageGroup1DeleteOpLog => @"گروه کاربری1 حذف شد. نام گروه:{0}";
+        public static string UsageGroup2InsertOpLog => @"گروه کاربری2 ایجاد شد. نام گروه:{0}";
+        public static string UsageGroup2UpdateOpLog => @"گروه کاربری2 ویرایش شد. نام گروه: از {0} به {1}  /  شناسه گروه1: از {2} به {3}";
+        public static string UsageGroup2DeleteOpLog => @"گروه کاربری2 حذف شد. نام گروه:{0}";
+        public static string UsageGroup3InsertOpLog => @"گروه کاربری3 ایجاد شد. شناسه جدول:{0}";
+        public static string UsageGroup3UpdateOpLog => @"گروه کاربری3 ویرایش شد. کاربری: از {0} به {1}  /  شناسه گروه2: از {2} به {3}";
+        public static string UsageGroup3DeleteOpLog => @"گروه کاربری3 حذف شد. شناسه جدول:{0}";
+
 
     }
 }

@@ -41,7 +41,7 @@ namespace Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Creat
         {
             await InputValidate(inputDto, cancellationToken);
             ZaribCreateDto createDto = await GetCreateDto(inputDto);
-            string opLogText = string.Format(OpLogLiterals.ZaribInserstOpLog, createDto.ZoneTitle1, createDto.Zarib_baha);
+            string opLogText = string.Format(OpLogLiterals.ZaribInsertOpLog, createDto.ZoneTitle1, createDto.Zarib_baha);
             await ExecSql(createDto, appUser, opLogText);
         }
         private async Task ExecSql(ZaribCreateDto createDto, IAppUser appUser, string opLogText)
