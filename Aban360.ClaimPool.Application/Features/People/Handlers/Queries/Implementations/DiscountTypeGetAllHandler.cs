@@ -1,4 +1,5 @@
 ﻿using Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.People.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.People.Queries.Contracts;
 using Aban360.Common.Extensions;
@@ -10,6 +11,7 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Impleme
     {
         private readonly IMapper _mapper;
         private readonly IDiscountTypeQueryService _discountTypeQueryService;
+        private DiscountTypeEnum _noDiscountTypeId = DiscountTypeEnum.BedonTakhfif;
         public DiscountTypeGetAllHandler(
             IMapper mapper,
             IDiscountTypeQueryService discountTypeQueryService)
@@ -21,10 +23,12 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Impleme
             _discountTypeQueryService.NotNull(nameof(_discountTypeQueryService));
         }
 
-        public async Task<ICollection<DiscountTypeGetDto>> Handle(CancellationToken cancellationToken)
+        public async Task<ICollection<DiscountTypeGetDto>> Handle(bool isReturn, CancellationToken cancellationToken)
         {
             var discountTypes = await _discountTypeQueryService.Get();
-            return _mapper.Map<ICollection<DiscountTypeGetDto>>(discountTypes);
+            ICollection<DiscountTypeGetDto> result = _mapper.Map<ICollection<DiscountTypeGetDto>>(discountTypes);
+
+            return isReturn ? result.Where(k => k.Id != _noDiscountTypeId).ToList() : result;
         }
     }
 }

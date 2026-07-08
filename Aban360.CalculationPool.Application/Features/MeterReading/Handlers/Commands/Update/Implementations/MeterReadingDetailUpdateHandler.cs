@@ -79,11 +79,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     MeterReadingDetailCommandService meterReadingDetailCommandService = new(connection, transaction);
-                    //await meterReadingDetailCommandService.CreateDuplicateForLog(readingCreateDuplicate);
-                    await meterReadingDetailCommandService.Insert(meterReadingCreateDto);
 
-                    //remove previous
-                    await meterReadingDetailCommandService.Delete(readingDelete);
+                    await meterReadingDetailCommandService.Insert(meterReadingCreateDto);
+                    await meterReadingDetailCommandService.Delete(readingDelete);//remove previous
                     transaction.Commit();
                 }
             }
@@ -97,7 +95,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             CustomerInfoGetDto customerInfo = await _customerInfoService.Get(previousMeterDetailDto.ZoneId, previousMeterDetailDto.CustomerNumber);
             var (sumItems, jam, pard) = GetAmounts(customerInfo.MembersInfo.LatestDebtAmount, abBahaCalc?.SumItems ?? 0);
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
-
 
             meterDetailCreateDto.FlowImportedId = previousMeterDetailDto.FlowImportedId;
             meterDetailCreateDto.ZoneId = previousMeterDetailDto.ZoneId;
@@ -148,10 +145,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             meterDetailCreateDto.LastCounterStateCode = previousMeterDetailDto.LastCounterStateCode ?? 0;
             meterDetailCreateDto.LastSumItems = previousMeterDetailDto.LastSumItems ?? 0;
             meterDetailCreateDto.SumItems = sumItems;//abBahaCalc.sumItems?
-            meterDetailCreateDto.SumItemsBeforeDiscount = abBahaCalc.SumItemsBeforeDiscount;
-            meterDetailCreateDto.DiscountSum = abBahaCalc.DiscountSum;
-            meterDetailCreateDto.Consumption = abBahaCalc.Consumption;
-            meterDetailCreateDto.MonthlyConsumption = abBahaCalc.MonthlyConsumption;
+            meterDetailCreateDto.SumItemsBeforeDiscount = abBahaCalc?.SumItemsBeforeDiscount ?? 0;
+            meterDetailCreateDto.DiscountSum = abBahaCalc?.DiscountSum ?? 0;
+            meterDetailCreateDto.Consumption = abBahaCalc?.Consumption ?? 0;
+            meterDetailCreateDto.MonthlyConsumption = abBahaCalc?.MonthlyConsumption ?? 0;
 
             meterDetailCreateDto.Barge = 0;
             meterDetailCreateDto.PriNo = meterDetailCreateDto.PreviousNumber;

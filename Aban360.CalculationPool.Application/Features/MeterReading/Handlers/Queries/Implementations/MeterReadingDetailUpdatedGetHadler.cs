@@ -35,19 +35,14 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         public async Task<ReportOutput<MeterReadingDetailUpdatedHeaderOutptuDto, MeterReadingDetailUpdatedDataOutputDto>> Handle(MeterReadingDetailUpdatedInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await Validate(inputDto, appUser, cancellationToken);
-            IEnumerable<MeterReadingDetailUpdatedDataOutputDto> data = await GetData(inputDto);
-            MeterReadingDetailUpdatedHeaderOutptuDto header = new()
-            {
-                RecordCount = data?.Count() ?? 0,
-                Title = _title
-            };
-
-            return new ReportOutput<MeterReadingDetailUpdatedHeaderOutptuDto, MeterReadingDetailUpdatedDataOutputDto>(_title, header, data);
-        }
-        private async Task<IEnumerable<MeterReadingDetailUpdatedDataOutputDto>> GetData(MeterReadingDetailUpdatedInputDto inputDto)
-        {
             IEnumerable<MeterReadingDetailUpdatedDataOutputDto> data = await _meterReadingDetailQueryService.GetUpdated(inputDto);
+            IEnumerable<MeterReadingDetailUpdatedDataOutputDto> finalyData = SetColour(data);
+            MeterReadingDetailUpdatedHeaderOutptuDto header = new(finalyData?.Count() ?? 0, _title);
 
+            return new ReportOutput<MeterReadingDetailUpdatedHeaderOutptuDto, MeterReadingDetailUpdatedDataOutputDto>(_title, header, finalyData);
+        }
+        private IEnumerable<MeterReadingDetailUpdatedDataOutputDto> SetColour(IEnumerable<MeterReadingDetailUpdatedDataOutputDto> data)
+        {
             bool isColour = false;
             string? tempBillId = null;
             foreach (var item in data)

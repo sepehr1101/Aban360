@@ -269,16 +269,17 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                             		sh_ghabs1 BillId,
                             		date_bed,
                             		Rn=Row_Number() Over(Partition By radif Order By date_bed Desc)
-                            	From [{dbName}].dbo.bed_bes	
+                            	From [{dbName}].dbo.bed_bes
+                                Where town=@zoneId
                             )
-                            Select 	b.BillId
+                            Select b.BillId
                             From Cte b
                             Inner Join #tempInput t
-                            	On t.InputBillId Collate Arabic_CI_AS=b.BillId	Collate Arabic_CI_AS
-                            Where CustomerWarehouse.dbo.PersianToMiladi(t.InputDateJalali) <
-                            DATEADD(DAY,+5,CustomerWarehouse.dbo.PersianToMiladi(b.date_bed))
+                            	On t.InputBillId Collate Arabic_CI_AS = b.BillId Collate Arabic_CI_AS
+                            Where 
+                                CustomerWarehouse.dbo.PersianToMiladi(t.InputDateJalali) < DATEADD(DAY,+5,CustomerWarehouse.dbo.PersianToMiladi(b.date_bed))
                             Order By b.date_bed Desc";
-            var result = await connection.QueryAsync<string>(query);
+            var result = await connection.QueryAsync<string>(query, new { zoneId});
             return result;
         }
         public async Task<BedBesItemsOutputDto> GetLatestByCustomerNumber(ZoneIdAndCustomerNumber input)

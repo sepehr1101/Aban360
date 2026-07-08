@@ -15,7 +15,6 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
@@ -37,7 +36,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IMeterFlowQueryService _meterFlowQueryService;
         private readonly IBedBesQueryService _bedBesQueryService;
-        private readonly IOldTariffEngine _oldTariffEngine;
         private readonly IVariabService _variabService;
         private readonly ICounterStateQueryService _counterStateQueryService;
         private readonly IT51QueryService _t51QueryService;
@@ -56,7 +54,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             ICommonMemberQueryService commonMemberQueryService,
             IMeterFlowQueryService meterFlowQueryService,
             IBedBesQueryService bedBesQueryService,
-            IOldTariffEngine oldTariffEngine,
             IVariabService variabService,
             ICounterStateQueryService counterStateQueryService,
             IT51QueryService t51QueryService,
@@ -83,9 +80,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
             _bedBesQueryService = bedBesQueryService;
             _bedBesQueryService.NotNull(nameof(bedBesQueryService));
-
-            _oldTariffEngine = oldTariffEngine;
-            _oldTariffEngine.NotNull(nameof(oldTariffEngine));
 
             _variabService = variabService;
             _variabService.NotNull(nameof(variabService));
@@ -122,6 +116,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
             var (warningMessageForDuplicateBills, duplicateBillIds) = await CheckDuplicateBill(bedBesBatch);
             ICollection<BedBesCreateDto> bedBesBatchWithoutDuplicate = bedBesBatch.Where(s => !duplicateBillIds.Contains(s.ShGhabs1)).ToList();
+            if ((bedBesBatchWithoutDuplicate?.Count() ?? 0) <= 0)
+            {
+                throw new ReadingException(ExceptionLiterals.NotFoundBillsToConfirm);
+            }
             ICollection<KasrHaDto> kasrhasBatchWithoutDuplicate = kasrHaBatch.Where(s => !duplicateBillIds.Contains(s.ShGhabs)).ToList();
             ICollection<BillInsertDto> billsBatch = await GetBillsInsertDto(bedBesBatchWithoutDuplicate, kasrHaBatch);
             ICollection<MembersDebtAmountUpdateDto> memberDebtAmountBatch = bedBesBatchWithoutDuplicate.Select(b => new MembersDebtAmountUpdateDto((int)b.Town, (int)b.Radif, b.ShGhabs1, (long)b.Pard)).ToList();
@@ -171,7 +169,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 FileName = meterFlow.FileName,
                 FromReadingNumber = meterFlow.FromReadingNumber,
                 ToReadingNumber = meterFlow.ToReadingNumber,
-                PrimaryCount= meterFlow.PrimaryCount,
+                PrimaryCount = meterFlow.PrimaryCount,
                 InsertByUserId = appUser.UserId,
                 InsertDateTime = DateTime.Now,
                 Description = meterFlow.Description
@@ -195,7 +193,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await bedBesCreateService.InsertByBulk(BedBesBatch, dbName);
-                    await kasrHaCommandService.InsertByBulk(kasrHaBatch, dbName);
+                    if ((kasrHaBatch?.Count() ?? 0) > 0)
+                    {
+                        await kasrHaCommandService.InsertByBulk(kasrHaBatch, dbName);
+                    }
                     //await billCommandService.InsertByBulk(billsBatch);
                     //await membersCommandService.UpdateBedbes(memberDebtAmountBatch, dbName);//todo:not found any record in atlas.members
                     //await contorCommandService.Update(contorsUpdateBatch, dbName, false);
@@ -361,7 +362,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber((int)b.Town, (int)b.Radif));
                 KasrHaDto? discountInfo = kasrHa.Where(k => k.Radif == b.Radif && k.Town == b.Town).FirstOrDefault();
                 bool isVillageId = (int)b.Town > 140000;
-
 
                 BillInsertDto newBill = new()
                 {

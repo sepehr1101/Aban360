@@ -6,6 +6,7 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
 using DotNetDBF;
 using FluentValidation;
@@ -60,26 +61,32 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             ICollection<MeterReadingFileDetail> meterReadingFileDetail = new List<MeterReadingFileDetail>();
 
             FileStream stream = File.OpenRead(filePath);
-            DBFReader reader = new DBFReader(stream);
-            object[] rowObjects;
-
-            while ((rowObjects = reader.NextRecord()) != null)
+            try
             {
-                //radif=0 eshterak=1 pridate=2 currentday=3 prinu=4 currentnu=5 codvas-counterstate=6 mamorcode=7 town=13
-                int customerNumber = (int)(decimal)rowObjects[0];
-                string readingNumber = (string)rowObjects[1];
-                string previousDay = (string)rowObjects[2];
-                string currentDay = (string)rowObjects[3];
-                int previousNumber = (int)(decimal)rowObjects[4];
-                int currentNumber = (int)(decimal)rowObjects[5];
-                short counterStateCode = (short)(decimal)rowObjects[6];
-                int agentCode = (int)(decimal)rowObjects[7];
-                int zoneId = (int)(decimal)rowObjects[13];
+                DBFReader reader = new DBFReader(stream);
+                object[] rowObjects;
 
-                MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
-                meterReadingFileDetail.Add(meterDetail);
+                while ((rowObjects = reader.NextRecord()) != null)
+                {
+                    //radif=0 eshterak=1 pridate=2 currentday=3 prinu=4 currentnu=5 codvas-counterstate=6 mamorcode=7 town=13
+                    int customerNumber = (int)(decimal)rowObjects[0];
+                    string readingNumber = (string)rowObjects[1];
+                    string previousDay = (string)rowObjects[2];
+                    string currentDay = (string)rowObjects[3];
+                    int previousNumber = (int)(decimal)rowObjects[4];
+                    int currentNumber = (int)(decimal)rowObjects[5];
+                    short counterStateCode = (short)(decimal)rowObjects[6];
+                    int agentCode = (int)(decimal)rowObjects[7];
+                    int zoneId = (int)(decimal)rowObjects[13];
+
+                    MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
+                    meterReadingFileDetail.Add(meterDetail);
+                }
             }
-
+            catch
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidReadingFile);
+            }
             return meterReadingFileDetail;
         }
         private async Task InputValidate(MeterReadingFileCreateDto input, CancellationToken cancellationToken)

@@ -17,11 +17,11 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
         }
 
         [HttpPost, HttpGet]
-        [Route("all")]
+        [Route("all/{isReturun}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<DiscountTypeGetDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll(bool isReturun, CancellationToken cancellationToken)
         {
-            ICollection<DiscountTypeGetDto> discountTypes = await _discountTypeGetAllHandler.Handle(cancellationToken);
+            ICollection<DiscountTypeGetDto> discountTypes = await _discountTypeGetAllHandler.Handle(isReturun, cancellationToken);
             return Ok(discountTypes);
         }
     }

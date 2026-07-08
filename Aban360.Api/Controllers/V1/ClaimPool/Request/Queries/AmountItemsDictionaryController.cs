@@ -12,16 +12,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         private readonly IServiceGroupGetAllHandler _serviceGroupGetAllHandler;
         public AmountItemsDictionaryController(IServiceGroupGetAllHandler serviceGroupGetAllHandler)
         {
-            _serviceGroupGetAllHandler= serviceGroupGetAllHandler;
+            _serviceGroupGetAllHandler = serviceGroupGetAllHandler;
             _serviceGroupGetAllHandler.NotNull(nameof(serviceGroupGetAllHandler));
         }
 
         [HttpGet]
-        [Route("dictionary")]
+        [Route("dictionary/{isReturn}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetDictionary(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetDictionary(bool isReturn, CancellationToken cancellationToken)
         {
-            IEnumerable<NumericDictionary> result = await _serviceGroupGetAllHandler.Handle(cancellationToken);
+            IEnumerable<NumericDictionary> result = await _serviceGroupGetAllHandler.Handle(isReturn, cancellationToken);
             return Ok(result);
         }
     }

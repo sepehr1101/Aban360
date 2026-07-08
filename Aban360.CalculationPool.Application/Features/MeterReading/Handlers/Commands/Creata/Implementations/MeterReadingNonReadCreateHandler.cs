@@ -30,7 +30,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IValidator<MeterReadingNonReadInputDto> _validator;
         private string _reportTitle = ReportLiterals.MeterReadingNonReadCreate;
         private int _agentCode = 0;
-        private short _nonReadCounterStateId = 8;//todo:?????
+        private short _nonReadCounterStateId = 8;
         private int _maxDayCondition = -15;
         public MeterReadingNonReadCreateHandler(
             IMeterReadingCreateBaseHandler meterReadingCreateBaseHandler,
@@ -80,7 +80,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             string fromReadingNumber = latestBills?.Min(m => m.ReadingNumber) ?? string.Empty;
             string toReadingNumber = latestBills?.Max(m => m.ReadingNumber) ?? string.Empty;
             MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, fileName, input.ZoneId, fromReadingNumber, toReadingNumber, latestBills?.Count() ??0, appUser.UserId, string.Empty);
-            IEnumerable<ZoneIdAndCustomerNumber> customersByInvalidPreviousBedBes = new List<ZoneIdAndCustomerNumber>();
             CustomersInfoGetDto customersInfo;
             int meterFlowId = 0;
 

@@ -12,5 +12,6 @@ namespace Aban360.CalculationPool.Domain.Features.ServiceLink
         public string ReportDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
         public string Title { get; set; }
         public int RecordCount { get; set; }
+        public long Amount { get; set; }
     }
 }

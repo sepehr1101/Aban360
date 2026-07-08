@@ -60,13 +60,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         {
             ICollection<MeterReadingFileDetail> meterReadingFileDetail = new List<MeterReadingFileDetail>();
             var rows = Excel.MiniExcel.Query(filePath, useHeaderRow: false, sheetName: ExceptionLiterals.Page(1));
-
-            foreach (var item in rows.Skip(1))
+            try
             {
-                var row = (IDictionary<string, object>)item;
-
-                try
+                foreach (var item in rows.Skip(1))
                 {
+                    var row = (IDictionary<string, object>)item;
+
                     //0:CurrentNumber 1:CurretnDate 2:CurrentCounterState 3:AgentCode 4:ZoneId 5:ZoneTitle
                     //6:CustomerNumber 7:BillId 8:ReadingNumber 9:PriNumber 10:PriDate 
                     int customerNumber = Convert.ToInt32(row.ElementAt(6).Value);
@@ -82,12 +81,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
                     meterReadingFileDetail.Add(meterDetail);
                 }
-                catch
-                {
-                    throw new ReadingException(ExceptionLiterals.NotNull);
-                }
             }
-
+            catch
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidReadingFile);
+            }
             return meterReadingFileDetail;
         }
         private async Task InputValidate(MeterReadingExcelFileCreateDto input, CancellationToken cancellationToken)
