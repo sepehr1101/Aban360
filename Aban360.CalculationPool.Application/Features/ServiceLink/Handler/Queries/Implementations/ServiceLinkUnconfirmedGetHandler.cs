@@ -56,6 +56,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
                 ZoneTitle = memberInfo.ZoneTitle,
                 CustomerNumber = memberInfo.CustomerNumber,
                 BillId = billId,
+                FullName = memberInfo.FullName,
                 RecordCount = KartsData?.Count() ?? 0,
                 Title = _title
             };

@@ -1,10 +1,13 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.SystemPool.Application.Features.Logging.Handlers.Commands.Contracts;
 using Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Conracts;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Input;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Output;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
 {
@@ -14,6 +17,7 @@ namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
         private readonly IAssessmentLogSaveHandler _assessmentLogSaveHandler;
         private readonly IAssessmentLogGetAllHandler _assessmentGetAllHandler;
         private readonly IAssessmentLogGetByFileNameHandler _assessmentLogGetByFileNameHandler;
+        private string _folderPath = @"AppData\AssessmentLogs";
         public AssessmentLogController(
             IAssessmentLogSaveHandler assessmentLogSaveHandler,
             IAssessmentLogGetAllHandler assessmentGetAllHandler,
@@ -50,10 +54,18 @@ namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
         [Route("get/{fileName}")]
         [HttpPost, HttpGet]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentLogFileGetDto>), StatusCodes.Status200OK)]
-        public IActionResult Get(string fileName, CancellationToken cancellation)
+        public FileResult Get(string fileName, CancellationToken cancellation)
         {
-            AssessmentLogFileGetDto result = _assessmentLogGetByFileNameHandler.Handle(fileName, cancellation);
-            return Ok(result);
+            string fullPath = Path.Combine(_folderPath, fileName);
+            if (!System.IO.File.Exists(fullPath))
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.NotFoundFile);
+            }
+            FileStream fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            return File(fileStream, "text/plain", fileName, enableRangeProcessing: true);
+
+            //AssessmentLogFileGetDto result = _assessmentLogGetByFileNameHandler.Handle(fileName, cancellation);
+            //return Ok(result);
         }
     }
 }
