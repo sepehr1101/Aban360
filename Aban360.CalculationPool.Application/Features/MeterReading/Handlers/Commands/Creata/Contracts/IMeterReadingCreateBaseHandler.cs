@@ -15,7 +15,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         Task ExecSql(ICollection<MeterReadingDetailCreateDto> readingDetailsCreate, FileCreateDto fileInfo, IAppUser appUser);
         ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> GetReturnData(IEnumerable<MeterReadingDetailCreateDto> data, string title);
         Task CheckDuplicateFile(string fileName, CancellationToken cancellationToken);
-        MeterFlowCreateDto GetMeterFlowCreateDto(MeterFlowStepEnum step, string fileName, int zoneId, string fromReadingNumber, string toReadingNumber, Guid userId, string description);
+        MeterFlowCreateDto GetMeterFlowCreateDto(MeterFlowStepEnum step, string fileName, int zoneId, string fromReadingNumber, string toReadingNumber, int primaryCount, Guid userId, string description);
         MeterReadingFileDetail CreateMeterReading(int zoneId, int customerNumber, string readingNumber, int agentCode, short currentCounterStateCode, string previousDateJalali, string currentDateJalali, int previousNumber, int currentNumber, Guid userId);
 
     }

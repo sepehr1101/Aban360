@@ -31,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Implementa
                     From [Aban360].ReportPool.ServerReports s
                     Where 
                         s.UserId=@userId  AND
-						s.CompletionDateTime >= DATEADD(DAY, -@threshold, GETDATE())";
+						s.InsertDateTime >= DATEADD(DAY, -@threshold, GETDATE())";
         }
     }
 }

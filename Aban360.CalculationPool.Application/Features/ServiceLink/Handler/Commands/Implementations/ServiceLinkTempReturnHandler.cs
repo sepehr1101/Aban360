@@ -26,7 +26,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         const int _manualSerial = 10000;
         const int _operator = 666;
         const int _kartTypeId = 2;
-        const int _discountDescriptionCode = 14;
+        const int _noDiscountTypeId = 0;
 
         public ServiceLinkTempReturnHandler(
             ICommonZoneService commonZoneService,
@@ -89,9 +89,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         }
         private KartInsertDto GetKartInsertDto(ServiceLinkTempReturnInputDto input, MemberInfoGetDto memberInfo, int barge)
         {
-            bool hasDiscountAmount = _discountDescriptionCode == input.DescriptionCode;
-            long amount = hasDiscountAmount ? 0 : input.Amount;
-            long discountAmount = hasDiscountAmount ? input.Amount : 0;
+            bool hasDiscount = input.DiscountTypeId == _noDiscountTypeId ? false : true;
 
             return new KartInsertDto()
             {
@@ -103,10 +101,10 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 Barge = barge,
                 CurrentDateJalali = DateTime.Now.ToShortPersianDateString(),
                 DueDateJalali = DateTime.Now.AddMonths(1).ToShortPersianDateString(),
-                DiscountTypeId = input.DiscountTypeId,
-                FinalAmount = input.Amount,// amount,
-                DiscountAmount = 0,//discountAmount,
-                PardN = input.Amount,//amount,
+                DiscountTypeId = hasDiscount ? input.DiscountTypeId : input.DescriptionCode,
+                FinalAmount = input.Amount,
+                DiscountAmount = 0,
+                PardN = input.Amount,
                 PardG = 0,
                 Sum = input.Amount,
                 AmountItemId = input.AmountItemId,//From T100
