@@ -42,6 +42,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
             await _commonZoneQueryServcice.IsUserInZone(appUser, memberInfo.ZoneId);
 
+            long amount = 0;
             IEnumerable<NumericDictionary> descriptionsInfo = _serviceLinkReturnHandler.ReturnCodes();
             IEnumerable<ServiceLinkUnconfirmedDataOutputDto> KartsData = await _kartQueryService.GetTodayInfoByCustomerNumber(memberInfo.CustomerNumber, memberInfo.ZoneId);
             KartsData.ForEach(k =>
@@ -49,6 +50,9 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
                 NumericDictionary? descriptionInfo = descriptionsInfo.Where(d => d.Id == k.DescriptionCode).FirstOrDefault();
                 k.DescriptionCode = descriptionInfo?.Id ?? 0;
                 k.DescriptionTitle = descriptionInfo?.Title ?? string.Empty;
+
+                long localAmount = k.Type == 4 ? (k.Amount) : (k.Amount * -1);
+                amount += localAmount;
             });
             ServiceLinkUnconfirmedHeaderOutputDto header = new()
             {
@@ -56,6 +60,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
                 ZoneTitle = memberInfo.ZoneTitle,
                 CustomerNumber = memberInfo.CustomerNumber,
                 BillId = billId,
+                FullName = memberInfo.FullName,
                 RecordCount = KartsData?.Count() ?? 0,
                 Title = _title
             };

@@ -2,7 +2,6 @@
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
-using Aban360.Common.Db.Exceptions;
 using Aban360.Common.Exceptions;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -26,9 +25,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             }
             return result;
         }
-        public async Task<IEnumerable<NumericDictionary>> Get()
+        public async Task<IEnumerable<NumericDictionary>> Get(bool isReturn)
         {
-            string query = GetQuery();
+            string query = GetQuery(isReturn);
             IEnumerable<NumericDictionary> result = await _sqlReportConnection.QueryAsync<NumericDictionary>(query, null);
             return result;
         }
@@ -40,12 +39,19 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     From Db70.dbo.T100
                     Where C0=@id";
         }
-        private string GetQuery()
+        private string GetQuery(bool isReturn)
         {
-            return @"Select 
-                    	C0 Id,
-                    	C1 Title
-                    From Db70.dbo.T100";
+            string db70Query = @"Select 
+                                	C0 Id,
+                                	C1 Title
+                               From Db70.dbo.T100";
+
+            string abAndFazelabQuery = @"Select 
+                                           	Id,
+                                           	Title
+                                          From AbAndFazelab.dbo.T100";
+
+            return isReturn ? abAndFazelabQuery : db70Query;
         }
     }
 }

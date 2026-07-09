@@ -9,15 +9,9 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
     [Route("v1/meter-flow")]
     public class MeterFlowAmountConfirmedController : BaseController
     {
-        private readonly IAmountCheckedHandler _amountCheckedHandler;
         private readonly ICalculationConfirmationHandler _confirmationHandler;
-        public MeterFlowAmountConfirmedController(
-            IAmountCheckedHandler amountCheckedHandler,
-            ICalculationConfirmationHandler confirmationHandler)
+        public MeterFlowAmountConfirmedController(ICalculationConfirmationHandler confirmationHandler)
         {
-            _amountCheckedHandler = amountCheckedHandler;
-            _amountCheckedHandler.NotNull(nameof(amountCheckedHandler));
-
             _confirmationHandler = confirmationHandler;
             _confirmationHandler.NotNull(nameof(confirmationHandler));
         }

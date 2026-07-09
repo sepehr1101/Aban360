@@ -11,7 +11,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
     {
         private readonly IMeterFlowQueryService _meterFlowService;
         private readonly ICommonZoneService _commonZoneService;
-        private const int _expirePercent = 50;
         public CartableHandler(
             IMeterFlowQueryService meterFlowService,
             ICommonZoneService commonZoneService)

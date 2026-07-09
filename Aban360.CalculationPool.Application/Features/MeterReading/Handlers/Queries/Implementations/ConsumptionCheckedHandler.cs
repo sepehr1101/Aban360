@@ -38,12 +38,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         public async Task<MeterReadingCheckedOutputDto> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
             await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.Calculated, cancellationToken);
-            int newMeterFlowId = await CreateConsumpitonCheckedFlow(latestFlowId, appUser);
-
-            return GetResult(newMeterFlowId);
-        }
-        private async Task<int> CreateConsumpitonCheckedFlow(int latestFlowId, IAppUser appUser)
-        {
             MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
             MeterFlowGetDto meterflow = await _meterFlowQueryService.Get(latestFlowId);//todo: Latest check
             MeterFlowCreateDto newMeterFlow = new()
@@ -59,6 +53,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 Description = meterflow.Description
             };
 
+            int newMeterFlowId = await ExecSql(meterFlowUpdate, newMeterFlow, latestFlowId, appUser);
+
+            return new MeterReadingCheckedOutputDto(newMeterFlowId, MeterFlowStepEnum.CalculationConfirmed, MessageLiterals.SuccessfullOperation);
+        }
+        private async Task<int> ExecSql(MeterFlowUpdateDto meterFlowUpdate, MeterFlowCreateDto newMeterFlow, int latestFlowId, IAppUser appUser)
+        {
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -75,11 +75,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                     return newMeterFlowId;
                 }
             }
-        }
-
-        private MeterReadingCheckedOutputDto GetResult(int flowId)
-        {
-            return new MeterReadingCheckedOutputDto(flowId, MeterFlowStepEnum.CalculationConfirmed, MessageLiterals.SuccessfullOperation);
         }
     }
 }

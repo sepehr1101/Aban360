@@ -2,7 +2,9 @@
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
@@ -37,7 +39,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 CustomerCount = data?.Count() ?? 0,
                 Title = _title,
             };
-
+            if ((data?.Count() ?? 0) <= 0)
+            {
+                throw new ReadingException(ExceptionLiterals.NotFoundAnyData);
+            }
             return new ReportOutput<MeterReadingExcelFileDownloadHeaderOutputDto, MeterReadingExcelFileDownloadDateOutputDto>(_title, header, data);
         }
     }

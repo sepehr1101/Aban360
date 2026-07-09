@@ -14,9 +14,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             _t100QueryService.NotNull(nameof(t100QueryService));
         }
 
-        public async Task<IEnumerable<NumericDictionary>> Handle(CancellationToken cancellationToken)
+        public async Task<IEnumerable<NumericDictionary>> Handle(bool isReturn,CancellationToken cancellationToken)
         {
-            return await _t100QueryService.Get();
+            return await _t100QueryService.Get(isReturn);
         }
     }
 }

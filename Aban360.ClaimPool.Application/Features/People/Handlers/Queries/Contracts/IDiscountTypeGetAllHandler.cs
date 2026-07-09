@@ -4,6 +4,6 @@ namespace Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contrac
 {
     public interface IDiscountTypeGetAllHandler
     {
-        Task<ICollection<DiscountTypeGetDto>> Handle(CancellationToken cancellationToken);
+        Task<ICollection<DiscountTypeGetDto>> Handle(bool isReturn, CancellationToken cancellationToken);
     }
 }

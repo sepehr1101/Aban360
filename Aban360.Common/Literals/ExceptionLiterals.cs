@@ -141,6 +141,7 @@
         public static string UnSuccessfulToSave(string tableName) => $"ذخیره در جدول {tableName} با خطا روبرو شد";
 
         //Reading
+        public static string InvalidReadingFile => "خطا در پیمایش فایل";
         public static string InvalidDuplicateFileName(string date) => $"نام فایل تکراری است. این فایل در تاریخ {date} ارسال شده";
         public static string InvalidDuplicateStepFlow(string date) => $"این مرحله در تاریخ {date} سپری شده است وامکان انجام مجدد آن وجود ندارد. ";
         public static string NonAccessStepFlow => "به این مرحله دسترسی ندارید.";
@@ -163,6 +164,7 @@
         public static string InvalidUpdateMeterReadingRemoved => "خطا در ویرایش قبض حذف شده";
         public static string InvalidRemoveFile => "خطا در حذف فایل";
         public static string InvalidRemoveFinishedFile => "امکان حذف فایل تایید نهایی شده وجود ندارد.";
+        public static string NotFoundBillsToConfirm => "قبضی برای تایید یافت نشد.";
 
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";
@@ -274,6 +276,7 @@
         public static string InvalidRemoveZaribC => " خطا در حذف ظریبC ";
         public static string InvalidInsertZarib => "خطا در ایجاد ظریب";
         public static string InvalidUpdateZarib => " خطا در ویرایش ظریب ";
+        public static string InvalidDuplicateUsageGroup => "خطا در گروه کاربری تکراری";
 
     }
 }

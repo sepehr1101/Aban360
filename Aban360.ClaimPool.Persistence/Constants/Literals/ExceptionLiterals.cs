@@ -31,6 +31,7 @@
         public static string InvalidUpdateMoshtrakInstallment => "خطا در ویرایش اطلاعات اقساط مشترک";
         public static string InvalidInsertQueue => "خطا در ذخیره پیامک";
         public static string InvalidInsertAssessmentOff => "خطا در ثبت مرخصی";
+        public static string NotFoundId => "شناسه وارد شده یافت نشد";
 
         public static string InvalidZoneTitle => "کد ناحیه یافت نشد";
         public static string InvalidMeterDiameterTitle => "کد قطر انشعاب یافت نشد";
@@ -53,5 +54,15 @@
 
         public static string NotFoundT100 => "کد اقلام ارسالی یافت نشد.";
         public static string NotFoundRequestBillDetail => "قبض برگشتی یافت نشد.";
+
+        public static string InvalidInsertUsageGroup1 => "خطا در ذخیره گروه1 کاربری";
+        public static string InvalidUpdateUsageGroup1 => "خطا در ویرایش گروه1 کاربری";
+        public static string InvalidRemoveUsageGroup1 => "خطا در حذف گروه1 کاربری";
+        public static string InvalidInsertUsageGroup2 => "خطا در ذخیره گروه2 کاربری";
+        public static string InvalidUpdateUsageGroup2 => "خطا در ویرایش گروه2 کاربری";
+        public static string InvalidRemoveUsageGroup2 => "خطا در حذف گروه2 کاربری";
+        public static string InvalidInsertUsageGroup3 => "خطا در ذخیره گروه3 کاربری";
+        public static string InvalidUpdateUsageGroup3 => "خطا در ویرایش گروه3 کاربری";
+        public static string InvalidRemoveUsageGroup3 => "خطا در حذف گروه3 کاربری";
     }
 }

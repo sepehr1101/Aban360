@@ -4,6 +4,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contrac
 {
     public interface IServiceGroupGetAllHandler
     {
-        Task<IEnumerable<NumericDictionary>> Handle(CancellationToken cancellationToken);
+        Task<IEnumerable<NumericDictionary>> Handle(bool isReturn, CancellationToken cancellationToken);
     }
 }

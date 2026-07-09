@@ -29,7 +29,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             IConfiguration configuration)
             : base(configuration)
         {
-
             _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
             _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
 

@@ -17,11 +17,11 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People.Queries
         }
 
         [HttpPost, HttpGet]
-        [Route("all")]
+        [Route("all/{isReturn}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<DiscountTypeGetDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll(bool isReturn, CancellationToken cancellationToken)
         {
-            var discountTypes = await _discountTypeGetAllHandler.Handle( cancellationToken);
+            var discountTypes = await _discountTypeGetAllHandler.Handle(isReturn, cancellationToken);
             return Ok(discountTypes);
         }
     }
