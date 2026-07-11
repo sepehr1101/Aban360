@@ -16,7 +16,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
             }
             if (previousDate.Value > DateOnly.FromDateTime(DateTime.Now.AddDays(-thresholdDay)))
             {
-                throw new TariffCalcException(ExceptionLiterals.InvalidPreviousDateInvoice(thresholdDay));
+                //throw new TariffCalcException(ExceptionLiterals.InvalidPreviousDateInvoice(thresholdDay));
             }
         }
 

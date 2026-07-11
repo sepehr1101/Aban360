@@ -74,7 +74,8 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
             {
                 throw new BaseException("خطای پارامتر، شماره پیگیری و شناسه قبض هر دو بدون مقدار هستند");
             }
-            name = name + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+            int dotIndex= name.LastIndexOf('.');
+            name = dotIndex > 0 ? name + name.Insert(dotIndex, DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")) : name;
             int documentTypeValue = await _matadataService.GetFileValue(documentTypeId);
             var (folderName, filePath) = GetFoldernameAndPath(billId, trackNumber, name);
             string folderUuid = await _createFolderHandler.Handle(folderName, cancellationToken);
