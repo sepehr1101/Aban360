@@ -10,6 +10,8 @@
         public string? Vaj { get; set; }
         public string? AllowedFormula { get; set; }
         public string? DisallowedFormula { get; set; }
+        public string? AllowedSewageFormula { get; set; }
+        public string? DisallowedSewageFormula { get; set; }
         public string? CalcVaj { get; set; }
         public int Cod { get; set; }
         public string? UsageTitle { get; set; }

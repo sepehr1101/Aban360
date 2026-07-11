@@ -22,7 +22,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
             if (!string.IsNullOrWhiteSpace(result.ConCompanyPersonnel))
             {
                 IEnumerable<ConCompanyPersonnelDetailOutputDto> personnelInfo = JsonSerializer.Deserialize<IEnumerable<ConCompanyPersonnelDetailOutputDto>>(result.ConCompanyPersonnel);
-                return personnelInfo;
+                return personnelInfo.Where(p => p.RemovedBy is null);
             }
 
             throw new InvalidTrackingException(ExceptionLiterals.InvalidConCompanyPersonnelDeserialize);

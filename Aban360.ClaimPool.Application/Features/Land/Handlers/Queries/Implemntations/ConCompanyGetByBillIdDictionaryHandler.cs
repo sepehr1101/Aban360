@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
         public async Task<IEnumerable<NumericDictionary>> Handle(string billId, CancellationToken cancellationToken)
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _memberQueryService.Get(billId);
-            IEnumerable<ConCompanyGetDto> conCompanyInfo = await _conCompanyQueryService.GetByZoneId(zoneIdAndCustomerNumber.ZoneId);
+            IEnumerable<ConCompanyGetDto> conCompanyInfo = await _conCompanyQueryService.GetValidByZoneId(zoneIdAndCustomerNumber.ZoneId);
             IEnumerable<NumericDictionary> dictionary = conCompanyInfo.Select(c => new NumericDictionary(c.Id, c.CompanyName));
             return dictionary;
         }

@@ -49,7 +49,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 						n.tabsare2 AS Tabsare2,
 						n.zaribfasl AS ZaribFasl,
 						n.zarib_d AS ZaribBodje,
-                        n.vaj_faz AS VajFaz
+                        n.vaj_faz AS VajFaz,
+                        n.AllowedSewageFormula,
+	                    n.DisallowedSewageFormula
                 	From [OldCalc].dbo.nerkh_{nerkh} n
                     Left Join [Db70].dbo.T41 t41
 						ON t41.C0=n.cod
@@ -66,6 +68,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 		n.vaj AS Vaj,
                         n.AllowedFormula,
                         n.DisallowedFormula,
+                        n.AllowedSewageFormula,
+	                    n.DisallowedSewageFormula,
                 		n.cod AS Cod,
 						t41.C1 UsageTitle,
                 		n.olgo AS Olgo,

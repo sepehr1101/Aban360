@@ -5,7 +5,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts
     public interface IConCompanyQueryService
     {
         Task<IEnumerable<ConCompanyGetDto>> Get();
-        Task<IEnumerable<ConCompanyGetDto>> GetByZoneId(int zoneId);
+        Task<IEnumerable<ConCompanyGetDto>> GetValidByZoneId(int zoneId);
         Task<ConCompanyGetDto> Get(int id);
         Task<ConCompanyPersonnelGetDto> GetPersonnel(int id);
         Task<IEnumerable<ConCompanyPersonnelGetDto>> GetPersonnel();
