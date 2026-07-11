@@ -11,6 +11,10 @@ namespace Aban360.OldCalcPool.Application.Features.Base
         {
             try
             {
+                if(string.IsNullOrWhiteSpace(formula) || formula.Trim()=="0")
+                {
+                    return default(T);
+                }
                 Dictionary<string, object> propertyDictionary = GetDictionaryOfProperties(info);
                 if (dependencyDictionary is not null)
                 {

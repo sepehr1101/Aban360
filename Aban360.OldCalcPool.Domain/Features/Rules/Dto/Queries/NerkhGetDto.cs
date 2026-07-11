@@ -22,6 +22,8 @@
         public bool Tabsare2 { get; set; }
         public bool ZaribFasl { get; set; }
         public int ZaribBodje { get; set; }
+        public string? AllowedSewageFormula { get; set; }
+        public string? DisallowedSewageFormula { get; set; }
     }
     internal record LightNerkh
     {   

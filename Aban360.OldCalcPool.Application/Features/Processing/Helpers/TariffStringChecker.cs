@@ -40,6 +40,34 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             string baseDate = "1403/09/13";
             return nerkhDate2.CompareTo(baseDate) <= 0;
         }
+        internal static bool IsLt(this string dateBase, string dateToCompare)
+        {
+            DateOnly? _base = dateBase.ToGregorianDateOnly();
+            DateOnly? _compare = dateToCompare.ToGregorianDateOnly();
+            if (!_base.HasValue && !_compare.HasValue)
+            {
+                throw new BaseException(ExceptionLiterals.InvalidDate);
+            }
+
+            if (_base.Value < _compare.Value)
+                return true;
+
+            return false;
+        }
+        internal static bool IsGt(this string date1, string date2)
+        {
+            DateOnly? from = date1.ToGregorianDateOnly();
+            DateOnly? to = date2.ToGregorianDateOnly();
+            if (!from.HasValue && !to.HasValue)
+            {
+                throw new BaseException(ExceptionLiterals.InvalidDate);
+            }
+
+            if (from.Value > to.Value)
+                return true;
+
+            return false;
+        }
         internal static bool MoreOrEq(this string date1, string date2)
         {
             DateOnly? from = date1.ToGregorianDateOnly();

@@ -2,6 +2,7 @@
 using Aban360.ReportPool.Application.Features.Dms.Commands.Contracts;
 using Aban360.ReportPool.Domain.Features.Dms;
 using Aban360.ReportPool.Persistence.Features.Dms.Commands;
+using Aban360.ReportPool.Persistence.Features.Dms.Queries;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
@@ -9,6 +10,7 @@ namespace Aban360.ReportPool.Application.Features.Dms.Commands.Implementations
 {
     internal sealed class ClientDiscountInsertHandler : AbstractBaseConnection, IClientDiscountInsertHandler
     {
+        private readonly IRequestDiscountService _clientDiscountService;
         public ClientDiscountInsertHandler(IConfiguration configuration)
             : base(configuration)
         {
@@ -22,10 +24,18 @@ namespace Aban360.ReportPool.Application.Features.Dms.Commands.Implementations
                 {
                     connection.Open();
                 }
+                bool alreadyExists = await _clientDiscountService.Exists(input.CodeMeli.Trim());
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     RequestDiscountCommandService clientDiscountCommandService = new(connection, transaction);
-                    await clientDiscountCommandService.Insert(input);
+                    if (alreadyExists)
+                    {
+                        await clientDiscountCommandService.UpdateByCodeMeli(input);
+                    }
+                    else
+                    {
+                        await clientDiscountCommandService.Insert(input);
+                    }
                     transaction.Commit();
                 }
             }
