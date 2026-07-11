@@ -152,7 +152,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                     duration = consumptionPartialInfo.Duration;
                 }
                 (double, double) values = CalcFormula(nerkh, monthlyConsumption.Value, s.Value, c, (decimal)multiplier, duration, customerInfo, consumptionPartialInfo);
-                return new TariffItemResult();
+                return new TariffItemResult(values.Item1, values.Item2);
             }
         }
         public TariffItemResult CalculateDiscount(TariffItemResult fazelabCalculationResult, double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo)
