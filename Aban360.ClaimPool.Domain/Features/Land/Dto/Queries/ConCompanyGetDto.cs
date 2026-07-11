@@ -3,6 +3,8 @@
     public record ConCompanyGetDto
     {
         public int Id { get; set; }
+        public int ZoneId { get; set; }
+        public string ZoneTitle { get; set; }
         public string CompanyName { get; set; }
         public string RepresentativeName { get; set; }
         public string? CompanyNationalCode { get; set; }

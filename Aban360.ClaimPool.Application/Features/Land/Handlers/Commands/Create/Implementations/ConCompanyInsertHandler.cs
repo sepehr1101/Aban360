@@ -71,6 +71,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
         {
             return new ConCompanyInsertDto()
             {
+                ZoneId = input.ZoneId,
                 CompanyName = input.CompanyName,
                 RepresentativeName = input.RepresentativeName,
                 CompanyNationalCode = input.CompanyNationalCode,

@@ -20,6 +20,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         private readonly IConCompanyRemoveHandler _conCompanyRemoveHandler;
         private readonly IConCompanyGetHandler _conCompanyGetHandler;
         private readonly IConCompanyGetByIdHandler _conCompanyGetByIdHandler;
+        private readonly IConCompanyGetByBillIdDictionaryHandler _conCompanyGetByBillIdDictionaryHandler;
         private readonly IConCompanyPersonnelInsertHandler _conCompanyPersonnelInsertHandler;
         private readonly IConCompanyPersonnelUpdateHandler _conCompanyPersonnelUpdateHandler;
         private readonly IConCompanyPersonnelRemoveHandler _conCompanyPersonnelRemoveHandler;
@@ -32,6 +33,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             IConCompanyRemoveHandler conCompanyRemoveHandler,
             IConCompanyGetHandler conCompanyGetHandler,
             IConCompanyGetByIdHandler conCompanyGetByIdHandler,
+            IConCompanyGetByBillIdDictionaryHandler conCompanyGetByBillIdDictionaryHandler,
             IConCompanyPersonnelInsertHandler conCompanyPersonnelInsertHandler,
             IConCompanyPersonnelUpdateHandler conCompanyPersonnelUpdateHandler,
             IConCompanyPersonnelRemoveHandler conCompanyPersonnelRemoveHandler,
@@ -53,6 +55,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 
             _conCompanyGetByIdHandler = conCompanyGetByIdHandler;
             _conCompanyGetByIdHandler.NotNull(nameof(conCompanyGetByIdHandler));
+
+            _conCompanyGetByBillIdDictionaryHandler = conCompanyGetByBillIdDictionaryHandler;
+            _conCompanyGetByBillIdDictionaryHandler.NotNull(nameof(conCompanyGetByBillIdDictionaryHandler));
 
             _conCompanyPersonnelInsertHandler = conCompanyPersonnelInsertHandler;
             _conCompanyPersonnelInsertHandler.NotNull(nameof(conCompanyPersonnelInsertHandler));
@@ -125,6 +130,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         public async Task<IActionResult> GetDictionary(CancellationToken cancellationToken)
         {
             IEnumerable<NumericDictionary> result = await _conCompanyGetDictionaryHandler.Handle(cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("dictionary/{billId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetDictionaryByBillId(string billId, CancellationToken cancellationToken)
+        {
+            IEnumerable<NumericDictionary> result = await _conCompanyGetByBillIdDictionaryHandler.Handle(billId, cancellationToken);
             return Ok(result);
         }
 

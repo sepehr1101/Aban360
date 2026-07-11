@@ -3,6 +3,7 @@
     public record ConCompanyInsertDto
     {
         public string CompanyName { get; set; }
+        public int ZoneId { get; set; }
         public string RepresentativeName { get; set; }
         public string? CompanyNationalCode { get; set; }
         public string? RepresentativeNationalCode { get; set; }

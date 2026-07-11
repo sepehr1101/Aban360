@@ -64,62 +64,77 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         private string GetQueryByFromTo()
         {
             return @"Select 
-                    	Id,
-                    	town as ZoneId,
-                    	olgo,
-                    	FromDate as FromDateJalali,
-                    	ToDate as ToDateJalali
-                    From OldCalc.dbo.S
+                    	s.Id,
+                    	s.town as ZoneId,
+						t51.C2 ZoneTitle,
+                    	s.olgo,
+                    	s.FromDate as FromDateJalali,
+                    	s.ToDate as ToDateJalali
+                    From OldCalc.dbo.S s
+					Left Join [Db70].dbo.T51 t51
+						ON t51.C0=s.town
                     Where 
-                    	FromDate>=@fromDate And
-                    	ToDate<=@toDate ";
+                    	s.FromDate>=@fromDate And
+                    	s.ToDate<=@toDate ";
         }
         private string GetQueryByFromToZoneId()
         {
             return @"Select TOP 1
-                    	Id,
-                    	town as ZoneId,
-                    	olgo,
-                    	FromDate as FromDateJalali,
-                    	ToDate as ToDateJalali
-                    From OldCalc.dbo.S
+                    	s.Id,
+                    	s.town as ZoneId,
+						t51.C2 ZoneTitle,
+                    	s.olgo,
+                    	s.FromDate as FromDateJalali,
+                    	s.ToDate as ToDateJalali
+                    From OldCalc.dbo.S s
+					Left Join [Db70].dbo.T51 t51
+						ON t51.C0=s.town
                     Where 
-                    	ToDate>=@toDate And
-                        Town=@zoneId
-                    Order By ToDate desc";
+                    	s.ToDate>=@toDate And
+                        s.Town=@zoneId
+                    Order By s.ToDate desc";
         }
         private string GetAllQuery()
         {
             return @"Select 
-                    	Id,
-                    	town as ZoneId,
-                    	olgo,
-                    	FromDate as FromDateJalali,
-                    	ToDate as ToDateJalali
-                    From OldCalc.dbo.S";
+                    	s.Id,
+                    	s.town as ZoneId,
+						t51.C2 ZoneTitle,
+                    	s.olgo,
+                    	s.FromDate as FromDateJalali,
+                    	s.ToDate as ToDateJalali
+                    From OldCalc.dbo.S s
+					Left Join [Db70].dbo.T51 t51
+						ON t51.C0=s.town";
         }
         private string GetSingleQuery()
         {
             return @"Select 
-                    	Id,
-                    	town as ZoneId,
-                    	olgo,
-                    	FromDate as FromDateJalali,
-                    	ToDate as ToDateJalali
+                    	s.Id,
+                    	s.town as ZoneId,
+						t51.C2 ZoneTitle,
+                    	s.olgo,
+                    	s.FromDate as FromDateJalali,
+                    	s.ToDate as ToDateJalali
                     From OldCalc.dbo.S
-                    Where Id=@Id";
+					Left Join [Db70].dbo.T51 t51
+						ON t51.C0=s.town
+                    Where s.Id=@Id";
         }
         private string GetQueryByDate()
         {
             return @"Select 
-                    	Id,
-                    	town as ZoneId,
-                    	olgo,
-                    	FromDate as FromDateJalali,
-                    	ToDate as ToDateJalali
-                    From OldCalc.dbo.S
+                    	s.Id,
+                    	s.town as ZoneId,
+						t51.C2 ZoneTitle,
+                    	s.olgo,
+                    	s.FromDate as FromDateJalali,
+                    	s.ToDate as ToDateJalali
+                    From OldCalc.dbo.S s
+					Left Join [Db70].dbo.T51 t51
+						ON t51.C0=s.town
                     Where 
-                    	@currentDateJalali BETWEEN FromDate AND ToDate";
+                    	@currentDateJalali BETWEEN s.FromDate AND s.ToDate";
         }
     }
 }

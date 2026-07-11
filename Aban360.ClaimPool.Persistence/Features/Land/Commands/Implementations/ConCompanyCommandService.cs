@@ -81,7 +81,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         {
             return @"INSERT INTO [Db70].dbo.ConCompany 
                         (
-                            CompanyName, CompanyNationalCode, CompanyMobileNumber, CompanyAddress, CompanyPostalCode, 
+                            ZoneId, CompanyName, CompanyNationalCode, CompanyMobileNumber, CompanyAddress, CompanyPostalCode, 
                             RepresentativeName, RepresentativeNationalCode, RepresentativeFatherName, RepresentativeMobileNumber, RepresentativeAddress, 
                             RepresentativePostalCode, RepresentativeBirthDateJalali, RepresentativeBirthPlace, RepresentativeCertificateNumber,
                             ContractNumber, ContractSubject, ContractDataJalali, ContractDuration,
@@ -90,7 +90,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                         )
                     VALUES 
                         (
-                            @CompanyName, @CompanyNationalCode, @CompanyMobileNumber, @CompanyAddress, @CompanyPostalCode, 
+                            @ZoneId, @CompanyName, @CompanyNationalCode, @CompanyMobileNumber, @CompanyAddress, @CompanyPostalCode, 
                             @RepresentativeName, @RepresentativeNationalCode, @RepresentativeFatherName, @RepresentativeMobileNumber, @RepresentativeAddress, 
                             @RepresentativePostalCode, @RepresentativeBirthDateJalali, @RepresentativeBirthPlace, @RepresentativeCertificateNumber,
                             @ContractNumber, @ContractSubject, @ContractDataJalali, @ContractDuration,

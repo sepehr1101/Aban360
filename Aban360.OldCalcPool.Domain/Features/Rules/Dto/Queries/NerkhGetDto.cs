@@ -12,6 +12,7 @@
         public string? DisallowedFormula { get; set; }
         public string? CalcVaj { get; set; }
         public int Cod { get; set; }
+        public string? UsageTitle { get; set; }
         public int Olgo { get; set; }
         public string? Desc { get; set; }
         public string? OVaj { get; set; }

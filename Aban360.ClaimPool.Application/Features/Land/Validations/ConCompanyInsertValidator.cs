@@ -9,6 +9,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
     {
         public ConCompanyInsertValidator()
         {
+            RuleFor(c => c.ZoneId)
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
             RuleFor(c => c.CompanyName)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);

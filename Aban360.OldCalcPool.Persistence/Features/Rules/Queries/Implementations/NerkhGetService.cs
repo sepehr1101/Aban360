@@ -37,6 +37,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 		n.ent AS Ent,
                 		n.vaj AS Vaj,
                 		n.cod AS Cod,
+						t41.C1 UsageTitle,
                 		n.olgo AS Olgo,
                 		n.[desc] AS [Desc],
                 		n.o_vaj AS OVaj,
@@ -48,6 +49,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 						n.zarib_d AS ZaribBodje,
                         n.vaj_faz AS VajFaz
                 	From [OldCalc].dbo.nerkh_{nerkh} n
+                    Left Join [Db70].dbo.T41 t41
+						ON t41.C0=n.cod
                 	Where n.Id=@id";
         }
         private string GetNerkhGetQuery()
@@ -60,6 +63,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                 		n.ent AS Ent,
                 		n.vaj AS Vaj,
                 		n.cod AS Cod,
+						t41.C1 UsageTitle,
                 		n.olgo AS Olgo,
                 		n.[desc] AS [Desc],
                 		n.o_vaj AS OVaj,
@@ -71,6 +75,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 						n.zarib_d AS ZaribBodje,
                         n.vaj_faz AS VajFaz
                 	From [OldCalc].dbo.Nerkh n
+                    Left Join [Db70].dbo.T41 t41
+						ON t41.C0=n.cod
                 	Where n.Id=@id";
         }
     }

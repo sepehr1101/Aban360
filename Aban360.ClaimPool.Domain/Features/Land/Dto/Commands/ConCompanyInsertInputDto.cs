@@ -2,6 +2,7 @@
 {
     public record ConCompanyInsertInputDto
     {
+        public int ZoneId { get; set; }
         public string CompanyName { get; set; }
         public string RepresentativeName { get; set; }
         public string? CompanyNationalCode { get; set; }
