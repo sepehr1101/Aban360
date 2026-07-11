@@ -9,6 +9,8 @@
         public string Vaj { get; set; }
         public int Cod { get; set; }
         public int Olgo { get; set; }
+        public string? AllowedSewageFormula { get; set; }
+        public string? DisallowedSewageFormula { get; set; }
         public string Desc { get; set; }
         public string OVaj { get; set; }
         public string OVajFaz { get; set; }

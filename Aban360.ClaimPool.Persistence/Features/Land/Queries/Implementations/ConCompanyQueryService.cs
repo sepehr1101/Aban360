@@ -17,8 +17,14 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 
         public async Task<IEnumerable<ConCompanyGetDto>> Get()
         {
-            string query = GetQuery();
+            string query = GetValidQuery();
             IEnumerable<ConCompanyGetDto> result = await _sqlReportConnection.QueryAsync<ConCompanyGetDto>(query);
+            return result;
+        }
+        public async Task<IEnumerable<ConCompanyGetDto>> GetValidByZoneId(int zoneId)
+        {
+            string query = GetValidByZoneIdQuery();
+            IEnumerable<ConCompanyGetDto> result = await _sqlReportConnection.QueryAsync<ConCompanyGetDto>(query, new { zoneId });
             return result;
         }
         public async Task<ConCompanyGetDto> Get(int id)
@@ -43,7 +49,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
         }
         public async Task<IEnumerable<ConCompanyPersonnelGetDto>> GetPersonnel()
         {
-            string query = GetQuery();
+            string query = GetValidQuery();
             IEnumerable<ConCompanyPersonnelGetDto> result = await _sqlReportConnection.QueryAsync<ConCompanyPersonnelGetDto>(query);
             return result;
         }
@@ -68,71 +74,117 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             return index.Value;
         }
 
-        private string GetQuery()
+        private string GetValidQuery()
         {
             return @$"Select 
-                         Id, 
-                         CompanyName,
-                         CompanyNationalCode, 
-                         CompanyMobileNumber,
-                         CompanyAddress, 
-                         CompanyPostalCode,
-                         RepresentativePostalCode,
-                         RepresentativeName,
-                         RepresentativeNationalCode,
-                         RepresentativeFatherName,
-                         RepresentativeMobileNumber,
-                         RepresentativeAddress,
-                         RepresentativeBirthDateJalali, 
-                         RepresentativeBirthPlace,
-                         RepresentativeCertificateNumber,
-                         ContractNumber, 
-                         ContractSubject,
-                         ContractDataJalali, 
-                         ContractDuration,
-                         AdministratorName, 
-                         AdministratorMobileNumber,
-                         ConCompanyPersonnel,
-                         InsertedBy,
-                         InsertedDateTime,
-                         RemovedBy,
-                         RemovedDateTime
-                    From [Db70].dbo.ConCompany
-                    Where RemovedBy IS NULL";
+                         c.Id, 
+                         c.ZoneId,
+						 t51.C2 ZoneTitle, 
+                         c.CompanyName,
+                         c.CompanyNationalCode, 
+                         c.CompanyMobileNumber,
+                         c.CompanyAddress, 
+                         c.CompanyPostalCode,
+                         c.RepresentativePostalCode,
+                         c.RepresentativeName,
+                         c.RepresentativeNationalCode,
+                         c.RepresentativeFatherName,
+                         c.RepresentativeMobileNumber,
+                         c.RepresentativeAddress,
+                         c.RepresentativeBirthDateJalali, 
+                         c.RepresentativeBirthPlace,
+                         c.RepresentativeCertificateNumber,
+                         c.ContractNumber, 
+                         c.ContractSubject,
+                         c.ContractDataJalali, 
+                         c.ContractDuration,
+                         c.AdministratorName, 
+                         c.AdministratorMobileNumber,
+                         c.ConCompanyPersonnel,
+                         c.InsertedBy,
+                         c.InsertedDateTime,
+                         c.RemovedBy,
+                         c.RemovedDateTime
+                    From [Db70].dbo.ConCompany c
+					Left Join [Db70].dbo.T51 t51
+						ON t51.C0=c.ZoneId
+                    Where c.RemovedBy IS NULL";
+        }
+        private string GetValidByZoneIdQuery()
+        {
+            return @$"Select 
+                         c.Id, 
+                         c.ZoneId,
+						 t51.C2 ZoneTitle,
+                         c.CompanyName,
+                         c.CompanyNationalCode, 
+                         c.CompanyMobileNumber,
+                         c.CompanyAddress, 
+                         c.CompanyPostalCode,
+                         c.RepresentativePostalCode,
+                         c.RepresentativeName,
+                         c.RepresentativeNationalCode,
+                         c.RepresentativeFatherName,
+                         c.RepresentativeMobileNumber,
+                         c.RepresentativeAddress,
+                         c.RepresentativeBirthDateJalali, 
+                         c.RepresentativeBirthPlace,
+                         c.RepresentativeCertificateNumber,
+                         c.ContractNumber, 
+                         c.ContractSubject,
+                         c.ContractDataJalali, 
+                         c.ContractDuration,
+                         c.AdministratorName, 
+                         c.AdministratorMobileNumber,
+                         c.ConCompanyPersonnel,
+                         c.InsertedBy,
+                         c.InsertedDateTime,
+                         c.RemovedBy,
+                         c.RemovedDateTime
+                    From [Db70].dbo.ConCompany c
+					Left Join [Db70].dbo.T51 t51
+						ON t51.C0=c.ZoneId
+                    Where 
+                        c.ZoneId = @ZoneId AND
+                        c.RemovedBy IS NULL";
         }
         private string GetByIdQuery()
         {
             return @$"Select 
-                         Id, 
-                         CompanyName,
-                         CompanyNationalCode, 
-                         CompanyMobileNumber,
-                         CompanyAddress, 
-                         CompanyPostalCode,
-                         RepresentativePostalCode,
-                         RepresentativeName,
-                         RepresentativeNationalCode,
-                         RepresentativeFatherName,
-                         RepresentativeMobileNumber,
-                         RepresentativeAddress,
-                         RepresentativeBirthDateJalali, 
-                         RepresentativeBirthPlace,
-                         RepresentativeCertificateNumber,
-                         ContractNumber, 
-                         ContractSubject,
-                         ContractDataJalali, 
-                         ContractDuration,
-                         AdministratorName, 
-                         AdministratorMobileNumber, 
-                         ConCompanyPersonnel,
-                         InsertedBy,
-                         InsertedDateTime,
-                         RemovedBy,
-                         RemovedDateTime
-                    From [Db70].dbo.ConCompany
+                         c.Id,
+                         c.ZoneId,
+						 t51.C2 ZoneId,
+                         c.CompanyName,
+                         c.CompanyNationalCode, 
+                         c.CompanyMobileNumber,
+                         c.CompanyAddress, 
+                         c.CompanyPostalCode,
+                         c.RepresentativePostalCode,
+                         c.RepresentativeName,
+                         c.RepresentativeNationalCode,
+                         c.RepresentativeFatherName,
+                         c.RepresentativeMobileNumber,
+                         c.RepresentativeAddress,
+                         c.RepresentativeBirthDateJalali, 
+                         c.RepresentativeBirthPlace,
+                         c.RepresentativeCertificateNumber,
+                         c.ContractNumber, 
+                         c.ContractSubject,
+                         c.ContractDataJalali, 
+                         c.ContractDuration,
+                         c.AdministratorName, 
+                         c.AdministratorMobileNumber, 
+                         c.ConCompanyPersonnel,
+                         c.InsertedBy,
+                         c.InsertedDateTime,
+                         c.RemovedBy,
+                         c.RemovedDateTime
+                    From [Db70].dbo.ConCompany c
+					Left Join [Db70].dbo.T51 t51
+						ON t51.C0=c.ZoneId
                     Where 
-                         Id=@Id AND
-                         RemovedBy IS NULL";
+                         c.Id=@Id AND
+                         c.RemovedBy IS NULL";
         }
         private string GetPersonnelByIdQuery()
         {

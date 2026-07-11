@@ -130,6 +130,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="AppData\AssessmentApk\0.13\Evaluation-v0.13.apk">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="AppData\Images\JudicalDocumentBase64.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
