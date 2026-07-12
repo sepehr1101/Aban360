@@ -23,6 +23,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             _dbTransaction.NotNull(nameof(_dbTransaction));
         }
 
+        public async Task Insert(CustomerInsertDto updateDto, string dbName)
+        {
+            string command = GetInsertCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
         public async Task Update(CustomerUpdateDto updateDto, string dbName)
         {
             string command = GetUpdateCommand(dbName);
@@ -125,6 +134,36 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                     From [{dbName}].dbo.members m
                     Join #DebtAmountUpdateTemp t
                     	On m.Town=t.ZoneId AND m.radif=t.CustomerNumber";
+        }
+        private string GetInsertCommand(string dbName)
+        {
+            return @$"INSERT INTO [{dbName}].dbo.members 
+                        (
+                            bill_id, town, radif, eshtrak, name,
+                            family, father_nam, enshab, cod_enshab, tedad_vahd,
+                            tedad_mas, ted_khane, tedad_tej, arse, aian,
+                            aian_mas, aian_tej, ask_ab, inst_ab, ask_fas,
+                            inst_fas, address, pelak, edareh_k, noe_va,
+                            master_sif, sif_1, sif_2, sif_3, sif_4,
+                            sif_5, sif_6, sif_7, sif_8, fix_mas,
+                            group1, operator, POST_COD, PHONE_NO, MOBILE,
+                            MELI_COD, Khali_s, date_KHANE, X, Y,
+                            date_sabt, hasf, serial_co, sif_mosh_1, G_inst_ab,
+                            G_inst_fas, Senf
+                        )
+                        VALUES (
+                            @billId, @zoneId, @customerNumber, @ReadingNumber, @FirstName,
+                            @SurName, @FatherName, @MeterDiamterId, @UsageSellId, @OtherUnit,
+                            @DomesticUnit, @HouseholdNumber, @CommertialUnit, @Premises, @ImprovementOverall,
+                            @ImprovementDomestic, @ImprovementCommertial, @MeterRequestDateJalali, @MeterInstallationDateJalali, @SewageRequestDateJalali,
+                            @SewageInstallationDateJalali, @Address, @Plaque, @IsSpecial, @BranchTypeId,
+                            @MainSiphon, @Siphon100, @Siphon125, @Siphon150, @Siphon200,
+                            @Siphon5, @Siphon6, @Siphon7, @Siphon8, @ContractualCapacity,
+                            @UsageConsumptionId, @Operator, @PostalCode, @PhoneNumber, @MobileNumber,
+                            @NationalCode, @EmptyUnit, @HouseholdDateJalali, @x, @y,
+                            @ToDayDateJalali, @DeletionStateId, @BodySerial, @CommonSiphon, @MeterRegisterDateJalali,
+                            @SewageRegisterDateJalali, @GuildId
+                        );";
         }
         private string GetUpdateCommand(string dbName)
         {
