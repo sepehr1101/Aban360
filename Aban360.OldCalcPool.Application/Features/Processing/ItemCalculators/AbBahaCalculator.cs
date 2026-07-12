@@ -172,7 +172,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 }
 
                 //case3: as formuala is
-                (double, double) abBahaAmount = CalcFormula(nerkh, monthlyConsumption, _olgoo, c, multiplierAbBaha, customerInfo, consumptionPartialInfo, tagIds);
+                bool isVillage= IsRural(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption, _olgoo);
+                (double, double) abBahaAmount = CalcFormula(nerkh, monthlyConsumption, _olgoo, c, isVillage? (decimal)villageMultiplier: multiplierAbBaha, customerInfo, consumptionPartialInfo, tagIds);
                 return new TariffItemResult(abBahaAmount.Item1, abBahaAmount.Item2);
             }
         }
@@ -543,6 +544,16 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return multiplier;
             }
             return 1;
+        }
+        private bool IsRural(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double monthlyConsumption, int _olgoo)
+        {
+            if ((IsVillageDomesticNotConstruction(customerInfo) && !IsRuralButIsMetro(customerInfo)) ||
+                IsDolatabadOrHabibabadAndDomesticAndNotConstruction(customerInfo))
+            {
+               
+                return true;
+            }
+            return false;
         }
         #endregion
     }

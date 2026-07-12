@@ -122,7 +122,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
         public TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed, TariffItemResult abonmanResult, double before1403_12_02, double before1404)
         {
-            if (meterInfo.CurrentDateJalali.IsLt(date1405_03_15))
+            if (consumptionPartialInfo.EndDateJalali.IsLt(date1405_03_15))
             {
                 if (IsSpecialEducation(usageId, isSpecial))
                 {
