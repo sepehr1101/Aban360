@@ -41,7 +41,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Trigger([FromBody] UserUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            UserPersonalGetDto beforEdit = await _userUpdateHandler.Handle(updateDto, cancellationToken);
+            UserPersonalGetDto beforEdit = await _userUpdateHandler.Handle(updateDto, CurrentUser, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
             await InsertOpLog(updateDto, beforEdit);
 

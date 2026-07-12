@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using static Aban360.Common.Timing.CalculationDistanceDate;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.VirtualCapacityCalculator;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
@@ -98,7 +99,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             }
             else
             {               
-                multiplier = GetMultiplier(isAbonman, customerInfo.UsageId);
+                multiplier = 1;
                 if (isAbonman)
                 {
                     return new TariffItemResult();
@@ -151,7 +152,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 {
                     duration = consumptionPartialInfo.Duration;
                 }
-                (double, double) values = CalcFormula(nerkh, monthlyConsumption.Value, s.Value, c, (decimal)multiplier, duration, customerInfo, consumptionPartialInfo);
+                bool isVillage = IsRural(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption.Value, s.Value);
+                decimal multiplierAbBaha = GetMultiplier(zarib, s.Value, IsDomesticCategory(customerInfo.UsageId), isVillage, monthlyConsumption.Value, customerInfo.BranchType);            
+                (double, double) values = CalcFormula(nerkh, monthlyConsumption.Value, s.Value, c, zoneMultiplier: multiplierAbBaha, duration, customerInfo, consumptionPartialInfo);
                 return new TariffItemResult(values.Item1, values.Item2);
             }
         }
@@ -240,11 +243,99 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 Q = consumptionPartialInfo.DisallowedConsumtion,
                 T = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.PureDomesticUnit : customerInfo.UnitAll),
                 Z = (double)customerInfo.ContractualCapacity,
-                tags = tagIds.ToArray()
+                tags = tagIds?.ToArray()
             };
-            double allowed = Eval<double>(nerkh.AllowedFormula, parameters);
-            double disallowed = Eval<double>(nerkh.DisallowedFormula, parameters);
+            double allowed = Eval<double>(nerkh.AllowedSewageFormula, parameters);
+            double disallowed = Eval<double>(nerkh.DisallowedSewageFormula, parameters);
             return (allowed, disallowed);
+        }
+        private decimal GetMultiplier(ZaribGetDto zarib, int olgoo, bool isDomestic, bool isVillage, double monthlyConsumption, int branchType)
+        {
+            decimal rawMultiplier = GetRawMultiplier(zarib, olgoo, isDomestic, isVillage, monthlyConsumption, branchType);
+            return (!isDomestic && rawMultiplier < 1) || (IsConstruction(branchType) && rawMultiplier < 1) ?
+                1 : rawMultiplier;
+        }
+        private decimal GetRawMultiplier(ZaribGetDto zarib, int olgoo, bool isDomestic, bool isVillage, double monthlyConsumption, int branchType)
+        {
+            double zbSelection = 1;
+
+            if (IsConstruction(branchType) && !isVillage)
+            {
+                return zarib.Zb;
+            }
+
+            //غیر مسکونی روستایی
+            if (isVillage && isDomestic)
+            {
+                return zarib.Zarib_baha;
+            }
+
+            //غیرمسکونی شهری
+            else if (!isDomestic && !isVillage)
+            {
+                return zarib.Zb;
+            }
+
+            //غیرمسکونی روستایی
+            else if (!isDomestic && isVillage)
+            {
+                return zarib.Zb_r;
+            }
+
+            //در طبقات الگو، مسکونی شهری
+            else if (isDomestic && !isVillage)
+            {
+                if (IsBetween(monthlyConsumption, 0, 5))
+                    return zarib.Zb1;
+                else if (IsBetween(monthlyConsumption, 5, 10))
+                    return zarib.Zb2;
+                else if (IsBetween(monthlyConsumption, 10, olgoo))
+                    return zarib.Zb3;
+                else if (IsBetween(monthlyConsumption, olgoo, olgoo * 1.5))
+                    return zarib.Zb4;
+                else if (IsBetween(monthlyConsumption, olgoo * 1.5, olgoo * 2))
+                    return zarib.Zb5;
+                else if (IsBetween(monthlyConsumption, olgoo * 2, olgoo * 3))
+                    return zarib.Zb6;
+                else if (monthlyConsumption > olgoo * 3)
+                    return zarib.Zb7;
+            }
+
+            //سایر
+            return 1;
+        }
+        private bool IsRural(NerkhGetDto nerkh, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double monthlyConsumption, int _olgoo)
+        {
+            if ((IsVillageDomesticNotConstruction(customerInfo) && !IsRuralButIsMetro(customerInfo)) ||
+                IsDolatabadOrHabibabadAndDomesticAndNotConstruction(customerInfo))
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool IsRuralButIsMetro(CustomerInfoOutputDto customerInfo)
+        {
+            var (hasVillageCode, villageCode) = HasVillageCode(customerInfo.VillageId);
+            if (!hasVillageCode)
+            {
+                return false;
+            }
+            return RuralButIsMetro(customerInfo.ZoneId, customerInfo.ReadingNumber) ||
+                   RuralButIsMetro(customerInfo.ZoneId, villageCode);
+        }
+
+        private bool IsVillageDomesticNotConstruction(CustomerInfoOutputDto customerInfo)
+        {
+            return IsVillage(customerInfo.ZoneId) &&
+                   IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+                   !IsConstruction(customerInfo.BranchType);
+        }
+
+        private bool IsDolatabadOrHabibabadAndDomesticAndNotConstruction(CustomerInfoOutputDto customerInfo)
+        {
+            return IsDolatabadOrHabibabadWithConditionEshtrak(customerInfo.ZoneId, customerInfo.ReadingNumber) &&
+                   IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+                   !IsConstruction(customerInfo.BranchType);
         }
         #endregion
     }

@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.UseragentLog;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.Categories.UseragentLog;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
@@ -88,7 +89,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             _userValidator.NotNull(nameof(userValidator));
         }
 
-        public async Task<UserPersonalGetDto> Handle(UserUpdateDto userUpdateDto, CancellationToken cancellationToken)
+        public async Task<UserPersonalGetDto> Handle(UserUpdateDto userUpdateDto, IAppUser currentUser, CancellationToken cancellationToken)
         {
             var validationResult = await _userValidator.ValidateAsync(userUpdateDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -116,7 +117,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
             int zoneCount = await _zoneCountQueryAddhoc.GetCount(userUpdateDto.SelectedZoneIds, cancellationToken);
             //List<string> endpointValue = await _endpointQueryService.GetAuthValue(userUpdateDto.SelectedEndpointIds.Distinct().ToArray());
-            List<string> endpointValue = await GetEndpointsValue(userUpdateDto);
+            List<string> endpointValue = currentUser.IsAdmin? await GetEndpointsValueAdmin(userUpdateDto): await GetEndpointsValueNonAdmin(userUpdateDto);
             Validate(zoneCount, userUpdateDto.SelectedZoneIds.Count(), endpointValue.Count(), userUpdateDto.SelectedEndpointIds.Count());
 
             ICollection<UserClaim> zones = CreateUserClaim(userUpdateDto.SelectedZoneIds.Select(x => x.ToString()).Distinct().ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, userUpdateDto.Id);
@@ -131,9 +132,28 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
             await _userRoleCommandService.Add(userRoles);
             return userPersinalInfo;
         }
-        private async Task<List<string>> GetEndpointsValue(UserUpdateDto userUpdateDto)
+        private async Task<List<string>> GetEndpointsValueAdmin(UserUpdateDto userUpdateDto)
         {
             List<string> endpointValue = await _endpointQueryService.GetAuthValue(userUpdateDto.SelectedEndpointIds.Distinct().ToArray());
+            ICollection<Role> selectedRoles = await _roleQueryService.Get(userUpdateDto.SelectedRoleIds.Distinct().ToArray());
+            foreach (Role role in selectedRoles)
+            {
+                if (!string.IsNullOrWhiteSpace(role.DefaultClaims))
+                {
+                    int[] roleEndpiontsId = JsonOperation.Unmarshal<int[]>(role.DefaultClaims);//check
+                    List<string> roleEndpointsValue = await _endpointQueryService.GetAuthValue(roleEndpiontsId);
+                    if (roleEndpointsValue.Any())
+                    {
+                        endpointValue = endpointValue.Union(roleEndpointsValue).ToList();
+                    }
+                }
+            }
+
+            return endpointValue.Distinct().ToList();
+        }
+        private async Task<List<string>> GetEndpointsValueNonAdmin(UserUpdateDto userUpdateDto)
+        {
+            List<string> endpointValue = new();
             ICollection<Role> selectedRoles = await _roleQueryService.Get(userUpdateDto.SelectedRoleIds.Distinct().ToArray());
             foreach (Role role in selectedRoles)
             {

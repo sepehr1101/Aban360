@@ -33,6 +33,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             return CheckConditions(usageId, [10, 12, 13, 29, 32]);
         }
+        internal static bool HasReligiousDiscount(int usageId)
+        {
+            return CheckConditions(usageId, [10, 12, 13, 27, 29, 30, 32]);
+        }
         internal static bool IsIndustrial(int usageId)
         {
             return CheckConditions(usageId, [4]);

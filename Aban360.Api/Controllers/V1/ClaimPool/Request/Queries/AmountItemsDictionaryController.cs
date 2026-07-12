@@ -3,6 +3,7 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
 {
@@ -17,9 +18,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         }
 
         [HttpGet]
-        [Route("dictionary/{isReturn}")]
+        [Route("dictionary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetDictionary(bool isReturn, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetDictionary([Optional] bool isReturn, CancellationToken cancellationToken)
         {
             IEnumerable<NumericDictionary> result = await _serviceGroupGetAllHandler.Handle(isReturn, cancellationToken);
             return Ok(result);

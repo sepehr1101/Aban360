@@ -2,7 +2,9 @@
 using Aban360.ClaimPool.Domain.Features.People.Dto.Queries;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.People.Queries
 {
@@ -17,9 +19,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People.Queries
         }
 
         [HttpPost, HttpGet]
-        [Route("all/{isReturn}")]
+        [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<DiscountTypeGetDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll(bool isReturn, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll([Optional] bool isReturn, CancellationToken cancellationToken)
         {
             var discountTypes = await _discountTypeGetAllHandler.Handle(isReturn, cancellationToken);
             return Ok(discountTypes);
