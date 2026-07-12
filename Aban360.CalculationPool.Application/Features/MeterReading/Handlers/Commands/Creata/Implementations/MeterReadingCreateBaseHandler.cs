@@ -36,6 +36,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IValidator<MeterReadingFileCreateDto> _validator;
         private readonly IPreviousAverageHandler _previousAverageHandler;
         private readonly IBedBesQueryService _bedBesQueryService;
+        private int[] _domesticUnits = { 1, 3 };
         private int[] _invalidLatestCounterStateCode = { 4, 7, 8 };
         const int _conditionPayableAmount = 10000;
         const int _paymentDeadline = 7;
@@ -93,7 +94,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = new List<MeterReadingDetailCreateDto>();
             foreach (var readingDetail in readingDetails)
             {
-                var (isValid, hasExclude) = CounterStateValidation(readingDetail.CurrentCounterStateCode, readingDetail.CurrentNumber, readingDetail.PreviousNumber);
+                var (isValid, hasExclude) = DataValidate(readingDetail);
                 if (isValid)
                 {
                     if (readingDetail.CurrentCounterStateCode == _malfunctionMeterStateId)//xarab
@@ -445,26 +446,31 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 throw new ReadingException(ExceptionLiterals.InvalidDuplicateFileName(insertDateJalali));
             }
         }
-        private (bool, bool) CounterStateValidation(int counterStateCode, int currentNumber, int previousNumber)
+        private (bool, bool) DataValidate(MeterReadingDetailCreateDto readingDetail)
         {
             int[] invalidCounterStateCode = [_closeMeterStateId, /*_withoutConsumptionMeterTypeId,*/ _blockMeterStateId, _noReadMeterStateId, _desolateUnitMeterStateId, _disconnectionMeterStateId];
 
-            if (counterStateCode == _commonMeterStateId && previousNumber > currentNumber)
+            if (readingDetail.CurrentCounterStateCode == _commonMeterStateId && readingDetail.PreviousNumber > readingDetail.CurrentNumber)
             {
                 return (false, true);
             }
-            if (counterStateCode == _withoutConsumptionMeterStateId && previousNumber != currentNumber)
+            if (readingDetail.CurrentCounterStateCode == _withoutConsumptionMeterStateId && readingDetail.PreviousNumber != readingDetail.CurrentNumber)
             {
                 return (false, true);
             }
-            if (invalidCounterStateCode.Contains(counterStateCode))
+            if (invalidCounterStateCode.Contains(readingDetail.CurrentCounterStateCode))
             {
                 return (false, false);
             }
-            else if ((counterStateCode == _changeCounterStateId || counterStateCode == _reverseCounterState || counterStateCode == _nextRoundCounterSatateId) && currentNumber > previousNumber)
+            else if ((readingDetail.CurrentCounterStateCode == _changeCounterStateId || readingDetail.CurrentCounterStateCode == _reverseCounterState || readingDetail.CurrentCounterStateCode == _nextRoundCounterSatateId) && readingDetail.CurrentNumber > readingDetail.PreviousNumber)
             {
                 return (false, true);
             }
+            if (!_domesticUnits.Contains(readingDetail.UsageId) && (readingDetail.ContractualCapacity <= 0))
+            {
+                return (false, true);
+            }
+
             return (true, false);//(IsValid,HasExclude)
         }
         private MeterImaginaryInputDto GetMeterImaginary(MeterReadingDetailCreateDto readingDetail)
