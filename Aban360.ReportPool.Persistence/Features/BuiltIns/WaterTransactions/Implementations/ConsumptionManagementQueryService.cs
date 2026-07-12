@@ -129,6 +129,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						b2.BillId,
 						b1.ZoneId,
 						b1.ZoneTitle,
+						t46.C0 RegionId,
+						t46.C2 RegionTitle,
 						b1.CustomerNumber,
 						b1.SumItems BaseSumItems,
 						IIF(@IsOlgoo=1,b1.olgoo,b1.ContractCapacity) BaseContractOlgoo,
@@ -166,6 +168,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 						ON b1.ZoneId=b2.ZoneId AND b1.CustomerNumber=b2.CustomerNumber
 					Left Join CustomerWarehouse.dbo.Clients c
 						ON b1.ZoneId=c.ZoneId AND b1.CustomerNumber=c.CustomerNumber
+					Left Join [Db70].dbo.t51 t51
+						ON t51.C0=b1.ZoneId
+					Left Join [Db70].dbo.t46 t46
+						ON t46.C0=t51.C1
 					Where 
 						c.ToDayJalali IS NULL ";
         }
