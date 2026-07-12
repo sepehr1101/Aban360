@@ -8,6 +8,7 @@ namespace Aban360.ReportPool.Persistence.Features.Dms.Queries
     public interface IRequestDiscountService
     {
         Task<IEnumerable<ClientDiscount>> Get();
+        Task<bool> Exists(string codeMeli);
     }
 
     internal sealed class RequestDiscountService : AbstractBaseConnection, IRequestDiscountService
@@ -21,11 +22,24 @@ namespace Aban360.ReportPool.Persistence.Features.Dms.Queries
         {
             IEnumerable<ClientDiscount> data = await _sqlReportConnection.QueryAsync<ClientDiscount>(GetQuery());
             return data;
-        }
-        private string GetQuery()
+
+            string GetQuery()
+            {
+                string query = "SELECT * FROM AbAndFazelab.[dbo].[ClientDiscount]";
+                return query;
+            }
+        }       
+
+        public async Task<bool> Exists(string codeMeli)
         {
-            string query = "SELECT * FROM AbAndFazelab.[dbo].[ClientDiscount]";
-            return query;
+            int? result = await _sqlConnection.ExecuteScalarAsync<int?>(GetQuery(), new { codeMeli });
+            return result.HasValue; // true if a row exists, false otherwise
+            string GetQuery()
+            {
+                string query = @"SELECT 1 FROM AbAndFazelab.[dbo].[ClientDiscount]
+                                WHERE CodeMeli=@codeMeli";
+                return query;
+            }
         }
     }
 }

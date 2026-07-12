@@ -1,4 +1,5 @@
-﻿using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
+﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
 {
@@ -96,6 +97,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         internal static bool IsSpecialIndustrial(int branchTypeId)
         {
             return CheckConditions(branchTypeId, [8]);
+        }
+        internal static bool IsConstruction(CustomerInfoOutputDto customerInfo)
+        {
+            return IsConstruction(customerInfo.BranchType) || IsUsageConstructor(customerInfo.UsageId);
         }
 
         /// <summary>

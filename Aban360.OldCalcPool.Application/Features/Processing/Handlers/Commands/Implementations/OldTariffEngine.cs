@@ -242,7 +242,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ConsumptionPartialInfo consumptionPartialInfo = _consumptionCalculator.GetPartial(meterInfo, consumptionInfo, meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali, IsDomestic(customerInfo.UsageId) ? GetOlgoo(meterInfo.CurrentDateJalali, table1.olgo) : customerInfo.ContractualCapacity);
 
             TariffItemResult sumAbonmanAbBaha = _abonmanCalculator.CalculateAb(customerInfo, meterInfo, currentDateJalali, consumptionPartialInfo, out double before1403_12_02, out double before1404);
-            TariffItemResult sumAbonmanFazelab = _fazelabCalculator.Calculate(meterInfo.PreviousDateJalali, currentDateJalali, consumptionInfo.Duration, customerInfo, sumAbonmanAbBaha.Summation, currentDateJalali, true, consumptionPartialInfo, abCalcResult: sumAbonmanAbBaha, out double multiplierFazelab);
+            TariffItemResult sumAbonmanFazelab = _fazelabCalculator.Calculate(null,null, null, null, null,meterInfo.PreviousDateJalali, currentDateJalali, consumptionInfo.Duration, customerInfo, sumAbonmanAbBaha.Summation, currentDateJalali, true, consumptionPartialInfo, abCalcResult: sumAbonmanAbBaha, out double multiplierFazelab);
             TariffItemResult sumAbonmanAbDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanAbBaha.Summation, sumAbBahaDiscount, customerInfo.IsSpecial, consumptionInfo, customerInfo, consumptionPartialInfo, sumAbonmanAbBaha.Allowed, sumAbonmanAbBaha, before1403_12_02, before1404);
             TariffItemResult sumAbonmanFazelabDiscount = _abonmanCalculator.CalculateDiscount(customerInfo.UsageId, customerInfo.BranchType, sumAbonmanFazelab.Summation, sumFazelabDiscount, customerInfo.IsSpecial, consumptionInfo, customerInfo, consumptionPartialInfo, sumAbonmanFazelab.Allowed, sumAbonmanFazelab, before1403_12_02 * multiplierFazelab, before1404);
 
@@ -265,7 +265,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             TariffItemResult abBahaResult = _abBahaCalculator.Calculate(nerkh, nerkh1403, customerInfo, meterInfo, zarib, abAzad, consumptionPartialInfo, currentDateJalali, isVillageCalculation, monthlyConsumption, olgoo, c, tagIds, out double villageMultiplier);
             TariffItemResult boodje = _budgetCalculator.Calculate(consumptionPartialInfo, customerInfo, currentDateJalali, monthlyConsumption, olgoo, consumptionInfo);
-            TariffItemResult fazelab = _fazelabCalculator.Calculate(consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, abBahaResult.Summation, currentDateJalali, false, consumptionPartialInfo, abBahaResult, out double multiplierFazelab);
+            TariffItemResult fazelab = _fazelabCalculator.Calculate(nerkh, monthlyConsumption, olgoo, c, zarib,  consumptionPartialInfo.StartDateJalali, consumptionPartialInfo.EndDateJalali, consumptionPartialInfo.Duration, customerInfo, abBahaResult.Summation, currentDateJalali, false, consumptionPartialInfo, abBahaResult, out double multiplierFazelab);
             TariffItemResult hotSeasonAbBaha = _hotSeasonCalculator.CalculateAb(abBahaResult.Summation, customerInfo, monthlyConsumption, abBahaResult, consumptionPartialInfo, isVillageCalculation, villageMultiplier);
             TariffItemResult hotSeasonFazelab = _hotSeasonCalculator.CalcFazelab(customerInfo, fazelab.Summation, monthlyConsumption, fazelab, consumptionPartialInfo, isVillageCalculation, villageMultiplier);
             TariffItemResult avarez = _avarezCalculator.Calculate(consumptionPartialInfo, customerInfo, monthlyConsumption);
@@ -319,8 +319,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             string date1402_12_28 = "1402/12/28";
             string date1402_12_29 = "1402/12/29";
             string date1403_06_25 = "1403/12/25";
-            string @from = "1402/12/28".MoreOrEq(nerkh.Date1) ? date1402_12_29 : nerkh.Date1;
-            string @to = "1402/12/28".MoreOrEq(nerkh.Date2) ? date1403_06_25 : nerkh.Date2;
+            string @from = date1402_12_28.MoreOrEq(nerkh.Date1) ? date1402_12_29 : nerkh.Date1;
+            string @to = date1402_12_28.MoreOrEq(nerkh.Date2) ? date1403_06_25 : nerkh.Date2;
             ZaribCQueryDto zaribCQueryDto = await _zaribCQueryService.GetZaribC(nerkh.Date1, nerkh.Date2);
             return zaribCQueryDto;
         }
