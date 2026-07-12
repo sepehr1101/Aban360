@@ -2,6 +2,8 @@
 {
     public record ConsumptionManagementDataOutputDto
     {
+        public int RegionId { get; set; }
+        public string RegionTitle { get; set; }
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
         public string BillId { get; set; }
