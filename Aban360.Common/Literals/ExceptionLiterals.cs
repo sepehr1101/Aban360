@@ -161,6 +161,7 @@
         public static string InvalidSetExclude => "خطا در خروج قبض از لیست";
         public static string InvalidUpdateMeterReading => "خطا در ویرایش قبض";
         public static string InvalidUpdateMeterReadingFinished => "خطا در ویرایش قبض تایید نهایی شده";
+        public static string InvalidContractualCapacity => "مقدار ظرفیت قراردی نامعتبر است";
         public static string InvalidUpdateMeterReadingRemoved => "خطا در ویرایش قبض حذف شده";
         public static string InvalidRemoveFile => "خطا در حذف فایل";
         public static string InvalidRemoveFinishedFile => "امکان حذف فایل تایید نهایی شده وجود ندارد.";

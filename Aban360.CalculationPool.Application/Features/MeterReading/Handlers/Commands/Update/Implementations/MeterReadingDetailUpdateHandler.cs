@@ -31,6 +31,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         const int _conditionPayableAmount = 10000;
         const int _paymentDeadline = 7;
         const int _malfunctionMeterStateId = 1;
+        private int[] _domesticUnits = { 1, 3 };
 
         public MeterReadingDetailUpdateHandler(
             IMeterFlowQueryService meterFlowQueryService,
@@ -242,6 +243,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             await InputValidate(input, cancellationToken);
             await RemovedValidate(previousMeterDetailDto);
             CounterStateValidate(input);
+            DataValidate(previousMeterDetailDto);
         }
         private async Task InputValidate(MeterReadingDetailUpdateDto input, CancellationToken cancellationToken)
         {
@@ -273,6 +275,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             if (input.CurrentCounterStateCode == _malfunctionMeterStateId && input.MonthlyAverage is null)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidMonthlyAverageWithMalfunctionState);
+            }
+        }
+        private void DataValidate(MeterReadingDetailDataOutputDto previousMeterDetailDto)
+        {
+            if (!_domesticUnits.Contains(previousMeterDetailDto.UsageId) && (previousMeterDetailDto.ContractualCapacity <= 0))
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidContractualCapacity);
             }
         }
         private async Task<AbBahaCalculationDetails> CalcAbBahaTariff(MeterReadingDetailUpdateDto meterReadingDetailUpdate, MeterReadingDetailDataOutputDto previousMeterDetailDto, CancellationToken cancellationToken)
