@@ -68,7 +68,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateBillAmount);
             }
         }
-        public async Task UpdateBedbes(IEnumerable<MembersDebtAmountUpdateDto> input, string dbName)
+        public async Task UpdateBedbes(IEnumerable<MembersFazelabCountAndDebtAmountUpdateDto> input, string dbName)
         {
             DataTable table = UpdateDebtAmountDataTable(input);
             string tempTableCommand = GetUpdateDebtAmountCreateTmpTableCommand();
@@ -93,7 +93,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             }
         }
 
-        private DataTable UpdateDebtAmountDataTable(IEnumerable<MembersDebtAmountUpdateDto> input)
+        private DataTable UpdateDebtAmountDataTable(IEnumerable<MembersFazelabCountAndDebtAmountUpdateDto> input)
         {
             DataTable table = new DataTable();
 
@@ -101,10 +101,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             table.Columns.Add("CustomerNumber", typeof(int));
             table.Columns.Add("BillId", typeof(string));
             table.Columns.Add("Amount", typeof(long));
+            table.Columns.Add("ToDateJalali", typeof(string));
 
             foreach (var item in input)
             {
-                table.Rows.Add(item.ZoneId, item.CustomerNumber, item.BillId, item.Amount);
+                table.Rows.Add(item.ZoneId, item.CustomerNumber, item.BillId, item.Amount, item.ToDateJalali);
             }
             return table;
         }
@@ -115,13 +116,17 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                     	ZoneId int Not Null,
                     	CustomerNumber  int Not Null,
                     	BillId  nvarchar(20) Not Null,
-                    	Amount bigint Not Null
+                    	Amount bigint Not Null,
+                        ToDateJalali nvarchar(10) Not Null
                     )";
         }
         private string GetUpdateDebtAmountCommand(string dbName)
         {
             return $@"Update m
-                    Set m.bed_bes=m.bed_bes+t.Amount
+                    Set 
+                        m.bed_bes = m.bed_bes + t.Amount ,
+                        m.n_ab = IIF(m.n_ab=0, 1, m.n_ab),
+	                    m.n_faz = IIF(t.ToDateJalali >= m.G_inst_fas AND m.G_inst_fas>'1330/01/01' , 2 ,m.n_faz )
                     From [{dbName}].dbo.members m
                     Join #DebtAmountUpdateTemp t
                     	On m.Town=t.ZoneId AND m.radif=t.CustomerNumber";

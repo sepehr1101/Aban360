@@ -33,7 +33,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 throw new InvalidCustomerCommandException(Exceptionliterals.InvalidUpdateWaterDebtAmount);
             }
         }
-        public async Task UpdateAmount(ICollection<MembersDebtAmountUpdateDto> input)
+        public async Task UpdateAmount(ICollection<MembersFazelabCountAndDebtAmountUpdateDto> input)
         {
             //DataTable table = UpdateDebtAmountDataTable(input);
             //string tempTableCommand = GetUpdateDebtAmountCreateTmpTableCommand();
@@ -59,7 +59,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 throw new ReadingException(ExceptionLiterals.InvalidUpdateWaterDebt);
             }
         }
-        private DataTable UpdateDebtAmountDataTable(IEnumerable<MembersDebtAmountUpdateDto> input)
+        private DataTable UpdateDebtAmountDataTable(IEnumerable<MembersFazelabCountAndDebtAmountUpdateDto> input)
         {
             DataTable table = new DataTable();
 
