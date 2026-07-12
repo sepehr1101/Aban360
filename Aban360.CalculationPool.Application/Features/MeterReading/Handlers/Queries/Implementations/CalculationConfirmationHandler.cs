@@ -122,7 +122,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             }
             ICollection<KasrHaDto> kasrhasBatchWithoutDuplicate = kasrHaBatch.Where(s => !duplicateBillIds.Contains(s.ShGhabs)).ToList();
             ICollection<BillInsertDto> billsBatch = await GetBillsInsertDto(bedBesBatchWithoutDuplicate, kasrHaBatch);
-            ICollection<MembersDebtAmountUpdateDto> memberDebtAmountBatch = bedBesBatchWithoutDuplicate.Select(b => new MembersDebtAmountUpdateDto((int)b.Town, (int)b.Radif, b.ShGhabs1, (long)b.Pard)).ToList();
+            ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch = bedBesBatchWithoutDuplicate.Select(b => new MembersFazelabCountAndDebtAmountUpdateDto((int)b.Town, (int)b.Radif, b.ShGhabs1, (long)b.Pard, b.TodayDate)).ToList();
             ICollection<ContorUpdateDto> contorsUpcateBatch = GetContorsUpdateDto(bedBesBatchWithoutDuplicate);
             string opLogText = string.Format(OpLogLiterals.GenerateBatchBillOpLog, billsBatch?.FirstOrDefault()?.ZoneTitle, bedBesBatchWithoutDuplicate?.Count() ?? 0);
             int newMeterFlowId = await ExceSql(bedBesBatchWithoutDuplicate, kasrhasBatchWithoutDuplicate, billsBatch, memberDebtAmountBatch, contorsUpcateBatch, zoneId, latestFlowId, appUser, opLogText);
@@ -156,7 +156,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             }
             return (BedBesBatch, kasrHaBatch);
         }
-        private async Task<int> ExceSql(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, ICollection<BillInsertDto> billsBatch, ICollection<MembersDebtAmountUpdateDto> memberDebtAmountBatch, ICollection<ContorUpdateDto> contorsUpdateBatch, int zoneId, int latestFlowId, IAppUser appUser, string opLogText)
+        private async Task<int> ExceSql(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, ICollection<BillInsertDto> billsBatch, ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch, ICollection<ContorUpdateDto> contorsUpdateBatch, int zoneId, int latestFlowId, IAppUser appUser, string opLogText)
         {
             //string dbName = GetDbName(zoneId);
             string dbName = "Atlas";
