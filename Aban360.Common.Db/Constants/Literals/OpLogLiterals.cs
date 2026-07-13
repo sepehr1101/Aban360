@@ -67,7 +67,7 @@
         public static string UsageGroup3UpdateOpLog => @"گروه کاربری3 ویرایش شد. کاربری: از {0} به {1}  /  شناسه گروه2: از {2} به {3}";
         public static string UsageGroup3DeleteOpLog => @"گروه کاربری3 حذف شد. شناسه جدول:{0}";
       
-        public static string RequestConfirmTracking => @"ثبت قطعی درخواست انجام شد. شماره پیگیری:{0}  شناسه جدول لاگ اطلاعات کاربر:{1}";
+        public static string RequestConfirmTracking => @"ثبت قطعی درخواست انجام شد. شماره پیگیری:{0} ناحیه:{1}  شناسه جدول لاگ اطلاعات کاربر:{2}";
 
 
     }

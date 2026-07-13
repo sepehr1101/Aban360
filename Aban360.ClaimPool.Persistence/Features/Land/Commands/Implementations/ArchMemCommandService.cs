@@ -21,7 +21,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             _dbTransaction.NotNull(nameof(_dbTransaction));
         }
 
-        public async Task<int> Insert(CustomerInsertDto insertDto, string dbName)
+        public async Task<int> InsertNew(CustomerInsertDto insertDto, string dbName)
         {
             string command = GetInsertQuery(dbName);
             int? insertResultId = await _sqlConnection.QueryFirstOrDefaultAsync<int>(command, insertDto, _dbTransaction);
@@ -32,7 +32,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 
             return insertResultId.Value;
         }
-        public async Task<int> Insert(CustomerUpdateDto updateDto, string fromDbName, string insertToDbName)
+        public async Task<int> InsertByPreviousRecord(CustomerUpdateDto updateDto, string fromDbName, string insertToDbName)
         {
             string command = GetInsertByPreviousRecordQuery(fromDbName, insertToDbName);
             int? insertResultId = await _sqlConnection.QueryFirstOrDefaultAsync<int>(command, updateDto, _dbTransaction);
@@ -79,6 +79,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 
         private string GetInsertQuery(string dbName)
         {
+            //todo: Mojavz , balansing
             return @$"INSERT INTO [{dbName}].dbo.arch_mem
                     (
                     	town, radif, par_no, eshtrak, name, family, father_nam, enshab, cod_enshab,
@@ -92,13 +93,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                     )
                     VALUES
                     (    
-                        @ZoneId, @CustomerNumber, ' ' AS par_no, @ReadingNumber, @FirstName, @SurName, @FatherName, @MeterDiamterId, @UsageSellId,
+                        @ZoneId, @CustomerNumber, ' ', @ReadingNumber, @FirstName, @SurName, @FatherName, @MeterDiamterId, @UsageSellId,
                         @OtherUnit, @DomesticUnit, @HouseholdNumber, @CommertialUnit, @ToDayDateJalali, @Premises, @ImprovementOverall, @ImprovementDomestic,
                         @ImprovementCommertial, @MeterRequestDateJalali, @MeterInstallationDateJalali, @SewageRequestDateJalali, @SewageInstallationDateJalali, @Address, @Plaque, @WaterDebt, @IsSpecial,
                         @DeletionStateId, @NAb, @NFaz, @BranchTypeId, @MainSiphon, @Siphon100, @Siphon125, @Siphon150, @Siphon200, @CommonSiphon,
-                        @ContractualCapacity, @UsageConsumptionId, @BodySerial, @MeterRegisterDateJalali, @SewageRegisterDateJalali, @Operator, @ToDayDateJalali AS date_roz, @PostalCode,
-                        @PhoneNumber, @MobileNumber, @NationalCode, oRadif, @Siphon5, @Siphon6, @Siphon7, @Siphon8, @BillId, **MOJAVZ,
-                        @C20, balansing, '', '', '', '',
+                        @ContractualCapacity, @UsageConsumptionId, @BodySerial, @MeterRegisterDateJalali, @SewageRegisterDateJalali, @Operator, @ToDayDateJalali, @PostalCode,
+                        @PhoneNumber, @MobileNumber, @NationalCode, @CustomerNumber, @Siphon5, @Siphon6, @Siphon7, @Siphon8, @BillId, 0,
+                        @C20, 0, '', '', '',     '',
                         '', '', '', '', @EmptyUnit, @GuildId, @HouseholdDateJalali--,@x,@y,@ToDayDateJalaliWithFragmentYear
                    )
 

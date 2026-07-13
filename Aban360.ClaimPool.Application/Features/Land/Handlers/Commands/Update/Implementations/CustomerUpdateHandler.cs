@@ -130,7 +130,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     string fromDbName = GetDbName(updateDto.ZoneId);
                     string insertToDbName = "Atlas";
 
-                    int rowId = await _archMemCommandService.Insert(updateDto, fromDbName, insertToDbName);
+                    int rowId = await _archMemCommandService.InsertByPreviousRecord(updateDto, fromDbName, insertToDbName);
                     await _membersCommandService.Update(updateDto, insertToDbName);
 
                     transaction.Commit();
@@ -154,7 +154,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     string dbName = GetDbName(updateDto.ZoneId);
                     //string dbName = "Atlas";
 
-                    int rowId = await _archMemCommandService.Insert(updateDto, dbName, dbName);
+                    int rowId = await _archMemCommandService.InsertByPreviousRecord(updateDto, dbName, dbName);
                     await _membersCommandService.Update(updateDto, dbName);
                     await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
                     await _clientCommandService.InsertByArchMemId(rowId, dbName);

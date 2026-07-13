@@ -23,10 +23,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             _dbTransaction.NotNull(nameof(_dbTransaction));
         }
 
-        public async Task Insert(CustomerInsertDto updateDto, string dbName)
+        public async Task Insert(CustomerInsertDto insertDto, string dbName)
         {
             string command = GetInsertCommand(dbName);
-            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, insertDto, _dbTransaction);
             if (recordCount <= 0)
             {
                 throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
