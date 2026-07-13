@@ -117,7 +117,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
             int zoneCount = await _zoneCountQueryAddhoc.GetCount(userUpdateDto.SelectedZoneIds, cancellationToken);
             //List<string> endpointValue = await _endpointQueryService.GetAuthValue(userUpdateDto.SelectedEndpointIds.Distinct().ToArray());
-            List<string> endpointValue = currentUser.IsAdmin? await GetEndpointsValueAdmin(userUpdateDto): await GetEndpointsValueNonAdmin(userUpdateDto);
+            List<EndpointRoleId> endpointValue =await GetEndpointsValueNonAdmin(userUpdateDto);
             Validate(zoneCount, userUpdateDto.SelectedZoneIds.Count(), endpointValue.Count(), userUpdateDto.SelectedEndpointIds.Count());
 
             ICollection<UserClaim> zones = CreateUserClaim(userUpdateDto.SelectedZoneIds.Select(x => x.ToString()).Distinct().ToList(), ClaimType.ZoneId, logInfoString, operationGroupId, userUpdateDto.Id);
@@ -151,24 +151,30 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Im
 
             return endpointValue.Distinct().ToList();
         }
-        private async Task<List<string>> GetEndpointsValueNonAdmin(UserUpdateDto userUpdateDto)
+        private async Task<List<EndpointRoleId>> GetEndpointsValueNonAdmin(UserUpdateDto userUpdateDto)
         {
-            List<string> endpointValue = new();
+            List<EndpointRoleId> endpointValues = new();
             ICollection<Role> selectedRoles = await _roleQueryService.Get(userUpdateDto.SelectedRoleIds.Distinct().ToArray());
             foreach (Role role in selectedRoles)
             {
                 if (!string.IsNullOrWhiteSpace(role.DefaultClaims))
                 {
                     int[] roleEndpiontsId = JsonOperation.Unmarshal<int[]>(role.DefaultClaims);//check
-                    List<string> roleEndpointsValue = await _endpointQueryService.GetAuthValue(roleEndpiontsId);
-                    if (roleEndpointsValue.Any())
+                    List<string> roleEndpointsValues = await _endpointQueryService.GetAuthValue(roleEndpiontsId);
+                    if (roleEndpointsValues.Any())
                     {
-                        endpointValue = endpointValue.Union(roleEndpointsValue).ToList();
+                        foreach (var endpointVal in roleEndpointsValues)
+                        {
+                            EndpointRoleId endpointRoleId = new(endpointVal, role.Id);
+                            endpointValues.Add(endpointRoleId);
+                        }
+                        //endpointValues = endpointValues.Union(roleEndpointsValues).ToList();
                     }
                 }
             }
 
-            return endpointValue.Distinct().ToList();
+            return endpointValues.Distinct().ToList();
         }
+        public record EndpointRoleId(string endpoint, int roleId);
     }
 }

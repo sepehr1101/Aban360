@@ -8,15 +8,15 @@ using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using System.Runtime.InteropServices;
 using static Aban360.Common.Timing.CalculationDistanceDate;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
-using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.VirtualCapacityCalculator;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.VirtualCapacityCalculator;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IFazelabCalculator
     {
         TariffItemResult Calculate(NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier);
-        TariffItemResult CalculateDiscount(TariffItemResult fazelabCalculationResult , double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo);
+        TariffItemResult CalculateDiscount(NerkhGetDto nerkh, TariffItemResult fazelabCalculationResult , double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo);
     }
 
     internal sealed class FazelabCalculator : BaseExpressionCalculator, IFazelabCalculator
@@ -158,32 +158,66 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 return new TariffItemResult(values.Item1, values.Item2);
             }
         }
-        public TariffItemResult CalculateDiscount(TariffItemResult fazelabCalculationResult, double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo)
+        public TariffItemResult CalculateDiscount(NerkhGetDto nerkh,TariffItemResult fazelabCalculationResult, double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo)
         {
-            if (abBahaDiscount <= 0)
+            if (nerkh.Date2.IsLt(date_1405_03_15))
             {
-                return new TariffItemResult();
+                if (abBahaDiscount <= 0)
+                {
+                    return new TariffItemResult();
+                }
+                if (fazelabAmount <= 0)
+                {
+                    return new TariffItemResult();
+                }
+                if (IsConstruction(customerInfo.BranchType))
+                {
+                    return new TariffItemResult();
+                }
+                if (IsUsageConstructor(customerInfo.UsageId))
+                {
+                    return new TariffItemResult();
+                }
+                /* if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && IsSchool(customerInfo.UsageId))
+                 {
+                     return new TariffItemResult();
+                 }*/
+                double fazelabDiscount = abBahaDiscount * GetMultiplier(false, customerInfo.UsageId);
+                double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, fazelabDiscount, consumptionPartialInfo);
+                double finalDiscount = virtualDiscount > 0 ? virtualDiscount : fazelabDiscount;//fazelabAmount
+                return new TariffItemResult(finalDiscount);
             }
-            if (fazelabAmount <= 0)
+            else
             {
-                return new TariffItemResult();
+                if (abBahaDiscount <= 0)
+                {
+                    return new TariffItemResult();
+                }
+                if (fazelabAmount <= 0)
+                {
+                    return new TariffItemResult();
+                }
+                if (IsConstruction(customerInfo))
+                {
+                    return new TariffItemResult();
+                }
+                if (IsUnderSocialService(customerInfo.BranchType) &&
+                   IsDomesticWithoutUnspecified(customerInfo.UsageId))
+                {
+                    return new TariffItemResult(fazelabCalculationResult.Allowed);
+                }
+                if (IsMullah(customerInfo.BranchType) && customerInfo.UnitAll == 1)
+                {
+                    return new TariffItemResult(fazelabCalculationResult.Allowed);
+                }
+                if (HasReligiousDiscount(customerInfo.UsageId))
+                {
+                    return new TariffItemResult(fazelabCalculationResult.Allowed);
+                }
+                double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, fazelabCalculationResult.Summation, consumptionPartialInfo);
+                double finalDiscount = virtualDiscount > 0 ? virtualDiscount : abBahaDiscount;//fazelabAmount
+                return new TariffItemResult(finalDiscount);
             }
-            if (IsConstruction(customerInfo.BranchType))
-            {
-                return new TariffItemResult();
-            }
-            if (IsUsageConstructor(customerInfo.UsageId))
-            {
-                return new TariffItemResult();
-            }
-           /* if (date_1404_02_31.MoreOrEq(consumptionPartialInfo.EndDateJalali) && IsSchool(customerInfo.UsageId))
-            {
-                return new TariffItemResult();
-            }*/
-            double fazelabDiscount = abBahaDiscount * GetMultiplier(false,customerInfo.UsageId);
-            double virtualDiscount = CalculateDiscountByVirtualCapacity(customerInfo, consumptionPartialInfo.Consumption, consumptionPartialInfo.Duration, fazelabDiscount, consumptionPartialInfo);
-            double finalDiscount= virtualDiscount > 0 ? virtualDiscount : fazelabDiscount;//fazelabAmount
-            return new TariffItemResult(finalDiscount);
         }
 
         #region private methods
