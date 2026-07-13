@@ -2,6 +2,7 @@
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Constants.Enums;
 using static Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations.UserCreateHandler;
+using static Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations.UserUpdateHandler;
 
 namespace Aban360.UserPool.Application.Common.Base
 {
@@ -19,6 +20,20 @@ namespace Aban360.UserPool.Application.Common.Base
                 ValidTo = null,
                 UserId = userId,
                 RoleId=roleId
+            }).ToList();
+        }
+        internal ICollection<UserClaim> CreateUserClaim(ICollection<EndpointRoleId> value, ClaimType claimType, string logInfo, Guid operationGroupId, Guid userId)
+        {
+            return value.Select(x => new UserClaim()
+            {
+                ClaimTypeId = claimType,
+                ClaimValue = x.endpoint,
+                InsertGroupId = operationGroupId,
+                InsertLogInfo = logInfo,
+                //ValidFrom = DateTime.Now,
+                ValidTo = null,
+                UserId = userId,
+                RoleId = x.roleId
             }).ToList();
         }
         internal ICollection<UserClaim> CreateUserClaim(IEnumerable<EndpointInfo> value, ClaimType claimType, string logInfo, Guid operationGroupId, Guid userId)
