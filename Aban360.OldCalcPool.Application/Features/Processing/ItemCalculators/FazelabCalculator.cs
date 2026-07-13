@@ -10,6 +10,7 @@ using static Aban360.Common.Timing.CalculationDistanceDate;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.VirtualCapacityCalculator;
+using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {

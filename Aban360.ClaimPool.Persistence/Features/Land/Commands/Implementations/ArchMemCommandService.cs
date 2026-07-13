@@ -21,9 +21,20 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             _dbTransaction.NotNull(nameof(_dbTransaction));
         }
 
-        public async Task<int> Insert(CustomerUpdateDto updateDto, string fromDbName, string insertToDbName)
+        public async Task<int> InsertNew(CustomerInsertDto insertDto, string dbName)
         {
-            string command = GetInsertQuery(fromDbName, insertToDbName);
+            string command = GetInsertQuery(dbName);
+            int? insertResultId = await _sqlConnection.QueryFirstOrDefaultAsync<int>(command, insertDto, _dbTransaction);
+            if (insertResultId is null || insertResultId <= 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidInsertArchmem);
+            }
+
+            return insertResultId.Value;
+        }
+        public async Task<int> InsertByPreviousRecord(CustomerUpdateDto updateDto, string fromDbName, string insertToDbName)
+        {
+            string command = GetInsertByPreviousRecordQuery(fromDbName, insertToDbName);
             int? insertResultId = await _sqlConnection.QueryFirstOrDefaultAsync<int>(command, updateDto, _dbTransaction);
             if (insertResultId is null || insertResultId <= 0)
             {
@@ -66,7 +77,35 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             return insertResultId.Value;
         }
 
-        private string GetInsertQuery(string fromDbName, string insertToDbName)
+        private string GetInsertQuery(string dbName)
+        {
+            //todo: Mojavz , balansing
+            return @$"INSERT INTO [{dbName}].dbo.arch_mem
+                    (
+                    	town, radif, par_no, eshtrak, name, family, father_nam, enshab, cod_enshab,
+                    	tedad_vahd, tedad_mas, ted_khane, tedad_tej, date_sabt, arse, aian, aian_mas,
+                    	aian_tej, ask_ab, inst_ab, ask_fas, inst_fas, address, pelak, bed_bes, edareh_k,
+                    	hasf, n_ab, n_faz, noe_va, master_sif, sif_1, sif_2, sif_3, sif_4, sif_mosh_1,
+                    	fix_mas, group1, serial_co, G_inst_ab, G_inst_fas, operator, date_roz, POST_COD,
+                    	PHONE_NO, MOBILE, MELI_COD, oRadif, sif_5, sif_6, sif_7, sif_8, bill_id, MOJAVZ,
+                    	c20, balansing, tmp_date_sabt, tmp_ask_ab, tmp_ask_fas, tmp_inst_ab,
+                    	tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_roz, Khali_s, Senf, date_KHANE--,x,y,DATEINS, 
+                    )
+                    VALUES
+                    (    
+                        @ZoneId, @CustomerNumber, ' ', @ReadingNumber, @FirstName, @SurName, @FatherName, @MeterDiamterId, @UsageSellId,
+                        @OtherUnit, @DomesticUnit, @HouseholdNumber, @CommertialUnit, @ToDayDateJalali, @Premises, @ImprovementOverall, @ImprovementDomestic,
+                        @ImprovementCommertial, @MeterRequestDateJalali, @MeterInstallationDateJalali, @SewageRequestDateJalali, @SewageInstallationDateJalali, @Address, @Plaque, @WaterDebt, @IsSpecial,
+                        @DeletionStateId, @NAb, @NFaz, @BranchTypeId, @MainSiphon, @Siphon100, @Siphon125, @Siphon150, @Siphon200, @CommonSiphon,
+                        @ContractualCapacity, @UsageConsumptionId, @BodySerial, @MeterRegisterDateJalali, @SewageRegisterDateJalali, @Operator, @ToDayDateJalali, @PostalCode,
+                        @PhoneNumber, @MobileNumber, @NationalCode, @CustomerNumber, @Siphon5, @Siphon6, @Siphon7, @Siphon8, @BillId, 0,
+                        @C20, 0, '', '', '',     '',
+                        '', '', '', '', @EmptyUnit, @GuildId, @HouseholdDateJalali--,@x,@y,@ToDayDateJalaliWithFragmentYear
+                   )
+
+                    SELECT CAST(SCOPE_IDENTITY() AS INT)";
+        }
+        private string GetInsertByPreviousRecordQuery(string fromDbName, string insertToDbName)
         {
             return @$";With cte as
                     (
