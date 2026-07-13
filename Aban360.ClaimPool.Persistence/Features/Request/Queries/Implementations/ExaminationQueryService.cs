@@ -1,6 +1,8 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
@@ -29,6 +31,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         {
             string query = GetByTrackIdQuery();
             AssessmentDataOutputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<AssessmentDataOutputDto>(query, new { id });
+            return result;
+        }
+        public async Task<AssessmentDataOutputDto> GetLatestByTrackNumber(int trackNumber)
+        {
+            string query = GetLatestByTrackNumberQuery();
+            AssessmentDataOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<AssessmentDataOutputDto>(query, new { trackNumber });
+            if (result == null)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.NotFoundAssessment);
+            }
             return result;
         }
         public async Task<bool> HasResultByTrackId(Guid trackId)
@@ -96,6 +108,46 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     Left Join [Db70].dbo.T64 t64
                     	ON ResultId=t64.C0
                     Where Id=@id";
+        }
+        private string GetLatestByTrackNumberQuery()
+        {
+            return @"Select Top 1
+                    	Id,
+                    	TrackNumber,
+                    	BillId,
+                    	ExaminerCode AssessmentCode ,
+                    	ExaminerName AssessmentName,
+                    	ExaminerMobile AssessmentMobile,
+                    	DayJalali AssessmentDateJalali,
+                    	DayMiladi AssessmentGregorianDateTime,
+                    	ZoneId,
+                    	t51.C2 ZoneTitle,
+                    	ResultId,
+                    	t64.C1 ResultTitle,
+                    	SetResultDateTime SetResultDateTime,
+                    	ResultDescription Description,
+                    	TrackId ,
+                    	TrackIdResult,
+                    	X1,
+                    	Y1,
+                    	X2,
+                    	Y2,
+                        Accuracy,
+                    	Eshterak ReadingNumber,
+                    	Arse Premises,
+                    	ArzeshMelk HouserValue,
+                    	KarbariId UsageId,
+                    	t41.C1 UsageTitle,
+                    	AllInJson
+                    From AbAndFazelab.dbo.Examination 
+                    Left Join [Db70].dbo.T51 t51
+                    	ON ZoneId=t51.C0
+                    Left Join [Db70].dbo.T41 t41
+                    	ON KarbariId=t41.C0
+                    Left Join [Db70].dbo.T64 t64
+                    	ON ResultId=t64.C0
+                    Where TrackNumber=@trackNumber
+                    Order By SetResultDateTime Desc";
         }
         private string GetByTrackIdQuery()
         {

@@ -46,7 +46,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     string fromDbName = GetDbName(subscriptionUpdate.ZoneId);
                     string insertToDbName = "Atlas";
 
-                    await _archMemCommandService.Insert(subscriptionUpdate, fromDbName, insertToDbName);
+                    await _archMemCommandService.InsertByPreviousRecord(subscriptionUpdate, fromDbName, insertToDbName);
                     await _membersCommandService.Update(subscriptionUpdate, insertToDbName);
 
                     transaction.Commit();

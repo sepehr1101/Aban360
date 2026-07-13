@@ -62,6 +62,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
                 BillId = billId,
                 FullName = memberInfo.FullName,
                 RecordCount = KartsData?.Count() ?? 0,
+                Amount = amount,
                 Title = _title
             };
             return new ReportOutput<ServiceLinkUnconfirmedHeaderOutputDto, ServiceLinkUnconfirmedDataOutputDto>(_title, header, KartsData);
