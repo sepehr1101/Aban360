@@ -3,5 +3,7 @@
     public record AbAzadFormulaDto
     {
         public string? Formula { get; set; }
+        public string? AllowedFormula { get; set; }
+        public string? DisallowedFormula { get; set; }
     }
 }

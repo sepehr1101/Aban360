@@ -141,6 +141,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     	n.vaj AS Vaj,
                         n.AllowedFormula,
                         n.DisallowedFormula,
+                        n.AllowedSewageFormula,
+                        n.DisallowedSewageFormula,
                     	n.cod AS Cod,
                     	n.olgo AS Olgo,
                     	n.[desc] AS [Desc],
@@ -174,7 +176,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         private string GetAbAzadQuery()
         {
             return @$"SELECT
-                        MAX(vaj) AS Formula
+                        MAX(vaj) AS Formula,
+                        MAX(AllowedFormula) as AllowedFormula,
+						MAX(DisallowedFormula) as DisallowedFormula
                     FROM [OldCalc].dbo.Nerkh
                     WHERE
                         date1 < @toDate AND
