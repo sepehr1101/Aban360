@@ -67,6 +67,14 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             {
                 throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateBillAmount);
             }
+        }  public async Task UpdateBedbes(ZoneIdAndCustomerNumber inputDto, long amount,string currentDateJalali, string dbName)
+        {
+            string command = GetUpdateBedBesAndNfasCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, new { inputDto.CustomerNumber, inputDto.ZoneId, amount ,currentDateJalali}, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateBillAmount);
+            }
         }
         public async Task UpdateBedbes(IEnumerable<MembersFazelabCountAndDebtAmountUpdateDto> input, string dbName)
         {
@@ -233,6 +241,17 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 					Where 
 						radif=@customerNumber AND
 						town=@zoneId";
+        }
+        private string GetUpdateBedBesAndNfasCommand(string dbName)
+        {
+            return $@" Update [{dbName}].dbo.members
+					Set
+                        bed_bes = bed_bes + @amount ,
+                        n_ab = IIF( n_ab = 0, 1, m.n_ab ),
+	                    n_faz = IIF( @currentDateJalali >= G_inst_fas AND G_inst_fas>'1330/01/01' , 2 ,n_faz )
+					Where 
+						radif = @customerNumber AND
+						town = @zoneId";
         }
     }
 

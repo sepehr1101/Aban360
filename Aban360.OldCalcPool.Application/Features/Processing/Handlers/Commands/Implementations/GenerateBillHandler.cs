@@ -317,7 +317,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                         if (!IsAllowedZeroMeterNumber(counterStateCode))
                         {
                             await waterDebtCommandService.UpdateAmount(bedBes.ShGhabs1, (long)bedBes.Baha);
-                            await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber, (long)bedBes.Baha, dbName);
+                            await membersCommandService.UpdateBedbes(zoneIdAndCustomerNumber, (long)bedBes.Baha, bedBes.TodayDate, dbName);
                             await controCommandService.Update(contorUpdate, dbName, true);                                                                                                   //update contro
                         }
 
