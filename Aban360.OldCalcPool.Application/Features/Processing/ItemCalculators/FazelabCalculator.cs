@@ -10,7 +10,6 @@ using static Aban360.Common.Timing.CalculationDistanceDate;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.VirtualCapacityCalculator;
-using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffStringChecker;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
@@ -27,6 +26,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         private const int _withoutSewage = 0;
         private const int _firstCalculation = 1;
         private const int _normal = 2;
+        const double _villageAllowedMultiplier = 0.5;
+        const double _villageDisallowedMultiplier = 0.65;
 
         public TariffItemResult Calculate(NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier)
         {
@@ -154,8 +155,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                     duration = consumptionPartialInfo.Duration;
                 }
                 bool isVillage = IsRural(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption.Value, s.Value);
-                decimal multiplierAbBaha = GetMultiplier(zarib, s.Value, IsDomesticCategory(customerInfo.UsageId), isVillage, monthlyConsumption.Value, customerInfo.BranchType);            
-                (double, double) values = CalcFormula(nerkh, monthlyConsumption.Value, s.Value, c, zoneMultiplier: multiplierAbBaha, duration, customerInfo, consumptionPartialInfo);
+                bool isDomestic = IsDomesticWithoutUnspecified(customerInfo.UsageId);
+                decimal multiplierAbBaha = GetMultiplier(zarib, s.Value, IsDomesticCategory(customerInfo.UsageId), isVillage, monthlyConsumption.Value, customerInfo.BranchType);
+                decimal k1 = GetK1(zarib, s.Value, isVillage);
+                decimal allowedKModifier = isVillage && isDomestic ? (decimal)_villageAllowedMultiplier : 1M;
+                decimal disAllowedKModifier = isVillage && isDomestic ? (decimal)_villageDisallowedMultiplier : 1M;
+                (double, double) values = CalcFormula(nerkh, monthlyConsumption.Value, s.Value, c, zoneMultiplier: multiplierAbBaha, zoneMultiplier2:k1, duration, allowedKModifier, disAllowedKModifier, customerInfo, consumptionPartialInfo);
                 return new TariffItemResult(values.Item1, values.Item2);
             }
         }
@@ -265,14 +270,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             return !isAbonman && IsDomesticCategory(usageId) ? 0.7 : 1;
         }
-        private (double, double) CalcFormula(NerkhGetDto nerkh, double monthlyAverageConsumption, int olgoo, int? c, decimal zoneMultiplier, int duration, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, [Optional] IEnumerable<int> tagIds)
+        private (double, double) CalcFormula(NerkhGetDto nerkh, double monthlyAverageConsumption, int olgoo, int? c, decimal zoneMultiplier, decimal zoneMultiplier2, int duration, decimal allowedKModifier, decimal disAllowedKModifier, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, [Optional] IEnumerable<int> tagIds)
         {
-            object parameters = new
+            object parametersAllowed = new
             {
                 X = monthlyAverageConsumption,
                 C = c,
                 S = olgoo,
                 K = (double)zoneMultiplier,
+                K1= (double)(zoneMultiplier2 * allowedKModifier),
                 D = (double)duration,
                 L = consumptionPartialInfo.AllowedConsumption,
                 Q = consumptionPartialInfo.DisallowedConsumtion,
@@ -280,9 +286,27 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 Z = (double)customerInfo.ContractualCapacity,
                 tags = tagIds?.ToArray()
             };
-            double allowed = Eval<double>(nerkh.AllowedSewageFormula, parameters);
-            double disallowed = Eval<double>(nerkh.DisallowedSewageFormula, parameters);
+            object parametersDisallwed = new
+            {
+                X = monthlyAverageConsumption,
+                C = c,
+                S = olgoo,
+                K = (double)zoneMultiplier,
+                K1 = (double)(zoneMultiplier2 * allowedKModifier),
+                D = (double)duration,
+                L = consumptionPartialInfo.AllowedConsumption,
+                Q = consumptionPartialInfo.DisallowedConsumtion,
+                T = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.PureDomesticUnit : customerInfo.UnitAll),
+                Z = (double)customerInfo.ContractualCapacity,
+                tags = tagIds?.ToArray()
+            };
+            double allowed = Eval<double>(nerkh.AllowedSewageFormula, parametersAllowed);
+            double disallowed = Eval<double>(nerkh.DisallowedSewageFormula, parametersDisallwed);
             return (allowed, disallowed);
+        }
+        private decimal GetK1(ZaribGetDto zarib, int olgoo, bool isVillage)
+        {
+            return zarib.Zb3;
         }
         private decimal GetMultiplier(ZaribGetDto zarib, int olgoo, bool isDomestic, bool isVillage, double monthlyConsumption, int branchType)
         {
