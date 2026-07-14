@@ -2,7 +2,7 @@
 using Aban360.Common.BaseEntities;
 using System.Data;
 
-namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts
+namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts
 {
     public interface ICustomerInfoService
     {

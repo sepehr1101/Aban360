@@ -1,6 +1,6 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
-using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
@@ -10,7 +10,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
-namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations
+namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Implementations
 {
     internal sealed class CustomerInfoService : AbstractBaseConnection, ICustomerInfoService
     {
@@ -23,7 +23,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         private async Task<ZoneIdAndCustomerNumberGetDto> GetZoneIdAndCustomerNumber(string billId)
         {
             string query = GetZoneIdAndCustomerNumberQuery();
-            ZoneIdAndCustomerNumberGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberGetDto>(query, new { billId = billId });
+            ZoneIdAndCustomerNumberGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberGetDto>(query, new { billId });
             if (result is null)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);

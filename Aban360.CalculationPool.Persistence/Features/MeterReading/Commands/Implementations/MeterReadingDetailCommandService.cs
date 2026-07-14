@@ -1,5 +1,4 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
-using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
@@ -7,7 +6,7 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations
+namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Implementations
 {
     public sealed class MeterReadingDetailCommandService
     {

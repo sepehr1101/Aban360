@@ -1,4 +1,4 @@
-﻿using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
+﻿using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Constants.Literals;

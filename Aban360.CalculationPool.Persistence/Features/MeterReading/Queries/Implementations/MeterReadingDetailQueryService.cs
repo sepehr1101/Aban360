@@ -1,12 +1,12 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
-using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
-namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations
+namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Implementations
 {
     public sealed class MeterReadingDetailQueryService : AbstractBaseConnection, IMeterReadingDetailQueryService
     {
@@ -15,10 +15,10 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
         }
 
-        public async Task<IEnumerable<MeterReadingDetailDataOutputDto>> Get(int flowImportedId,bool? hasExcluded)
+        public async Task<IEnumerable<MeterReadingDetailDataOutputDto>> Get(int flowImportedId, bool? hasExcluded)
         {
             string query = GetWithFlowImportedIdQuery(hasExcluded);
-            IEnumerable<MeterReadingDetailDataOutputDto> details = await _sqlReportConnection.QueryAsync<MeterReadingDetailDataOutputDto>(query, new { flowImportedId = flowImportedId });
+            IEnumerable<MeterReadingDetailDataOutputDto> details = await _sqlReportConnection.QueryAsync<MeterReadingDetailDataOutputDto>(query, new { flowImportedId });
 
             return details;
         }
@@ -26,7 +26,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
             string query = GetSingleQuery();
 
-            MeterReadingDetailDataOutputDto detail = await _sqlReportConnection.QueryFirstOrDefaultAsync<MeterReadingDetailDataOutputDto>(query, new { id = id });
+            MeterReadingDetailDataOutputDto detail = await _sqlReportConnection.QueryFirstOrDefaultAsync<MeterReadingDetailDataOutputDto>(query, new { id });
             if (detail is null || detail.Id <= 0)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidId);

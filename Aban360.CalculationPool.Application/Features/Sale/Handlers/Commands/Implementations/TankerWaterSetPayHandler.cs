@@ -1,7 +1,7 @@
 ﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
-using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Sale.Commands.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
