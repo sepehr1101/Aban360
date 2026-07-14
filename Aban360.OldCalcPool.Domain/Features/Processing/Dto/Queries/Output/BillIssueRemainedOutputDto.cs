@@ -8,6 +8,9 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
         public string BillId { get; set; }
+        public string FirstName { get; set; }
+        public string SurName { get; set; }
+        public string FullName { get; set; }
         public string ReadingNumber { get; set; }
         public int UsageId { get; set; }
         public string UsageTitle { get; set; }

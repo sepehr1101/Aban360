@@ -55,6 +55,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             await _commonZoneService.IsUserInZone(appUser, zoneIdAndCustomerNumber.ZoneId);
 
             BillIssueRemainedOutputDto result = await GetResult(memberInfo, billId);
+            result.FirstName = memberInfo.FirstName;
+            result.SurName = memberInfo.Surname;
+            result.FullName = memberInfo.FullName;
+
             string opLogText = string.Format(OpLogLiterals.GenerateBillIssueRemianedOpLog, result.BillId, result.PaymentId, result.Amount);
             await _opLogCommandService.Insert(opLogText, appUser);
             return result;

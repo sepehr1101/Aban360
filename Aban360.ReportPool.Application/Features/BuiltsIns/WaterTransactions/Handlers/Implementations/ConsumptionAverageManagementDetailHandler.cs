@@ -40,12 +40,12 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
-                RecordCount = data.Count(),
-                CustomerCount = data.Count(),
+                RecordCount = data?.Count() ?? 0,
+                CustomerCount = data?.Count() ?? 0,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 Title = ReportLiterals.ConsumptionManagerDetail,
-                Consumption = data.Average(r => r.Consumption),
-                ConsumptionAverage=data.Average(r => r.ConsumptionAverage),
+                Consumption = data is null || !data.Any() ? 0 : data?.Average(r => r.Consumption) ?? 0,
+                ConsumptionAverage = data is null || !data.Any() ? 0 : data?.Average(r => r.ConsumptionAverage) ?? 0,
             };
 
             ReportOutput<ConsumptionAverageManagementHeaderOutputDto, ConsumptionAverageManagementSummaryOutputDto> result = new(ReportLiterals.ConsumptionManagerDetail + ReportLiterals.ByCustomer, header, data);
