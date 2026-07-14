@@ -166,6 +166,8 @@
         public static string InvalidRemoveFile => "خطا در حذف فایل";
         public static string InvalidRemoveFinishedFile => "امکان حذف فایل تایید نهایی شده وجود ندارد.";
         public static string NotFoundBillsToConfirm => "قبضی برای تایید یافت نشد.";
+        public static string InvalidMeterSmsStateId => "خطا در شناسه نوع پیامک";
+        public static string InvalidMeterSmsFlowId => "خطا در مراحل پیامک";
 
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";
