@@ -89,7 +89,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             _bedBesQueryService.NotNull(nameof(bedBesQueryService));
         }
 
-        public async Task<ICollection<MeterReadingDetailCreateDto>> GetReadingDetailCreateFinal(IEnumerable<MeterReadingDetailCreateDto> readingDetails, FileCreateDto fileInfo, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<ICollection<MeterReadingDetailCreateDto>> GetReadingDetailCreateFinal(IEnumerable<MeterReadingDetailCreateDto> readingDetails, IAppUser appUser, CancellationToken cancellationToken)
         {
             ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = new List<MeterReadingDetailCreateDto>();
             foreach (var readingDetail in readingDetails)

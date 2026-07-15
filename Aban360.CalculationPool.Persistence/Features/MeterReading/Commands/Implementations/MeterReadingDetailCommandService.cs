@@ -97,6 +97,15 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                 throw new ReadingException(ExceptionLiterals.InvalidUpdate);
             }
         }
+        public async Task Delete(MeterReadingDetailByFromToReadingNumberDeleteDto input, int recordCount)
+        {
+            string query = GetDeleteByFromToReadingNumberCommand();
+            int affectedRecords = await _connection.ExecuteAsync(query, input, _transaction);
+            if (affectedRecords != recordCount)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidUpdate);
+            }
+        }
         public async Task DeleteByFlowImportedId(MeterReadingDetailDeleteDto input)
         {
             string query = GetDeleteByFlowImportedIdCommands();
@@ -206,7 +215,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
             table.Columns.Add("jam", typeof(decimal));
             table.Columns.Add("BeforDebt", typeof(double));
             table.Columns.Add("WaterDebt", typeof(double));
-            
+
             table.Columns.Add("cod_vas", typeof(decimal));
             table.Columns.Add("ghabs", typeof(string));
             table.Columns.Add("del", typeof(bool));
@@ -666,6 +675,19 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                         ExcludedCauseId = @ExcludedCauseId , 
                         ExcludedCauseTitle = @ExcludedCauseTitle
                     Where Id=@Id";
+        }
+        private string GetDeleteByFromToReadingNumberCommand()
+        {
+            return $@"Update Atlas.dbo.MeterReadingDetail	
+                    Set 
+                    	RemovedByUserId = @RemovedByUserId ,
+                    	RemovedDateTime = @RemovedDateTime ,
+                        RemovedType = @RemovedType 
+                    Where
+                        ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber AND
+                        RemovedByUserId IS NULL AND 
+                        ExcludedByUserId IS NULL AND
+                        FlowImportedId = @FlowImportedId";
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 {
     public interface IMeterReadingCreateBaseHandler
     {
-        Task<ICollection<MeterReadingDetailCreateDto>> GetReadingDetailCreateFinal(IEnumerable<MeterReadingDetailCreateDto> readingDetails, FileCreateDto fileInfo, IAppUser appUser, CancellationToken cancellationToken);
+        Task<ICollection<MeterReadingDetailCreateDto>> GetReadingDetailCreateFinal(IEnumerable<MeterReadingDetailCreateDto> readingDetails, IAppUser appUser, CancellationToken cancellationToken);
         Task<ICollection<MeterReadingDetailCreateDto>> GetReadingDetailCreateFinalNonRead(IEnumerable<MeterReadingDetailCreateDto> readingDetails, FileCreateDto fileInfo, IAppUser appUser, CancellationToken cancellationToken);
         Task<(CustomersInfoGetDto, int)> GetCustomerInfoAndFirstFlowId(ICollection<MeterReadingFileDetail> meterReadings, string fileName, string filePath, string? description, Guid userId);
         IEnumerable<MeterReadingDetailCreateDto> GetReadingMeterDetails(ICollection<MeterReadingFileDetail> meterReadings, CustomersInfoGetDto customersInfo, int meterFlowId);
