@@ -48,15 +48,13 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                     (
                          SmsTypeId, StepOrder, 
                          SmsText, DueDay, Description,
-                         InsertDateTime, InsertBy,
-                         RemoveDateTime, RemoveBy
+                         InsertDateTime, InsertBy
                     ) 
                     VALUES 
                     (
                         @SmsTypeId, @StepOrder,
                         @SmsText, @DueDay, @Description, 
-                        @InsertDateTime, @InsertBy,
-                        @RemoveDateTime, @RemoveBy
+                        @InsertDateTime, @InsertBy
                     )
 
                     SELECT CAST(SCOPE_IDENTITY() AS smallint);";

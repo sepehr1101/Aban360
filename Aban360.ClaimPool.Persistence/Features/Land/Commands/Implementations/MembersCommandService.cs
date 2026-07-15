@@ -286,7 +286,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             return $@" Update [{dbName}].dbo.members
 					Set
                         bed_bes = bed_bes + @amount ,
-                        n_ab = IIF( n_ab = 0, 1, m.n_ab ),
+                        n_ab = IIF( n_ab = 0, 1, n_ab ),
 	                    n_faz = IIF( @currentDateJalali >= G_inst_fas AND G_inst_fas>'1330/01/01' , 2 ,n_faz )
 					Where 
 						radif = @customerNumber AND

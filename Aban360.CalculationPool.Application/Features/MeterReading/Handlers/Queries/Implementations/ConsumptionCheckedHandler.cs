@@ -43,6 +43,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             MeterFlowCreateDto newMeterFlow = new()
             {
                 MeterFlowStepId = MeterFlowStepEnum.ConsumptionChecked,
+                FirstFlowId = meterflow.FirstFlowId,
                 ZoneId = meterflow.ZoneId,
                 FileName = meterflow.FileName,
                 FromReadingNumber = meterflow.FromReadingNumber,

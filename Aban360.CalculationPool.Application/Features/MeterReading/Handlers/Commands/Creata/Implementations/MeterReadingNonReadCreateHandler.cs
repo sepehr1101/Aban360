@@ -79,7 +79,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         {
             string fromReadingNumber = latestBills?.Min(m => m.ReadingNumber) ?? string.Empty;
             string toReadingNumber = latestBills?.Max(m => m.ReadingNumber) ?? string.Empty;
-            MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, fileName, input.ZoneId, fromReadingNumber, toReadingNumber, latestBills?.Count() ??0, appUser.UserId, string.Empty);
+            MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, 0, fileName, input.ZoneId, fromReadingNumber, toReadingNumber, latestBills?.Count() ?? 0, appUser.UserId, string.Empty);
             CustomersInfoGetDto customersInfo;
             int meterFlowId = 0;
 
@@ -94,6 +94,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     MeterFlowCommandService meterflowCommandService = new(connection, transaction);
 
                     meterFlowId = await meterflowCommandService.Insert(importedMeterFlow);
+                    await meterflowCommandService.Update(meterFlowId, meterFlowId);
                     customersInfo = await _customerInfoService.GetByBulkCopy(connection, transaction, input.ZoneId, latestBills.Select(m => m.CustomerNumber).ToList());
 
                     transaction.Commit();
@@ -166,11 +167,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        LastSumItems = latestBill?.PreviousSumItems ?? 0
                    };
         }
-        private MeterFlowCreateDto GetMeterFlowCreateDto(MeterFlowStepEnum step, string fileName, int zoneId, string fromReadingNumber, string toReadingNumber, int primaryCount, Guid userId, string description)
+        private MeterFlowCreateDto GetMeterFlowCreateDto(MeterFlowStepEnum step, int firstFlowId, string fileName, int zoneId, string fromReadingNumber, string toReadingNumber, int primaryCount, Guid userId, string description)
         {
             return new MeterFlowCreateDto()
             {
                 MeterFlowStepId = step,
+                FirstFlowId = firstFlowId,
                 FileName = fileName,
                 ZoneId = zoneId,
                 FromReadingNumber = fromReadingNumber,

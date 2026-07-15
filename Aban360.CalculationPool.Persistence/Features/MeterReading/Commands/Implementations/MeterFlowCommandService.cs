@@ -20,7 +20,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
 
             _transaction = transaction;
             _transaction.NotNull(nameof(transaction));
-        }
+        }   
 
         public async Task<int> Insert(MeterFlowCreateDto input)
         {
@@ -49,6 +49,15 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                 throw new ReadingException(ExceptionLiterals.InvalidMeterFlow);
             }
         }
+        public async Task Update(int id, int firstFlowId)
+        {
+            string query = GetFirstFlowIdUpdateCommand();
+            int rowEffected = await _connection.ExecuteAsync(query, new { id, firstFlowId }, _transaction);
+            if (rowEffected <= 0)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidUpdate);
+            }
+        }
         public async Task Update(string previousFileName, string currentFileName)
         {
             string command = GetUpdateFileNameCommand();
@@ -72,13 +81,13 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
         {
             return @"INSERT [Atlas].[dbo].[MeterFlow] 
                         (
-                            MeterFlowStepId,FileName,ZoneId,
+                            MeterFlowStepId,FirstFlowId,FileName,ZoneId,
                             FromReadingNumber,ToReadingNumber,PrimaryCount,
                             InsertDateTime,InsertByUserId,Description
                         )
                     VALUES 
                         (
-                            @MeterFlowStepId,@FileName,@ZoneId,
+                            @MeterFlowStepId,@FirstFlowId,@FileName,@ZoneId,
                             @FromReadingNumber,@ToReadingNumber,@PrimaryCount,
                             @InsertDateTime,@InsertByUserId,@Description
                         );
@@ -88,6 +97,12 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
         {
             return @"Update Atlas.dbo.MeterFlow
                         Set RemovedDateTime=@RemovedDateTime , RemovedByUserId=@RemovedByUserId
+                        Where Id=@id";
+        }
+        private string GetFirstFlowIdUpdateCommand()
+        {
+            return @"Update Atlas.dbo.MeterFlow
+                        Set FirstFlowId=@FirstFlowId
                         Where Id=@id";
         }
         private string GetUpdateFileNameCommand()

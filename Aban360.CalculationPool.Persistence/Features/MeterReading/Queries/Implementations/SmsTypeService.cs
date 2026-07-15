@@ -18,7 +18,11 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
         public async Task Insert(string title)
         {
             string command = GetInsertCommand();
-            await _sqlReportConnection.ExecuteAsync(command, new { title });
+            int effectedRecord = await _sqlReportConnection.ExecuteAsync(command, new { title });
+            if (effectedRecord <= 0)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidInsertSmsType);
+            }
         }
         public async Task<NumericDictionary> Get(int id)
         {
@@ -38,7 +42,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
         }
         private string GetInsertCommand()
         {
-            return @"INSERT INTO FROM Atlas.dbo.SmsType(Title)
+            return @"INSERT INTO Atlas.dbo.SmsType(Title)
                     VALUES(@Title)";
         }
         private string GetQuery()
@@ -46,15 +50,15 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
             return @"SELECT
                         Id,
                         Title
-                    FROM Atlas.dbo.SmsType 
-                    WHERE Id = @Id";
+                    FROM Atlas.dbo.SmsType ";
         }
         private string GetByIdQuery()
         {
             return @"SELECT
                         Id,
                         Title
-                    FROM Atlas.dbo.SmsType ";
+                    FROM Atlas.dbo.SmsType
+                    WHERE Id = @Id ";
         }
     }
 }

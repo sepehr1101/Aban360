@@ -5,6 +5,6 @@
         public short FlowId { get; set; }
         public short SmsCount { get; set; }
         public short SmsTemplateId { get; set; }
-        public DateTime DueDateTime { get; set; }
+        public string DueDateJalali { get; set; }
     }
 }

@@ -32,6 +32,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         static int _deletedSatatus = 90000;
         static int _requestOrigin = 12;
         static int _afterSaleRequestType = 2;
+        static int _saleRequestType = 1;
         public ReAssessmentRequestHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
@@ -69,7 +70,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(latestTrackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             Validation(inputDto.TrackNumber, latestTrackingInfo.StatusId, moshtrakInfo.IsRegistered);
 
-            TrackingInsertDuplicateDto trackingInsertDto = GetTrackingInsertDto(inputDto, userCode);
+            TrackingInsertDuplicateDto trackingInsertDto = new(inputDto.TrackNumber, _reAssessmentStatusId, inputDto.Description, userCode, _requestOrigin, true, false);
 
             int assessmentCode = 0;
             string? assessmentDateJalali;
@@ -94,11 +95,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
         }
-        private TrackingInsertDuplicateDto GetTrackingInsertDto(TrackNumberWithDescriptionInputDto inputDto, int userCode)
-        {
-            return new TrackingInsertDuplicateDto(inputDto.TrackNumber, _reAssessmentStatusId, inputDto.Description, userCode, _requestOrigin, true, false);
-        }
-        private async Task<MoshtrakUpdateCustomerInfoDto> GetMoshtrakUpdateDto(MoshtrakOutputDto moshtrakInfo)
+        private async Task<MoshtrakUpdateCustomerInfoDto> GetAfterSaleMoshtrakUpdateDto(MoshtrakOutputDto moshtrakInfo)
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = new(moshtrakInfo.ZoneId, moshtrakInfo.CustomerNumber);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
@@ -135,6 +132,42 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 DiscountCount = memberInfo.DiscountCount,
             };
         }
+        private async Task<MoshtrakUpdateCustomerInfoDto> GetSaleMoshtrakUpdateDto(MoshtrakOutputDto moshtrakInfo)
+        {
+            moshtrakInfo = await _moshtrakQueryService.Get(moshtrakInfo.Id, moshtrakInfo.ZoneId);
+            return new MoshtrakUpdateCustomerInfoDto()
+            {
+                ZoneId = moshtrakInfo.ZoneId,
+                TrackNumber = moshtrakInfo.TrackNumber,
+                FirstName = moshtrakInfo.FirstName ?? string.Empty,
+                Surname = moshtrakInfo.Surname ?? string.Empty,
+                FatherName = moshtrakInfo.FatherName,
+                NationalCode = moshtrakInfo.NationalCode,
+                PhoneNumber = moshtrakInfo.PhoneNumber ?? string.Empty,
+                MobileNumber = moshtrakInfo.MobileNumber,
+                Address = moshtrakInfo.Address,
+                PostalCode = moshtrakInfo.PostalCode ?? string.Empty,
+                UsageId = 0,
+                BranchTypeId = 0,
+                Premises = 0,
+                ImprovementOverall = 0,
+                ImprovementDomestic = 0,
+                ImprovementCommercial = 0,
+                OtherUnit = 0,
+                DomesticUnit = 0,
+                CommercialUnit = 0,
+                ContractualCapacity = 0,
+                Siphon100 = 0,
+                Siphon125 = 0,
+                Siphon150 = 0,
+                Siphon200 = 0,
+                MainSiphon = 0,
+                CommonSiphon = 0,
+                MeterDiameterId = 0,
+                DiscountTypeId = 0,
+                DiscountCount = 0,
+            };
+        }
         private async Task SqlCommands(TrackingOutputDto latestTrackingInfo, TrackNumberWithDescriptionInputDto inputDto, TrackingInsertDuplicateDto trackingInsertDto, MoshtrakOutputDto moshtrakInfo, int userCode, int assessmentCode, string? assessmentDateJalali)
         {
             string dbName = GetDbName(latestTrackingInfo.ZoneId);
@@ -154,7 +187,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
                     if (latestTrackingInfo.ServiceGroupId == _afterSaleRequestType)
                     {
-                        MoshtrakUpdateCustomerInfoDto moshtrackUpdateDto = await GetMoshtrakUpdateDto(moshtrakInfo);
+                        MoshtrakUpdateCustomerInfoDto moshtrackUpdateDto = await GetAfterSaleMoshtrakUpdateDto(moshtrakInfo);
+                        await moshtrakCommandService.Update(moshtrackUpdateDto, dbName);
+                    }
+                    else if (latestTrackingInfo.ServiceGroupId == _saleRequestType)
+                    {
+                        MoshtrakUpdateCustomerInfoDto moshtrackUpdateDto = await GetSaleMoshtrakUpdateDto(moshtrakInfo);
                         await moshtrakCommandService.Update(moshtrackUpdateDto, dbName);
                     }
 

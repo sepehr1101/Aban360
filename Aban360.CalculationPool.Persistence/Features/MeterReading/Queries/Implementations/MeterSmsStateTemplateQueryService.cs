@@ -44,8 +44,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                         InsertBy, 
                         RemoveDateTime, 
                         RemoveBy 
-                    FROM [Atlas].dbo.MeterSmsStateTemplate 
-                    WHERE Id = @Id";
+                    FROM [Atlas].dbo.MeterSmsStateTemplate";
         }
         private string GetByIdQuery()
         {
@@ -60,7 +59,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                         InsertBy, 
                         RemoveDateTime, 
                         RemoveBy 
-                    FROM [Atlas].dbo.MeterSmsStateTemplate ";
+                    FROM [Atlas].dbo.MeterSmsStateTemplate 
+                    WHERE Id = @Id ";
         }
     }
 }

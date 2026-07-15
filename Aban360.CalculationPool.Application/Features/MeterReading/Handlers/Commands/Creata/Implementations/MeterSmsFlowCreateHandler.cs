@@ -5,6 +5,7 @@ using Aban360.Common.ApplicationUser;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Timing;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -63,7 +64,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 SmsCount = inputDto.SmsCount,
                 SmsTemplateId = inputDto.SmsTemplateId,
                 InsertBy = appUser.UserId,
-                DueDateTime = inputDto.DueDateTime,
+                DueDateTime = ConvertDate.JalaliToDateTime(inputDto.DueDateJalali),
             };
         }
     }

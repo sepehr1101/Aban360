@@ -42,8 +42,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                         InsertBy, 
                         DueDateTime, 
                         SendDateTime 
-                    FROM Atlas.dbo.MeterSmsFlow 
-                    WHERE Id = @Id";
+                    FROM Atlas.dbo.MeterSmsFlow ";
         }
         private string GetByIdQuery()
         {
@@ -56,7 +55,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                         InsertBy, 
                         DueDateTime, 
                         SendDateTime 
-                    FROM Atlas.dbo.MeterSmsFlow ";
+                    FROM Atlas.dbo.MeterSmsFlow 
+                    WHERE Id = @Id";
         }
     }
 }

@@ -74,7 +74,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
         {
             return @"Select 
                         m.Id,
-                    	m.MeterFlowStepId,
+                        m.FirstFlowId,
+                       	m.MeterFlowStepId,
                     	m.FileName,
                     	m.ZoneId,
                         m.FromReadingNumber,
@@ -122,6 +123,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
         {
             return @"Select top 1 
                         m2.Id,
+                        m2.FirstFlowId,
                     	m2.MeterFlowStepId,
                     	m2.FileName,
                     	m2.ZoneId,

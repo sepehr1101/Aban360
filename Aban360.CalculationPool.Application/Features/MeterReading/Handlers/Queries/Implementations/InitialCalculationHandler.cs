@@ -103,10 +103,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                     MeterFlowCreateDto newMeterFlow = new()
                     {
                         MeterFlowStepId = MeterFlowStepEnum.Calculated,
+                        FirstFlowId = meterFlow.FirstFlowId,
                         ZoneId = meterFlow.ZoneId,
                         FileName = meterFlow.FileName,
-                        FromReadingNumber= meterFlow.FromReadingNumber,
-                        ToReadingNumber=meterFlow.ToReadingNumber,
+                        FromReadingNumber = meterFlow.FromReadingNumber,
+                        ToReadingNumber = meterFlow.ToReadingNumber,
                         PrimaryCount = meterFlow.PrimaryCount,
                         InsertByUserId = appUser.UserId,
                         InsertDateTime = DateTime.Now,
