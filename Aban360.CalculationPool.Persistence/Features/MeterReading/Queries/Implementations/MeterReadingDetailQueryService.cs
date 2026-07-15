@@ -76,6 +76,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                         m.InsertDateTime,
                         m.RemovedByUserId,
                         m.RemovedDateTime,
+                        m.RemovedType,
                         m.BranchTypeId,
                         t7.C1 as BranchTypeTitle,
                         m.UsageId,
@@ -134,6 +135,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                         m.abon_ab as AbonAb,
                         m.pard as Pard,
                         m.jam as Jam,
+                        m.WaterDebt,
+                        m.BeforDebt,
+
                         m.cod_vas as CodVas,
                         m.ghabs as Ghabs,
                         m.del as Del,

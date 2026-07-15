@@ -56,7 +56,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             await _commonZoneService.IsUserInZone(appUser, meterFlowInfo?.ZoneId ?? 0);
             NumericDictionary zoneInfo = await _t51QueryService.Get(meterFlowInfo?.ZoneId ?? 0, false);
             MeterFlowDeleteDto meterFlowRemoveDto = new(id, appUser.UserId, DateTime.Now);
-            MeterReadingDetailDeleteDto meterReadingDetailRemoveDto = new(firstFlowId, appUser.UserId, DateTime.Now);
+            MeterReadingDetailDeleteDto meterReadingDetailRemoveDto = new(firstFlowId, appUser.UserId, DateTime.Now, MeterReadingDetailRemovedType.Removed);
             string opLogText = string.Format(OpLogLiterals.MeterFlowRemoveOpLog, meterFlowInfo.FileName, newFileName, zoneInfo.Title);
 
             await ExecSql(meterFlowRemoveDto, meterReadingDetailRemoveDto, appUser, opLogText, meterFlowInfo.FileName, newFileName);

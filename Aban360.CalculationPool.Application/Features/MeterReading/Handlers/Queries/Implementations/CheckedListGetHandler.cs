@@ -152,6 +152,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 LastMonthlyConsumption = input.LastMonthlyConsumption,
                 LastSumItems = input.LastSumItems,
 
+                BeforDebt = input.BeforDebt,
+                WaterDebt = input.WaterDebt,
                 SumItems = input.SumItems,
                 SumItemsBeforeDiscount = input.SumItemsBeforeDiscount,
                 DiscountSum = input.DiscountSum,

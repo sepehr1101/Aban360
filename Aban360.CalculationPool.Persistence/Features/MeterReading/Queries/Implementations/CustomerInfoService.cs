@@ -219,7 +219,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
 						m.edareh_k as IsSpecial,
 						m.enshab as MeterDiameterId,
 						m.Khali_s as EmptyUnit,
-						Trim(m.serial_co) as BodySerial
+						Trim(m.serial_co) as BodySerial,
+						m.bed_bes LatestDebtAmount
 					From [{dbName}].dbo.members m
 					{conditionQuery};";
         }

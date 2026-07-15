@@ -141,6 +141,7 @@
         public static string UnSuccessfulToSave(string tableName) => $"ذخیره در جدول {tableName} با خطا روبرو شد";
 
         //Reading
+        public static string InvalidRecord(int i) => $" خط {i}ام از فایل آپلود شده دارای مقدار نامعتبر است. ";
         public static string InvalidReadingFile => "خطا در پیمایش فایل";
         public static string InvalidDuplicateFileName(string date) => $"نام فایل تکراری است. این فایل در تاریخ {date} ارسال شده";
         public static string InvalidDuplicateStepFlow(string date) => $"این مرحله در تاریخ {date} سپری شده است وامکان انجام مجدد آن وجود ندارد. ";

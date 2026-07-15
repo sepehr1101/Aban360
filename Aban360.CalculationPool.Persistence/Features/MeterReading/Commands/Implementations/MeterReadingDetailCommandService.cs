@@ -204,6 +204,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
             table.Columns.Add("abon_ab", typeof(decimal));
             table.Columns.Add("pard", typeof(decimal));
             table.Columns.Add("jam", typeof(decimal));
+            table.Columns.Add("BeforDebt", typeof(double));
+            table.Columns.Add("WaterDebt", typeof(double));
+            
             table.Columns.Add("cod_vas", typeof(decimal));
             table.Columns.Add("ghabs", typeof(string));
             table.Columns.Add("del", typeof(bool));
@@ -353,6 +356,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                 row["abon_ab"] = x.AbonAb;
                 row["pard"] = x.Pard;
                 row["jam"] = x.Jam;
+                row["WaterDebt"] = x.WaterDebt;
+                row["BeforDebt"] = x.BeforDebt;
+
                 row["cod_vas"] = x.CodVas;
                 row["ghabs"] = x.Ghabs;
                 row["del"] = x.Del;
@@ -472,6 +478,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                         NEWAB, NEWFA, BODJEH, group1, MAS_FAS, FAZ,
                         CHK_KARBARI, C200, Ab_sevom, Ab_sevom1, C70, C80,
                         C90, C101, Khali_s, edareh_k, Avarez,
+                        WaterDebt, BeforDebt,
 
                         AbBahaDiscount,HotSeasonDiscount,HotSeasonFazelabDiscount,FazelabDiscount,AbonmanAbDiscount,
                         AbonmanFazelabDiscount,AvarezDiscount,JavaniDiscount,BoodjeDiscount,MaliatDiscount
@@ -499,6 +506,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                         @NewAb, @NewFa, @Bodjeh, @Group1, @MasFas, @Faz,
                         @ChkKarbari, @C200, @AbSevom, @AbSevom1, @C70, @C80,
                         @C90, @C101, @KhaliS, @EdarehK, @Avarez,
+                        @WaterDebt, @BeforDebt,
 
                         @AbBahaDiscount,@HotSeasonDiscount,@HotSeasonFazelabDiscount,@FazelabDiscount,@AbonmanAbDiscount,
                         @AbonmanFazelabDiscount,@AvarezDiscount,@JavaniDiscount,@BoodjeDiscount,@MaliatDiscount
@@ -508,18 +516,20 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
         {
             return @"Update Atlas.dbo.MeterReadingDetail	
                     Set 
-                    	RemovedByUserId=@RemovedByUserId ,
-                    	RemovedDateTime=@RemovedDateTime
-                    Where Id=@Id";
+                    	RemovedByUserId = @RemovedByUserId ,
+                    	RemovedDateTime = @RemovedDateTime ,
+                        RemovedType = @RemovedType 
+                    Where Id = @Id";
         }
         private string GetDeleteByFlowImportedIdCommands()
         {
             return @"Update Atlas.dbo.MeterReadingDetail	
                     Set 
-                    	RemovedByUserId=@RemovedByUserId ,
-                    	RemovedDateTime=@RemovedDateTime
+                    	RemovedByUserId = @RemovedByUserId ,
+                    	RemovedDateTime = @RemovedDateTime ,
+                        RemovedType = @RemovedType 
                     Where 
-                        FlowImportedId=@Id AND
+                        FlowImportedId = @Id AND
                         RemovedDateTime IS NULL";
         }
         private string GetCreateDuplicateForLogCommand()

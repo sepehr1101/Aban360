@@ -306,6 +306,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        CurrentNumber = meterReading.CurrentNumber,
                        InsertByUserId = meterReading.InsertByUserId,
                        InsertDateTime = meterReading.InsertDateTime,
+                       WaterDebt = members.LatestDebtAmount,
 
                        BranchTypeId = members.BranchTypeId,
                        UsageId = members.UsageId,
@@ -518,7 +519,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         }
         private async Task<MeterReadingDetailCreateDto> GetMeterReadingDetailByAbBahaValue(MeterReadingDetailCreateDto r, AbBahaCalculationDetails? abBahaCalc, bool hasZeroValue, Guid? userIdExclude)
         {
-            double preDebtAmount = await _customerInfoService.GetMembersBedBes(new ZoneIdAndCustomerNumber(r.ZoneId, r.CustomerNumber));//checkResult: changeDto
+            double preDebtAmount = r.WaterDebt;// await _customerInfoService.GetMembersBedBes(new ZoneIdAndCustomerNumber(r.ZoneId, r.CustomerNumber));//checkResult: changeDto
             var (sumItems, jam, pard) = GetAmounts(preDebtAmount, abBahaCalc?.SumItems ?? 0);
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
 
@@ -545,6 +546,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             r.Baha = (decimal)sumItems;
             r.Pard = (decimal)pard;
             r.Jam = (decimal)jam;
+            r.WaterDebt = preDebtAmount;
+            r.BeforDebt = abBahaCalc?.SumItems ?? 0;
+
             r.CodVas = r.CurrentCounterStateCode;
             r.Ghabs = "1";
             r.Del = false;

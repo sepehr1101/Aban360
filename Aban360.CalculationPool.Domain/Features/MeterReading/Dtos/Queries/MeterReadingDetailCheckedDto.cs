@@ -68,9 +68,12 @@ namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
         public double? SumItems { get; set; }
         public double? SumItemsBeforeDiscount { get; set; }
         public double? DiscountSum { get; set; }
+        public double? WaterDebt { get; set; }
+        public double? BeforDebt { get; set; }
 
         public double? Consumption { get; set; }
         public double? MonthlyConsumption { get; set; }
+
 
         public HighLowEnum AttentionState { get; set; }
         public bool HasAttentionCounterState { get; set; }
