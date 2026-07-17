@@ -1,6 +1,7 @@
-﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
+﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
+using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 
-namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts
+namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts
 {
     public interface IMeterReadingDetailQueryService
     {
@@ -8,5 +9,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts
         Task<MeterReadingDetailDataOutputDto> GetById(int id);
         Task<IEnumerable<MeterReadingDetailExcludedDataOutputDto>> Get(MeterReadingDetailExcludedInputDto inputDto);
         Task<IEnumerable<MeterReadingDetailUpdatedDataOutputDto>> GetUpdated(MeterReadingDetailUpdatedInputDto inputDto);
+        Task<IEnumerable<MeterReadingDetailDataOutputDto>> Get(ChangeDateBatchInputDto inputDto);
     }
 }

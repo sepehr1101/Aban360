@@ -1,15 +1,12 @@
-﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
-using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
-using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
+﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
-using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Dapper;
 using Microsoft.Extensions.Configuration;
-using System.Data;
 
-namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations
+namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Implementations
 {
     public sealed class MeterFlowQueryService : AbstractBaseConnection, IMeterFlowQueryService
     {
@@ -77,7 +74,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
             return @"Select 
                         m.Id,
-                    	m.MeterFlowStepId,
+                        m.FirstFlowId,
+                       	m.MeterFlowStepId,
                     	m.FileName,
                     	m.ZoneId,
                         m.FromReadingNumber,
@@ -125,6 +123,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
             return @"Select top 1 
                         m2.Id,
+                        m2.FirstFlowId,
                     	m2.MeterFlowStepId,
                     	m2.FileName,
                     	m2.ZoneId,

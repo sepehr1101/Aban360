@@ -150,5 +150,7 @@
         public double BoodjeDiscount { get; set; }
         public double MaliatDiscount { get; set; }
 
+        public double BeforDebt { get; set; }
+        public double WaterDebt { get; set; }
     }
 }

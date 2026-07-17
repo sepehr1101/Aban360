@@ -1,6 +1,4 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
-using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
-using Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
@@ -16,6 +14,8 @@ using Aban360.Common.Db.Constants.Literals;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Delete.Contracts;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Implementations;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Delete.Implementations
 {
@@ -56,7 +56,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             await _commonZoneService.IsUserInZone(appUser, meterFlowInfo?.ZoneId ?? 0);
             NumericDictionary zoneInfo = await _t51QueryService.Get(meterFlowInfo?.ZoneId ?? 0, false);
             MeterFlowDeleteDto meterFlowRemoveDto = new(id, appUser.UserId, DateTime.Now);
-            MeterReadingDetailDeleteDto meterReadingDetailRemoveDto = new(firstFlowId, appUser.UserId, DateTime.Now);
+            MeterReadingDetailDeleteDto meterReadingDetailRemoveDto = new(firstFlowId, appUser.UserId, DateTime.Now, MeterReadingDetailRemovedType.Removed);
             string opLogText = string.Format(OpLogLiterals.MeterFlowRemoveOpLog, meterFlowInfo.FileName, newFileName, zoneInfo.Title);
 
             await ExecSql(meterFlowRemoveDto, meterReadingDetailRemoveDto, appUser, opLogText, meterFlowInfo.FileName, newFileName);

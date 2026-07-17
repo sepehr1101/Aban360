@@ -1,6 +1,6 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 
-namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts
+namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts
 {
     public interface IMeterFlowQueryService
     {

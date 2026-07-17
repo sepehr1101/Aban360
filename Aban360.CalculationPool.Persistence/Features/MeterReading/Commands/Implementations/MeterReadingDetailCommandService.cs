@@ -1,5 +1,4 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
-using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
@@ -7,7 +6,7 @@ using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
-namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations
+namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Implementations
 {
     public sealed class MeterReadingDetailCommandService
     {
@@ -94,6 +93,15 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             string query = GetDeleteCommands();
             int affectedRecords = await _connection.ExecuteAsync(query, input, _transaction);
             if (affectedRecords <= 0)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidUpdate);
+            }
+        }
+        public async Task Delete(MeterReadingDetailByFromToReadingNumberDeleteDto input, int recordCount)
+        {
+            string query = GetDeleteByFromToReadingNumberCommand();
+            int affectedRecords = await _connection.ExecuteAsync(query, input, _transaction);
+            if (affectedRecords != recordCount)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidUpdate);
             }
@@ -205,6 +213,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
             table.Columns.Add("abon_ab", typeof(decimal));
             table.Columns.Add("pard", typeof(decimal));
             table.Columns.Add("jam", typeof(decimal));
+            table.Columns.Add("BeforDebt", typeof(double));
+            table.Columns.Add("WaterDebt", typeof(double));
+
             table.Columns.Add("cod_vas", typeof(decimal));
             table.Columns.Add("ghabs", typeof(string));
             table.Columns.Add("del", typeof(bool));
@@ -354,6 +365,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                 row["abon_ab"] = x.AbonAb;
                 row["pard"] = x.Pard;
                 row["jam"] = x.Jam;
+                row["WaterDebt"] = x.WaterDebt;
+                row["BeforDebt"] = x.BeforDebt;
+
                 row["cod_vas"] = x.CodVas;
                 row["ghabs"] = x.Ghabs;
                 row["del"] = x.Del;
@@ -473,6 +487,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                         NEWAB, NEWFA, BODJEH, group1, MAS_FAS, FAZ,
                         CHK_KARBARI, C200, Ab_sevom, Ab_sevom1, C70, C80,
                         C90, C101, Khali_s, edareh_k, Avarez,
+                        WaterDebt, BeforDebt,
 
                         AbBahaDiscount,HotSeasonDiscount,HotSeasonFazelabDiscount,FazelabDiscount,AbonmanAbDiscount,
                         AbonmanFazelabDiscount,AvarezDiscount,JavaniDiscount,BoodjeDiscount,MaliatDiscount
@@ -500,6 +515,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                         @NewAb, @NewFa, @Bodjeh, @Group1, @MasFas, @Faz,
                         @ChkKarbari, @C200, @AbSevom, @AbSevom1, @C70, @C80,
                         @C90, @C101, @KhaliS, @EdarehK, @Avarez,
+                        @WaterDebt, @BeforDebt,
 
                         @AbBahaDiscount,@HotSeasonDiscount,@HotSeasonFazelabDiscount,@FazelabDiscount,@AbonmanAbDiscount,
                         @AbonmanFazelabDiscount,@AvarezDiscount,@JavaniDiscount,@BoodjeDiscount,@MaliatDiscount
@@ -509,18 +525,20 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
         {
             return @"Update Atlas.dbo.MeterReadingDetail	
                     Set 
-                    	RemovedByUserId=@RemovedByUserId ,
-                    	RemovedDateTime=@RemovedDateTime
-                    Where Id=@Id";
+                    	RemovedByUserId = @RemovedByUserId ,
+                    	RemovedDateTime = @RemovedDateTime ,
+                        RemovedType = @RemovedType 
+                    Where Id = @Id";
         }
         private string GetDeleteByFlowImportedIdCommands()
         {
             return @"Update Atlas.dbo.MeterReadingDetail	
                     Set 
-                    	RemovedByUserId=@RemovedByUserId ,
-                    	RemovedDateTime=@RemovedDateTime
+                    	RemovedByUserId = @RemovedByUserId ,
+                    	RemovedDateTime = @RemovedDateTime ,
+                        RemovedType = @RemovedType 
                     Where 
-                        FlowImportedId=@Id AND
+                        FlowImportedId = @Id AND
                         RemovedDateTime IS NULL";
         }
         private string GetCreateDuplicateForLogCommand()
@@ -657,6 +675,19 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Implementati
                         ExcludedCauseId = @ExcludedCauseId , 
                         ExcludedCauseTitle = @ExcludedCauseTitle
                     Where Id=@Id";
+        }
+        private string GetDeleteByFromToReadingNumberCommand()
+        {
+            return $@"Update Atlas.dbo.MeterReadingDetail	
+                    Set 
+                    	RemovedByUserId = @RemovedByUserId ,
+                    	RemovedDateTime = @RemovedDateTime ,
+                        RemovedType = @RemovedType 
+                    Where
+                        ReadingNumber BETWEEN @FromReadingNumber AND @ToReadingNumber AND
+                        RemovedByUserId IS NULL AND 
+                        ExcludedByUserId IS NULL AND
+                        FlowImportedId = @FlowImportedId";
         }
     }
 }

@@ -43,7 +43,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             string filePath = await SaveToDisk(input.ReadingFile, _dbfPath);
             IEnumerable<MeterReadingDetailCreateDto> readingDetails = await GetMeterReadingDetails(input, filePath, appUser.UserId);
             FileCreateDto fileCreateInfo = new(input.ReadingFile.FileName, filePath, input.Description);
-            ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = await _meterReadingCreateBaseHandler.GetReadingDetailCreateFinal(readingDetails, fileCreateInfo, appUser, cancellationToken);
+            ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = await _meterReadingCreateBaseHandler.GetReadingDetailCreateFinal(readingDetails, appUser, cancellationToken);
 
             await _meterReadingCreateBaseHandler.ExecSql(readingDetailsCreate, fileCreateInfo, appUser);
             return _meterReadingCreateBaseHandler.GetReturnData(readingDetailsCreate, _reportTitle);

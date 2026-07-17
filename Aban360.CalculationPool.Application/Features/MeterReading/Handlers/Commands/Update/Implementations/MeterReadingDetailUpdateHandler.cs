@@ -2,8 +2,8 @@
 using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
-using Aban360.CalculationPool.Persistence.Features.MeterReading.Contracts;
-using Aban360.CalculationPool.Persistence.Features.MeterReading.Implementations;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Implementations;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
@@ -66,7 +66,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             AbBahaCalculationDetails abBahaResult = await CalcAbBahaTariff(input, previousMeterDetailDto, cancellationToken);
             //MeterReadingDetailCreateDuplicateDto readingCreateDuplicate = new(input.Id, input.CurrentCounterStateCode, input.CurrentDateJalali, input.CurrentNumber, appUser.UserId, DateTime.Now, abBahaResult.SumItems, abBahaResult.SumItemsBeforeDiscount, abBahaResult.DiscountSum, abBahaResult.Consumption, abBahaResult.MonthlyConsumption);
             MeterReadingDetailCreateDto meterReadingCreateDto = await GetMeterReadingDetailCreateDto(abBahaResult, input, previousMeterDetailDto, appUser);
-            MeterReadingDetailDeleteDto readingDelete = new(input.Id, appUser.UserId, DateTime.Now);
+            MeterReadingDetailDeleteDto readingDelete = new(input.Id, appUser.UserId, DateTime.Now, MeterReadingDetailRemovedType.EditRecord);
             if (abBahaResult.SumItems > _maxAmount)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(previousMeterDetailDto.BillId, _maxAmount));
@@ -170,6 +170,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             meterDetailCreateDto.Baha = (decimal)sumItems;
             meterDetailCreateDto.Pard = (decimal)pard;
             meterDetailCreateDto.Jam = (decimal)jam;
+            meterDetailCreateDto.WaterDebt = customerInfo.MembersInfo.LatestDebtAmount;
+            meterDetailCreateDto.BeforDebt = abBahaCalc?.SumItems ?? 0;
+
             meterDetailCreateDto.CodVas = meterDetailCreateDto.CurrentCounterStateCode;
             meterDetailCreateDto.Ghabs = "1";
             meterDetailCreateDto.Del = false;

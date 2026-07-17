@@ -22,6 +22,7 @@
         public DateTime InsertDateTime { get; set; }
         public Guid? RemovedByUserId { get; set; }
         public DateTime? RemovedDateTime { get; set; }
+        public short? RemovedType { get; set; }
 
         public int BranchTypeId { get; set; }
         public string BranchTypeTitle { get; set; }
@@ -91,6 +92,10 @@
         public decimal? AbonAb { get; set; }
         public decimal? Pard { get; set; }//ger baha -> 3 ragham akhar gerd
         public decimal? Jam { get; set; }//baha+ bedehi ghabli
+        public double WaterDebt { get; set; }
+        public double BeforDebt { get; set; }
+
+
         public decimal? CodVas { get; set; }//1--8 ->from inputDto
         public string? Ghabs { get; set; }//?
         public bool? Del { get; set; }//0

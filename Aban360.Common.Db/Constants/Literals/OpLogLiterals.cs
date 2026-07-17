@@ -43,6 +43,7 @@
         public static string UserDelete => @"کاربر حذف شد. شناسه کاربر:{0}";
 
         public static string MeterFlowRemoveOpLog => @"فایل قرائت حذف شد. نام قبلی فایل:{0}  نام فعلی فایل:{1} ناحیه:{2}";
+        public static string ChangeDateBatchOpLog => @"تاریخ قرائت‌های فایل ویرایش شد.شناسه فایل:{0}  از اشتراک:{1}  تا اشتراک:{2}  تعدا قرائت:{3}  ویرایش به تاریخ:{4}";
 
         public static string AbonmanInsertOpLog => @"فرمول آبونمان ایجاد شد.کاربری:{0}  فرمول:{1}  از تاریخ:{2}  تا تاریخ:{3}";
         public static string AbonmanUpdateOpLog => @"فرمول آبونمان ویرایش شد.کاربری از {0} به {1} / فرمول از {2} به {3}  /  از تاریخ {4} به {5}  / تا تاریخ {6} به {7}";
@@ -68,7 +69,8 @@
         public static string UsageGroup3DeleteOpLog => @"گروه کاربری3 حذف شد. شناسه جدول:{0}";
       
         public static string RequestConfirmTracking => @"ثبت قطعی درخواست انجام شد. شماره پیگیری:{0} ناحیه:{1}  شناسه جدول لاگ اطلاعات کاربر:{2}";
-
+      
+        
 
     }
 }

@@ -14,7 +14,7 @@
         public static string ChangeDate { get { return "تاریخ تعویض"; } }
         public static string ByZone { get { return " بر اساس ناحیه "; } }
         public static string ByRegion { get { return " بر اساس منطقه "; } }
-        public static string ZoneTitle { get { return "ناحیه"; } }
+        public static string ZoneTitle { get { return "ZoneTitle"; } }
         public static string ByDay { get { return " بر اساس روز "; } }
         public static string ByUsage { get { return " بر اساس کاربری "; } }
         public static string UsageTitle { get { return "UsageTitle"; } }
@@ -34,7 +34,7 @@
         public static string WithVillage { get { return " روستایی "; } }
 
         public static string BillsHistory { get { return $"{Report} تاریخچه قبوض "; } }
-  
+
         public static string EmptyUnit { get { return $"{Report} خالی از سکنه"; } }
 
         public static string EmptyUnitPossibility { get { return $"{Report} احتمال خالی از سکنه "; } }
@@ -250,54 +250,54 @@
 
         public static string WaterSaleSummary { get { return " خلاصه فروش آب‌بها "; } }
         public static string WaterSaleDetail { get { return " جزئیات فروش آب‌بها "; } }
-        
+
         public static string ClientGuildSummary { get { return " خلاصه اصناف "; } }
         public static string ClientGuildDetail { get { return " جزئیات اصناف "; } }
-        
+
         public static string WaterDiscountSummary { get { return " خلاصه تخفیفات آب‌بها "; } }
         public static string WaterDiscountDetail { get { return " جزئیات تخفیفات آب‌بها "; } }
 
         public static string UspFinancial2 { get { return "گزارش درامد2"; } }
         public static string UspPayment2 { get { return "گزارش وصولی 2"; } }
-       
-        public static string LatestCustomersInfo{ get { return "آخرین اطلاعات مشترکین"; } }
+
+        public static string LatestCustomersInfo { get { return "آخرین اطلاعات مشترکین"; } }
 
         public static string InstallmentPrint { get { return "کروکی"; } }
 
 
         //Request
-        public static string Tracking { get { return "درخواست ها"; }  }
+        public static string Tracking { get { return "درخواست ها"; } }
 
-        public static int DisconnectId { get { return 0; }  }
-        public static int ConnectId { get { return 1; }  }
-        public static int JudicalNoticeId { get { return 2; }  }
-        public static string Disconnect { get { return "صدور دستور قطع"; }  }
-        public static string Connect { get { return "صدور دستور وصل"; }  }
-        public static string JudicalNotice { get { return "صدور اسناد رسمی"; }  }
-        public static string NoResultConnectDisconnect { get { return "دستورات قطع و وصل بدون نتیجه"; }  }
-        public static string ConnectDisconnectMain { get { return "خلاصه دستورات قطع/وصل/اسناد رسمی"; }  }
-        public static string ConnectDisconnectDetail { get { return "جزئیات دستورات قطع/وصل/اسناد رسمی"; }  }
-        public static string ConnectDisconnectVeryDetail { get { return "جزئیات دستورات قطع/وصل/اسناد رسمی"; }  }
-       
-        
-        public static string UnconfirmedBillReturn { get { return "قبوض برگشتی تایید نشده."; }  }
-        public static string ServiceLinkPaid { get { return "وصولی حق انشعاب"; }  }
-        public static string ServiceLinkUnconfirmed { get { return "برگشتی تایید نشده حق انشعاب"; }  }
+        public static int DisconnectId { get { return 0; } }
+        public static int ConnectId { get { return 1; } }
+        public static int JudicalNoticeId { get { return 2; } }
+        public static string Disconnect { get { return "صدور دستور قطع"; } }
+        public static string Connect { get { return "صدور دستور وصل"; } }
+        public static string JudicalNotice { get { return "صدور اسناد رسمی"; } }
+        public static string NoResultConnectDisconnect { get { return "دستورات قطع و وصل بدون نتیجه"; } }
+        public static string ConnectDisconnectMain { get { return "خلاصه دستورات قطع/وصل/اسناد رسمی"; } }
+        public static string ConnectDisconnectDetail { get { return "جزئیات دستورات قطع/وصل/اسناد رسمی"; } }
+        public static string ConnectDisconnectVeryDetail { get { return "جزئیات دستورات قطع/وصل/اسناد رسمی"; } }
+
+
+        public static string UnconfirmedBillReturn { get { return "قبوض برگشتی تایید نشده."; } }
+        public static string ServiceLinkPaid { get { return "وصولی حق انشعاب"; } }
+        public static string ServiceLinkUnconfirmed { get { return "برگشتی تایید نشده حق انشعاب"; } }
 
 
         public static string MeterReadingFilePath { get { return @"AppData\Dbfs"; } }
-        public static string MeterReadingNonReadCreate { get { return "قبض دسته‌ای علی‌الحساب"; }  }
-        public static string MeterReadingCreateFile { get { return "آپلود و محاسبه اولیه"; }  }
-        public static string MeterReadingExcluded { get { return "قرائت‌های خارج شده از لیست"; }  }
-        public static string MeterReadingUpdated{ get { return "قرائت‌های ویرایش شده"; }  }
-        public static string MeterReadingExcelFile{ get { return "قرائت"; }  }
+        public static string MeterReadingNonReadCreate { get { return "قبض دسته‌ای علی‌الحساب"; } }
+        public static string MeterReadingCreateFile { get { return "آپلود و محاسبه اولیه"; } }
+        public static string MeterReadingExcluded { get { return "قرائت‌های خارج شده از لیست"; } }
+        public static string MeterReadingUpdated { get { return "قرائت‌های ویرایش شده"; } }
+        public static string MeterReadingExcelFile { get { return "قرائت"; } }
 
-        public static string JudicalNoticeCommand{ get { return "تقاضانامه صدور اجرائیه اسناد ذمه"; }  }
+        public static string JudicalNoticeCommand { get { return "تقاضانامه صدور اجرائیه اسناد ذمه"; } }
 
         public static string PriGTCurrent { get { return "در انتظار تغیرات/برگشتی"; } }
         public static string NeedEvaluate { get { return "نیاز به بررسی مجدد"; } }
         public static string Error { get { return "خطا سیستم"; } }
-   
+
         public static string NonRead { get { return "NonRead"; } }
 
 
