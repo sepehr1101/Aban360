@@ -282,7 +282,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 D = (double)duration,
                 L = consumptionPartialInfo.AllowedConsumption,
                 Q = consumptionPartialInfo.DisallowedConsumtion,
-                T = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.PureDomesticUnit : customerInfo.UnitAll),
+                T = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.DomesticUnitForHousehold : customerInfo.UnitAll),
                 Z = (double)customerInfo.ContractualCapacity,
                 tags = tagIds?.ToArray()
             };
@@ -296,7 +296,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 D = (double)duration,
                 L = consumptionPartialInfo.AllowedConsumption,
                 Q = consumptionPartialInfo.DisallowedConsumtion,
-                T = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.PureDomesticUnit : customerInfo.UnitAll),
+                T = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.DomesticUnitForHousehold : customerInfo.UnitAll),
                 Z = (double)customerInfo.ContractualCapacity,
                 tags = tagIds?.ToArray()
             };
