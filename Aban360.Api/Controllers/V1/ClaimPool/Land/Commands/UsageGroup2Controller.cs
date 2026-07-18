@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V2.ClaimPool.Land.Commands
 {
-    [Route("v2/usage-group2")]
+    [Route("v1/usage-group2")]
     public class UsageGroup2Controller : BaseController
     {
         private readonly IUsageGroup2InsertHandler _usageGroup2InsertHandler;
