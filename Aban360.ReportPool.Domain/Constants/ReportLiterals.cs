@@ -300,6 +300,9 @@
 
         public static string NonRead { get { return "NonRead"; } }
 
+        public static string CustomerLegalSummary { get { return "خلاصه مشترکین حقیقی/حقوقی"; } }
+        public static string CustomerLegalDetail { get { return "جزئیات مشترکین حقیقی/حقوقی"; } }
+
 
     }
 }
