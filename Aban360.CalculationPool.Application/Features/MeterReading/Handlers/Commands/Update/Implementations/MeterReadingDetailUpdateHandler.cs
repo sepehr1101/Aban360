@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Update.Contracts;
+using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
@@ -24,7 +25,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IMeterFlowQueryService _meterFlowQueryService;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
         private readonly ICustomerInfoService _customerInfoService;
+        private readonly IMeterFlowQueryService _meterFlowService;
         private readonly IOldTariffEngine _oldTariffEngine;
+        private readonly IMeterReadingValidateHandler _meterReadingValidateHandler;
         private readonly IValidator<MeterReadingDetailUpdateDto> _validator;
         static MeterFlowStepEnum[] _allowedUpdateFileStep = { MeterFlowStepEnum.Imported, MeterFlowStepEnum.Calculated, MeterFlowStepEnum.ConsumptionChecked };
         const double _maxAmount = 999_999_999_999;
@@ -38,7 +41,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             IMeterFlowQueryService meterFlowQueryService,
              IMeterReadingDetailQueryService meterReadingDetailService,
              ICustomerInfoService customerInfoService,
+             IMeterFlowQueryService meterFlowService,
              IOldTariffEngine oldTariffEngine,
+             IMeterReadingValidateHandler meterReadingValidateHandler,
              IValidator<MeterReadingDetailUpdateDto> validator,
              IConfiguration configuration)
             : base(configuration)
@@ -52,14 +57,20 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             _customerInfoService = customerInfoService;
             _customerInfoService.NotNull(nameof(customerInfoService));
 
+            _meterFlowService = meterFlowService;
+            _meterFlowService.NotNull(nameof(meterFlowService));
+
             _oldTariffEngine = oldTariffEngine;
             _oldTariffEngine.NotNull(nameof(oldTariffEngine));
+
+            _meterReadingValidateHandler = meterReadingValidateHandler;
+            _meterReadingValidateHandler.NotNull(nameof(meterReadingValidateHandler));
 
             _validator = validator;
             _validator.NotNull(nameof(_validator));
         }
 
-        public async Task Handle(MeterReadingDetailUpdateDto input, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<MeterReadingDetailCheckedDto> Handle(MeterReadingDetailUpdateDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             MeterReadingDetailDataOutputDto previousMeterDetailDto = await _meterReadingDetailService.GetById(input.Id);
             await Validate(input, previousMeterDetailDto, cancellationToken);
@@ -74,10 +85,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(previousMeterDetailDto.BillId, _maxAmount));
             }
 
-            await ExecSql(meterReadingCreateDto, readingDeleteDto);
-
+            int meterReadingDetailUpdatedId = await ExecSql(meterReadingCreateDto, readingDeleteDto);
+            MeterReadingDetailDataOutputDto meterReadingUpdatedInfo = await _meterReadingDetailService.GetById(meterReadingDetailUpdatedId);
+            MeterFlowStepEnum latestFlowStep = (await _meterFlowService.GetLatestFlowInfo(meterReadingUpdatedInfo.FlowImportedId)).MeterFlowStepId;
+            return GetResult(meterReadingUpdatedInfo, latestFlowStep);
         }
-        private async Task ExecSql(MeterReadingDetailCreateDto meterReadingCreateDto, MeterReadingDetailDeleteDto readingDeleteDto)
+        private async Task<int> ExecSql(MeterReadingDetailCreateDto meterReadingCreateDto, MeterReadingDetailDeleteDto readingDeleteDto)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -89,11 +102,78 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 {
                     MeterReadingDetailCommandService meterReadingDetailCommandService = new(connection, transaction);
 
-                    await meterReadingDetailCommandService.Insert(meterReadingCreateDto);
+                    int meterReadingDetailUpdatedId = await meterReadingDetailCommandService.Insert(meterReadingCreateDto);
                     await meterReadingDetailCommandService.Delete(readingDeleteDto);//remove previous
+
                     transaction.Commit();
+                    return meterReadingDetailUpdatedId;
                 }
             }
+        }
+        private MeterReadingDetailCheckedDto GetResult(MeterReadingDetailDataOutputDto updatedInfo, MeterFlowStepEnum latestFlowStep)
+        {
+            return new MeterReadingDetailCheckedDto()
+            {
+                Id = updatedInfo.Id,
+                FlowImportedId = updatedInfo.FlowImportedId,
+                ZoneId = updatedInfo.ZoneId,
+                CustomerNumber = updatedInfo.CustomerNumber,
+                ReadingNumber = updatedInfo.ReadingNumber,
+                BillId = updatedInfo.BillId,
+                AgentCode = updatedInfo.AgentCode,
+                CurrentCounterStateCode = updatedInfo.CurrentCounterStateCode,
+                PreviousDateJalali = updatedInfo.PreviousDateJalali,
+                CurrentDateJalali = updatedInfo.CurrentDateJalali,
+                PreviousNumber = updatedInfo.PreviousNumber,
+                CurrentNumber = updatedInfo.CurrentNumber,
+                InsertByUserId = updatedInfo.InsertByUserId,
+                InsertDateTime = updatedInfo.InsertDateTime,
+                BranchTypeId = updatedInfo.BranchTypeId,
+                BranchTypeTitle = updatedInfo.BranchTypeTitle,
+                UsageId = updatedInfo.UsageId,
+                UsageTitle = updatedInfo.UsageTitle,
+                ConsumptionUsageId = updatedInfo.ConsumptionUsageId,
+                DomesticUnit = updatedInfo.DomesticUnit,
+                CommercialUnit = updatedInfo.CommercialUnit,
+                OtherUnit = updatedInfo.OtherUnit,
+                TotalUnit = updatedInfo.DomesticUnit + updatedInfo.CommercialUnit + updatedInfo.OtherUnit,
+                EmptyUnit = updatedInfo.EmptyUnit,
+                WaterInstallationDateJalali = updatedInfo.WaterInstallationDateJalali,
+                SewageInstallationDateJalali = updatedInfo.SewageInstallationDateJalali,
+                WaterRegisterDate = updatedInfo.WaterRegisterDate,
+                SewageRegisterDate = updatedInfo.SewageRegisterDate,
+                WaterCount = updatedInfo.WaterCount,
+                SewageCalcState = updatedInfo.SewageCalcState,
+                ContractualCapacity = updatedInfo.ContractualCapacity,
+                HouseholdNumber = updatedInfo.HouseholdNumber,
+                HouseholdDate = updatedInfo.HouseholdDate,
+                VillageId = updatedInfo.VillageId,
+                IsSpecial = updatedInfo.IsSpecial,
+                MeterDiameterId = updatedInfo.MeterDiameterId,
+                VirtualCategoryId = updatedInfo.VirtualCategoryId,
+                BodySerial = updatedInfo.BodySerial,
+                Duration = updatedInfo.Modat ?? 0,
+                TavizDateJalali = updatedInfo.TavizDateJalali,
+                TavizCause = updatedInfo.TavizCause,
+                TavizRegisterDateJalali = updatedInfo.TavizRegisterDateJalali,
+                TavizNumber = updatedInfo.TavizNumber,
+                LastMeterDateJalali = updatedInfo.LastMeterDateJalali,
+                LastMeterNumber = updatedInfo.LastMeterNumber,
+                LastConsumption = updatedInfo.LastConsumption,
+                LastMonthlyConsumption = updatedInfo.LastMonthlyConsumption,
+                LastCounterStateCode = updatedInfo.LastCounterStateCode,
+                LastSumItems = updatedInfo.LastSumItems,
+
+                SumItems = updatedInfo.SumItems,
+                SumItemsBeforeDiscount = updatedInfo.SumItemsBeforeDiscount,
+                DiscountSum = updatedInfo.DiscountSum,
+                WaterDebt = updatedInfo.WaterDebt,
+                BeforDebt = updatedInfo.BeforDebt,
+                Consumption = updatedInfo.Consumption,
+                MonthlyConsumption = updatedInfo.MonthlyConsumption,
+                AttentionState = _meterReadingValidateHandler.GetAttentionState(updatedInfo, latestFlowStep),
+                HasAttentionCounterState = _meterReadingValidateHandler.IsAttentionCounterState(updatedInfo.CurrentCounterStateCode),
+            };
         }
         private async Task<MeterReadingDetailCreateDto> GetMeterReadingDetailCreateDto(AbBahaCalculationDetails abBahaCalc, MeterReadingDetailUpdateDto input, MeterReadingDetailDataOutputDto previousMeterDetailDto, CustomerInfoGetDto customerInfo, IAppUser appUser)
         {

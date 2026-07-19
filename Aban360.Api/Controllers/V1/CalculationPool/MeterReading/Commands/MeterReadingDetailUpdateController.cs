@@ -20,11 +20,11 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
 
         [HttpPost]
         [Route("update")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MeterReadingDetailCheckedDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingDetailCheckedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update(MeterReadingDetailUpdateDto input, CancellationToken cancellationToken)
         {
-            await _meterReadingDetailUpdateHandler.Handle(input, CurrentUser, cancellationToken);
-            return Ok(input);
+            MeterReadingDetailCheckedDto result = await _meterReadingDetailUpdateHandler.Handle(input, CurrentUser, cancellationToken);
+            return Ok(result);
         }
     }
 }

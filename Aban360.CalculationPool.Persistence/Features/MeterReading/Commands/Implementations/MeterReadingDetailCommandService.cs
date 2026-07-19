@@ -23,14 +23,15 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
             _transaction.NotNull(nameof(transaction));
         }
 
-        public async Task Insert(MeterReadingDetailCreateDto input)
+        public async Task<int> Insert(MeterReadingDetailCreateDto input)
         {
             string command = GetInsertCommand();
-            int affectedRecords = await _connection.ExecuteAsync(command, input, _transaction);
-            if (affectedRecords <= 0)
+            int recordId = await _connection.QueryFirstOrDefaultAsync<int>(command, input, _transaction);
+            if (recordId <= 0)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidUpdate);
             }
+            return recordId;
         }
         public async Task Insert(IEnumerable<MeterReadingDetailCreateDto> input)
         {
@@ -519,7 +520,9 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
 
                         @AbBahaDiscount,@HotSeasonDiscount,@HotSeasonFazelabDiscount,@FazelabDiscount,@AbonmanAbDiscount,
                         @AbonmanFazelabDiscount,@AvarezDiscount,@JavaniDiscount,@BoodjeDiscount,@MaliatDiscount
-                    )";
+                    );
+
+                    Select SCOPE_IDENTITY();";
         }
         private string GetDeleteCommands()
         {
