@@ -159,7 +159,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             else
             {
                 //case 1: is zero
-                if (CheckZero(duration, monthlyConsumption, nerkh.AllowedFormula))
+                if (CheckZero(duration))
                 {
                     return new TariffItemResult();
                 }
