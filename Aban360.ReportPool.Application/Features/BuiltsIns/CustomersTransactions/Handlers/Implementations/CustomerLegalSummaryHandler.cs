@@ -18,17 +18,20 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             _customerInfoQueryService.NotNull(nameof(customerInfoQueryService));
         }
 
-        public async Task<ReportOutput<CustomerLegalDetailHeaderOutputDto, CustomerLegalSummaryDataOutputDto>> Handle(CustomerLegalInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<CustomerLegalSummaryHeaderOutputDto, CustomerLegalSummaryDataOutputDto>> Handle(CustomerLegalInputDto input, CancellationToken cancellationToken)
         {
             IEnumerable<CustomerLegalSummaryDataOutputDto> data = await _customerInfoQueryService.GetSummary(input);
-            CustomerLegalDetailHeaderOutputDto header = new()
+            CustomerLegalSummaryHeaderOutputDto header = new()
             {
                 ZoneCount = input?.ZoneIds?.Count() ?? 0,
-                CustomerCount = data?.Count() ?? 0,
+                CustomerCount = data?.Sum(d => d.LegalCount + d.NaturalCount + d.InvalidCount) ?? 0,
+                LegalCount = data?.Sum(d => d.LegalCount) ?? 0,
+                NaturalCount = data?.Sum(d => d.LegalCount) ?? 0,
+                InvalidCount = data?.Sum(d => d.InvalidCount) ?? 0,
                 RecordCount = data?.Count() ?? 0,
                 Title = _title,
             };
-            return new ReportOutput<CustomerLegalDetailHeaderOutputDto, CustomerLegalSummaryDataOutputDto>(_title, header, data);
+            return new ReportOutput<CustomerLegalSummaryHeaderOutputDto, CustomerLegalSummaryDataOutputDto>(_title, header, data);
         }
     }
 }

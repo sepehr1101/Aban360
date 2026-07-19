@@ -93,7 +93,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
             return @$"Select 
                     	t51.C0 ZoneId,
-                    	t51.C2 ZoneTitl,
+                    	t51.C2 ZoneTitle,
                     	t46.C0 RegionId,
                     	t46.C2 RegionTitle,
                     	c.BillId,
