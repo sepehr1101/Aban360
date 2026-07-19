@@ -582,6 +582,9 @@ namespace Aban360.Common.Extensions
                     { "RemovedDateTime", "تاریخ حذف"},
                     { "RemovedDateTimeJalali", "تاریخ حذف"},
                     { "RemovedBy", "حذف توسط"},
+                    { "LegalCount", "حقوقی"},
+                    { "NaturalCount", "حقیقی"},
+                    { "InvalidCount", "ناصحیح"},
             };
         }
     }
