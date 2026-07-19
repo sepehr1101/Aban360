@@ -27,9 +27,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             IEnumerable<ConCompanyGetDto> result = await _sqlReportConnection.QueryAsync<ConCompanyGetDto>(query, new { zoneId });
             return result;
         }
-        public async Task<ConCompanyGetDto> Get(int id)
+        public async Task<ConCompanyGetDto> GetValid(int id)
         {
-            string query = GetByIdQuery();
+            string query = GetValidByIdQuery();
             ConCompanyGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ConCompanyGetDto>(query, new { id });
             if (result is null)
             {
@@ -39,7 +39,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
         }
         public async Task<ConCompanyPersonnelGetDto> GetPersonnel(int id)
         {
-            string query = GetByIdQuery();
+            string query = GetValidByIdQuery();
             ConCompanyPersonnelGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ConCompanyPersonnelGetDto>(query, new { id });
             if (result is null)
             {
@@ -148,7 +148,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         c.ZoneId = @ZoneId AND
                         c.RemovedBy IS NULL";
         }
-        private string GetByIdQuery()
+        private string GetValidByIdQuery()
         {
             return @$"Select 
                          c.Id,

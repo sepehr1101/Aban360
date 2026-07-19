@@ -41,7 +41,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
         public async Task Handle(ConCompanyPersonnelInsertInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await Validate(inputDto, cancellationToken);
-            ConCompanyGetDto conCompanyInfo = await _conCompanyQueryService.Get(inputDto.CompanyId);
+            ConCompanyGetDto conCompanyInfo = await _conCompanyQueryService.GetValid(inputDto.CompanyId);
             string ConCompanyPersonnelInsertJson = GetPersonnelInsertJson(inputDto, appUser);
             string opLogText = string.Format(OpLogLiterals.ConCompanyPersonnelInsertOpLog, inputDto.FullName, inputDto.NationalCode);
             Console.WriteLine(ConCompanyPersonnelInsertJson);

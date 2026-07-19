@@ -15,7 +15,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
         }
         public async Task<ConCompanyGetDto> Handle(int id, CancellationToken cancellationToken)
         {
-            ConCompanyGetDto result = await _conCompanyQueryService.Get(id);
+            ConCompanyGetDto result = await _conCompanyQueryService.GetValid(id);
             return result;
         }
     }

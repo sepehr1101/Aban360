@@ -82,7 +82,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         {
             ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo = await ValidateAndGetCustomerGeneral(inputDto, isConnect);
             NumericDictionary? connectDisconnectCause = GetCasues().Where(c => c.Id == (inputDto.Why ?? 0)).FirstOrDefault();
-            ConCompanyGetDto companyInfo = await _conCompanyQueryService.Get(inputDto.CompanyId);
+            ConCompanyGetDto companyInfo = await _conCompanyQueryService.GetValid(inputDto.CompanyId);
             ConCompanyPersonnelPersonalGetDto personnelInfo = await _conCompanyQueryService.GetPersonnelById(inputDto.CompanyId, inputDto.PersonnelId);
             var (messageText, opLogText, title) = GetStringsValue(customerInfo, inputDto, personnelInfo, isConnect, connectDisconnectCause?.Title);
 

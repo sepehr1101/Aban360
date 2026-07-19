@@ -6,7 +6,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts
     {
         Task<IEnumerable<ConCompanyGetDto>> Get();
         Task<IEnumerable<ConCompanyGetDto>> GetValidByZoneId(int zoneId);
-        Task<ConCompanyGetDto> Get(int id);
+        Task<ConCompanyGetDto> GetValid(int id);
         Task<ConCompanyPersonnelGetDto> GetPersonnel(int id);
         Task<IEnumerable<ConCompanyPersonnelGetDto>> GetPersonnel();
         Task<ConCompanyPersonnelPersonalGetDto> GetPersonnelById(int companyId, Guid personnelId);

@@ -49,7 +49,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
         public async Task<FlatReportOutput<JudicalNoticeCommandHeaderOutputDto, JudicalNoticeCommandDataOutputDto>> Handle(JudicalNoticeCommandInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await Validate(inputDto, cancellationToken);
-            ConCompanyGetDto conCompanyInfo = await _conCompanyQueryService.Get(inputDto.CompanyId);
+            ConCompanyGetDto conCompanyInfo = await _conCompanyQueryService.GetValid(inputDto.CompanyId);
             ZoneIdAndCustomerNumber zoneIdAndCustomeorNumber = await _commonMemberQueryService.Get(inputDto.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomeorNumber);
 
