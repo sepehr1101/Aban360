@@ -204,6 +204,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
                    monthlyConsumption == 0 ||
                    string.IsNullOrWhiteSpace(vaj);
         }
+        internal static bool CheckZero(double duration)
+        {
+            return duration <= 0;
+        }
         internal static (bool, int) HasVillageCode(string villageId)
         {
             if (string.IsNullOrWhiteSpace(villageId) || villageId.Length < 5)
