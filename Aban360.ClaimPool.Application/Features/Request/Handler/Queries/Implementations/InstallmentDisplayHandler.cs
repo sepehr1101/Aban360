@@ -4,9 +4,7 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.BaseEntities;
-using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.Common.Literals;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations
 {
@@ -43,10 +41,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             MoshtrakOutputDto? moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
 
             IEnumerable<KartGetDto> karts = await _kartQueryService.GetAll(trackingInfo.StringTrackNumber, trackingInfo.ZoneId);
-            if (karts?.Count() == 0 || (karts?.FirstOrDefault()?.FinalAmount ?? 0) < _MinAmount)
-            {
-                throw new InvalidTrackingException(ExceptionLiterals.NotCalculation);
-            }
+            //if (karts?.Count() == 0 || (karts?.FirstOrDefault()?.FinalAmount ?? 0) < _MinAmount)
+            //{
+            //    throw new InvalidTrackingException(ExceptionLiterals.NotCalculation);
+            //}
             IEnumerable<InstallmentRequestDataOutputDto> ghests = await _ghestQueryService.Get(trackingInfo.StringTrackNumber, trackingInfo.ZoneId);
             int installmentCount = ghests?.Count() ?? 0;
 

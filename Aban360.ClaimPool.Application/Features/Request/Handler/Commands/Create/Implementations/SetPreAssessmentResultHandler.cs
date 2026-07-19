@@ -62,9 +62,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             await InputValidation(inputDto, cancellationToken);
             TrackingOutputDto latestTrackingInfo = await _trackingQueryService.Get(inputDto.TrackId);
             await Validatoin(latestTrackingInfo.TrackId, latestTrackingInfo.StatusId);
+            bool isSuccess = await GetIsSucces(inputDto.ResultId);
 
             TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto = new(latestTrackingInfo.TrackNumber, _seenByAssessmentStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true);
-            TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(latestTrackingInfo.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, isSuccess: false, false, 1);
+            TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(latestTrackingInfo.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, isSuccess: isSuccess, false, 1);
             TrackingInsertDuplicateDto trackingInserSetArchiveDto = new(latestTrackingInfo.TrackNumber, _archiveStats, inputDto.Description, assessmentCode, _requestOrigin, true, false, 2);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(latestTrackingInfo.ZoneId, null, null, latestTrackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             AssessmentUpdateDto assessmentUpdateDto = await GetAssessmentUpdateDto(inputDto, latestTrackingInfo, moshtrakInfo, assessmentCode, trackingInsertSetAssessmentResultDto.TrackId);
@@ -151,6 +152,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     transaction.Commit();
                 }
             }
+        }
+        private async Task<bool> GetIsSucces(int statusId)
+        {
+            IEnumerable<AssessmentResultOutputDto> results = await _t64QueryService.GetAll();
+            return results.Where(s => s.Id == statusId).Select(s => s.IsSuccess).FirstOrDefault();
         }
     }
 }

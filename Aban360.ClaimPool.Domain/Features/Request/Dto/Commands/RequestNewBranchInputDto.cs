@@ -5,14 +5,14 @@
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string FatherName { get; set; }
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
         public string MobileNumber { get; set; }
         public string NationalCode { get; set; }
         public string CertificateNumber { get; set; }
         public string Address { get; set; }
         public string NeighbourBillId { get; set; }
         public string PostalCode { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public bool HasSms { get; set; }
         public bool IsSkipDuplicate { get; set; }
         public ICollection<int> SelectedServices { get; set; }

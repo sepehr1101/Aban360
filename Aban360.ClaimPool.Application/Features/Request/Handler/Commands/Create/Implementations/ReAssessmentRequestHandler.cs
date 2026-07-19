@@ -15,7 +15,6 @@ using Aban360.Common.BaseEntities;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Contracts;
 using DNTPersianUtils.Core;
 using Aban360.Common.Timing;
-using Microsoft.AspNetCore.Http;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
 {
@@ -23,20 +22,22 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
-        private readonly IExaminationQueryService _assessmentQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IExaminationScheduleQueryService _examinationScheduleQueryService;
         private readonly IExaminationQueryService _examinationQueryService;
-        static int _reAssessmentStatusId = 15;
-        static int _setAssessmentTimeStatusId = 10;
-        static int _deletedSatatus = 90000;
-        static int _requestOrigin = 12;
-        static int _afterSaleRequestType = 2;
-        static int _saleRequestType = 1;
+        private static int _requestOrigin = 12;
+        private static int _afterSaleRequestType = 2;
+        private static int _saleRequestType = 1;
+        private static int _requestRegistered = 0;
+        private static int _reAssessmentStatusId = 15;
+        private static int _setAssessmentTimeStatusId = 10;
+        private static int _deletedSatatus = 90000;
+        private static int _registeredStatus = 90;
+        private static int _amountConfirmedStatus = 75;
+        private int[] _disallowedPreviousStatusIds = { _requestRegistered, _reAssessmentStatusId, _setAssessmentTimeStatusId, _deletedSatatus, _registeredStatus, _amountConfirmedStatus };
         public ReAssessmentRequestHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
-            IExaminationQueryService assessmentQueryService,
             ICommonMemberQueryService commonMemberQueryService,
             IExaminationScheduleQueryService examinationScheduleQueryService,
             IExaminationQueryService examinationQueryService,
@@ -49,9 +50,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _moshtrakQueryService = moshtrakQueryService;
             _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
 
-            _assessmentQueryService = assessmentQueryService;
-            _assessmentQueryService.NotNull(nameof(assessmentQueryService));
-
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
 
@@ -61,36 +59,22 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             _examinationQueryService = examinationQueryService;
             _examinationQueryService.NotNull(nameof(examinationQueryService));
-
         }
 
         public async Task Handle(TrackNumberWithDescriptionInputDto inputDto, int userCode, CancellationToken cancellationToken)
         {
             TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(latestTrackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
-            Validation(inputDto.TrackNumber, latestTrackingInfo.StatusId, moshtrakInfo.IsRegistered);
+            Validate(inputDto.TrackNumber, latestTrackingInfo.StatusId, moshtrakInfo.IsRegistered);
 
             TrackingInsertDuplicateDto trackingInsertDto = new(inputDto.TrackNumber, _reAssessmentStatusId, inputDto.Description, userCode, _requestOrigin, true, false);
+            var (assessmentCode, assessmentDateJalali) = await GetAssessmentTaskInfo(latestTrackingInfo, moshtrakInfo);
 
-            int assessmentCode = 0;
-            string? assessmentDateJalali;
-            if (latestTrackingInfo.ServiceGroupId == _afterSaleRequestType)
-            {
-                MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(latestTrackingInfo.ZoneId, moshtrakInfo.CustomerNumber));
-                (assessmentCode, assessmentDateJalali) = await GetAssessmentDateTime(memberInfo);
-            }
-            else
-            {
-                ZoneIdAndCustomerNumber neighbourCustomerNumber = await _commonMemberQueryService.Get(moshtrakInfo.NeighbourBillId);
-                MemberInfoGetDto neighbourMemberInfo = await _commonMemberQueryService.Get(neighbourCustomerNumber);
-                (assessmentCode, assessmentDateJalali) = await GetAssessmentDateTime(neighbourMemberInfo);
-            }
-
-            await SqlCommands(latestTrackingInfo, inputDto, trackingInsertDto, moshtrakInfo, userCode, assessmentCode, assessmentDateJalali);
+            await ExecSql(latestTrackingInfo, inputDto, trackingInsertDto, moshtrakInfo, userCode, assessmentCode, assessmentDateJalali);
         }
-        private void Validation(int trackNumber, int statusId, bool isRegistered)//todo: need Or not?
+        private void Validate(int trackNumber, int statusId, bool isRegistered)
         {
-            if (isRegistered == true || statusId == _deletedSatatus)//and not Deleted
+            if (isRegistered == true || _disallowedPreviousStatusIds.Contains(statusId))
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
@@ -132,6 +116,24 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 DiscountCount = memberInfo.DiscountCount,
             };
         }
+        private async Task<(int, string?)> GetAssessmentTaskInfo(TrackingOutputDto latestTrackingInfo, MoshtrakOutputDto moshtrakInfo)
+        {
+            int assessmentCode = 0;
+            string? assessmentDateJalali;
+            if (latestTrackingInfo.ServiceGroupId == _afterSaleRequestType)
+            {
+                MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(latestTrackingInfo.ZoneId, moshtrakInfo.CustomerNumber));
+                (assessmentCode, assessmentDateJalali) = await GetAssessmentDateTime(memberInfo);
+            }
+            else
+            {
+                ZoneIdAndCustomerNumber neighbourCustomerNumber = await _commonMemberQueryService.Get(moshtrakInfo.NeighbourBillId);
+                MemberInfoGetDto neighbourMemberInfo = await _commonMemberQueryService.Get(neighbourCustomerNumber);
+                (assessmentCode, assessmentDateJalali) = await GetAssessmentDateTime(neighbourMemberInfo);
+            }
+
+            return (assessmentCode, assessmentDateJalali);
+        }
         private async Task<MoshtrakUpdateCustomerInfoDto> GetSaleMoshtrakUpdateDto(MoshtrakOutputDto moshtrakInfo)
         {
             moshtrakInfo = await _moshtrakQueryService.Get(moshtrakInfo.Id, moshtrakInfo.ZoneId);
@@ -168,14 +170,16 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 DiscountCount = 0,
             };
         }
-        private async Task SqlCommands(TrackingOutputDto latestTrackingInfo, TrackNumberWithDescriptionInputDto inputDto, TrackingInsertDuplicateDto trackingInsertDto, MoshtrakOutputDto moshtrakInfo, int userCode, int assessmentCode, string? assessmentDateJalali)
+        private async Task ExecSql(TrackingOutputDto latestTrackingInfo, TrackNumberWithDescriptionInputDto inputDto, TrackingInsertDuplicateDto trackingInsertDto, MoshtrakOutputDto moshtrakInfo, int userCode, int assessmentCode, string? assessmentDateJalali)
         {
             string dbName = GetDbName(latestTrackingInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
+                {
                     connection.Open();
+                }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
                 {
                     TrackingCommandService trackingCommandService = new(connection, transaction);
@@ -199,7 +203,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     if (!string.IsNullOrWhiteSpace(assessmentDateJalali))
                     {
                         TrackingInsertDuplicateDto trackingInsertSetTimeDto = new(latestTrackingInfo.TrackNumber, _setAssessmentTimeStatusId, inputDto.Description, userCode, _requestOrigin, true, false, 1);
-                        AssessmentInsertDto assessmentInsert = await GetAssessmentInsertDto(trackingInsertSetTimeDto, assessmentCode, assessmentDateJalali, latestTrackingInfo.ZoneId);
+                        AssessmentInsertDto assessmentInsert = await GetAssessmentInsertDto(trackingInsertSetTimeDto, latestTrackingInfo, assessmentCode, assessmentDateJalali);
                         await trackingCommandService.UpdateIsConsiderdLatest(latestTrackingInfo.TrackNumber, true);
                         await trackingCommandService.InsertDuplicate(trackingInsertSetTimeDto);
                         await examinationCommandService.Insert(assessmentInsert);
@@ -254,18 +258,18 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             }
             return (0, string.Empty);
         }
-        private async Task<AssessmentInsertDto> GetAssessmentInsertDto(TrackingInsertDuplicateDto trackingInsertSetTimeDto, int assessmentCode, string assessmentDateJalali, int zoneId)
+        private async Task<AssessmentInsertDto> GetAssessmentInsertDto(TrackingInsertDuplicateDto trackingInsertSetTimeDto, TrackingOutputDto latestTrackingInfo, int assessmentCode, string assessmentDateJalali)
         {
             AssessmentGetDto assessmentData = await _examinationQueryService.Get(assessmentCode);
 
             return new AssessmentInsertDto()
             {
                 TrackNumber = trackingInsertSetTimeDto.TrackNumber,
-                BillId = string.Empty,
+                BillId = latestTrackingInfo.BillId ?? string.Empty,
                 AssessmentCode = assessmentData.Code,
                 AssessmentMobile = assessmentData.PhoneNumber,
                 AssessmentName = assessmentData.FullName,
-                ZoneId = zoneId,
+                ZoneId = latestTrackingInfo.ZoneId,
                 AssessmentDateJalali = assessmentDateJalali,
                 AssessmentGregorianDateTime = ConvertDate.JalaliToDateTime(assessmentDateJalali),
                 ResultId = null,
