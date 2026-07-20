@@ -157,7 +157,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 bool isVillage = IsRural(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption.Value, s.Value);
                 bool isDomestic = IsDomesticWithoutUnspecified(customerInfo.UsageId);
                 decimal multiplierAbBaha = GetMultiplier(zarib, s.Value, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption.Value, customerInfo.BranchType);
-                decimal k1 = GetK1(zarib, s.Value, isVillage);
+                decimal k1 = GetK1(zarib, s.Value, isVillageCalculation, isDomestic);
                 decimal allowedKModifier = isVillage && isDomestic ? (decimal)_villageAllowedMultiplier : 1M;
                 decimal disAllowedKModifier = isVillage && isDomestic ? (decimal)_villageDisallowedMultiplier : 1M;
 
@@ -305,9 +305,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             double disallowed = Eval<double>(nerkh.DisallowedSewageFormula, parametersDisallwed);
             return (allowed, disallowed);
         }
-        private decimal GetK1(ZaribGetDto zarib, int olgoo, bool isVillage)
+        private decimal GetK1(ZaribGetDto zarib, int olgoo, bool isVillage, bool isDomestic)
         {
-            return zarib.Zb3;
+            return isVillage && isDomestic ? zarib.Zarib_baha : zarib.Zb3;
         }
         private decimal GetMultiplier(ZaribGetDto zarib, int olgoo, bool isDomestic, bool isVillage, double monthlyConsumption, int branchType)
         {

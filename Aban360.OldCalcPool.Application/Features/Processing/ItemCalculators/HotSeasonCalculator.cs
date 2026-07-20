@@ -166,7 +166,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 int hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, date1, date2, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
                 double hotSeasonAllowed = hotSeasonDuration > 0 ? (long)((hotSeasonDuration * (fazelabCalcResult.Allowed > 0 && aboveZero ? fazelabCalcResult.Allowed : baseAmount) / duration) * _hotSeasonRate) : 0;                
                 double hotSeasonDisallowed = hotSeasonDuration > 0 ? (long)((hotSeasonDuration * (fazelabCalcResult.Disallowed > 0 && aboveZero ? fazelabCalcResult.Disallowed : 0) / duration) * _hotSeasonRate) : 0;
-                double hotSeasonRemained= hotSeasonDuration > 0 ? (long)((hotSeasonDuration * ((fazelabCalcResult.Disallowed-fazelabCalcResult.Allowed) > 0 && aboveZero ? (fazelabCalcResult.Disallowed - fazelabCalcResult.Allowed) : 0) / duration) * _hotSeasonRate) : 0;
+                /*double hotSeasonRemained= hotSeasonDuration > 0 ? (long)((hotSeasonDuration * ((fazelabCalcResult.Disallowed-fazelabCalcResult.Allowed) > 0 && aboveZero ? (fazelabCalcResult.Disallowed - fazelabCalcResult.Allowed) : 0) / duration) * _hotSeasonRate) : 0;
 
                 if (IsUnderSocialService(customerInfo.BranchType) &&
                    IsDomesticWithoutUnspecified(customerInfo.UsageId))
@@ -176,7 +176,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 if (IsMullah(customerInfo.BranchType) && IsVillage(customerInfo.ZoneId))
                 {                   
                     return new TariffItemResult(0, hotSeasonRemained, hotSeasonDuration);
-                }
+                }*/
                 return new TariffItemResult(hotSeasonAllowed, hotSeasonDisallowed, hotSeasonDuration);
             }
         }
