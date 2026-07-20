@@ -101,7 +101,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 BranchTypeId = 0,
                 DiscountTypeId = 0,
                 DiscountCount = 0,
-                PhoneNumber = inputDto.PhoneNumber,
+                PhoneNumber = inputDto.PhoneNumber ?? string.Empty,
                 MobileNumber = inputDto.MobileNumber,
                 NationalCode = inputDto.NationalCode,
                 FirstName = inputDto.FirstName,

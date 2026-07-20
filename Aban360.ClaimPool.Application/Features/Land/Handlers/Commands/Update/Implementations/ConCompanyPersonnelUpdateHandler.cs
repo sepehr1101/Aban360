@@ -41,7 +41,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         public async Task Handle(ConCompanyPersonnelUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await Validate(inputDto, cancellationToken);
-            ConCompanyGetDto conCompanyInfo = await _conCompanyQueryService.Get(inputDto.CompanyId);
+            ConCompanyGetDto conCompanyInfo = await _conCompanyQueryService.GetValid(inputDto.CompanyId);
             int personnelIndex = await _conCompanyQueryService.GetPersonnelIndex(inputDto.CompanyId, inputDto.Id);
             string ConCompanyPersonnelUpdateJson = GetPersonnelUpdateJson(inputDto, appUser);
             string opLogText = string.Format(OpLogLiterals.ConCompanyPersonnelUpdateOpLog, inputDto.FullName, inputDto.NationalCode);

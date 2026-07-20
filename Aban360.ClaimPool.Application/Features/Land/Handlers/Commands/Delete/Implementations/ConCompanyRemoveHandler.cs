@@ -33,7 +33,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
         }
         public async Task Handle(int id, IAppUser appUser, CancellationToken cancellationToken)
         {
-            ConCompanyGetDto conCompanyInfo = await _conCompanyQueryService.Get(id);
+            ConCompanyGetDto conCompanyInfo = await _conCompanyQueryService.GetValid(id);
             ConCompanyRemoveDto conCompanyRemoveDto = new(id, appUser.UserId);
             string opLogText = string.Format(OpLogLiterals.ConCompanyInsertOpLog, conCompanyInfo.CompanyName, conCompanyInfo.RepresentativeName);
 

@@ -54,6 +54,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
             await Validate(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumbere = await _commonMemberQueryService.Get(inputDto.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumbere);
+            await _commonZoneService.IsUserInZone(appUser, memberInfo.ZoneId);
             decimal barge = await _variabService.GetAndRenew(memberInfo.ZoneId);
 
             KartInsertDto kartsInsertDto = GetKartInsertDto(inputDto, memberInfo, (int)barge);
