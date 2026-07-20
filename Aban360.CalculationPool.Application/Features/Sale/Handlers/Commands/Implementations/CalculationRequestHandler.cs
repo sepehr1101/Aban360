@@ -33,6 +33,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private static int _afterSaleServiceId = 2;
         private static int _kartTypeId = 2;
         private static int _intervalDueDate = 30;
+        private static int _calculationConfirm = 60;
+        static int _requestOrigin = 12;
         private static string _insertBy = "Aban";
 
         public CalculationRequestHandler(
@@ -65,17 +67,18 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             //validation ->todo: whitch status enable?  
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(trackNumber);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
+            TrackingInsertDuplicateDto trackingInsertDto = new(trackingInfo.TrackNumber, _calculationConfirm, string.Empty, userCode, _requestOrigin, true, false);
 
             if (trackingInfo.ServiceGroupId == _saleServiceId)
             {
                 ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await GetSaleResult(moshtrakInfo, cancellationToken);
-                await ExecuteSqlCommand(result, moshtrakInfo, userCode, trackingInfo.BillId);
+                await ExecSql(result, moshtrakInfo, trackingInsertDto, userCode, trackingInfo.BillId);
                 return result;
             }
             else if (trackingInfo.ServiceGroupId == _afterSaleServiceId)
             {
                 ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await GetAfterSaleResult(moshtrakInfo, cancellationToken);
-                await ExecuteSqlCommand(result, moshtrakInfo, userCode, trackingInfo.BillId);
+                await ExecSql(result, moshtrakInfo, trackingInsertDto, userCode, trackingInfo.BillId);
                 return result;
             }
 
@@ -220,7 +223,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             long discount = data?.Sum(s => s.Discount) ?? 0;
             return new SaleAndAfterSaleHeaderOutputDto(amount, discount, amount - discount, data?.Count() ?? 0);
         }
-        private async Task ExecuteSqlCommand(ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> input, MoshtrakOutputDto moshtrakInfo, int userCode, string billId)
+        private async Task ExecSql(ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> input, MoshtrakOutputDto moshtrakInfo, TrackingInsertDuplicateDto trackingInsertDto, int userCode, string billId)
         {
             ICollection<KartInsertDto> kartsInsertDto = GetKartsInsertDto(input.ReportHeader, input.ReportData, moshtrakInfo, userCode);
             GhestInsertDto ghestInsertDto = GetGhestInsertDto(input.ReportHeader, input.ReportData, moshtrakInfo, billId);
@@ -234,9 +237,12 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
+                    TrackingCommandService trackingCommandService = new(connection, transaction);
                     KartCommandService kartCommandService = new(connection, transaction);
                     GhestCommandService ghestCommandService = new(connection, transaction);
 
+                    await trackingCommandService.UpdateIsConsiderdLatest(trackingInsertDto.TrackNumber, true);
+                    await trackingCommandService.InsertDuplicate(trackingInsertDto);
                     await kartCommandService.Remove(moshtrakInfo.StringTrackNumber, dbName);
                     await ghestCommandService.Remove(moshtrakInfo.StringTrackNumber, dbName);
                     await kartCommandService.Insert(kartsInsertDto, false, dbName);

@@ -52,7 +52,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
         [HttpPost]
         [Route("calculation")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Calculate([FromBody] SearchNumericInput inputDto, CancellationToken cancellationToken)
         {
             int userCode = UserService.GetUserCode(CurrentUser.Username);
@@ -90,7 +90,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
         [HttpGet, HttpPost]
         [Route("calculation-display")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CalculationRequestDisplayHeaderOutputDto, CalculationRequestDisplayDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CalculationDisplay([FromBody] SearchNumericInput inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await _calculationRequestDisplayHandler.Handle(inputDto.Input, cancellationToken);

@@ -19,7 +19,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
         public async Task<InstallationAndEquipmentOutputDto> Get(InstallationAndEquipmentGetDto input)
         {
             string query = GetSaleQuery();
-            InstallationAndEquipmentOutputDto data = await _sqlConnection.QueryFirstAsync<InstallationAndEquipmentOutputDto>(query, input);
+            InstallationAndEquipmentOutputDto? data = await _sqlConnection.QueryFirstOrDefaultAsync<InstallationAndEquipmentOutputDto>(query, input);
             if (data is null || data.Id <= 0)
             {
                 throw new InvalidDataException(ExceptionLiterals.InvalidDiameterId);//todo
@@ -30,7 +30,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
         public async Task<InstallationAndEquipmentOutputDto> Get(int id, string currentDateJalali)
         {
             string query = GetQueryById();
-            InstallationAndEquipmentOutputDto data = await _sqlConnection.QueryFirstAsync<InstallationAndEquipmentOutputDto>(query, new { id = id, CurrentDateJalali= currentDateJalali });
+            InstallationAndEquipmentOutputDto? data = await _sqlConnection.QueryFirstOrDefaultAsync<InstallationAndEquipmentOutputDto>(query, new { id = id, CurrentDateJalali= currentDateJalali });
             if (data == null)
             {
                 throw new InvalidIdException();
