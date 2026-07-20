@@ -15,7 +15,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IFazelabCalculator
     {
-        TariffItemResult Calculate(NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier);
+        TariffItemResult Calculate(NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier);
         TariffItemResult CalculateDiscount(NerkhGetDto nerkh, TariffItemResult fazelabCalculationResult , double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo);
     }
 
@@ -29,7 +29,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const double _villageAllowedMultiplier = 0.5;
         const double _villageDisallowedMultiplier = 0.65;
 
-        public TariffItemResult Calculate(NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier)
+        public TariffItemResult Calculate(NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier)
         {
             if (date2.IsLt(date_1405_03_15))
             {
@@ -156,10 +156,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 }
                 bool isVillage = IsRural(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption.Value, s.Value);
                 bool isDomestic = IsDomesticWithoutUnspecified(customerInfo.UsageId);
-                decimal multiplierAbBaha = GetMultiplier(zarib, s.Value, IsDomesticCategory(customerInfo.UsageId), isVillage, monthlyConsumption.Value, customerInfo.BranchType);
+                decimal multiplierAbBaha = GetMultiplier(zarib, s.Value, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption.Value, customerInfo.BranchType);
                 decimal k1 = GetK1(zarib, s.Value, isVillage);
                 decimal allowedKModifier = isVillage && isDomestic ? (decimal)_villageAllowedMultiplier : 1M;
                 decimal disAllowedKModifier = isVillage && isDomestic ? (decimal)_villageDisallowedMultiplier : 1M;
+
                 (double, double) values = CalcFormula(nerkh, monthlyConsumption.Value, s.Value, c, zoneMultiplier: multiplierAbBaha, zoneMultiplier2:k1, duration, allowedKModifier, disAllowedKModifier, customerInfo, consumptionPartialInfo);
                 return new TariffItemResult(values.Item1, values.Item2);
             }
@@ -277,7 +278,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 X = monthlyAverageConsumption,
                 C = c,
                 S = olgoo,
-                K = (double)zoneMultiplier,
+                K = (double)(zoneMultiplier * allowedKModifier),
                 K1= (double)(zoneMultiplier2 * allowedKModifier),
                 D = (double)duration,
                 L = consumptionPartialInfo.AllowedConsumption,
@@ -291,7 +292,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 X = monthlyAverageConsumption,
                 C = c,
                 S = olgoo,
-                K = (double)zoneMultiplier,
+                K = (double)(zoneMultiplier * disAllowedKModifier),
                 K1 = (double)(zoneMultiplier2 * allowedKModifier),
                 D = (double)duration,
                 L = consumptionPartialInfo.AllowedConsumption,
