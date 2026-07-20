@@ -174,7 +174,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 //case3: as formuala is
                 bool isVillage = IsRural(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption, _olgoo);
                 bool isDomestic = IsDomesticWithoutUnspecified(customerInfo.UsageId);
-                decimal k1 = GetK1(zarib, _olgoo, isVillage);
+                decimal k1 = GetK1(zarib, _olgoo, isVillageCalculation, isDomestic);
 
                 decimal allowedKModifier = isVillage && isDomestic ? (decimal)_villageAllowedMultiplier : 1M;
                 decimal disAllowedKModifier = isVillage && isDomestic ? (decimal)_villageDisallowedMultiplier : 1M;
@@ -527,9 +527,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             //سایر
             return 1;
         }       
-        private decimal GetK1(ZaribGetDto zarib, int olgoo, bool isVillage)
+        private decimal GetK1(ZaribGetDto zarib, int olgoo, bool isVillage, bool isDomestic)
         {
-            return zarib.Zb3;
+            return isVillage && isDomestic ? zarib.Zarib_baha : zarib.Zb3;
         }
         private string GetOldFormula(string oldVaj, bool isDomestic, double monthlyConsumption)
         {
