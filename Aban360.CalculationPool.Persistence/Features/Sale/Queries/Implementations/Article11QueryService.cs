@@ -43,7 +43,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
         }
         public async Task<bool> ZoneWithBlockValidation(int zoneId, string? block)
         {
-            string blockCondition = block is null ? "BlockCode IS NULL" : "BlockCode=@BlockCode";
+            string blockCondition = block is null || string.IsNullOrWhiteSpace(block) ? "BlockCode IS NULL" : "BlockCode=@BlockCode";
             string query = GetZoneWithBlockValidationQuery(blockCondition);
 
             int count = await _sqlConnection.QueryFirstOrDefaultAsync<int>(query, new { zoneId = zoneId, BlockCode = block });

@@ -18,7 +18,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         public async Task<string> Get(ZoneIdAndCustomerNumber input)
         {
             string query = GetByZoneIdAndCustomerNumberQuery();
-            string? _3digitZoneId = await _sqlConnection.QueryFirstOrDefaultAsync<string>(query, input);
+            string? _3digitZoneId = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(query, input);
             if (string.IsNullOrWhiteSpace(_3digitZoneId))
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.NotFoundUniqueCode);

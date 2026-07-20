@@ -64,7 +64,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
+                {
                     connection.Open();
+                }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
                 {
                     TrackingCommandService trackingCommandService = new(connection, transaction);

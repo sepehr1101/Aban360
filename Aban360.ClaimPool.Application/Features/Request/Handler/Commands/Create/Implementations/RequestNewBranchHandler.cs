@@ -226,7 +226,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
                     if (!string.IsNullOrWhiteSpace(assessmentDateJalali))
                     {
-                        TrackingInsertDuplicateDto trackingInsertSetTimeDto = new(trackNumber, _setAssessmentTimeStatusId, inputDto.Description, userName, _requestOrigin, true, false, 1);
+                        TrackingInsertDuplicateDto trackingInsertSetTimeDto = new(trackNumber, _setAssessmentTimeStatusId, inputDto.Description, userName, _requestOrigin, true, false, 2);
                         AssessmentInsertDto assessmentInsert = await GetAssessmentInsertDto(trackingInsertSetTimeDto, assessmentCode, assessmentDateJalali, trackingSetRequestInsertDto.ZoneId);
                         await trackingCommandService.UpdateIsConsiderdLatest(trackingSetRequestInsertDto.TrackNumber, true);
                         await trackingCommandService.InsertDuplicate(trackingInsertSetTimeDto);

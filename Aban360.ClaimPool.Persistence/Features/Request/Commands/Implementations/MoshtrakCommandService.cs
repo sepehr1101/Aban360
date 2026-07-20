@@ -230,7 +230,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 							s48=@s48,
 							CounterType=@CounterType,
 							fix_mas=@ContractualCapacity ,
-							zarib_f=@HouseValue
+							zarib_f=@HouseValue,
+							BLOCK_COD=@BlockId
 						Where TrackingNumber=@TrackNumber";
         }
         private string GetUpdateInfoCommand(string dbName)
