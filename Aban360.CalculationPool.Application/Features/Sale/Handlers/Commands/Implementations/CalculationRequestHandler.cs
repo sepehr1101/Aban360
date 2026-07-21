@@ -62,12 +62,12 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
         }
 
-        public async Task<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> Handle(int trackNumber, int userCode, CancellationToken cancellationToken)
+        public async Task<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> Handle(TrackNumberWithDescriptionInputDto inputDto, int userCode, CancellationToken cancellationToken)
         {
             //validation ->todo: whitch status enable?  
-            TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(trackNumber);
-            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
-            TrackingInsertDuplicateDto trackingInsertDto = new(trackingInfo.TrackNumber, _calculationConfirm, string.Empty, userCode, _requestOrigin, true, false);
+            TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
+            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
+            TrackingInsertDuplicateDto trackingInsertDto = new(trackingInfo.TrackNumber, _calculationConfirm, inputDto.Description, userCode, _requestOrigin, true, false);
 
             if (trackingInfo.ServiceGroupId == _saleServiceId)
             {
