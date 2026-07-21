@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.Dms.Commands.Contracts;
 using Aban360.ReportPool.Domain.Features.Dms;
 using Aban360.ReportPool.Persistence.Features.Dms.Commands;
@@ -11,9 +12,13 @@ namespace Aban360.ReportPool.Application.Features.Dms.Commands.Implementations
     internal sealed class ClientDiscountInsertHandler : AbstractBaseConnection, IClientDiscountInsertHandler
     {
         private readonly IRequestDiscountService _clientDiscountService;
-        public ClientDiscountInsertHandler(IConfiguration configuration)
+        public ClientDiscountInsertHandler(
+            IRequestDiscountService requestDiscountService,
+            IConfiguration configuration)
             : base(configuration)
         {
+            _clientDiscountService = requestDiscountService;
+            _clientDiscountService.NotNull(nameof(requestDiscountService));
         }
 
         public async Task Handle(ClientDiscountInsertDto input, CancellationToken cancellationToken)
