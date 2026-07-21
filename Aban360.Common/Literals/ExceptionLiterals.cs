@@ -143,6 +143,7 @@
         //Reading
         public static string InvalidRecord(int i) => $" خط {i}ام از فایل آپلود شده دارای مقدار نامعتبر است. ";
         public static string InvalidReadingFile => "خطا در پیمایش فایل";
+        public static string InvalidZeroMeterNumber => "رقم کنتور با وضعیت ارسالی مطابقت ندارد.";
         public static string InvalidDuplicateFileName(string date) => $"نام فایل تکراری است. این فایل در تاریخ {date} ارسال شده";
         public static string InvalidDuplicateStepFlow(string date) => $"این مرحله در تاریخ {date} سپری شده است وامکان انجام مجدد آن وجود ندارد. ";
         public static string NonAccessStepFlow => "به این مرحله دسترسی ندارید.";
