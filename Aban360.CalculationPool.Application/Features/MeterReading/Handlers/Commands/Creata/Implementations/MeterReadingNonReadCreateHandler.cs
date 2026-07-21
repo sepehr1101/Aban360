@@ -5,7 +5,6 @@ using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Implementations;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
-using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -28,7 +27,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IBillQueryService _billQueryService;
         private readonly IValidator<MeterReadingNonReadInputDto> _validator;
-        private string _reportTitle = ReportLiterals.MeterReadingNonReadCreate;
         private int _agentCode = 0;
         private short _nonReadCounterStateId = 8;
         private int _maxDayCondition = -15;
@@ -57,7 +55,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             _validator.NotNull(nameof(_validator));
         }
 
-        public async Task<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto>> Handle(MeterReadingNonReadInputDto input, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<MeterReadingNonReadOutputDto> Handle(MeterReadingNonReadInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             await InputValidate(input, cancellationToken);
             string fileName = $"{ReportLiterals.NonRead}-{Guid.NewGuid()}";
@@ -68,12 +66,16 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 throw new ReadingException(ExceptionLiterals.NotFoundAnyCustomer);
             }
+            if (!input.IsConfirm)
+            {
+                return GetResult(latestBills?.Count() ?? 0, latestBills?.FirstOrDefault()?.ZoneTitle ?? string.Empty, input);
+            }
             IEnumerable<MeterReadingDetailCreateDto> readingDetails = await GetMeterReadingDetails(latestBills, input, appUser, fileName);
             FileCreateDto fileInfo = new(fileName, null, null);
             ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = await _meterReadingCreateBaseHandler.GetReadingDetailCreateFinalNonRead(readingDetails, fileInfo, appUser, cancellationToken);
 
             await _meterReadingCreateBaseHandler.ExecSql(readingDetailsCreate, fileInfo, appUser);
-            return _meterReadingCreateBaseHandler.GetReturnData(readingDetailsCreate, _reportTitle);
+            return GetResult(latestBills?.Count() ?? 0, latestBills?.FirstOrDefault()?.ZoneTitle ?? string.Empty, input);
         }
         private async Task<IEnumerable<MeterReadingDetailCreateDto>> GetMeterReadingDetails(IEnumerable<BillLatestListDataOutputDto> latestBills, MeterReadingNonReadInputDto input, IAppUser appUser, string fileName)
         {
@@ -191,6 +193,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
             }
+        }
+        private MeterReadingNonReadOutputDto GetResult(int count, string zoneTitle, MeterReadingNonReadInputDto inputDto)
+        {
+            return new MeterReadingNonReadOutputDto(inputDto.ZoneId, zoneTitle, inputDto.FromReadingNumber, inputDto.ToReadingNumber, count);
         }
     }
 }

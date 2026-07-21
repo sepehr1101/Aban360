@@ -214,7 +214,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
             table.Columns.Add("abon_ab", typeof(decimal));
             table.Columns.Add("pard", typeof(decimal));
             table.Columns.Add("jam", typeof(decimal));
-            table.Columns.Add("BeforDebt", typeof(double));
             table.Columns.Add("WaterDebt", typeof(double));
 
             table.Columns.Add("cod_vas", typeof(decimal));
@@ -367,7 +366,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                 row["pard"] = x.Pard;
                 row["jam"] = x.Jam;
                 row["WaterDebt"] = x.WaterDebt;
-                row["BeforDebt"] = x.BeforDebt;
 
                 row["cod_vas"] = x.CodVas;
                 row["ghabs"] = x.Ghabs;
@@ -488,7 +486,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                         NEWAB, NEWFA, BODJEH, group1, MAS_FAS, FAZ,
                         CHK_KARBARI, C200, Ab_sevom, Ab_sevom1, C70, C80,
                         C90, C101, Khali_s, edareh_k, Avarez,
-                        WaterDebt, BeforDebt,
+                        WaterDebt,
 
                         AbBahaDiscount,HotSeasonDiscount,HotSeasonFazelabDiscount,FazelabDiscount,AbonmanAbDiscount,
                         AbonmanFazelabDiscount,AvarezDiscount,JavaniDiscount,BoodjeDiscount,MaliatDiscount
@@ -516,7 +514,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                         @NewAb, @NewFa, @Bodjeh, @Group1, @MasFas, @Faz,
                         @ChkKarbari, @C200, @AbSevom, @AbSevom1, @C70, @C80,
                         @C90, @C101, @KhaliS, @EdarehK, @Avarez,
-                        @WaterDebt, @BeforDebt,
+                        @WaterDebt, 
 
                         @AbBahaDiscount,@HotSeasonDiscount,@HotSeasonFazelabDiscount,@FazelabDiscount,@AbonmanAbDiscount,
                         @AbonmanFazelabDiscount,@AvarezDiscount,@JavaniDiscount,@BoodjeDiscount,@MaliatDiscount

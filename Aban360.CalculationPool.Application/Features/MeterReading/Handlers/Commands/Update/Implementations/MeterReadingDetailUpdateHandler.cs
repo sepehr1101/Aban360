@@ -157,12 +157,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 TavizCause = updatedInfo.TavizCause,
                 TavizRegisterDateJalali = updatedInfo.TavizRegisterDateJalali,
                 TavizNumber = updatedInfo.TavizNumber,
-                LastMeterDateJalali = updatedInfo.LastMeterDateJalali,
-                LastMeterNumber = updatedInfo.LastMeterNumber,
-                LastConsumption = updatedInfo.LastConsumption,
-                LastMonthlyConsumption = updatedInfo.LastMonthlyConsumption,
-                LastCounterStateCode = updatedInfo.LastCounterStateCode,
-                LastSumItems = updatedInfo.LastSumItems,
+                PreviousMeterDateJalali = updatedInfo.PreviousMeterDateJalali,
+                PreviousMeterNumber = updatedInfo.PreviousMeterNumber,
+                PreviousConsumption = updatedInfo.PreviousConsumption,
+                PreviousMonthlyConsumption = updatedInfo.PreviousMonthlyConsumption,
+                PreviousCounterStateCode = updatedInfo.PreviousCounterStateCode,
+                PreviousSumItems = updatedInfo.PreviousSumItems,
 
                 SumItems = updatedInfo.SumItems,
                 SumItemsBeforeDiscount = updatedInfo.SumItemsBeforeDiscount,
@@ -225,12 +225,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             meterDetailCreateDto.TavizNumber = customerInfo?.TavizInfo?.TavizNumber ?? null;
             meterDetailCreateDto.TavizCause = customerInfo?.TavizInfo?.TavizCause ?? null;
             meterDetailCreateDto.TavizRegisterDateJalali = customerInfo?.TavizInfo?.TavizRegisterDateJalali ?? null;
-            meterDetailCreateDto.LastMeterDateJalali = previousMeterDetailDto.LastMeterDateJalali;
-            meterDetailCreateDto.LastMeterNumber = previousMeterDetailDto.LastMeterNumber ?? 0;
-            meterDetailCreateDto.LastConsumption = previousMeterDetailDto.LastConsumption ?? 0;
-            meterDetailCreateDto.LastMonthlyConsumption = previousMeterDetailDto.LastMonthlyConsumption ?? 0;
-            meterDetailCreateDto.LastCounterStateCode = previousMeterDetailDto.LastCounterStateCode ?? 0;
-            meterDetailCreateDto.LastSumItems = previousMeterDetailDto.LastSumItems ?? 0;
+            meterDetailCreateDto.LastMeterDateJalali = previousMeterDetailDto.PreviousMeterDateJalali;
+            meterDetailCreateDto.LastMeterNumber = previousMeterDetailDto.PreviousMeterNumber ?? 0;
+            meterDetailCreateDto.LastConsumption = previousMeterDetailDto.PreviousConsumption ?? 0;
+            meterDetailCreateDto.LastMonthlyConsumption = previousMeterDetailDto.PreviousMonthlyConsumption ?? 0;
+            meterDetailCreateDto.LastCounterStateCode = previousMeterDetailDto.PreviousCounterStateCode ?? 0;
+            meterDetailCreateDto.LastSumItems = previousMeterDetailDto.PreviousSumItems ?? 0;
             meterDetailCreateDto.SumItems = sumItems;//abBahaCalc.sumItems?
             meterDetailCreateDto.SumItemsBeforeDiscount = abBahaCalc?.SumItemsBeforeDiscount ?? 0;
             meterDetailCreateDto.DiscountSum = abBahaCalc?.DiscountSum ?? 0;
@@ -257,7 +257,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             meterDetailCreateDto.Pard = (decimal)pard;
             meterDetailCreateDto.Jam = (decimal)jam;
             meterDetailCreateDto.WaterDebt = customerInfo.MembersInfo.LatestDebtAmount;
-            meterDetailCreateDto.BeforDebt = abBahaCalc?.SumItems ?? 0;
 
             meterDetailCreateDto.CodVas = meterDetailCreateDto.CurrentCounterStateCode;
             meterDetailCreateDto.Ghabs = "1";

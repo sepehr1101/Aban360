@@ -44,7 +44,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         {
             if (IsDomestic(input.UsageId))
             {
-                return GetConsumptionAttention(_domesticConsumptionLimitPercent, input.LastMonthlyConsumption.Value, input.MonthlyConsumption.Value, input.CurrentCounterStateCode, input.UsageId);
+                return GetConsumptionAttention(_domesticConsumptionLimitPercent, input.PreviousMonthlyConsumption.Value, input.MonthlyConsumption.Value, input.CurrentCounterStateCode, input.UsageId);
             }
             else
             {

@@ -6,5 +6,6 @@
         public string CurrentDateJalali { get; set; }
         public string FromReadingNumber { get; set; }
         public string ToReadingNumber { get; set; }
+        public bool IsConfirm { get; set; }
     }
 }

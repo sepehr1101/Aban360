@@ -17,8 +17,6 @@ namespace Aban360.ReportPool.Application.Features.Dms.Commands.Implementations
             IConfiguration configuration)
             : base(configuration)
         {
-            _clientDiscountService = requestDiscountService;
-            _clientDiscountService.NotNull(nameof(requestDiscountService));
         }
 
         public async Task Handle(ClientDiscountInsertDto input, CancellationToken cancellationToken)

@@ -115,24 +115,24 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                             {
                                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
                             }
-                            readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
                         }
                         catch (Exception ex) when (IsInException(ex))
                         {
-                            readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                         }
                     }
                     else if (readingDetail.CurrentCounterStateCode == _changeCounterStateId && string.IsNullOrWhiteSpace(readingDetail.TavizDateJalali))
                     {
-                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                     }
                     else if (readingDetail.CurrentCounterStateCode == _changeCounterStateId && readingDetail.TavizDateJalali.CompareTo(readingDetail.CurrentDateJalali) > 0)
                     {
-                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                     }
                     else if (readingDetail.CurrentCounterStateCode == _changeCounterStateId && readingDetail.TavizDateJalali.CompareTo(readingDetail.PreviousDateJalali) < 0)
                     {
-                        readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                     }
                     else if (readingDetail.CurrentCounterStateCode == _changeCounterStateId) //taviz
                     {
@@ -162,11 +162,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                             {
                                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
                             }
-                            readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
                         }
                         catch (Exception ex) when (IsInException(ex))
                         {
-                            readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                         }
                     }
                     else //not xarab, nor taviz
@@ -179,18 +179,18 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                             {
                                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
                             }
-                            readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
                         }
                         catch (Exception ex) when (IsInException(ex))
                         {
-                            readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                         }
                     }
                 }
                 else
                 {
                     Guid? excludedUserId = hasExclude ? appUser.UserId : null;
-                    readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, excludedUserId));
+                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, excludedUserId));
                 }
             }
 
@@ -216,11 +216,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     {
                         throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
                     }
-                    readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
+                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
                 }
                 catch (Exception ex) when (IsInException(ex))
                 {
-                    readingDetailsCreate.Add(await GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                 }
             }
             return readingDetailsCreate;
@@ -517,7 +517,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 MeterPreviousData = meterInfo,
             };
         }
-        private async Task<MeterReadingDetailCreateDto> GetMeterReadingDetailByAbBahaValue(MeterReadingDetailCreateDto r, AbBahaCalculationDetails? abBahaCalc, bool hasZeroValue, Guid? userIdExclude)
+        private MeterReadingDetailCreateDto GetMeterReadingDetailByAbBahaValue(MeterReadingDetailCreateDto r, AbBahaCalculationDetails? abBahaCalc, bool hasZeroValue, Guid? userIdExclude)
         {
             double preDebtAmount = r.WaterDebt;// await _customerInfoService.GetMembersBedBes(new ZoneIdAndCustomerNumber(r.ZoneId, r.CustomerNumber));//checkResult: changeDto
             var (sumItems, jam, pard) = GetAmounts(preDebtAmount, abBahaCalc?.SumItems ?? 0);
@@ -547,7 +547,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             r.Pard = (decimal)pard;
             r.Jam = (decimal)jam;
             r.WaterDebt = preDebtAmount;
-            r.BeforDebt = abBahaCalc?.SumItems ?? 0;
 
             r.CodVas = r.CurrentCounterStateCode;
             r.Ghabs = "1";
