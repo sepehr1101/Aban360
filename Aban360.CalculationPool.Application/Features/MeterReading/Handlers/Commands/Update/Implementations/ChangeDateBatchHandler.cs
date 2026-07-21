@@ -108,12 +108,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     TavizNumber = m.TavizNumber,
                     TavizRegisterDateJalali = m.TavizRegisterDateJalali,
 
-                    LastMeterDateJalali = m.LastMeterDateJalali,
-                    LastMeterNumber = m.LastMeterNumber ?? 0,
-                    LastConsumption = m.LastConsumption ?? 0,
-                    LastMonthlyConsumption = m.LastMonthlyConsumption ?? 0,
-                    LastCounterStateCode = m.LastCounterStateCode ?? 0,
-                    LastSumItems = m.LastSumItems ?? 0,
+                    LastMeterDateJalali = m.PreviousMeterDateJalali,
+                    LastMeterNumber = m.PreviousMeterNumber ?? 0,
+                    LastConsumption = m.PreviousConsumption ?? 0,
+                    LastMonthlyConsumption = m.PreviousMonthlyConsumption ?? 0,
+                    LastCounterStateCode = m.PreviousCounterStateCode ?? 0,
+                    LastSumItems = m.PreviousSumItems ?? 0,
 
                 })
                 .ToList();

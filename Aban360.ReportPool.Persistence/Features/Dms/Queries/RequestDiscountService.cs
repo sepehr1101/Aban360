@@ -32,7 +32,7 @@ namespace Aban360.ReportPool.Persistence.Features.Dms.Queries
 
         public async Task<bool> Exists(string codeMeli)
         {
-            int? result = await _sqlConnection.ExecuteScalarAsync<int?>(GetQuery(), new { codeMeli });
+            int? result = await _sqlReportConnection.ExecuteScalarAsync<int?>(GetQuery(), new { codeMeli });
             return result.HasValue; // true if a row exists, false otherwise
             string GetQuery()
             {

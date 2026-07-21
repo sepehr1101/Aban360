@@ -1,7 +1,6 @@
 ﻿using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
-using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +19,10 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
 
         [HttpPost]
         [Route("create")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingNonReadOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] MeterReadingNonReadInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> result = await _meterReadingNonReadHandle.Handle(input, CurrentUser, cancellationToken);
+            MeterReadingNonReadOutputDto result = await _meterReadingNonReadHandle.Handle(input, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

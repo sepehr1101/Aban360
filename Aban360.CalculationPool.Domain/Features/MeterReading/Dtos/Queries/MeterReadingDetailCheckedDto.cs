@@ -57,12 +57,13 @@ namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
         public int? TavizNumber { get; set; }
 
         //previous
-        public string LastMeterDateJalali { get; set; }
-        public int? LastMeterNumber { get; set; }
-        public float? LastConsumption { get; set; }
-        public float? LastMonthlyConsumption { get; set; }
-        public int? LastCounterStateCode { get; set; }
-        public double? LastSumItems { get; set; }
+        public string PreviousMeterDateJalali { get; set; }
+        public int? PreviousMeterNumber { get; set; }
+        public float? PreviousConsumption { get; set; }
+        public float? PreviousMonthlyConsumption { get; set; }
+        public int? PreviousCounterStateCode { get; set; }
+        public string? PreviousCounterStateTitle { get; set; }
+        public double? PreviousSumItems { get; set; }
 
         //current
         public double? SumItems { get; set; }
