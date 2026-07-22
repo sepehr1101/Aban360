@@ -53,6 +53,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
         private string GetQuery()
         {
             return @"Select 
+						 u1.Id Group1Id,
+						 u1.Title Group1Title,
                     	 u3.Id,
 						 u3.Group2Id,
 						 u3.UsageId,
@@ -60,32 +62,42 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 						 u2.Title Group2Title
                     From [Db70].dbo.UsageGroup3 u3
 					Join [Db70].dbo.UsageGroup2 u2
-						ON u2.Id=u3.Group2Id";
+						ON u2.Id=u3.Group2Id
+					Join [Db70].dbo.UsageGroup1 u1
+						ON u1.Id=u2.Group1Id";
         }
         private string GetByIdQuery()
         {
             return @"Select 
-                       	 u3.Id,
-				    	 u3.Group2Id,
-				    	 u3.UsageId,
-				    	 u3.UsageTitle,
-				    	 u2.Title Group2Title
+						 u1.Id Group1Id, 
+						 u1.Title Group1Title,
+                    	 u3.Id,
+						 u3.Group2Id,
+						 u3.UsageId,
+						 u3.UsageTitle,
+						 u2.Title Group2Title
                     From [Db70].dbo.UsageGroup3 u3
-				    Join [Db70].dbo.UsageGroup2 u2
-				    	ON u2.Id=u3.Group2Id
+					Join [Db70].dbo.UsageGroup2 u2
+						ON u2.Id=u3.Group2Id
+					Join [Db70].dbo.UsageGroup1 u1
+						ON u1.Id=u2.Group1Id
                     Where u3.Id=@id";
         }
         private string GetDuplicateQuery()
         {
             return @"Select 
-                       	 u3.Id,
-				    	 u3.Group2Id,
-				    	 u3.UsageId,
-				    	 u3.UsageTitle,
-				    	 u2.Title Group2Title
+						 u1.Id Group1Id,
+						 u1.Title Group1Title,
+                    	 u3.Id,
+						 u3.Group2Id,
+						 u3.UsageId,
+						 u3.UsageTitle,
+						 u2.Title Group2Title
                     From [Db70].dbo.UsageGroup3 u3
-				   Join [Db70].dbo.UsageGroup2 u2
-				    	ON u2.Id=u3.Group2Id
+					Join [Db70].dbo.UsageGroup2 u2
+						ON u2.Id=u3.Group2Id
+					Join [Db70].dbo.UsageGroup1 u1
+						ON u1.Id=u2.Group1Id
                     Where 
                          u3.Group2Id = @Group2Id AND
 						 u3.UsageId = @UsageId ";
@@ -93,19 +105,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
         private string GetByParentIdsQuery()
         {
                 return @"Select 
-                        	 u3.Id,
-					    	 u3.Group2Id,
-					    	 u3.UsageId,
-					    	 u3.UsageTitle,
-					    	 u2.Title Group2Title
-                        From [Db70].dbo.UsageGroup3 u3
-					    Join [Db70].dbo.UsageGroup2 u2
-					    	ON u2.Id=u3.Group2Id
-                    Where u3.Group2Id IN @ids";
-        }
-        private string GetByParentIdQuery()
-        {
-            return @"Select  
+						 u1.Id Group1Id,
+						 u1.Title Group1Title,
                     	 u3.Id,
 						 u3.Group2Id,
 						 u3.UsageId,
@@ -113,7 +114,26 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 						 u2.Title Group2Title
                     From [Db70].dbo.UsageGroup3 u3
 					Join [Db70].dbo.UsageGroup2 u2
-					    ON u2.Id=u3.Group2Id
+						ON u2.Id=u3.Group2Id
+					Join [Db70].dbo.UsageGroup1 u1
+						ON u1.Id=u2.Group1Id
+                    Where u3.Group2Id IN @ids";
+        }
+        private string GetByParentIdQuery()
+        {
+            return @"Select 
+						 u1.Id Group1Id,
+						 u1.Title Group1Title,
+                    	 u3.Id,
+						 u3.Group2Id,
+						 u3.UsageId,
+						 u3.UsageTitle,
+						 u2.Title Group2Title
+                    From [Db70].dbo.UsageGroup3 u3
+					Join [Db70].dbo.UsageGroup2 u2
+						ON u2.Id=u3.Group2Id
+					Join [Db70].dbo.UsageGroup1 u1
+						ON u1.Id=u2.Group1Id
                     Where u3.Group2Id = @id";
         }
     }
