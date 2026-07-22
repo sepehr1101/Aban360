@@ -2,7 +2,7 @@
 {
     public enum ChangeMeterReasonEnum : short
     {
-       Reading=1,
-       Change=2
+        Reading = 1,
+        Change = 2
     }
 }
