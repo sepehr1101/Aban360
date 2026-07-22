@@ -19,12 +19,14 @@ namespace Aban360.Api.Controllers.V2.ClaimPool.Land.Commands
         private readonly IUsageGroup2UpdateHandler _usageGroup2UpdateHandler;
         private readonly IUsageGroup2GetAllHandler _usageGroup2GetAllHandler;
         private readonly IUsageGroup2GetByIdHandler _usageGroup2GetByIdHandler;
+        private readonly IUsageGroup2GetByGroup1IdHandler _usageGroup2GetByGroup1Handler;
         public UsageGroup2Controller(
                  IUsageGroup2InsertHandler usageGroup2InsertHandler,
                  IUsageGroup2RemoveHandler usageGroup2RemoveHandler,
                  IUsageGroup2UpdateHandler usageGroup2UpdateHandler,
                  IUsageGroup2GetAllHandler usageGroup2GetAllHandle,
-                 IUsageGroup2GetByIdHandler usageGroup2GetByIdHandler)
+                 IUsageGroup2GetByIdHandler usageGroup2GetByIdHandler,
+                 IUsageGroup2GetByGroup1IdHandler usageGroup2GetByGroup1Handler)
         {
             _usageGroup2InsertHandler = usageGroup2InsertHandler;
             _usageGroup2InsertHandler.NotNull(nameof(usageGroup2InsertHandler));
@@ -40,6 +42,9 @@ namespace Aban360.Api.Controllers.V2.ClaimPool.Land.Commands
 
             _usageGroup2GetByIdHandler = usageGroup2GetByIdHandler;
             _usageGroup2GetByIdHandler.NotNull(nameof(usageGroup2GetByIdHandler));
+
+            _usageGroup2GetByGroup1Handler = usageGroup2GetByGroup1Handler;
+            _usageGroup2GetByGroup1Handler.NotNull(nameof(usageGroup2GetByGroup1Handler));
         }
 
         [HttpPost, HttpGet]
@@ -75,6 +80,15 @@ namespace Aban360.Api.Controllers.V2.ClaimPool.Land.Commands
         public async Task<IActionResult> GetById(short id, CancellationToken cancellationToken)
         {
             UsageGroup2GetDto result = await _usageGroup2GetByIdHandler.Handle(id, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("get-by-group1/{id}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UsageGroup2GetDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByGroupqId(short id, CancellationToken cancellationToken)
+        {
+            IEnumerable<UsageGroup2GetDto> result = await _usageGroup2GetByGroup1Handler.Handle(id, cancellationToken);
             return Ok(result);
         }
 
