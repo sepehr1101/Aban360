@@ -1,17 +1,15 @@
 ﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Application.Features.Sale.Helpers;
 using Aban360.CalculationPool.Domain.Constants;
-using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
-using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
-using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using Aban360.ReportPool.GatewayAdhoc.Features.ConsumersInfo.Contracts;
 using DNTPersianUtils.Core;
@@ -28,20 +26,26 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private readonly IAdjustmentFactorQueryService _adjustmentFactorQueryService;
         private readonly IZoneAddHoc _zoneAddHoc;
         private readonly IValidator<SaleInputDto> _validator;
-        private readonly int[] _domesticUsage = { 1, 3, 34 };
         private static string _reportTitle = "فروش انشعاب";
         private static string _article2Title = "تبصره 2";
         private static int _nonDomesticAjustmentFactor = 285000;
         private static int _nonDomesticFixed = 1140000;
         private static float _domesticSewageMultiplier = 0.7f;
         private static float _nonDomesticSewageMultiplier = 1f;
+        private short _siphon100 = 100;
+        private short _siphon125 = 125;
+        private short _siphon150 = 150;
+        private short _siphon200 = 200;
+        private short _siphon100Id = 1;
+        private short _siphon125Id = 2;
+        private short _siphon150Id = 3;
+        private short _siphon200Id = 4;
         public SaleGetHandler(
             IInstallationAndEquipmentQueryService installationAndEquipmentService,
             IArticle11QueryService article11QueryService,
             IEquipmentBrokerAndZoneQueryService equipmentBrokerAndZoneQueryService,
             IOfferingQueryService offeringQueryService,
             IAdjustmentFactorQueryService adjustmentFactorQueryService,
-            ICustomerInfoService customerInfoService,
             IZoneAddHoc zoneAddHoc,
             IValidator<SaleInputDto> validator)
         {
@@ -69,7 +73,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
         public async Task<ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto>> Handle(SaleInputDto inputDto, CancellationToken cancellationToken)
         {
-            await Validation(inputDto, cancellationToken);
+            await Validate(inputDto, cancellationToken);
             bool hasBroker = inputDto.HasWaterBroker ?? (await _equipmentBrokerAndZoneQueryService.Get(inputDto.ZoneId)) is { Id: > 0 };
 
             IEnumerable<SaleDataOutputDto> data = await GetData(inputDto);
@@ -153,39 +157,39 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private async Task<IEnumerable<SaleDataOutputDto>> GetArticle11(SaleInputDto inputDto)
         {
             if (IsVillage(inputDto.ZoneId))
+            {
                 return Array.Empty<SaleDataOutputDto>();
+            }
 
-            bool isDomestic = _domesticUsage.Contains(inputDto.UsageId);
+            bool isDomestic = SaleRuleChecker.IsDomesticOrResidence(inputDto.UsageId);
             int usageMultiplier = GetUsageMultiplierForArticle11(inputDto);
             Article11OutputDto article11Data = await GetArticle11Data(inputDto);
 
-            SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11, inputDto.HasWaterArticle11 ? GetWaterAmount() : 0, null);
+            SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11, inputDto.HasWaterArticle11 ? GetAmount(true) : 0, null);
             if (HasSiphon(inputDto))
             {
-                SaleDataOutputDto sewageArticle11 = await GetSaleData(OfferingEnum.SewageArticle11, inputDto.HasSewageArticle11 ? GetSewageAmount() : 0, null);
+                SaleDataOutputDto sewageArticle11 = await GetSaleData(OfferingEnum.SewageArticle11, inputDto.HasSewageArticle11 ? GetAmount(false) : 0, null);
                 return new[] { waterArticle11, sewageArticle11 };
             }
 
             return new[] { waterArticle11 };
 
-            long GetWaterAmount()
+            long? GetAmount(bool isWater)
             {
-                if (inputDto.UsageId == 3)
-                    return (article11Data.DomesticWaterAmount * inputDto.DomesticUnit) + (article11Data.NonDomesticWaterAmount * inputDto.ContractualCapacity);
-
-                return (isDomestic ? article11Data.DomesticWaterAmount : article11Data.NonDomesticWaterAmount) * usageMultiplier;
-            }
-            long? GetSewageAmount()
-            {
-                if (inputDto.UsageId == 3)
-                    return (article11Data.DomesticSewageAmount * inputDto.DomesticUnit) + (article11Data.NonDomesticSewageAmount * inputDto.ContractualCapacity);
-
-                return (isDomestic ? article11Data.DomesticSewageAmount : article11Data.NonDomesticSewageAmount) * usageMultiplier;
+                if (SaleRuleChecker.IsDomesticCommercial(inputDto.UsageId))
+                {
+                    return isWater ?
+                        (article11Data.DomesticWaterAmount * inputDto.DomesticUnit) + (article11Data.NonDomesticWaterAmount * inputDto.ContractualCapacity) :
+                        (article11Data.DomesticSewageAmount * inputDto.DomesticUnit) + (article11Data.NonDomesticSewageAmount * inputDto.ContractualCapacity);
+                }
+                return isWater ?
+                        (isDomestic ? article11Data.DomesticWaterAmount : article11Data.NonDomesticWaterAmount) * usageMultiplier :
+                        (isDomestic ? article11Data.DomesticSewageAmount : article11Data.NonDomesticSewageAmount) * usageMultiplier;
             }
         }
         private async Task<ICollection<SaleDataOutputDto>> GetSubscription(SaleInputDto inputDto)
         {
-            bool isDomestic = _domesticUsage.Contains(inputDto.UsageId) ? true : false;
+            bool isDomestic = SaleRuleChecker.IsDomesticOrResidence(inputDto.UsageId);
             AdjustmentFactorGetDto adjustmentfactor = await _adjustmentFactorQueryService.Get(inputDto.ZoneId);
 
             long domesticAdjustmentFactor = adjustmentfactor.Price * inputDto.DomesticUnit;
@@ -194,12 +198,12 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             long adjustmentWaterAmount = 0;
             long adjustmentSewageAmount = 0;
-            if (inputDto.UsageId == 1)
+            if (SaleRuleChecker.IsDomestic(inputDto.UsageId))
             {
                 adjustmentWaterAmount = domesticAdjustmentFactor;
                 adjustmentSewageAmount = (long)(domesticAdjustmentFactor * _domesticSewageMultiplier);
             }
-            else if (inputDto.UsageId == 3)
+            else if (SaleRuleChecker.IsCommercial(inputDto.UsageId))
             {
                 adjustmentWaterAmount = domesticAdjustmentFactor + nonDomesticSubscription;
                 adjustmentSewageAmount = (long)((domesticAdjustmentFactor * _domesticSewageMultiplier) + nonDomesticSubscription);
@@ -239,14 +243,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             short meterDiamter = meterDiameterId ?? 0;
             if (!isWater)
             {
-                if (meterDiameterId == 100)
-                    meterDiamter = 1;
-                if (meterDiameterId == 125)
-                    meterDiamter = 2;
-                if (meterDiameterId == 150)
-                    meterDiamter = 3;
-                if (meterDiameterId == 200)
-                    meterDiamter = 4;
+                meterDiameterId = GetMeterDiamterId(meterDiameterId);
             }
 
             var installationAndEquipment = new InstallationAndEquipmentGetDto(isWater, meterDiamter, DateTime.Now.ToShortPersianDateString());
@@ -255,6 +252,19 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             SaleDataOutputDto equipment = await GetSaleData(isWater ? OfferingEnum.WaterEquipment : OfferingEnum.SewageEquipment, installtionAndEquipmentData.EquipmentAmount, null);
 
             return new List<SaleDataOutputDto> { installation, equipment };
+        }
+        private short GetMeterDiamterId(short? meterDiameterId)
+        {
+            if (meterDiameterId == _siphon100)
+                return _siphon100Id;
+            if (meterDiameterId == _siphon125)
+                return _siphon125Id;
+            if (meterDiameterId == _siphon150)
+                return _siphon150Id;
+            if (meterDiameterId == _siphon200)
+                return _siphon200Id;
+
+            return meterDiameterId.Value;
         }
         private async Task<SaleDataOutputDto> GetSaleData(OfferingEnum offeringEnum, long? amount, long? discount)
         {
@@ -265,23 +275,11 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private IEnumerable<SaleDataOutputDto> GetDiscount(SaleInputDto inputDto, IEnumerable<SaleDataOutputDto> salesData)
         {
-            Dictionary<int, float> discountPercentList = new Dictionary<int, float>()
-            {
-                { 1 , 1f },
-                { 2 , 1f },
-                { 4 , 1f },
-                { 5 , 1f },
-                { 7 , 1f },
-                { 14, 1f },
-                { 16, 1f },
-                { 15, 0.7f },
-                { 10, 0.5f }
-            };
-            if (!inputDto.DiscountTypeId.HasValue || inputDto.DiscountTypeId <= 0 || !IsDomestic(inputDto.UsageId))
+            if (!inputDto.DiscountTypeId.HasValue || inputDto.DiscountTypeId <= 0 || !SaleRuleChecker.IsDomesticOrCommercial(inputDto.UsageId))
             {
                 return salesData;
             }
-            if (!discountPercentList.TryGetValue(inputDto.DiscountTypeId.Value, out var discountPercent))
+            if (!DiscountPercentList.TryGetValue(inputDto.DiscountTypeId.Value, out var discountPercent))
             {
                 return salesData;
             }
@@ -318,11 +316,17 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             bool hasArticle11 = await _zoneAddHoc.GetArticle2(zoneId);
             long article2Amount = hasArticle11 ? (long)(amount * 0.1f) : 0;
 
+            //79  -> Which Db??
             SaleDataOutputDto article2 = new(79, _article2Title, article2Amount, 0, article2Amount);
 
             return article2;
         }
-        private async Task Validation(SaleInputDto inputDto, CancellationToken cancellationToken)
+        private async Task Validate(SaleInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+            await DataValidate(inputDto);
+        }
+        private async Task InputValidate(SaleInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -330,7 +334,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
             }
-
+        }
+        private async Task DataValidate(SaleInputDto inputDto)
+        {
             if (!IsVillage(inputDto.ZoneId))
             {
                 if (!await _article11QueryService.ZoneValidation(inputDto.ZoneId))
@@ -342,7 +348,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                     throw new SaleException(ExceptionLiterals.InvalicZoneIdWithBlock);
                 }
             }
-            if (_domesticUsage.Contains(inputDto.UsageId) && inputDto.DomesticUnit == 0)
+            if (SaleRuleChecker.IsDomesticOrResidence(inputDto.UsageId) && inputDto.DomesticUnit == 0)
             {
                 throw new SaleException(ExceptionLiterals.InvalidDomesticUnit);
             }
@@ -355,16 +361,27 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private int GetUsageMultiplierForArticle11(SaleInputDto inputDto)
         {
-            return IsDomestic(inputDto.UsageId) ? inputDto.DomesticUnit : inputDto.ContractualCapacity;
-            //  return inputDto.UsageId == 3 ? inputDto.ContractualCapacity + inputDto.DomesticUnit : usageMultiplier;
+            return SaleRuleChecker.IsDomesticCommercial(inputDto.UsageId) ? inputDto.DomesticUnit : inputDto.ContractualCapacity;
         }
-
         private bool HasSiphon(SaleInputDto input) => input.SiphonDiameterId != null && input.SiphonDiameterId > 0 ? true : false;
-        private bool IsDomestic(int usageId)
-        {
-            int[] domestic = { 1, 3 };
-            return domestic.Contains(usageId);
-        }
         private bool IsVillage(int zoneId) => zoneId > 140000;
+        private Dictionary<int, float> DiscountPercentList
+        {
+            get
+            {
+                return new Dictionary<int, float>()
+                {
+                    { (int)DiscountTypeEnum.KhanevadeShohada , 1f },
+                    { (int)DiscountTypeEnum.Janbazan , 1f },
+                    { (int)DiscountTypeEnum.Behzisti , 1f },
+                    { (int)DiscountTypeEnum.KomiteEmdad , 1f },
+                    { (int)DiscountTypeEnum.Razmandegan , 1f },
+                    { (int)DiscountTypeEnum.KhanevadeJanbazVaAzadeMotovafi , 1f },
+                    { (int)DiscountTypeEnum.KhayerinMaskanSaz , 1f },
+                    { (int)DiscountTypeEnum.JavaniJamiyat2 , 0.7f },
+                    { (int)DiscountTypeEnum.JavaniJamiyat1 , 0.5f }
+                };
+            }
+        }
     }
 }

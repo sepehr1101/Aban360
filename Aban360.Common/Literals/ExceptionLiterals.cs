@@ -79,6 +79,8 @@
         public static string InvalidBedBesPreviousNumberAndDate(string billId) => $"آخرین تاریخ قرائت و رقم کنتور برای شناسه قبض{billId} قابل جستجو نیست.";
         public static string InvalidBedBesPreviousNumberAndDateAndInstallationDate(string billId) => $"علاوه بر آخرین تاریخ قرائت و رقم کنتور، تاریخ نصب انشعاب برای شناسه قبض{billId} قابل جستجو نیست.";
 
+        public static string InvalidReturnDomesticConsumptionAverage => "برای برگشتی کاربری های غیرمسکونی وارد نمودن متوسط مصرف توسط شما ضروری است";
+        public static string InvalidToCalculateConsumptioAverage => "خطا در محاسبه متوسط مصرف";
         public static string InvlaidStringLength => "طول رشته نامعتبر است.";
         public static string InvalidEmailFormat => "فرمت ایمیل نامعتبر است.";
         public static string MobileNumberFormat => "شماره موبایل باید با 09 شروع شده و شامل 11 رقم باشد.";

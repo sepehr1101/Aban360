@@ -3,6 +3,7 @@ using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -26,6 +27,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private static string _article2Title = "تبصره 2";
         private static string _taxTitle = "مالیات بر ارزش افزوده";
         private static int _removeBranchTypeId = 11;
+        private static float _removeBranchMultiple = 0.5f;
+        private static float _noRemoveBranchMultiple = 0.3f;
         public AfterSaleGetHandler(
             ISaleGetHandler saleGetHandler,
             IEquipmentBrokerAndZoneQueryService equipmentBrokerAndZoneQueryService,
@@ -55,7 +58,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
         public async Task<FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto>> Handle(AfterSaleInputDto input, CancellationToken cancellationToken)
         {
-            await InputValidation(input, cancellationToken);
+            await InputValidate(input, cancellationToken);
             ValidationOffering(input);
 
             SaleInputDto previousDataInput = GetSaleInput(input.PreviousData, input.ZoneId, input.Block, input.HasWaterArticle11, input.HasSewageArticle11);
@@ -73,22 +76,22 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private (SaleDataOutputDto, SaleDataOutputDto, SaleDataOutputDto) GetDataWithTax(IEnumerable<SaleDataOutputDto> differentData, AfterSaleInputDto input)
         {
             long taxAmount = 0;
-            IEnumerable<AfterSaleCompanyServiceEnum> companyServiceEnum = GetAfterSaleCompanyServiceSelected(input.CompanyServiceIds);
-            if (companyServiceEnum.Contains(AfterSaleCompanyServiceEnum.ChangeMeterDiameter))
+            IEnumerable<CompanyServiceEnum> companyServiceEnum = GetAfterSaleCompanyServiceSelected(input.CompanyServiceIds);
+            if (companyServiceEnum.Contains(CompanyServiceEnum.IsTaqirQotrEnsheab))
             {
                 taxAmount += differentData.Where(s => s.Id == (short)OfferingEnum.WaterInstallation).FirstOrDefault().FinalAmount;
             }
-            if (companyServiceEnum.Contains(AfterSaleCompanyServiceEnum.ChangeSiphonDiameter) && input.PreviousData.SiphonDiameterId.HasValue)
+            if (companyServiceEnum.Contains(CompanyServiceEnum.TaqirQotrSifoon) && input.PreviousData.SiphonDiameterId.HasValue)
             {
                 taxAmount += differentData.Where(s => s.Id == (short)OfferingEnum.SewageInstalltion).FirstOrDefault().FinalAmount;
             }
-            if (companyServiceEnum.Contains(AfterSaleCompanyServiceEnum.MeterRelocation))
+            if (companyServiceEnum.Contains(CompanyServiceEnum.TaqirSathCounter))//تغیر مکان
             {
-                taxAmount += differentData.Where(s => s.Id == (short)AfterSaleCompanyServiceEnum.MeterRelocation).FirstOrDefault().FinalAmount;
+                taxAmount += differentData.Where(s => s.Id == (short)CompanyServiceEnum.TaqirSathCounter).FirstOrDefault().FinalAmount;
             }
-            if (companyServiceEnum.Contains(AfterSaleCompanyServiceEnum.ChangeSpecifications))
+            if (companyServiceEnum.Contains(CompanyServiceEnum.IsTaqirNam))
             {
-                taxAmount += differentData.Where(s => s.Id == (short)AfterSaleCompanyServiceEnum.ChangeSpecifications).FirstOrDefault().FinalAmount;
+                taxAmount += differentData.Where(s => s.Id == (short)CompanyServiceEnum.IsTaqirNam).FirstOrDefault().FinalAmount;
             }
             SaleDataOutputDto previousTax = new(0, _taxTitle, 0, 0, 0);
             SaleDataOutputDto currentTax = new(0, _taxTitle, 0, 0, 0);
@@ -108,13 +111,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 {
                     if (item.Id == (short)OfferingEnum.WaterSubscription || item.Id == (short)OfferingEnum.SewageSubscription)
                     {
-                        if (input.CompanyServiceIds.Contains(_removeBranchTypeId))
+                        if (input.CompanyServiceIds.Contains((int)CompanyServiceEnum.BarchidanEnsheab))
                         {
-                            item.FinalAmount = (long)(item.FinalAmount * 0.5);
+                            item.FinalAmount = (long)(item.FinalAmount * _removeBranchMultiple);
                         }
                         else
                         {
-                            item.FinalAmount = (long)(item.FinalAmount * 0.3);
+                            item.FinalAmount = (long)(item.FinalAmount * _noRemoveBranchMultiple);
                         }
                     }
                     else
@@ -126,7 +129,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
             return companyServiceWithChangeCompany;
         }
-        private async Task InputValidation(AfterSaleInputDto input, CancellationToken cancellationToken)
+        private async Task InputValidate(AfterSaleInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)
@@ -138,8 +141,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private void ValidationOffering(AfterSaleInputDto input)
         {
             int[] domesticUsageWithoutContractual = { 1, 34 };
-            IEnumerable<AfterSaleCompanyServiceEnum> afterSaleCompanySelected = GetAfterSaleCompanyServiceSelected(input.CompanyServiceIds);
-            if (input.PreviousData.WaterDiameterId != input.CurrentData.WaterDiameterId && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeMeterDiameter))
+            IEnumerable<CompanyServiceEnum> afterSaleCompanySelected = GetAfterSaleCompanyServiceSelected(input.CompanyServiceIds);
+            if (input.PreviousData.WaterDiameterId != input.CurrentData.WaterDiameterId && !afterSaleCompanySelected.Contains(CompanyServiceEnum.IsTaqirQotrEnsheab))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeWaterDiameter));
             }
@@ -147,22 +150,22 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             //{
             //    throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeSiphonDiameter));
             //}
-            if (input.PreviousData.SiphonDiameterId is null && input.CurrentData.SiphonDiameterId is not null && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.WastewaterBranch))
+            if (input.PreviousData.SiphonDiameterId is null && input.CurrentData.SiphonDiameterId is not null && !afterSaleCompanySelected.Contains(CompanyServiceEnum.IsAfterSaleEnsheabFazelab))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.GetSewage));
             }
             if (input.PreviousData.SiphonDiameterId is not null && input.CurrentData.SiphonDiameterId is not null
                 && input.PreviousData.SiphonDiameterId != input.CurrentData.SiphonDiameterId
-                && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeSiphonDiameter))
+                && !afterSaleCompanySelected.Contains(CompanyServiceEnum.TaqirQotrSifoon))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeSiphonDiameter));
             }
-            if (input.PreviousData.UsageId != input.CurrentData.UsageId && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeUsage))
+            if (input.PreviousData.UsageId != input.CurrentData.UsageId && !afterSaleCompanySelected.Contains(CompanyServiceEnum.IsTaqirKarbari))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeUsage));
             }
             if (!domesticUsageWithoutContractual.Contains(input.PreviousData.UsageId) && input.CurrentData.UsageId == 3 &&
-                input.PreviousData.ContractualCapacity != input.CurrentData.ContractualCapacity && !afterSaleCompanySelected.Contains(AfterSaleCompanyServiceEnum.ChangeContractualCapacity))
+                input.PreviousData.ContractualCapacity != input.CurrentData.ContractualCapacity && !afterSaleCompanySelected.Contains(CompanyServiceEnum.IsZarfiatQarardadi))
             {
                 throw new AfterSaleException(ExceptionLiterals.CheckCompanyService(ExceptionLiterals.ChangeContractualCapacity));
             }
@@ -212,8 +215,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 currentItems.Add(currentArticle11);
                 differentItems.Add(differentArticle11);
             }
-
-
 
             AfterSaleDataOutputDto companyServiceResult = new(companyServiceData.PreviousValue.Concat(previousItems), companyServiceData.CurrentValue.Concat(currentItems), companyServiceData.DifferentValue.Concat(differentItems));
 
@@ -402,10 +403,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         long CalcDiff(long? current, long? previous) => (current ?? 0) - (previous ?? 0);
 
-        private IEnumerable<AfterSaleCompanyServiceEnum> GetAfterSaleCompanyServiceSelected(ICollection<int> offeringIds)
+        private IEnumerable<CompanyServiceEnum> GetAfterSaleCompanyServiceSelected(ICollection<int> offeringIds)
         {
             return offeringIds
-                .Select(s => (AfterSaleCompanyServiceEnum)s)
+                .Select(s => (CompanyServiceEnum)s)
                 .ToList();
         }
         private bool HasDiamterChange(int? previousDiameter, int? currentDiameter)
@@ -416,45 +417,45 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private bool HasSiphon(int? siphonDiameterId) => siphonDiameterId != null && siphonDiameterId > 0 ? true : false;
     }
-    public enum AfterSaleCompanyServiceEnum
-    {
-        WastewaterBranch = 201,//t9:3,  // انشعاب فاضلاب   s2=201
-        MeterSeparation = 4,//تفکیک کنتور
-        ChangeSpecifications = 301,//t9:35      ,//تغییر مشخصات    s4=301
-        ChangeUnit = 6,//تغییر واحد 
-        ChangeUsage = 331,//t9:37,//تغییر کاربری    s16=331
-        ChangeMeterDiameter = 302,//t9:38       ,//تغییر قطر انشعاب    s5=302
-        InstallAdditionalSiphon = 310,//t9:39       ,//نصب سیفون اضافی    s33=310
-        MeterRelocation = 308,//t9:310      ,//جابجایی کنتور    s20=308
-        BranchDismantling = 11,//برچیدن انشعاب
-        PropertyConsolidationAndMerger = 205,//t9:312       ,//تجمیع و ادغام املاک     s40=205
-        TankerWaterSale = 13,//فروش آب تانکری
-        SuggestionsComplaintsCriticisms = 14,//پیشنهادات،انتقادات،شکایات
-        BillPaymentFacility = 15,//امکان پرداخت صورتحساب
-        ViewRecords = 16,//مشاهده سوابق
-        Settlement = 17,//تسویه حساب
-        BillReview = 18,//بررسی صورتحساب
-        InterimBill = 19,//صورتحساب میاندوره
-        TemporaryDisconnectionAndReconnection = 303,//t9:320        ,//قطع موقت و وصل انشعاب    s32=303
-        MeterTest = 21,//آزمایش کنتور
-        WaterAndWastewaterBranchTransfer = 22,//واگذاری انشعاب آب و فاضلاب
-        AfterSalesService = 23,//خدمات پس از فروش
-        ChangeSiphonDiameter = 309,//t9:324     ,//تغییر قطر سیفون    s24=309
-        SiphonReplacement = 25,//تعویض سیفون    s38
-        NotaryInquiry = 26,//استعلام محضر
-        DisconnectionAndReconnection = 27,//قطع و وصل انشعاب     ??s32
-        SiphonRelocation = 28,//جابجایی سیفون     s36=323
-        EngineeringSystem = 29,//نظام مهندسی    s37
-        MeterReplacement = 30,//تعویض کنتور    s41
-        ChangeContractualCapacity = 31,//تغییر ظرفیت قراردادی    s44
-        HouseholdCensus = 42,//خانوار شماری    s39
-        WaterPreparation = 45,//آماده سازی آب    s26=109
-        WastewaterPreparation = 209,//t9:346        ,//آماده سازی فاضلاب     s27=209
-        TariffChange = 47,//تغییر تعرفه     s46
-        Surveying = 67,//پیمایش      s47
-        OtherServices = 500,//t9:34     ,//سایر خدمات      s48=500
-        ChangeMeterLevel = 304,//t9:377     //تغییر سطح کنتور    s13=304
-    }
+    //public enum AfterSaleCompanyServiceEnum
+    //{
+    //    WastewaterBranch = 201,//t9:3,  // انشعاب فاضلاب   s2=201
+    //    MeterSeparation = 4,//تفکیک کنتور
+    //    ChangeSpecifications = 301,//t9:35      ,//تغییر مشخصات    s4=301
+    //    ChangeUnit = 6,//تغییر واحد 
+    //    ChangeUsage = 331,//t9:37,//تغییر کاربری    s16=331
+    //    ChangeMeterDiameter = 302,//t9:38       ,//تغییر قطر انشعاب    s5=302
+    //    InstallAdditionalSiphon = 310,//t9:39       ,//نصب سیفون اضافی    s33=310
+    //    MeterRelocation = 308,//t9:310      ,//جابجایی کنتور    s20=308
+    //    BranchDismantling = 11,//برچیدن انشعاب
+    //    PropertyConsolidationAndMerger = 205,//t9:312       ,//تجمیع و ادغام املاک     s40=205
+    //    TankerWaterSale = 13,//فروش آب تانکری
+    //    SuggestionsComplaintsCriticisms = 14,//پیشنهادات،انتقادات،شکایات
+    //    BillPaymentFacility = 15,//امکان پرداخت صورتحساب
+    //    ViewRecords = 16,//مشاهده سوابق
+    //    Settlement = 17,//تسویه حساب
+    //    BillReview = 18,//بررسی صورتحساب
+    //    InterimBill = 19,//صورتحساب میاندوره
+    //    TemporaryDisconnectionAndReconnection = 303,//t9:320        ,//قطع موقت و وصل انشعاب    s32=303
+    //    MeterTest = 21,//آزمایش کنتور
+    //    WaterAndWastewaterBranchTransfer = 22,//واگذاری انشعاب آب و فاضلاب
+    //    AfterSalesService = 23,//خدمات پس از فروش
+    //    ChangeSiphonDiameter = 309,//t9:324     ,//تغییر قطر سیفون    s24=309
+    //    SiphonReplacement = 25,//تعویض سیفون    s38
+    //    NotaryInquiry = 26,//استعلام محضر
+    //    DisconnectionAndReconnection = 27,//قطع و وصل انشعاب     ??s32
+    //    SiphonRelocation = 28,//جابجایی سیفون     s36=323
+    //    EngineeringSystem = 29,//نظام مهندسی    s37
+    //    MeterReplacement = 30,//تعویض کنتور    s41
+    //    ChangeContractualCapacity = 31,//تغییر ظرفیت قراردادی    s44
+    //    HouseholdCensus = 42,//خانوار شماری    s39
+    //    WaterPreparation = 45,//آماده سازی آب    s26=109
+    //    WastewaterPreparation = 209,//t9:346        ,//آماده سازی فاضلاب     s27=209
+    //    TariffChange = 47,//تغییر تعرفه     s46
+    //    Surveying = 67,//پیمایش      s47
+    //    OtherServices = 500,//t9:34     ,//سایر خدمات      s48=500
+    //    ChangeMeterLevel = 304,//t9:377     //تغییر سطح کنتور    s13=304
+    //}
 
 }
 
