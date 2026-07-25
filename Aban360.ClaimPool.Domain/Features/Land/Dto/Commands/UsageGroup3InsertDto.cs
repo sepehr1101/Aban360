@@ -2,7 +2,7 @@
 {
     public record UsageGroup3InsertDto
     {
-        public int Group2Id { get; set; }
-        public int UsageId { get; set; }
+        public short Group2Id { get; set; }
+        public IEnumerable<int> UsageIds { get; set; }
     }
 }

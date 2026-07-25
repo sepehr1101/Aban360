@@ -46,7 +46,6 @@ builder.AddStiFonts();
 
 //todo 
 //builder.Services.AddTransient<TokenInterceptor>();
-
 var app = builder.Build();
 //app.UsePathBase("/aban360");
 app.UseExceptionHandler("/error");
