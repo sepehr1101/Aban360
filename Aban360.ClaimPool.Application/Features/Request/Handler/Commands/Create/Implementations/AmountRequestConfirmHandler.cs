@@ -40,7 +40,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             Validate(installments, latestTrackingInfo.StatusId);
 
             TrackingInsertDuplicateDto trackingInsertDuplicateDto = new(latestTrackingInfo.TrackNumber, _amountIsConfirmedStatus, inputDto.Description, userCode, _requestOrigin, true, false);
-            //TrackingInsertDto trackingInsertDto = GetTrackingCreateDto(inputDto, trackingInfo, userCode);
             await ExecuteSqlCommand(trackingInsertDuplicateDto);
         }
         private void Validate(IEnumerable<InstallmentRequestDataOutputDto> installments, int previousStatusId)

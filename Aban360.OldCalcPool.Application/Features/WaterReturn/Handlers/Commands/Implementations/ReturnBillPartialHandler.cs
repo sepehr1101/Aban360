@@ -1,10 +1,12 @@
-﻿using Aban360.Common.ApplicationUser;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
+using Aban360.OldCalcPool.Domain.Constants;
 using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
@@ -31,7 +33,15 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IReturnBillBaseHandler _returnBillBaseHandler;
         private readonly IRepairQueryService _repairQueryService;
         private readonly IBillReturnCauseQueryService _billReturnCauseQueryService;
-
+        private const int _11Olgoo = 11;
+        private const int _12Olgoo = 12;
+        private const int _13Olgoo = 13;
+        private const int _14Olgoo = 14;
+        private int _11And12OlgooConsumptionAverage = 28;
+        private int _13And14OlgooConsumptionAverage = 29;
+        private int _domesticCAmount = 68022;
+        private int _dayOfMonth = 30;
+        private int _from4YearsAgo = -4;
         public ReturnBillPartialHandler(
             ISQueryService sQueryService,
             IBedBesQueryService besQueryService,
@@ -65,16 +75,12 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
         public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillPartialInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            int[] burstPipe = { 1 };
-            int[] misreaded = { 5, 7, 9, 11, 12, 14, 15 }; //9 removed
-            int[] misreadedCalcWithMeterNumber = { 5, 9, 10, 11, 12, 14, 15 }; //TODO: 10 ? - 9 added, 5 added
-
             CustomerInfoOutputDto customerInfo = await Validate(inputDto, appUser, cancellationToken);
             int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(inputDto.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
             var (bedBesInfo, bedBesResult) = await GetBedBesCreateDto(inputDto, customerInfo);
 
             float consumptionAverage = 0;
-            if (burstPipe.Contains(inputDto.ReturnCauseId))
+            if (BurstPipe.Contains(inputDto.ReturnCauseId))
             {
                 await BurstPipeValidate(bedBesResult, inputDto.ReturnCauseId);
 
@@ -90,16 +96,16 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             else
             {
-                if (!misreadedCalcWithMeterNumber.Contains(inputDto.ReturnCauseId))
+                if (!MisreadedCalcWithMeterNumber.Contains(inputDto.ReturnCauseId))
                 {
                     consumptionAverage = await _returnBillBaseHandler.GetConsumptionAverage(inputDto.FromDateJalali, inputDto.ToDateJalali, inputDto.CalculationType, inputDto.UserInput, customerInfo, inputDto.ReturnCauseId);
                 }
             }
 
-            if (misreaded.Contains(inputDto.ReturnCauseId))
+            if (Misreaded.Contains(inputDto.ReturnCauseId))
             {
                 AbBahaCalculationDetails abBahaResult = new();
-                if (misreadedCalcWithMeterNumber.Contains(inputDto.ReturnCauseId))
+                if (MisreadedCalcWithMeterNumber.Contains(inputDto.ReturnCauseId))
                 {
                     abBahaResult = await GetAbBahaTariffWithMeterNumber(inputDto, bedBesInfo, bedBesResult, customerInfo, cancellationToken);
                 }
@@ -107,7 +113,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 {
                     if (consumptionAverage == 0)
                     {
-                        throw new BaseException("خطا در محاسبه متوسط مصرف");
+                        throw new BaseException(ExceptionLiterals.InvalidToCalculateConsumptioAverage);
                     }
                     abBahaResult = await GetAbBahaTariffWithConsumptionAverage(inputDto, bedBesInfo, consumptionAverage, cancellationToken);
                 }
@@ -121,22 +127,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
         private async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> CreateAutoBacksAndReturn(AbBahaCalculationDetails abBahaResult, ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBesInfo, BedBesCreateDto bedBesResult, CustomerInfoOutputDto customerInfo, float? hadarConsumption, long? finalAmount, float consumptionAverage, int jalaseNumber, IAppUser appUser, string fromDateJalali, string toDateJalali, CancellationToken cancellationToken)
         {
-            /*int[] notCalcAbon = { 14, 15 };
-            if (notCalcAbon.Contains(input.ReturnCauseId))
-            {
-                double abon = abBahaResult.AbonmanAbAmount + abBahaResult.AbonmanFazelabAmount;
-                double abonMaliat = (long)(abon * 0.1f);
-                abBahaResult.MaliatAmount -= abonMaliat;
-                abBahaResult.SumItems -= (abon + abonMaliat);
-
-                abBahaResult.AbonmanAbAmount = 0;
-                abBahaResult.AbonmanFazelabAmount = 0;
-            }*/
             AutoBackCreateDto bedBes = _returnBillBaseHandler.GetBedBes(bedBesResult, bedBesInfo.Count(), jalaseNumber, input.ReturnCauseId);
             AutoBackCreateDto newCalculation = _returnBillBaseHandler.GetNewCalculation(abBahaResult, bedBesResult, input.ReturnCauseId, bedBesInfo.Count(), hadarConsumption ?? 0, (long)(finalAmount ?? 0), jalaseNumber);
             AutoBackCreateDto different = _returnBillBaseHandler.GetDifferent(bedBesResult, newCalculation, jalaseNumber);
 
-            //_returnBillBaseHandler.ValidationAmount(newCalculation.Baha, bedBesInfo.Sum(s => s.Baha));
             return await _returnBillBaseHandler.GetReturn(bedBes, newCalculation, different, customerInfo, bedBesInfo.Count(), input.IsConfirm, true, appUser, fromDateJalali, toDateJalali);
         }
         private async Task<AbBahaCalculationDetails> GetAbBahaTariff(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBes, double consumptionAverage, CancellationToken cancellationToken)
@@ -148,9 +142,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             AbBahaCalculationDetails abBahaResult = await _oldTariffEngine.Handle(meterData, cancellationToken);
             return abBahaResult;
         }
-        private async Task<AbBahaCalculationDetails> GetAbBahaTariffWithConsumptionAverage(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBes, float consumptionAverage,  CancellationToken cancellationToken)
+        private async Task<AbBahaCalculationDetails> GetAbBahaTariffWithConsumptionAverage(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBes, float consumptionAverage, CancellationToken cancellationToken)
         {
-            //double consumptionAverage = (double)bedBes.Average(b => b.Rate);
             string previousDateJalali = bedBes.Min(x => x.PriDate);
             string currentDateJalali = bedBes.Max(x => x.TodayDate);
 
@@ -158,8 +151,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             int currentNumber = (int)bedBes.Max(x => x.TodayNo);
 
             MeterDateInfoWithMonthlyConsumptionOutputDto meterData = new(input.BillId, previousDateJalali, currentDateJalali, consumptionAverage);
-
             AbBahaCalculationDetails abBahaResult = await _oldTariffEngine.Handle(meterData, cancellationToken);
+
             return abBahaResult;
         }
         private async Task<AbBahaCalculationDetails> GetAbBahaTariffWithMeterNumber(ReturnBillPartialInputDto input, IEnumerable<BedBesCreateDto> bedBesList, BedBesCreateDto bedBesResult, CustomerInfoOutputDto customerInfoOutputDto, CancellationToken cancellationToken)
@@ -170,10 +163,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             int previousNumber = (int)bedBesList.Min(x => x.PriNo);
             int currentNumber = (int)bedBesList.Max(x => x.TodayNo);
 
-            if (bedBesList.Any(bedBes => bedBes.CodVas == 1))
+            if (bedBesList.Any(bedBes => bedBes.CodVas == (int)CounterStateCodeEnum.Malfunction))
             {
                 decimal masraf = bedBesResult.Masraf;
-                float consumptionAverage = (float)masraf * 30 / (float)(customerInfoOutputDto.PureDomesticUnit * bedBesResult.Modat);
+                float consumptionAverage = (float)masraf * _dayOfMonth / (float)(customerInfoOutputDto.PureDomesticUnit * bedBesResult.Modat);
                 MeterDateInfoWithMonthlyConsumptionOutputDto meterData = new(input.BillId, previousDateJalali, currentDateJalali, consumptionAverage);
                 AbBahaCalculationDetails abBahaResult = await _oldTariffEngine.Handle(meterData, cancellationToken);
                 return abBahaResult;
@@ -204,15 +197,12 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             var (olgo, c) = await GetOlgoAndC(priDateLatestBill, todayDateLatestBill, customerInfo.ZoneId);
 
-            //int customerConsumption = Math.Abs((int)(bedBes.TodayNo - bedBes.PriNo));
             int customerConsumption = (int)bedBes.Masraf;
-            int amount = _returnBillBaseHandler.IsDomestic(customerInfo.UsageId) ? 68022 : c;
-            //int duration = Duration(bedBes.TodayDate, bedBes.PriDate, (int)bedBes.CodVas);
-            //float consumption = _consumptionAverage / 30 * duration;
+            int amount = _returnBillBaseHandler.IsDomestic(customerInfo.UsageId) ? _domesticCAmount : c;
             float masHadr = customerConsumption - consumption;
             float finalAmount = amount * masHadr;
 
-            return (finalAmount, masHadr);//, _consumptionAverage);
+            return (finalAmount, masHadr);
         }
         private async Task<float> GetConsumptionAverage(CustomerInfoOutputDto customerInfo, string priDateLatestBill, string todayDateLatestBill, float consumptionAverage)
         {
@@ -221,8 +211,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             return _returnBillBaseHandler.IsDomestic(customerInfo.UsageId) ?
                   olgo switch
                   {
-                      11 or 12 => 28,
-                      13 or 14 => 29,
+                      _11Olgoo or _12Olgoo => _11And12OlgooConsumptionAverage,
+                      _13Olgoo or _14Olgoo => _13And14OlgooConsumptionAverage,
                       _ => consumptionAverage,
                   } :
                  consumptionAverage;
@@ -230,35 +220,27 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private async Task<(int, int)> GetOlgoAndC(string fromDate, string toDate, int zoneId)
         {
             SGetDto s = await _sQueryService.Get(fromDate, toDate, zoneId);
-            int olgo = s is null || s.Olgo <= 0 ? 14 : s.Olgo;
+            int olgo = s is null || s.Olgo <= 0 ? _14Olgoo : s.Olgo;
 
             ZaribCQueryDto zaribC = await _zaribCQueryService.GetLatest(fromDate, toDate);
             int c = zaribC is null || zaribC.C <= 0 ? throw new ReturnedBillException(ExceptionLiterals.CantReturn) : zaribC.C;
 
             return (olgo, c);
         }
-        private int Duration(string currentDateJalali, string previousDateJalali, int counterStateCode)
-        {
-            var previousGregorian = previousDateJalali.ToGregorianDateTime();
-            var currentGregorian = currentDateJalali.ToGregorianDateTime();
-            int duration = 0;
-
-            duration = IsReverse(counterStateCode) ?
-                       duration = (previousGregorian.Value - currentGregorian.Value).Days :
-                       duration = (currentGregorian.Value - previousGregorian.Value).Days;
-
-            return duration > 0 ? duration : throw new ReturnedBillException(ExceptionLiterals.CurrentDateNotMoreThanPreviousDate);
-        }
         private async Task<CustomerInfoOutputDto> Validate(ReturnBillPartialInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             await _returnBillBaseHandler.PartialValidate(input, cancellationToken);
             CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.Validate(appUser, input.BillId, input.FromDateJalali, input.ToDateJalali);
-            if (input.ReturnCauseId == 1 && !_returnBillBaseHandler.IsDomestic(customerInfo.UsageId) && (input.UserInput is null || input.UserInput <= 0))
+            if (ValidateDomesticBurstPieConsumptionAverage(input, customerInfo.UsageId))
             {
-                throw new ReturnedBillException("برای برگشتی کاربری های غیرمسکونی وارد نمودن متوسط مصرف توسط شما ضروری است");
+                throw new ReturnedBillException(ExceptionLiterals.InvalidReturnDomesticConsumptionAverage);
             }
 
             return customerInfo;
+        }
+        private bool ValidateDomesticBurstPieConsumptionAverage(ReturnBillPartialInputDto input, int usageId)
+        {
+            return input.ReturnCauseId == (int)ReturnCauseEnum.LooleTarakidegi && !_returnBillBaseHandler.IsDomestic(usageId) && (input.UserInput is null || input.UserInput <= 0);
         }
         private async Task BurstPipeValidate(BedBesCreateDto bedBesResult, int returnCauseId)
         {
@@ -267,7 +249,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 ZoneId = (int)bedBesResult.Town,
                 CustomerNumber = (int)bedBesResult.Radif,
                 ReturnCauseId = returnCauseId,
-                FromDateJalali = DateTime.Now.AddYears(-4).ToShortPersianDateString(),
+                FromDateJalali = DateTime.Now.AddYears(_from4YearsAgo).ToShortPersianDateString(),
                 ToDateJalali = bedBesResult.TodayDate,
             };
             BillReturnCauseGetDto returnCauseInfo = await _billReturnCauseQueryService.Get((short)returnCauseId);
@@ -278,10 +260,32 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 throw new ReturnedBillException(ExceptionLiterals.InvalidReturn(returnCauseInfo.Title));
             }
         }
-        private bool IsReverse(int counterStateCode)
+        private int[] BurstPipe { get { return [(int)ReturnCauseEnum.LooleTarakidegi]; } }
+        private int[] Misreaded
         {
-            int[] reverse = [3];
-            return reverse.Contains(counterStateCode);
+            get
+            {
+                return [(int)ReturnCauseEnum.EshtebahGheraat,
+                        (int)ReturnCauseEnum.EshtebahDarGhotrEnshab,
+                        (int)ReturnCauseEnum.EshtebahDarShomareGhabli,
+                        (int)ReturnCauseEnum.EshtebahDarMablaghAbBaha,
+                        (int)ReturnCauseEnum.EshtebahDarMablaghFazelab,
+                        (int)ReturnCauseEnum.EshtebahDarTedadVahed,
+                        (int)ReturnCauseEnum.EshtebahDarNoeKarbari];
+            }
+        }
+        private int[] MisreadedCalcWithMeterNumber
+        {
+            get
+            {
+                return [(int)ReturnCauseEnum.EshtebahGheraat,
+                        (int)ReturnCauseEnum.EshtebahDarShomareGhabli,
+                        (int)ReturnCauseEnum.EshtebahDarMasraf,
+                        (int)ReturnCauseEnum.EshtebahDarMablaghAbBaha,
+                        (int)ReturnCauseEnum.EshtebahDarMablaghFazelab,
+                        (int)ReturnCauseEnum.EshtebahDarTedadVahed  ,
+                        (int)ReturnCauseEnum.EshtebahDarNoeKarbari];
+            }
         }
     }
 }
