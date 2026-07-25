@@ -25,12 +25,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         public async Task<int> Insert(UsageGroup3InsertDto inputDto)
         {
             string command = GetInsertCommand();
-            int recordId = await _connection.QueryFirstOrDefaultAsync<int>(command, inputDto, _transaction);
-            if (recordId <= 0)
+            int effectedRecords = await _connection.ExecuteAsync(command, inputDto, _transaction);
+            if (effectedRecords <= 0)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertUsageGroup3);
             }
-            return recordId;
+            return effectedRecords;
         }
         public async Task Update(UsageGroup3UpdateDto inputDto)
         {
@@ -40,6 +40,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateUsageGroup3);
             }
+        }
+        public async Task<int> RemoveByUsageGroup2(short id)
+        {
+            string command = GetRemoveByUsageGroup2Command();
+            int recordCount = await _connection.ExecuteAsync(command, new { id }, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveUsageGroup3);
+            }
+            return recordCount;
         }
         public async Task Remove(short id)
         {
@@ -68,9 +78,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                      	t41.C0,
                      	t41.C1
                      FROM [Db70].dbo.T41 t41
-                     Where t41.C0 = @UsageId
-
-                    Select SCOPE_IDENTITY();";
+                     Where t41.C0 In @UsageIds;";
         }
         private string GetUpdateCommand()
         {
@@ -89,6 +97,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             string condition = isList ? " IN " : " = ";
             return $@"Delete [Db70].dbo.UsageGroup3 
                     WHERE Id {condition} @Id; ";
+        }
+        private string GetRemoveByUsageGroup2Command()
+        {
+            return $@"Delete [Db70].dbo.UsageGroup3 
+                    WHERE Group2Id = @Id; ";
         }
     }
 }

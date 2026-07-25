@@ -116,7 +116,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         {
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
             SetAssessmentTimeDataOutputDto result = await _setAssessmentTimeHandler.Handle(inputDto, examinerCode, cancellationToken);
-            SetAssessmentTimeOutputDto outputDto = GetAssessmentTimeOutputDto(inputDto, result);
+            SetAssessmentTimeOutputDto outputDto = GetAssessmentTimeOutputDto(inputDto.HasCustomerSms, inputDto.HasAssessmentSms, result);
 
             return Ok(outputDto);
         }
@@ -131,7 +131,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(inputDto);
         }
 
-        
+
         [HttpPost]
         [Route("set-pre-result")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakUpdateInputDto>), StatusCodes.Status200OK)]
@@ -151,21 +151,21 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             await _reAssessmentRequestHandler.Handle(inputDto, userName, cancellationToken);
             return Ok(inputDto);
         }
-        private SetAssessmentTimeOutputDto GetAssessmentTimeOutputDto(AssessmentSetTimeInputDto inputDto, SetAssessmentTimeDataOutputDto result)
+        private SetAssessmentTimeOutputDto GetAssessmentTimeOutputDto(bool hasCustomerSms, bool hasAssessmentSms, SetAssessmentTimeDataOutputDto result)
         {
             string customerText = string.Format(SmsTemplates.RequestTimeSet, result.AssessmentName, result.AssessmentMobileNumber, result.AssessmentDateJalai, result.TrackNumber);
             string assessmentText = result.ServiceGroupId == 1 ?
                 string.Format(SmsTemplates.NewRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.NeighbourBillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber, result.NeighbourBillId) :
                 string.Format(SmsTemplates.AfterSaleRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.BillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber);
-            if (inputDto.HasAssessmentSms)
+            if (hasAssessmentSms)
             {
                 _backgroudJobClient.Enqueue(() => _smsOldHandler.Send(result.AssessmentMobileNumber, assessmentText, result.TrackId));
             }
-            if (inputDto.HasCustomerSms)
+            if (hasCustomerSms)
             {
                 _backgroudJobClient.Enqueue(() => _smsOldHandler.Send(result.MobileNumber, customerText, result.TrackId));
             }
-            return new SetAssessmentTimeOutputDto(inputDto.HasAssessmentSms, inputDto.HasCustomerSms, inputDto.HasAssessmentSms ? assessmentText : null, inputDto.HasCustomerSms ? customerText : null);
+            return new SetAssessmentTimeOutputDto(hasAssessmentSms, hasCustomerSms, hasAssessmentSms ? assessmentText : null, hasCustomerSms ? customerText : null);
 
         }
         private async Task<JsonReportId> GetSetResultJsonReport(Guid id, int reportCode, CancellationToken cancellationToken)

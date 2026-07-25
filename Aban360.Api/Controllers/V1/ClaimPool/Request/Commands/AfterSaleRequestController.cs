@@ -45,14 +45,20 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> AfterSaleRequest([FromBody] RequestAfterSaleInputDto inputDto, CancellationToken cancellationToken)
         {
             int userName = UserService.GetUserCode(CurrentUser.Username);
-            var (moshtrakInfo, trackId) = await _requestAfterSaleHandler.Handle(inputDto, userName, cancellationToken);
+            var (moshtrakInfo,assessmentSetTimeDto, trackId) = await _requestAfterSaleHandler.Handle(inputDto, userName, cancellationToken);
             string text = string.Format(SmsTemplates.RequestRegister, moshtrakInfo.TrackNumber);
             if (inputDto.HasSms)
             {
                 _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(moshtrakInfo.NotificationMobile, text, trackId));
             }
-            NewRequestOutputDto outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null);
-
+            NewRequestOutputDto outputDto;
+            if (assessmentSetTimeDto is not null)
+            {
+                SetAssessmentTimeOutputDto assessmentTimeSmsOutputDto = GetAssessmentTimeOutputDto(false, false, assessmentSetTimeDto);
+                outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null, assessmentTimeSmsOutputDto.HasCustomerSms, assessmentTimeSmsOutputDto.CustomerMessage, assessmentTimeSmsOutputDto.HasAssessmentSms, assessmentTimeSmsOutputDto.AssessmentMessage);
+                return Ok(outputDto);
+            }
+            outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null, false, null, false, null);
             return Ok(outputDto);
         }
 
@@ -64,6 +70,23 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             TrackingDuplicateValidationInputDto totalValidation = new(inputDto.BillId, null, null, TrackingDuplicateValidationTypeEnum.ByBillId);
             TrackingDuplicateValidationOutputDto result = await _requestDuplicateValidation.Handle(totalValidation, cancellationToken);
             return Ok(result);
+        }
+        private SetAssessmentTimeOutputDto GetAssessmentTimeOutputDto(bool hasCustomerSms, bool hasAssessmentSms, SetAssessmentTimeDataOutputDto result)
+        {
+            string customerText = string.Format(SmsTemplates.RequestTimeSet, result.AssessmentName, result.AssessmentMobileNumber, result.AssessmentDateJalai, result.TrackNumber);
+            string assessmentText = result.ServiceGroupId == 1 ?
+                string.Format(SmsTemplates.NewRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.NeighbourBillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber, result.NeighbourBillId) :
+                string.Format(SmsTemplates.AfterSaleRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.BillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber);
+            if (hasAssessmentSms)
+            {
+                _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(result.AssessmentMobileNumber, assessmentText, result.TrackId));
+            }
+            if (hasCustomerSms)
+            {
+                _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(result.MobileNumber, customerText, result.TrackId));
+            }
+            return new SetAssessmentTimeOutputDto(hasAssessmentSms, hasCustomerSms, hasAssessmentSms ? assessmentText : null, hasCustomerSms ? customerText : null);
+
         }
     }
 }
