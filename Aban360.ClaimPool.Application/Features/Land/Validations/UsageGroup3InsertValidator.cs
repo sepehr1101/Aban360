@@ -13,7 +13,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
               .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(f => f.UsageId)
+            RuleFor(f => f.UsageIds)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
               .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }

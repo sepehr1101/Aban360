@@ -20,11 +20,9 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
     internal sealed class UsageGroup3InsertHandler : AbstractBaseConnection, IUsageGroup3InsertHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly IUsageGroup3QueryService _usageGroup3QueryService;
         private readonly IValidator<UsageGroup3InsertDto> _validator;
         public UsageGroup3InsertHandler(
             IHttpContextAccessor contextAccessor,
-            IUsageGroup3QueryService usageGroup3QueryService,
             IValidator<UsageGroup3InsertDto> validator,
             IConfiguration configuration)
                 : base(configuration)
@@ -32,20 +30,12 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
             _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
 
-            _usageGroup3QueryService = usageGroup3QueryService;
-            _usageGroup3QueryService.NotNull(nameof(usageGroup3QueryService));
-
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
         public async Task Handle(UsageGroup3InsertDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await Validate(inputDto, cancellationToken);
-            UsageGroup3GetDto? duplicateData = await _usageGroup3QueryService.Get(inputDto);
-            if (duplicateData is not null)
-            {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidDuplicateUsageGroup);
-            }
             await ExecSql(inputDto, appUser);
         }
         private async Task ExecSql(UsageGroup3InsertDto usageGroup3InsertDto, IAppUser appUser)
@@ -61,9 +51,12 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
                     UsageGroup3CommandService usageGroup3CommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
-                    int recordId = await usageGroup3CommandService.Insert(usageGroup3InsertDto);
-                    string opLogText = string.Format(OpLogLiterals.UsageGroup3InsertOpLog, recordId);
-                    await opLogCommandService.Insert(opLogText, appUser);
+                    int removedEffectedRecord = await usageGroup3CommandService.RemoveByUsageGroup2(usageGroup3InsertDto.Group2Id);
+                    int insertRecordCount = await usageGroup3CommandService.Insert(usageGroup3InsertDto);
+                    string insertOpLogText = string.Format(OpLogLiterals.UsageGroup3InsertOpLog, usageGroup3InsertDto.Group2Id, insertRecordCount);
+                    string removeOpLogText = string.Format(OpLogLiterals.UsageGroup3DeleteListOpLog, usageGroup3InsertDto.Group2Id, removedEffectedRecord);
+                    await opLogCommandService.Insert(removeOpLogText, appUser);
+                    await opLogCommandService.Insert(insertOpLogText, appUser);
 
                     transaction.Commit();
                 }
