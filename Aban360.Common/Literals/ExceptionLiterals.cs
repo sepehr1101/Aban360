@@ -287,5 +287,12 @@
         public static string InvalidDuplicateUsageGroup => "خطا در گروه کاربری تکراری";
         public static string InvalidInsertSmsType => "خطا در ایجاد نوع پیامک";
 
+
+        //Apk
+        public static string InvalidInsertMeterApkFile => "خطا در ذخیره فایل قرائت";
+        public static string InvalidRemoveMeterApkFile => "خطا در حذف فایل قرائت";
+        public static string NotFoundMeterApkFileVersion => "ورژن وارد شده یافت نشد.";
+        public static string InvalidMeterApkFileVersion => "ورژن وارد شده معتبر نیست.";
+
     }
 }
