@@ -41,11 +41,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateUsageGroup3);
             }
         }
-        public async Task<int> RemoveByUsageGroup2(short id)
+        public async Task<int> RemoveByUsageGroup2(short id,bool hasException)
         {
             string command = GetRemoveByUsageGroup2Command();
             int recordCount = await _connection.ExecuteAsync(command, new { id }, _transaction);
-            if (recordCount <= 0)
+            if (recordCount <= 0 && hasException)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveUsageGroup3);
             }

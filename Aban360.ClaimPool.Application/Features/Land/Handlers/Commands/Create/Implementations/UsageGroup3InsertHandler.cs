@@ -51,7 +51,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
                     UsageGroup3CommandService usageGroup3CommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
-                    int removedEffectedRecord = await usageGroup3CommandService.RemoveByUsageGroup2(usageGroup3InsertDto.Group2Id);
+                    int removedEffectedRecord = await usageGroup3CommandService.RemoveByUsageGroup2(usageGroup3InsertDto.Group2Id, false);
                     int insertRecordCount = await usageGroup3CommandService.Insert(usageGroup3InsertDto);
                     string insertOpLogText = string.Format(OpLogLiterals.UsageGroup3InsertOpLog, usageGroup3InsertDto.Group2Id, insertRecordCount);
                     string removeOpLogText = string.Format(OpLogLiterals.UsageGroup3DeleteListOpLog, usageGroup3InsertDto.Group2Id, removedEffectedRecord);
