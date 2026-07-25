@@ -3,13 +3,24 @@
     public record NewRequestOutputDto
     {
         public int TrackNumber { get; set; }
-        public bool HasSendSms { get; set; }
-        public string? SmsMessage { get; set; }
-        public NewRequestOutputDto(int trackNumber,bool hasSendSms,string? smsMessage)
+        public bool HasTrackNumberSms { get; set; }
+        public string? TrackNumberMessage { get; set; }
+        public bool HasCustomerSms { get; set; }
+        public string? CustomerMessage { get; set; }
+        public bool HasAssessmentSms { get; set; }
+        public string? AssessmentMessage { get; set; }
+        public NewRequestOutputDto(int trackNumber, bool hasTrackNumberSms, string? trackNumberMessage, bool hasCustomerSms, string? customerMessage, bool hasAssessmentSms, string? assessmentMessage)
         {
             TrackNumber = trackNumber;
-            HasSendSms = hasSendSms;
-            this.SmsMessage = smsMessage;
+            HasTrackNumberSms = hasTrackNumberSms;
+            TrackNumberMessage = trackNumberMessage;
+            HasCustomerSms = hasCustomerSms;
+            CustomerMessage = customerMessage;
+            HasAssessmentSms = hasAssessmentSms;
+            AssessmentMessage = assessmentMessage;
+        }
+        public NewRequestOutputDto()
+        {
         }
     }
 }
