@@ -61,7 +61,9 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
         {
             string queryTagGroups = hasTagGroup ? " AND tg.Id IN @TagGroupIds" : string.Empty;
 
-            return @$"Select
+            return @$"Select	
+						mt.Id MainTagGroupId,
+						mt.Title MainTagGroupTitle,
 						tg.Title as TagGroupTitle,
 						tg.Id as TagGroupId,
 						t.Title as TagTitle,
@@ -96,6 +98,8 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
 					From [CustomerWarehouse].dbo.TagGroups tg
 					Join [CustomerWarehouse].dbo.Tags t
 						On tg.Id=t.TagGroupId
+					Join [CustomerWarehouse].dbo.MainTagGroup mt
+						On tg.MianTagGroupId=mt.Id
 					Join [CustomerWarehouse].dbo.BillIdTags bt
 						On bt.TagId=t.Id
 					Join [CustomerWarehouse].dbo.Clients c

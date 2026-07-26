@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.SystemPool.ProjectInfo
 {
-    [Route("project")]
+    [Route("v1/project")]
     [AllowAnonymous]
     public class ActionsInfoManagerController : BaseController
     {

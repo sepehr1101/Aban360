@@ -17,6 +17,7 @@
         public static string TankerDeleteOpLog => @"قبض آب تانکری توسط:{0}  حذف شد. تاریخ:{1} کد ناحیه:{2} شناسه قبض:{3} ردیف:{4} مبلغ:{5}";
         public static string RequestOfferingInsertOpLog => @"آیتم {0} برای شماره درخواست{1} ایجاد شد. مبلغ{2}  نوع آیتم {3}";
         public static string ServiceLinkReturnOpLog => @"برگشتی حق انشعاب انجام شد. شناسه قبض{0}  مبلغ{1}";
+        public static string ServiceLinkOtherExpensesOpLog => @"هزینه متفرقه حق انشعاب ذخیره شد. شناسه قبض{0}  مبلغ{1}  با احتساب مالیات:{2}";
         public static string ServiceLinkReturnDisconnectOpLog => @"برگشتی حق انشعاب-برچیدن انشعاب انجام شد. شناسه قبض{0}  مبلغ{1}";
         public static string ServiceLinkRegisterManualOpLog => @"وصولی دستی حق انشعاب انجام شد. شناسه قبض:{0}  مبلغ:{1}";
         public static string ServiceLinkDeleteManualOpLog => @"حذف وصولی دستی حق انشعاب انجام شد. شناسه قبض:{0}  مبلغ:{1}";

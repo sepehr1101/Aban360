@@ -4,19 +4,26 @@
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
+        public string StringCode { get; set; }
+        public int MainTagGroupId { get; set; }
+        public string MainTagGroupTitle { get; set; }
         public DateTime CreateDateTime { get; set; }
         public DateTime? DeleteDateTime { get; set; }
     }
 
     public class CreateTagGroupDto
-    {
+    {   
         public string Title { get; set; } = string.Empty;
+        public string StringCode { get; set; }
+        public int MainTagGroupId { get; set; }
     }
 
     public class UpdateTagGroupDto
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
+        public string StringCode { get; set; }
+        public int MainTagGroupId { get; set; }
     }
     public record TagsHeaderOutputDto
     {
@@ -40,6 +47,8 @@
 
     public record TagGroupReportDetailDataOutputDto
     {
+        public int MainTagGroupId { get; set; }
+        public string MainTagGroupTitle { get; set; }
         public string TagGroupTitle { get; set; }
         public int TagGroupId { get; set; }
         public string TagTitle { get; set; }
