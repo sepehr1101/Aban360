@@ -18,6 +18,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
         private readonly IMeterApkInfoGetAllHandler _meterApkInfoGetAllHandler;
         private readonly IMeterApkInfoGetByIdHandler _meterApkInfoGetByIdHandler;
         private readonly IMeterApkDownloadGetByIdHandler _meterApkDownloadGetByIdHandler;
+        private readonly IMeterApkInfoGetLatestHandler _meterApkInfoGetLatestHandler;
         private readonly IMeterApkInfoValidationHandler _meterApkInfoValidationHandler;
         private string _contentType = "application/vnd.android.package-archive";
         public MeterApkFileController(
@@ -26,6 +27,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
             IMeterApkInfoGetAllHandler meterApkInfoGetAllHandler,
             IMeterApkInfoGetByIdHandler meterApkInfoGetByIdHandler,
             IMeterApkDownloadGetByIdHandler meterApkDownloadGetByIdHandler,
+            IMeterApkInfoGetLatestHandler meterApkInfoGetLatestHandler,
             IMeterApkInfoValidationHandler meterApkInfoValidationHandler)
         {
             _meterApkFileDeleteHandler = meterApkFileDeleteHandler;
@@ -42,6 +44,9 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
 
             _meterApkDownloadGetByIdHandler = meterApkDownloadGetByIdHandler;
             _meterApkDownloadGetByIdHandler.NotNull(nameof(meterApkDownloadGetByIdHandler));
+
+            _meterApkInfoGetLatestHandler = meterApkInfoGetLatestHandler;
+            _meterApkInfoGetLatestHandler.NotNull(nameof(meterApkInfoGetLatestHandler));
 
             _meterApkInfoValidationHandler = meterApkInfoValidationHandler;
             _meterApkInfoValidationHandler.NotNull(nameof(meterApkInfoValidationHandler));
@@ -92,7 +97,17 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
             return File(stream, _contentType, result.Name);
 
         }
-        
+
+        [HttpPost, HttpGet]
+        [Route("download/latest")]
+        public async Task<FileResult> LatestDownload(CancellationToken cancellationToken)
+        {
+            ApkInfoGetDto result = await _meterApkInfoGetLatestHandler.Handle(cancellationToken);
+            var stream = new MemoryStream(result.FileContent);
+            return File(stream, _contentType, result.Name);
+
+        }
+
         [HttpPost, HttpGet]
         [Route("validate/{version}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ApkInfoGetDto>), StatusCodes.Status200OK)]
