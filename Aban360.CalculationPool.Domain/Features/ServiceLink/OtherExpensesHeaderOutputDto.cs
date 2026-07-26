@@ -13,6 +13,7 @@ namespace Aban360.CalculationPool.Domain.Features.ServiceLink
         public string FullName { get; set; }
         public int UsageId { get; set; }
         public string UsageTitle { get; set; }
+        public string MobileNumber { get; set; }
         public long FinalAmount { get; set; }
         public string PaymentId { get; set; }
         public int RecordCount { get; set; }

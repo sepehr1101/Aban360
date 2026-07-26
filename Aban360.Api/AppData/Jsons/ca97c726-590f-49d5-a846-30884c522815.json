@@ -1,0 +1,32 @@
+﻿{
+  "title": "هزینه های متفرقه حق انشعاب",
+  "reportHeader": {
+    "zoneId": 131301,
+    "zoneTitle": "1  - منطقه يک",
+    "customerNumber": 11304328,
+    "billId": "1130432816316",
+    "firstName": "آ- شركت",
+    "surname": "اب وفاضلاب فردوسي",
+    "fullName": "آ- شركت اب وفاضلاب فردوسي",
+    "usageId": 44,
+    "usageTitle": "عمومی اداری",
+    "mobileNumber": "09132057232",
+    "finalAmount": 2310,
+    "paymentId": "220040",
+    "recordCount": 2,
+    "title": "هزینه های متفرقه حق انشعاب",
+    "reportDateJalali": "1405/05/04"
+  },
+  "reportData": [
+    {
+      "offeringId": 303,
+      "offeringTitle": "قطع و وصل",
+      "offeringAmount": 2100
+    },
+    {
+      "offeringId": 550,
+      "offeringTitle": "ماليات بر ارزش افزوده",
+      "offeringAmount": 210
+    }
+  ]
+}
