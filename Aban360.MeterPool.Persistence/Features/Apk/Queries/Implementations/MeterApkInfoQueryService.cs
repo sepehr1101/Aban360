@@ -25,16 +25,22 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
             ApkInfoGetDto result = await _sqlConnection.QueryFirstOrDefaultAsync<ApkInfoGetDto>(query);
             return result;
         }
+        public async Task<string> GetLatestVersion()
+        {
+            string query = GetLatestVersionQuery();
+            string? result = await _sqlConnection.QueryFirstOrDefaultAsync<string?>(query);
+            return result;
+        }
         public async Task<ApkInfoGetDto?> Get(short id)
         {
             string query = GetByIdQuery();
             ApkInfoGetDto? result = await _sqlConnection.QueryFirstOrDefaultAsync<ApkInfoGetDto>(query, new { id });
             return result;
         }
-        public async Task<ApkInfoGetDto?> Get(string version)
+        public async Task<ApkInfo?> Get(string version)
         {
             string query = GetByVersionQuery();
-            ApkInfoGetDto? result = await _sqlConnection.QueryFirstOrDefaultAsync<ApkInfoGetDto>(query, new { version });
+            ApkInfo? result = await _sqlConnection.QueryFirstOrDefaultAsync<ApkInfo>(query, new { version });
             return result;
         }
         public async Task<byte[]> GetFile(short id)
@@ -52,12 +58,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                         FileContent,
                     	Version,
                     	Description,
-                    	InsertedBy,
-                    	InsertedDateTime,
-                    	RemovedBy,
-                    	RemovedDateTime,
-                    	ExpiredBy,
-                    	ExpiredDateTime
+                    	InsertedDateTime
                     From Aban360.MeterPool.ApkInfo";
         }
         private string GetLatestQuery()
@@ -68,12 +69,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	Version,
                         FileContent,
                     	Description,
-                    	InsertedBy,
-                    	InsertedDateTime,
-                    	RemovedBy,
-                    	RemovedDateTime,
-                    	ExpiredBy,
-                    	ExpiredDateTime
+                    	InsertedDateTime
                     From Aban360.MeterPool.ApkInfo
                     Where
                         RemovedBy IS NULL AND
@@ -88,12 +84,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	Version,
                         FileContent,
                     	Description,
-                    	InsertedBy,
-                    	InsertedDateTime,
-                    	RemovedBy,
-                    	RemovedDateTime,
-                    	ExpiredBy,
-                    	ExpiredDateTime
+                    	InsertedDateTime
                     From Aban360.MeterPool.ApkInfo
                     Where Id=@Id";
         }
@@ -105,12 +96,9 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	Version,
                         FileContent,
                     	Description,
-                    	InsertedBy,
                     	InsertedDateTime,
-                    	RemovedBy,
-                    	RemovedDateTime,
-                    	ExpiredBy,
-                    	ExpiredDateTime
+                        RemovedBy,
+                        ExpiredBy
                     From Aban360.MeterPool.ApkInfo
                     Where Version=@Version";
         }
@@ -119,6 +107,16 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
             return @"Select FileContent
                     From Aban360.MeterPool.ApkInfo
                     Where Id=@Id";
+        }
+        private string GetLatestVersionQuery()
+        {
+            return @"Select TOP 1                   	
+                    	Version
+                    From Aban360.MeterPool.ApkInfo
+                    Where
+                        RemovedBy IS NULL AND
+                        ExpiredBy IS NULL
+                    Order By InsertedDateTime Desc";
         }
     }
 }
