@@ -1,5 +1,6 @@
 ﻿using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Contracts;
 using Aban360.CalculationPool.Domain.Features.ServiceLink;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
@@ -12,12 +13,14 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
+using Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementations;
 using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Reflection;
 
 namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Implementations
 {
@@ -33,12 +36,14 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         private readonly IValidator<OtherExpensesInsertInputDto> _validator;
         private string _currentDateJalali = DateTime.Now.ToShortPersianDateString();
         private string _title = ReportLiterals.ServiceLinkOtherExpenses;
-        const string _insertBy = "Aban";
-        const int _operator = 666;
-        const int _kartTypeId = 3;
-        const int _type = 1;
-        const float _taxPercent = 0.1f;
-        const int _taxItemId = 550;
+        private string _insertWayTitle = "رایاب";
+        private string _insertBy = "Aban";
+        private int _afterSaleRequestServiceId = 2;
+        private int _operator = 666;
+        private int _kartTypeId = 3;
+        private int _type = 1;
+        private float _taxPercent = 0.1f;
+        private int _taxItemId = 550;
         public OtherExpensesInsertHandler(
             IHttpContextAccessor contextAccessor,
             ICommonMemberQueryService memberQueryService,
@@ -87,10 +92,10 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
             IEnumerable<KartInsertDto> kartsInsertDto = GetKartInsertDto(inputDto, memberInfo, (int)barge);
             IEnumerable<RequestBillDetailsInsertDto> requestBillDetailsInsertDto = await GetRequestBillDetailsInsertDto(kartsInsertDto, memberInfo);
             string opLogText = string.Format(OpLogLiterals.ServiceLinkOtherExpensesOpLog, inputDto.BillId, inputDto.Amount, kartsInsertDto?.Sum(s => s.FinalAmount) ?? 0);
-            await SqlCommands(kartsInsertDto, requestBillDetailsInsertDto, appUser, opLogText);
+            await SqlCommands(kartsInsertDto, requestBillDetailsInsertDto, inputDto, memberInfo, appUser, opLogText);
             return GetResult(memberInfo, requestBillDetailsInsertDto);
         }
-        private async Task SqlCommands(IEnumerable<KartInsertDto> kartsInsertDto, IEnumerable<RequestBillDetailsInsertDto> requestBillDetailsInsertDto, IAppUser appUser, string opLogText)
+        private async Task SqlCommands(IEnumerable<KartInsertDto> kartsInsertDto, IEnumerable<RequestBillDetailsInsertDto> requestBillDetailsInsertDto, OtherExpensesInsertInputDto inputDto, MemberInfoGetDto memeberInfo, IAppUser appUser, string opLogText)
         {
             string dbName = GetDbName(kartsInsertDto?.FirstOrDefault()?.ZoneId ?? 0);
             //string dbName = "Atlas";
@@ -101,10 +106,24 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                     connection.Open();
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
                 {
+                    T0CommandService t0CommandService = new(connection, transaction);
+                    MoshtrakCommandService moshtrakCommandService = new(connection, transaction);
                     KartCommandService kartCommandService = new(connection, transaction);
                     RequestBillDetailsCommandService requestBillDetailCommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    int trackNumber = (int)(await t0CommandService.GetTrackNumber());
+                    string stringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
+                    MoshtrakCreateDto moshtrakInsertDto = GetMoshtrackCreateDto(inputDto, memeberInfo, trackNumber);
+                    foreach (var item in kartsInsertDto)
+                    {
+                        item.StringTrackNumber = stringTrackNumber;
+                    }
+                    foreach (var item in requestBillDetailsInsertDto)
+                    {
+                        item.TrackNumber = stringTrackNumber;
+                    }
 
+                    await moshtrakCommandService.Insert(moshtrakInsertDto, dbName);
                     await kartCommandService.Insert(kartsInsertDto, true, dbName);
                     await requestBillDetailCommandService.Insert(requestBillDetailsInsertDto);
                     await opLogCommandService.Insert(opLogText, appUser);
@@ -126,6 +145,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 FullName = memberInfo.FullName,
                 UsageId = memberInfo.UsageId,
                 UsageTitle = memberInfo.UsageTitle,
+                MobileNumber = memberInfo.MobileNumber,
                 PaymentId = requestBillDetails?.FirstOrDefault()?.PayId ?? string.Empty,
                 FinalAmount = requestBillDetails?.Sum(s => s.Amount) ?? 0,
                 Title = _title,
@@ -146,6 +166,106 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
             }
+        }
+        private MoshtrakCreateDto GetMoshtrackCreateDto(OtherExpensesInsertInputDto inputDto, MemberInfoGetDto memberInfo, int trackNumber)//todo
+        {
+            MoshtrakServiceDto serviceSelected = MoshtrakService.GetServicesSelected(new List<int> { (int)inputDto.Offering });
+            return new MoshtrakCreateDto()
+            {
+                TrackNumber = trackNumber,
+                ServiceGroupId = _afterSaleRequestServiceId,
+                StringTrackNumber = trackNumber.ToString().PadLeft(11, '0'),
+                BillId = memberInfo.BillId,
+                CustomerNumber = memberInfo.CustomerNumber,
+                NeighbourBillId = null,
+                ZoneId = memberInfo.ZoneId,
+                NotificationMobile = memberInfo.MobileNumber,
+                UsageId = memberInfo.UsageId,
+                MeterDiameterId = memberInfo.MeterDiameterId,
+                BranchTypeId = memberInfo.UseStateId,
+                DiscountTypeId = memberInfo.DiscountId,
+                DiscountCount = memberInfo.DiscountCount,
+                PhoneNumber = memberInfo.PhoneNumber,
+                MobileNumber = memberInfo.MobileNumber,
+                NationalCode = memberInfo.NationalCode,
+                FirstName = memberInfo.FirstName,
+                Surname = memberInfo.Surname,
+                FatherName = memberInfo.FatherName,
+                Premises = memberInfo.Premises,
+                ImprovementCommertial = memberInfo.CommercialImprovement,
+                ImprovementDomestic = memberInfo.DomesticImprovement,
+                ImprovementOverall = memberInfo.OverallImprovement,
+                Siphon100 = memberInfo.Siphon100,
+                Siphon125 = memberInfo.Siphon125,
+                Siphon150 = memberInfo.Siphon150,
+                Siphon200 = memberInfo.Siphon200,
+                MainSiphon = int.Parse(memberInfo.MainSiphon),
+                CommonSiphon = memberInfo.CommonSiphon1,
+                ContractualCapacity = memberInfo.ContractualCapacity,
+                HouseValue = 0,//todo
+                CommertialUnit = memberInfo.CommercialUnit,
+                DomesticUnit = memberInfo.DomesticUnit,
+                OtherUnit = memberInfo.OtherUnit,
+                IsNonPermanent = false,
+                Address = memberInfo.Address,
+                PreViewId = string.Empty,//todo
+                CounterType = memberInfo.DeletionStateId,
+                InstallAgentState = 0,//todo
+                BlockId = string.IsNullOrWhiteSpace(memberInfo.BlockCode) ? string.Empty : memberInfo.BlockCode,
+                InsertWayTitle = _insertWayTitle,
+                PostalCode = memberInfo.PostalCode,
+                IsSpecial = memberInfo.IsSpecial,
+                ReadingNumber = memberInfo.ReadingNumber,
+                CertificateNumber = string.Empty,
+                BrokerId = 0,//todo
+                s0 = serviceSelected.s0,
+                s1 = serviceSelected.s1,
+                s2 = serviceSelected.s2,
+                s3 = serviceSelected.s3,
+                s4 = serviceSelected.s4,
+                s5 = serviceSelected.s5,
+                s8 = serviceSelected.s8,
+                s9 = serviceSelected.s9,
+                s10 = serviceSelected.s10,
+                s11 = serviceSelected.s11,
+                s12 = serviceSelected.s12,
+                s13 = serviceSelected.s13,
+                s14 = serviceSelected.s14,
+                s15 = serviceSelected.s15,
+                s16 = serviceSelected.s16,
+                s17 = serviceSelected.s17,
+                s18 = serviceSelected.s18,
+                s19 = serviceSelected.s19,
+                s20 = serviceSelected.s20,
+                s21 = serviceSelected.s21,
+                s22 = serviceSelected.s22,
+                s23 = serviceSelected.s23,
+                s24 = serviceSelected.s24,
+                s25 = serviceSelected.s25,
+                s26 = serviceSelected.s26,
+                s27 = serviceSelected.s27,
+                s28 = serviceSelected.s28,
+                s29 = serviceSelected.s29,
+                s30 = serviceSelected.s30,
+                s31 = serviceSelected.s31,
+                s32 = serviceSelected.s32,
+                s33 = serviceSelected.s33,
+                s34 = serviceSelected.s34,
+                s35 = serviceSelected.s35,
+                s36 = serviceSelected.s36,
+                s37 = serviceSelected.s37,
+                s38 = serviceSelected.s38,
+                s39 = serviceSelected.s39,
+                s40 = serviceSelected.s40,
+                s41 = serviceSelected.s41,
+                s42 = serviceSelected.s42,
+                s43 = serviceSelected.s43,
+                s44 = serviceSelected.s44,
+                s45 = serviceSelected.s45,
+                s46 = serviceSelected.s46,
+                s47 = serviceSelected.s47,
+                s48 = serviceSelected.s48,
+            };
         }
         private IEnumerable<KartInsertDto> GetKartInsertDto(OtherExpensesInsertInputDto input, MemberInfoGetDto memberInfo, int barge)
         {
