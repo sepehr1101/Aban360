@@ -1,10 +1,10 @@
 ﻿namespace Aban360.CalculationPool.Domain.Constants
 {
-    public enum HighLowEnum:short
-    { 
-        Zero=0,
-        Low=1,
-        High=2,
-        Normal=4
+    public enum HighLowEnum : short
+    {
+        Zero = 0,
+        Low = 1,
+        High = 2,
+        Normal = 4
     }
 }
