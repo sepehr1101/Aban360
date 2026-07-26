@@ -261,6 +261,7 @@
         public static string InvalidInsertVosolEn => "خطا در ذخیره وصولی حق انشعاب";
         public static string InvalidPaymentInsertAfterDateCheck => "امکان ثبت وصولی پس از بسته شدن دوره  قبلی وجود ندارد.";
         public static string InvalidIPaymentDeleteAfterDateCheck => "امکان حذف وصولی پس از بسته شدن دوره جاری وجود ندارد.";
+        public static string InvalidBankDateBefor30DaysAgo => "تاریخ بانک نباید کمتر از 30 روز گذشته باشد.";
 
         public static string InvalidConnectDisconnectByCustomerInfo(string deletionStateTitle) => $"وضعیت انشعاب مشترک درحالت:{deletionStateTitle} قرار دارد. امکان درخواست وجود ندارد.";
         public static string InvalidConnectDisconnectDuplicateRequest => " تکراری (درخواست قبلی حذف/ثبت نتیجه نشده).";
