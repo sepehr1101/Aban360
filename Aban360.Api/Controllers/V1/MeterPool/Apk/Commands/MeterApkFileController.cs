@@ -1,8 +1,8 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.MeterPool.Application.Features.Apk.Command.Create.Contracts;
-using Aban360.MeterPool.Application.Features.Apk.Command.Delete.Contracts;
-using Aban360.MeterPool.Application.Features.Apk.Queries.Contracts;
+using Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Create.Contracts;
+using Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Delete.Contracts;
+using Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Contracts;
 using Aban360.MeterPool.Domain.Features.Apk.Commands;
 using Aban360.MeterPool.Domain.Features.Apk.Queries;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Queries;
@@ -18,6 +18,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
         private readonly IMeterApkInfoGetAllHandler _meterApkInfoGetAllHandler;
         private readonly IMeterApkInfoGetByIdHandler _meterApkInfoGetByIdHandler;
         private readonly IMeterApkDownloadGetByIdHandler _meterApkDownloadGetByIdHandler;
+        private readonly IMeterApkInfoGetLatestHandler _meterApkInfoGetLatestHandler;
         private readonly IMeterApkInfoValidationHandler _meterApkInfoValidationHandler;
         private string _contentType = "application/vnd.android.package-archive";
         public MeterApkFileController(
@@ -26,6 +27,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
             IMeterApkInfoGetAllHandler meterApkInfoGetAllHandler,
             IMeterApkInfoGetByIdHandler meterApkInfoGetByIdHandler,
             IMeterApkDownloadGetByIdHandler meterApkDownloadGetByIdHandler,
+            IMeterApkInfoGetLatestHandler meterApkInfoGetLatestHandler,
             IMeterApkInfoValidationHandler meterApkInfoValidationHandler)
         {
             _meterApkFileDeleteHandler = meterApkFileDeleteHandler;
@@ -42,6 +44,9 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
 
             _meterApkDownloadGetByIdHandler = meterApkDownloadGetByIdHandler;
             _meterApkDownloadGetByIdHandler.NotNull(nameof(meterApkDownloadGetByIdHandler));
+
+            _meterApkInfoGetLatestHandler = meterApkInfoGetLatestHandler;
+            _meterApkInfoGetLatestHandler.NotNull(nameof(meterApkInfoGetLatestHandler));
 
             _meterApkInfoValidationHandler = meterApkInfoValidationHandler;
             _meterApkInfoValidationHandler.NotNull(nameof(meterApkInfoValidationHandler));
@@ -88,11 +93,21 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
         public async Task<FileResult> Download(short id, CancellationToken cancellationToken)
         {
             ApkInfoGetDto result = await _meterApkInfoGetByIdHandler.Handle(id, cancellationToken);
-            var stream = new MemoryStream(result.File);
+            var stream = new MemoryStream(result.FileContent);
             return File(stream, _contentType, result.Name);
 
         }
-        
+
+        [HttpPost, HttpGet]
+        [Route("download/latest")]
+        public async Task<FileResult> LatestDownload(CancellationToken cancellationToken)
+        {
+            ApkInfoGetDto result = await _meterApkInfoGetLatestHandler.Handle(cancellationToken);
+            var stream = new MemoryStream(result.FileContent);
+            return File(stream, _contentType, result.Name);
+
+        }
+
         [HttpPost, HttpGet]
         [Route("validate/{version}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ApkInfoGetDto>), StatusCodes.Status200OK)]

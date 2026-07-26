@@ -45,13 +45,13 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Commands.Implementations
             return @"Insert Into [Aban360].MeterPool.ApkInfo
                     (
                         Name, Version, 
-                        [File], Description, 
+                        FileContent, Description, 
                         InsertedBy, InsertedDateTime
                     )
                     Values
                     (
                         @Name, @Version, 
-                        @File, @Description, 
+                        @FileContent, @Description, 
                         @InsertedBy, @InsertedDateTime
                     );";
         }

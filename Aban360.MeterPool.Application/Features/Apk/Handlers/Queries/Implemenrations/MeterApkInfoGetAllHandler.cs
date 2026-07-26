@@ -1,9 +1,9 @@
 ﻿using Aban360.Common.Extensions;
-using Aban360.MeterPool.Application.Features.Apk.Queries.Contracts;
+using Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Contracts;
 using Aban360.MeterPool.Domain.Features.Apk.Queries;
 using Aban360.MeterPool.Persistence.Features.Apk.Queries.Contracts;
 
-namespace Aban360.MeterPool.Application.Features.Apk.Queries.Implemenrations
+namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Implemenrations
 {
     internal sealed class MeterApkInfoGetAllHandler : IMeterApkInfoGetAllHandler
     {

@@ -19,6 +19,12 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
             IEnumerable<ApkInfoGetDto> result = await _sqlConnection.QueryAsync<ApkInfoGetDto>(query);
             return result;
         }
+        public async Task<ApkInfoGetDto> GetLatest()
+        {
+            string query = GetLatestQuery();
+            ApkInfoGetDto result = await _sqlConnection.QueryFirstOrDefaultAsync<ApkInfoGetDto>(query);
+            return result;
+        }
         public async Task<ApkInfoGetDto?> Get(short id)
         {
             string query = GetByIdQuery();
@@ -37,12 +43,13 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
             byte[] result = await _sqlConnection.QueryFirstOrDefaultAsync<byte[]>(query, new { id });
             return result;
         }
+   
         private string GetQuery()
         {
             return @"Select 
                     	Id,
                     	Name,
-                        [File],
+                        FileContent,
                     	Version,
                     	Description,
                     	InsertedBy,
@@ -53,13 +60,33 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	ExpiredDateTime
                     From Aban360.MeterPool.ApkInfo";
         }
-       private string GetByIdQuery()
+        private string GetLatestQuery()
+        {
+            return @"Select Top 1
+                    	Id,
+                    	Name,
+                    	Version,
+                        FileContent,
+                    	Description,
+                    	InsertedBy,
+                    	InsertedDateTime,
+                    	RemovedBy,
+                    	RemovedDateTime,
+                    	ExpiredBy,
+                    	ExpiredDateTime
+                    From Aban360.MeterPool.ApkInfo
+                    Where
+                        RemovedBy IS NULL AND
+                        ExpiredBy IS NULL
+                    Order By InsertedDateTime Desc";
+        }
+        private string GetByIdQuery()
         {
             return @"Select 
                     	Id,
                     	Name,
                     	Version,
-                        [File] ,
+                        FileContent,
                     	Description,
                     	InsertedBy,
                     	InsertedDateTime,
@@ -76,7 +103,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	Id,
                     	Name,
                     	Version,
-                        [File] ,
+                        FileContent,
                     	Description,
                     	InsertedBy,
                     	InsertedDateTime,
@@ -89,7 +116,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
         }
         private string GetFileByIdQuery()
         {
-            return @"Select [File] 
+            return @"Select FileContent
                     From Aban360.MeterPool.ApkInfo
                     Where Id=@Id";
         }
