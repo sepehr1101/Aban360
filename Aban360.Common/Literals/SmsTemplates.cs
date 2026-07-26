@@ -54,6 +54,13 @@ namespace Aban360.Common.Literals
                         @" شرکت آب وفاضلاب استان اصفهان";
             }
         }
+        public static string ServiceLinkOtherExpensesInsert
+        {
+            get
+            {
+                return @"پیام تست..";
+            }
+        }
         public static string SimpleBill
         {
             get
