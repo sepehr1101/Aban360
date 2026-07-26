@@ -1,4 +1,4 @@
-﻿namespace Aban360.MeterPool.Application.Features.Apk.Queries.Contracts
+﻿namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Contracts
 {
     public interface IMeterApkDownloadGetByIdHandler
     {

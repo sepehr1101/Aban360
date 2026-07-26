@@ -42,7 +42,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
             return @"Select 
                     	Id,
                     	Name,
-                        [File],
+                        FileContent,
                     	Version,
                     	Description,
                     	InsertedBy,
@@ -59,7 +59,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	Id,
                     	Name,
                     	Version,
-                        [File] ,
+                        FileContent,
                     	Description,
                     	InsertedBy,
                     	InsertedDateTime,
@@ -76,7 +76,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	Id,
                     	Name,
                     	Version,
-                        [File] ,
+                        FileContent,
                     	Description,
                     	InsertedBy,
                     	InsertedDateTime,
@@ -89,7 +89,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
         }
         private string GetFileByIdQuery()
         {
-            return @"Select [File] 
+            return @"Select FileContent
                     From Aban360.MeterPool.ApkInfo
                     Where Id=@Id";
         }

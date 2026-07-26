@@ -293,6 +293,7 @@
         public static string InvalidRemoveMeterApkFile => "خطا در حذف فایل قرائت";
         public static string NotFoundMeterApkFileVersion => "ورژن وارد شده یافت نشد.";
         public static string InvalidMeterApkFileVersion => "ورژن وارد شده معتبر نیست.";
+        public static string InvalidMeterApkFileByDuplicateVersion => "ورژن وارد شده تکراری است.";
 
     }
 }

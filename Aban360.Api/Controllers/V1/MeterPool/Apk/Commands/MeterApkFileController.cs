@@ -1,8 +1,8 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.MeterPool.Application.Features.Apk.Command.Create.Contracts;
-using Aban360.MeterPool.Application.Features.Apk.Command.Delete.Contracts;
-using Aban360.MeterPool.Application.Features.Apk.Queries.Contracts;
+using Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Create.Contracts;
+using Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Delete.Contracts;
+using Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Contracts;
 using Aban360.MeterPool.Domain.Features.Apk.Commands;
 using Aban360.MeterPool.Domain.Features.Apk.Queries;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Queries;
@@ -88,7 +88,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
         public async Task<FileResult> Download(short id, CancellationToken cancellationToken)
         {
             ApkInfoGetDto result = await _meterApkInfoGetByIdHandler.Handle(id, cancellationToken);
-            var stream = new MemoryStream(result.File);
+            var stream = new MemoryStream(result.FileContent);
             return File(stream, _contentType, result.Name);
 
         }

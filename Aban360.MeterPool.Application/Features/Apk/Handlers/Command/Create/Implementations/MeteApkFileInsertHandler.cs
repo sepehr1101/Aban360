@@ -2,22 +2,26 @@
 using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.MeterPool.Application.Features.Apk.Command.Delete.Contracts;
+using Aban360.Common.Literals;
+using Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Create.Contracts;
 using Aban360.MeterPool.Domain.Features.Apk.Commands;
+using Aban360.MeterPool.Domain.Features.Apk.Queries;
 using Aban360.MeterPool.Persistence.Features.Apk.Commands.Implementations;
 using Aban360.MeterPool.Persistence.Features.Apk.Queries.Contracts;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
-namespace Aban360.MeterPool.Application.Features.Apk.Command.Delete.Implementations
+namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Create.Implementations
 {
-    internal sealed class MeteApkFileRemoveHandler : AbstractBaseConnection, IMeteApkFileRemoveHandler
+    internal sealed class MeteApkFileInsertHandler : AbstractBaseConnection, IMeteApkFileInsertHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMeterApkInfoQueryService _meterApkFileQueryService;
-        public MeteApkFileRemoveHandler(
+        public MeteApkFileInsertHandler(
             IHttpContextAccessor contextAccessor,
             IMeterApkInfoQueryService meterApkFileQueryService,
             IConfiguration configuration)
@@ -30,13 +34,14 @@ namespace Aban360.MeterPool.Application.Features.Apk.Command.Delete.Implementati
             _meterApkFileQueryService.NotNull(nameof(meterApkFileQueryService));
         }
 
-        public async Task Handle(short id, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task Handle(ApkInfoInsertInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            ApkInfoRemoveDto removedDto = new(id, appUser.UserId);
-            string opLogText = string.Format(OpLogLiterals.MeterApkFileRemoveOpLog, id);
-            await ExecSql(removedDto, appUser, opLogText);
+            await Validate(inputDto);
+            ApkInfoInsertDto insertDto = await GetInsertDto(inputDto, appUser);
+            string opLogText = string.Format(OpLogLiterals.MeterApkFileInsertOpLog, inputDto.Name, inputDto.Version);
+            await ExecSql(insertDto, appUser, opLogText);
         }
-        private async Task ExecSql(ApkInfoRemoveDto RemoveDto, IAppUser appUser, string opLogText)
+        private async Task ExecSql(ApkInfoInsertDto insertDto, IAppUser appUser, string opLogText)
         {
             using (IDbConnection sqlConnection = _sqlConnection)
             {
@@ -56,12 +61,38 @@ namespace Aban360.MeterPool.Application.Features.Apk.Command.Delete.Implementati
                     MeterApkInfoCommandService apkInfoCommandService = new(sqlConnection, sqlTransaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, sqlReportConnection, sqlReportTransaction);
 
-                    await apkInfoCommandService.Remove(RemoveDto);
+                    await apkInfoCommandService.Insert(insertDto);
                     await opLogCommandService.Insert(opLogText, appUser);
 
                     sqlTransaction.Commit();
                     sqlReportTransaction.Commit();
                 }
+            }
+        }
+        private async Task<ApkInfoInsertDto> GetInsertDto(ApkInfoInsertInputDto inputDto, IAppUser appUser)
+        {
+            byte[] fileBytes;
+            using (var ms = new MemoryStream())
+            {
+                await inputDto.FileContent.CopyToAsync(ms);
+                fileBytes = ms.ToArray();
+            }
+
+            return new ApkInfoInsertDto()
+            {
+                Name = inputDto.Name,
+                Version = inputDto.Version,
+                FileContent = fileBytes,
+                Description = inputDto.Description,
+                InsertedBy = appUser.UserId,
+            };
+        }
+        private async Task Validate(ApkInfoInsertInputDto inputDto)
+        {
+            ApkInfoGetDto? result = await _meterApkFileQueryService.Get(inputDto.Version);
+            if (result is not null && result.RemovedBy is null)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidMeterApkFileByDuplicateVersion);
             }
         }
     }

@@ -6,7 +6,7 @@ namespace Aban360.MeterPool.Domain.Features.Apk.Queries
     {
         public string Name { get; set; }
         public string Version { get; set; }
-        public byte[] File { get; set; }
+        public byte[] FileContent { get; set; }
         public string? Description { get; set; }
         public Guid InsertedBy { get; set; }
         public DateTime InsertedDateTime { get; set; }
