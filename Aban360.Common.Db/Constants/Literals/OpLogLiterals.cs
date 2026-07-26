@@ -70,8 +70,10 @@
         public static string UsageGroup3DeleteListOpLog => @"گروه کاربری3 حذف شد. شناسه گروه کاربری 2:{0}  تعداد :{1}";
       
         public static string RequestConfirmTracking => @"ثبت قطعی درخواست انجام شد. شماره پیگیری:{0} ناحیه:{1}  شناسه جدول لاگ اطلاعات کاربر:{2}";
-      
-        
+
+        public static string MeterApkFileInsertOpLog => @"فایل برنامه قرائت ذخیره شد. نام:{0}  ورژن:{1}";
+        public static string MeterApkFileRemoveOpLog => @"فایل برنامه قرائت حذف شد. شناسه فایل:{0}";
+
 
     }
 }

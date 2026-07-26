@@ -25,6 +25,8 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         private readonly ICommonMemberQueryService _commonMemberQuery;
         private readonly ICommonZoneService _commonZoneService;
         private readonly IVariabService _variabService;
+        string _todayJalali = DateTime.Now.ToShortPersianDateString();
+        string _30DayAgoDateJalali = DateTime.Now.AddDays(-30).ToShortPersianDateString();
         short _ser = 1;
         short _operator = 666;
         short _type = 2;
@@ -84,34 +86,38 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         private async Task ValidateDates(ServiceLinkRegisterManualInputDto input)
         {            
             string checkDateJalali = await _variabService.GetDateCheck(input.ZoneId);
-            string todayJalali = DateTime.Now.ToShortPersianDateString();
             DateOnly? dateOnlyBank= input.BankDateJalali.ToGregorianDateOnly();
             DateOnly? dateOnlyPay= input.PayDateJalali.ToGregorianDateOnly();
+           
             if(!dateOnlyBank.HasValue || !dateOnlyPay.HasValue)
             {
                 throw new InvalidDateException(ExceptionLiterals.InvalidDate);
             }
-
-            if (todayJalali.CompareTo(checkDateJalali) < 0)
+            if (_todayJalali.CompareTo(checkDateJalali) < 0)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidPaymentInsertAfterDateCheck);
             }
-            if (input.PayDateJalali.CompareTo(todayJalali) > 0)
+           
+            if (input.PayDateJalali.CompareTo(_todayJalali) > 0)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidMoreThanCurrentDate);
             }
-            if (input.BankDateJalali.CompareTo(todayJalali) > 0)
-            {
-                throw new InvalidBillCommandException(ExceptionLiterals.InvalidMoreThanCurrentDate);
-            }
-
             if (input.PayDateJalali.CompareTo(checkDateJalali) <= 0)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidPaymentInsertAfterDateCheck);
             }
+
+            if (input.BankDateJalali.CompareTo(_todayJalali) > 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidMoreThanCurrentDate);
+            }
             if (input.BankDateJalali.CompareTo(checkDateJalali) <= 0)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidPaymentInsertAfterDateCheck);
+            }
+            if (input.BankDateJalali.CompareTo(_30DayAgoDateJalali) < 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidBankDateBefor30DaysAgo);
             }
         }
         private VosoEnInsertDto GetVosolEnInsertDto(ServiceLinkRegisterManualInputDto input, MemberInfoGetDto memberInfo)
