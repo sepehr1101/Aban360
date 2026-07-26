@@ -295,6 +295,12 @@
         public static string NotFoundMeterApkFileVersion => "ورژن وارد شده یافت نشد.";
         public static string InvalidMeterApkFileVersion => "ورژن وارد شده معتبر نیست.";
         public static string InvalidMeterApkFileByDuplicateVersion => "ورژن وارد شده تکراری است.";
+      
+        
+        public static string InvalidInsertMainTagGroup => "خطا در ذخیره گروه بندی اصلی برچسب";
+        public static string InvalidUpdateMainTagGroup => "خطا در ویرایش گروه بندی اصلی برچسب";
+        public static string InvalidRemoveMainTagGroup => "خطا در حذف گروه بندی اصلی برچسب";
+        public static string InvalidDuplicateStringCode => "کد شناسه یکتا تکراری است.";
 
     }
 }

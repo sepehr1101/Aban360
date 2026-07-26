@@ -1,5 +1,7 @@
 ﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.ReportPool.Application.Features.Tagging.Contracts;
 using Aban360.ReportPool.Domain.Features.Tagging;
 using Aban360.ReportPool.Persistence.Features.Tagging;
@@ -17,6 +19,11 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Implementations
 
         public async Task<int> Handle(CreateTagGroupDto dto)
         {
+            TagGroupDto? result= await _service.GetByStringCode(dto.StringCode);
+            if (result is not null)
+            {
+                throw new CustomValidationException(ExceptionLiterals.InvalidDuplicateStringCode);
+            }
             return await _service.Create(dto);
         }
     }
@@ -52,6 +59,11 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Implementations
 
         public async Task<bool> Handle(UpdateTagGroupDto dto)
         {
+            TagGroupDto? result = await _service.GetByStringCode(dto.StringCode);
+            if (result is not null)
+            {
+                throw new CustomValidationException(ExceptionLiterals.InvalidDuplicateStringCode);
+            }
             return await _service.Update(dto);
         }
     }
