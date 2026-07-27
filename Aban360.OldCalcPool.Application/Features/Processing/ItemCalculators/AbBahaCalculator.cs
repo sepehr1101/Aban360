@@ -32,7 +32,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date_1404_02_31 = "1404/02/31";
         const string date_1404_09_09 = "1404/09/09";
         const string date_1405_01_31 = "1405/01/31";
-        const string date_1405_03_15 = "1406/03/15";
+        const string date_1405_03_15 = "1405/03/15";
 
         (long, long) _zero = (0, 0);
         (long, long) _8644_8644 = (8644, 8644);
@@ -49,7 +49,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             decimal multiplierAbBaha = GetMultiplier(zarib, _olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
             villageMultiplier = GetVillageMultiplier(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption, _olgoo);
 
-            if (nerkh.Date2.IsLt(date_1405_03_15))
+            if (nerkh.Date2.IsLtEq(date_1405_03_15))
             {
                 double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0;
                 string formula = GetFormula(nerkh, nerkh1403, consumptionPartialInfo);
@@ -185,7 +185,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
         public TariffItemResult CalculateDiscount(ConsumptionPartialInfo consumptionPartialInfo, ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, TariffItemResult calculateAbBahaOutputDto, int finalDomesticUnit)
         {
-            if (nerkh.Date2.IsLt(date_1405_03_15))
+            if (nerkh.Date2.IsLtEq(date_1405_03_15))
             {
                 if (calculateAbBahaOutputDto.Summation == 0)
                 {

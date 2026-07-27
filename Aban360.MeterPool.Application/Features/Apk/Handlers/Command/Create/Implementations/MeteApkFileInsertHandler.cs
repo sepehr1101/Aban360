@@ -89,7 +89,7 @@ namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Create.Imp
         }
         private async Task Validate(ApkInfoInsertInputDto inputDto)
         {
-            ApkInfoGetDto? result = await _meterApkFileQueryService.Get(inputDto.Version);
+            ApkInfo? result = await _meterApkFileQueryService.Get(inputDto.Version);
             if (result is not null && result.RemovedBy is null)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidMeterApkFileByDuplicateVersion);

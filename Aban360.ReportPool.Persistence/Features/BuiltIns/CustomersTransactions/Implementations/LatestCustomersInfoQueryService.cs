@@ -20,7 +20,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
             string title = ReportLiterals.LatestCustomersInfo;
             string query = GetQuery();
-            IEnumerable<LatestCustomersInfoDataOutputDto> data=await _sqlReportConnection.QueryAsync<LatestCustomersInfoDataOutputDto>(query, input);
+            IEnumerable<LatestCustomersInfoDataOutputDto> data=await _sqlReportConnection.QueryAsync<LatestCustomersInfoDataOutputDto>(query, input, commandTimeout:int.MaxValue);
             LatestCustomersInfoHeaderOutputDto header = new()
             {
                 RecordCount=data?.Count() ?? 0, 

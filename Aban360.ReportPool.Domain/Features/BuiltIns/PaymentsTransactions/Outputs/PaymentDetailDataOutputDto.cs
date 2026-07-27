@@ -10,7 +10,7 @@
         public string BillId { get; set; }
         public string PaymentMethodTitle { get; set; }
         public string PaymentDate { get; set; }
-        public string Amount { get; set; }
+        public long Amount { get; set; }
         public string BankName { get; set; }
 
 

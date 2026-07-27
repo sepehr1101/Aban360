@@ -40,7 +40,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             string baseDate = "1403/09/13";
             return nerkhDate2.CompareTo(baseDate) <= 0;
         }
-        internal static bool IsLt(this string dateBase, string dateToCompare)
+        internal static bool IsLtEq(this string dateBase, string dateToCompare)
         {
             DateOnly? _base = dateBase.ToGregorianDateOnly();
             DateOnly? _compare = dateToCompare.ToGregorianDateOnly();
@@ -49,7 +49,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
                 throw new BaseException(ExceptionLiterals.InvalidDate);
             }
 
-            if (_base.Value < _compare.Value)
+            if (_base.Value <= _compare.Value)
                 return true;
 
             return false;
