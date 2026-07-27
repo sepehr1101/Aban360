@@ -36,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Commands
         [HttpDelete, HttpPost]
         [Route("delete")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<BillIdTagRemoveByTagIdsOutputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Delete([FromBody] BillIdTagRemoveByTagIdsInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteByTagIds([FromBody] BillIdTagRemoveByTagIdsInputDto inputDto, CancellationToken cancellationToken)
         {
             BillIdTagRemoveByTagIdsOutputDto result = await _billIdTagRemoveByTagIdsHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
