@@ -1,50 +1,5 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.Tagging
 {
-    public class TagGroupDto
-    {
-        public int Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public string StringCode { get; set; }
-        public int MainTagGroupId { get; set; }
-        public string MainTagGroupTitle { get; set; }
-        public DateTime CreateDateTime { get; set; }
-        public DateTime? DeleteDateTime { get; set; }
-    }
-
-    public class CreateTagGroupDto
-    {   
-        public string Title { get; set; } = string.Empty;
-        public string StringCode { get; set; }
-        public int MainTagGroupId { get; set; }
-    }
-
-    public class UpdateTagGroupDto
-    {
-        public int Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public string StringCode { get; set; }
-        public int MainTagGroupId { get; set; }
-    }
-    public record TagsHeaderOutputDto
-    {
-        public int RecordCount { get; set; }
-        public string ReportDateJalali { get; set; }
-
-        public int CustomerCount { get; set; }
-        public string Title { get; set; }
-    }
-    public record TagsInputDto
-    {
-        public ICollection<int> TagIds { get; set; }
-    }
-
-    public record TagsReportSummaryDataOutputDto
-    {
-        public string TagsTitle { get; set; }
-        public string ItemTitle { get; set; }
-        public int CustomerCount { get; set; }
-    }
-
     public record TagGroupReportDetailDataOutputDto
     {
         public int MainTagGroupId { get; set; }

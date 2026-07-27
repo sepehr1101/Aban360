@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Features.Tagging;
+using Aban360.ReportPool.Domain.Features.Tagging.Commands;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 

@@ -13,13 +13,5 @@
             public DateTime CreateDateTime { get; set; }
             public DateTime? DeleteDateTime { get; set; }
         }
-
-        public class CreateBillIdTagDto
-        {
-            public string BillId { get; set; } = string.Empty;
-            public int TagId { get; set; }
-            public string? ExpireDateJalali { get; set; }
-        }
     }
-
 }
