@@ -1,6 +1,6 @@
 ﻿using Aban360.ReportPool.Application.Features.Tagging.Handlers.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.Tagging;
-using Aban360.ReportPool.Persistence.Features.Tagging;
+using Aban360.ReportPool.Persistence.Features.Tagging.Queries.Contracts;
 
 namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Queries.Implementations
 {

@@ -1,26 +1,18 @@
 ﻿using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Features.Tagging;
 using Aban360.ReportPool.Domain.Features.Tagging.CustomerWarehouse.Application.DTOs;
+using Aban360.ReportPool.Persistence.Features.Tagging.Queries.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
-namespace Aban360.ReportPool.Persistence.Features.Tagging
+namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementations
 {
-    public interface IBillIdTagService
+    internal sealed class BillIdTagQueryService : AbstractBaseConnection, IBillIdTagQueryService
     {
-        Task<IEnumerable<BillIdTagDto>> GetByBillId(string billId);
-        Task<IEnumerable<int>> GetIdsByBillId(string billId);
-        Task<bool> HasBillIdTags(string billId, int tagId);
-        Task<bool> HasBillId(string billId);
-    }
-
-    internal sealed class BillIdTagService : AbstractBaseConnection, IBillIdTagService
-    {
-        public BillIdTagService(IConfiguration configuration)
+        public BillIdTagQueryService(IConfiguration configuration)
             : base(configuration)
         {
         }
-
 
         public async Task<IEnumerable<BillIdTagDto>> GetByBillId(string billId)
         {
@@ -77,6 +69,25 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
                        	c.BillId=@billId";
             int hasRecord = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(sql, new { billId });
             return hasRecord == 0 ? false : true;
+        }
+        public async Task<IEnumerable<BillIdTagDto>> GetByTagIds(IEnumerable<int> tagIds)
+        {
+            var sql = @"
+                SELECT 
+                    Id, 
+                    BillId,
+                    ExpireDateJalali, 	
+                    IIF(  ExpireDateJalali IS NULL OR LEN(ExpireDateJalali)=0 OR [CustomerWarehouse].dbo.PersianToMiladi(ExpireDateJalali)>GETDATE() ,1,0) IsValid,
+                    TagId,
+                    TagTitle, 
+                    CreateDateTime,
+                    DeleteDateTime
+                FROM [CustomerWarehouse].dbo.BillIdTags
+                WHERE 
+                    DeleteDateTime IS NULL AND
+                    TagId IN @TagIds";
+
+            return await _sqlReportConnection.QueryAsync<BillIdTagDto>(sql, new { tagIds });
         }
 
     }

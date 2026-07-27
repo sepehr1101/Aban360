@@ -41,14 +41,19 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Commands
             int effectedRecords = await _connection.ExecuteAsync(command, null, _transaction);
             if (effectedRecords != (input?.Count() ?? 0))
             {
-               throw new InvalidBillIdException(ExceptionLiterals.InvalidInsertBillIdTag);
+                throw new InvalidBillIdException(ExceptionLiterals.InvalidInsertBillIdTag);
             }
         }
         public async Task<bool> Delete(long id)
         {
             var command = GetDeleteCommand();
-            var rows = await _connection.ExecuteAsync(command, new { Id = id }, _transaction);
-            return rows > 0;
+            var effectedRecords = await _connection.ExecuteAsync(command, new { Id = id }, _transaction);
+            return effectedRecords > 0;
+        }
+        public async Task Delete(IEnumerable<int> tagIds)
+        {
+            var command = GetDeleteByTagIdsCommand();
+            int effectedRecords = await _connection.ExecuteAsync(command, new { tagIds }, _transaction);
         }
 
         private async Task<DataTable> CompleteAndGetBillIdTagTemplateTable(ICollection<BillIdTagByStringCodeDto> input)
@@ -95,7 +100,15 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Commands
         }
         private string GetDeleteCommand()
         {
-            return $@"DELETE FROM [CustomerWarehouse].dbo.BillIdTags WHERE Id = @Id";
+            return $@"Update CustomerWarehouse.dbo.BillIdTags
+                    Set DeleteDateTime = GETDATE()
+                    Where Id=@Id";
+        }
+        private string GetDeleteByTagIdsCommand()
+        {
+            return $@"Update CustomerWarehouse.dbo.BillIdTags
+                    Set DeleteDateTime = GETDATE()
+                    Where TagId IN @TagIds";
         }
     }
 }

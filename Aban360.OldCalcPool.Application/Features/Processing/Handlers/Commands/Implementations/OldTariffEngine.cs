@@ -10,7 +10,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
-using Aban360.ReportPool.Persistence.Features.Tagging;
+using Aban360.ReportPool.Persistence.Features.Tagging.Queries.Contracts;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
@@ -27,7 +27,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly INerkhCacheService _nerkhGetByConsumptionService;
         private readonly IZaribCCacheService _zaribCQueryService;
         private readonly ITable1CacheService _table1QueryService;
-        private readonly IBillIdTagService _tagService;
+        private readonly IBillIdTagQueryService _tagService;
         private readonly IBedBesQueryService _billQueryService;
         private readonly IConsumptionCalculator _consumptionCalculator;
 
@@ -46,7 +46,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             INerkhCacheService nerkhGetByConsumptionService,
             IZaribCCacheService zaribCQueryService,
             ITable1CacheService table1GetService,
-            IBillIdTagService tagService,
+            IBillIdTagQueryService tagService,
             IConsumptionCalculator consumptionCalculator,
             IAbBahaCalculator abBahaCalculator,
             IBedBesQueryService billQueryService,

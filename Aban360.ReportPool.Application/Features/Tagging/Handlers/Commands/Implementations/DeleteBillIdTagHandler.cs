@@ -1,8 +1,8 @@
 ﻿using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Contracts;
-using Aban360.ReportPool.Persistence.Features.Tagging;
 using Aban360.ReportPool.Persistence.Features.Tagging.Commands;
+using Aban360.ReportPool.Persistence.Features.Tagging.Queries.Contracts;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
@@ -10,9 +10,9 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
 {
     internal sealed class DeleteBillIdTagHandler : AbstractBaseConnection, IDeleteBillIdTagHandler
     {
-        private readonly IBillIdTagService _service;
+        private readonly IBillIdTagQueryService _service;
         public DeleteBillIdTagHandler(
-            IBillIdTagService service,
+            IBillIdTagQueryService service,
             IConfiguration configuration)
             : base(configuration)
         {
