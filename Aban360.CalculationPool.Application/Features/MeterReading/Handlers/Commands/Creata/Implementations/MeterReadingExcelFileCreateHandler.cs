@@ -21,7 +21,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IMeterReadingCreateBaseHandler _meterReadingCreateBaseHandler;
         private readonly IValidator<MeterReadingExcelFileCreateDto> _validator;
         private static string _reportTitle = ReportLiterals.MeterReadingCreateFile;
-        private static string _dbfPath = ReportLiterals.MeterReadingFilePath;
+        private static string _dbfPath = ReportLiterals.DbfFolderPath;
         const int _closeMeterStateId = 4;
         public MeterReadingExcelFileCreateHandler(
             IMeterReadingCreateBaseHandler meterReadingCreateBaseHandler,

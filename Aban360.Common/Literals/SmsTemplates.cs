@@ -58,7 +58,11 @@ namespace Aban360.Common.Literals
         {
             get
             {
-                return @"پیام تست..";
+                return @"مشترک گرامی، درخواست {0} شما ثبت گردید." +
+                    @"{5}شماره پیگیری:{1}" +
+                    @"{5}مبلغ:{2}" +
+                    @"{5}شناسه قبض:{3}" +
+                    @"{5}شناسه پرداخت:{4}";  
             }
         }
         public static string SimpleBill

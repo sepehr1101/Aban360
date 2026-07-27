@@ -42,6 +42,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             return recordId.Value;
         }
+
         public async Task Insert(ICollection<BedBesCreateDto> input, string dbName)
         {
             //using (var connection = _connection)
