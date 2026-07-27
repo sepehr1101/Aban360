@@ -3,7 +3,8 @@ using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Delete.Contracts;
 using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Contracts;
 using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts;
-using Aban360.ReportPool.Application.Features.Tagging.Contracts;
+using Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Contracts;
+using Aban360.ReportPool.Application.Features.Tagging.Handlers.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.Tagging;
 using Microsoft.AspNetCore.Mvc;
 

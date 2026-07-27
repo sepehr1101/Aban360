@@ -22,7 +22,6 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
         {
         }
 
-        // CREATE
         public async Task<long> Create(CreateBillIdTagDto dto)
         {
             var sql = @"

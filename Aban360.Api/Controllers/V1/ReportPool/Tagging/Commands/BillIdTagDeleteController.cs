@@ -1,6 +1,6 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.ReportPool.Application.Features.Tagging.Contracts;
+using Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Commands
