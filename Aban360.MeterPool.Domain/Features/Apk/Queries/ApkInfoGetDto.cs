@@ -4,6 +4,7 @@ namespace Aban360.MeterPool.Domain.Features.Apk.Queries
 {
     public record ApkInfoGetDto
     {
+        public short Id { get; set; }
         public string Name { get; set; }
         public string Version { get; set; }
         public byte[] FileContent { get; set; }
