@@ -74,6 +74,9 @@
 
         public static string MeterApkFileInsertOpLog => @"فایل برنامه قرائت ذخیره شد. نام:{0}  ورژن:{1}";
         public static string MeterApkFileRemoveOpLog => @"فایل برنامه قرائت حذف شد. شناسه فایل:{0}";
+    
+        public static string BillIdTagListInsert => @"فایل اکسل برچسب آپلود شد. نام فایل:{0}  تعداد مشترک:{1}";
+        public static string BillIdTagListDelete => @"لیست مشترکین دارای تگ حذف شد. تعداد شناسه تگ وارد شده:{0}  تعداد انتساب‌های حذف شده:{1}";
 
 
     }

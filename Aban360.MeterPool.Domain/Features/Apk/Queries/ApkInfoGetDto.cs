@@ -4,7 +4,7 @@ namespace Aban360.MeterPool.Domain.Features.Apk.Queries
 {
     public record ApkInfoGetDto
     {
-        public int Id { get; set; }
+        public short Id { get; set; }
         public string Name { get; set; }
         public string Version { get; set; }
         public byte[] FileContent { get; set; }
@@ -13,8 +13,8 @@ namespace Aban360.MeterPool.Domain.Features.Apk.Queries
         public string InsertedDateJalali { get { return InsertedDateTime.ToShortPersianDateTimeString(); } }
     }
     public record ApkInfo
-    {
-        public int Id { get; set; }
+    {       
+        public short Id { get; set; }
         public string Name { get; set; }
         public string Version { get; set; }
         public byte[] FileContent { get; set; }

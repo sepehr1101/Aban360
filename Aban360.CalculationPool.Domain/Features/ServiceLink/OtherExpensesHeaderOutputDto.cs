@@ -16,6 +16,7 @@ namespace Aban360.CalculationPool.Domain.Features.ServiceLink
         public string MobileNumber { get; set; }
         public long FinalAmount { get; set; }
         public string PaymentId { get; set; }
+        public string TrackNumber { get; set; }
         public int RecordCount { get; set; }
         public string Title { get; set; }
         public string ReportDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
