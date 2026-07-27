@@ -1,7 +1,6 @@
 ﻿using Aban360.OldCalcPool.Application.Features.Processing.Helpers;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
-using System.Reflection;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffDateOperations;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
 
@@ -26,7 +25,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const string date1404_12_29 = "1404/12/29";
         const string date1405_01_31 = "1405/01/31";
         const string date1405_12_29 = "1405/12/29";
-        const string date1405_03_15 = "1406/03/15";
+        const string date1405_03_15 = "1405/03/15";
 
         const double amountTo1403_12_01 = 10000.0;
         const double amountTo1403_12_30 = 35000.0;
@@ -34,95 +33,86 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const double amountTo1404_09_09 = 58500.0;
         const double amountTo1404_12_29 = 71500.0;
         const double amountTo1405_01_31 = 88000.0;
-        const double amountTo1405_12_29 = 114400.0;
+        const double amountTo1405_03_15 = 114400.0;
 
         public TariffItemResult CalculateAb(CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, string currentDateJalali, ConsumptionPartialInfo consumptionPartialInfo, out double before1403_12_02, out double before1404)
         {
-            if (meterInfo.CurrentDateJalali.IsLt(date1405_03_15))
+            before1403_12_02 = 0;
+            before1404 = 0;
+            if (!IsConstruction(customerInfo.BranchType) && IsTankerSale(customerInfo.UsageId))
             {
-                before1403_12_02 = 0;
-                before1404 = 0;
-                if (!IsConstruction(customerInfo.BranchType) && IsTankerSale(customerInfo.UsageId))
-                {
-                    return new TariffItemResult();
-                }
-                if (IsTankerSale(customerInfo.UsageId))
-                {
-                    return new TariffItemResult();
-                }
+                return new TariffItemResult();
+            }
+            if (IsTankerSale(customerInfo.UsageId))
+            {
+                return new TariffItemResult();
+            }
 
-                double abonAbAmount = 0;
-                double durationTo1403_12_01 = 0, durationTo1403_12_30 = 0, durationTo1404_02_14Or31 = 0, duration1404_09_09 = 0, duration1404_12_29 = 0, duration1405_01_31 = 0, duration1405_12_29 = 0;
+            double abonAbAmount = 0;
+            double durationTo1403_12_01 = 0, durationTo1403_12_30 = 0, durationTo1404_02_14Or31 = 0, duration1404_09_09 = 0, duration1404_12_29 = 0, duration1405_01_31 = 0, duration1405_03_15=0, duration1405_12_29 = 0;
 
-                durationTo1403_12_01 = PartTime(date_begin, date1403_12_01, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-                durationTo1403_12_30 = PartTime(date1403_12_01, date1403_12_30, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+            durationTo1403_12_01 = PartTime(date_begin, date1403_12_01, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+            durationTo1403_12_30 = PartTime(date1403_12_01, date1403_12_30, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
 
-                if (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId))
-                {
-                    durationTo1404_02_14Or31 = PartTime(date1403_12_30, date1404_02_14, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-                }
-                else
-                {
-                    durationTo1404_02_14Or31 = PartTime(date1403_12_30, date1404_02_31, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-                }
-
-                if (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId))
-                {
-                    duration1404_09_09 = PartTime(date1404_02_14, date1404_09_09, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-                }
-                else
-                {
-                    duration1404_09_09 = PartTime(date1404_02_31, date1404_09_09, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-                }
-                duration1404_12_29 = PartTime(date1404_09_09, date1404_12_29, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-                duration1405_01_31 = PartTime(date1404_12_29, date1405_01_31, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-                duration1405_12_29 = PartTime(date1405_01_31, date1405_12_29, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-
-                int sumUnit = customerInfo.OtherUnit + customerInfo.DomesticUnit + customerInfo.CommertialUnit;
-
-                if (IsVillageCollectorMeter(customerInfo.UsageId))
-                {
-                    sumUnit = 1;
-                }
-
-                if (sumUnit <= 0)
-                {
-                    sumUnit = 1;
-                }
-
-                abonAbAmount = sumUnit *
-                    (((amountTo1403_12_01 / monthDays) * durationTo1403_12_01) +
-                    ((amountTo1403_12_30 / monthDays) * durationTo1403_12_30) +
-                    ((amountTo404_02_31 / monthDays) * durationTo1404_02_14Or31) +
-                    ((amountTo1404_09_09 / monthDays) * duration1404_09_09) +
-                    ((amountTo1404_12_29 / monthDays) * duration1404_12_29) +
-                    ((amountTo1405_01_31 / monthDays) * duration1405_01_31) +
-                    ((amountTo1405_12_29 / monthDays) * duration1405_12_29));
-
-                if (abonAbAmount < 0)
-                {
-                    abonAbAmount = 0;
-                }
-
-                if (IsConstruction(customerInfo.BranchType) || IsUsageConstructor(customerInfo.UsageId))
-                {
-                    abonAbAmount *= 2;
-                }
-                before1403_12_02 = sumUnit * (amountTo1403_12_01 / monthDays * durationTo1403_12_01);
-                before1404 = (before1403_12_02) + sumUnit * (amountTo1403_12_30 / monthDays * durationTo1403_12_30);
-                return new TariffItemResult(consumptionPartialInfo.AllowedRatio * abonAbAmount, consumptionPartialInfo.DisallwedRatio * abonAbAmount);
+            if (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId))
+            {
+                durationTo1404_02_14Or31 = PartTime(date1403_12_30, date1404_02_14, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
             }
             else
             {
-                before1403_12_02 = 0;
-                before1404 = 0;
-                return new TariffItemResult();
+                durationTo1404_02_14Or31 = PartTime(date1403_12_30, date1404_02_31, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
             }
+
+            if (IsDomesticWithoutUnspecified(customerInfo.UsageId) || IsGardenAndResidence(customerInfo.UsageId))
+            {
+                duration1404_09_09 = PartTime(date1404_02_14, date1404_09_09, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+            }
+            else
+            {
+                duration1404_09_09 = PartTime(date1404_02_31, date1404_09_09, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+            }
+            duration1404_12_29 = PartTime(date1404_09_09, date1404_12_29, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+            duration1405_01_31 = PartTime(date1404_12_29, date1405_01_31, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+            duration1405_03_15 = PartTime(date1405_01_31, date1405_03_15, meterInfo.PreviousDateJalali, currentDateJalali, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
+
+            int sumUnit = customerInfo.OtherUnit + customerInfo.DomesticUnit + customerInfo.CommertialUnit;
+
+            if (IsVillageCollectorMeter(customerInfo.UsageId))
+            {
+                sumUnit = 1;
+            }
+
+            if (sumUnit <= 0)
+            {
+                sumUnit = 1;
+            }
+
+            abonAbAmount = sumUnit *
+                (((amountTo1403_12_01 / monthDays) * durationTo1403_12_01) +
+                ((amountTo1403_12_30 / monthDays) * durationTo1403_12_30) +
+                ((amountTo404_02_31 / monthDays) * durationTo1404_02_14Or31) +
+                ((amountTo1404_09_09 / monthDays) * duration1404_09_09) +
+                ((amountTo1404_12_29 / monthDays) * duration1404_12_29) +
+                ((amountTo1405_01_31 / monthDays) * duration1405_01_31) +
+                ((amountTo1405_03_15 / monthDays) * duration1405_03_15));
+
+            if (abonAbAmount < 0)
+            {
+                abonAbAmount = 0;
+            }
+
+            if (IsConstruction(customerInfo.BranchType) || IsUsageConstructor(customerInfo.UsageId))
+            {
+                abonAbAmount *= 2;
+            }
+            before1403_12_02 = sumUnit * (amountTo1403_12_01 / monthDays * durationTo1403_12_01);
+            before1404 = (before1403_12_02) + sumUnit * (amountTo1403_12_30 / monthDays * durationTo1403_12_30);
+            return new TariffItemResult(consumptionPartialInfo.AllowedRatio * abonAbAmount, consumptionPartialInfo.DisallwedRatio * abonAbAmount);
         }
 
         public TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed, TariffItemResult abonmanResult, double before1403_12_02, double before1404)
         {
-            if (consumptionPartialInfo.EndDateJalali.IsLt(date1405_03_15))
+            if (consumptionPartialInfo.EndDateJalali.IsLtEq(date1405_03_15))
             {
                 if (IsSpecialEducation(usageId, isSpecial))
                 {

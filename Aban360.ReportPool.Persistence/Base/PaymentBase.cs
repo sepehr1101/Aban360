@@ -6,7 +6,8 @@ namespace Aban360.ReportPool.Persistence.Base
     {
         public PaymentBase(IConfiguration configuration)
             : base(configuration)
-        { }
+        {
+        }
 
         internal string GetDetailQuery(bool isWater,bool hasZone)
         {
@@ -21,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	p.BillId AS BillId,
                     	p.PaymentGateway AS PaymentMethodTitle,
                     	p.RegisterDay AS PaymentDate,
-                    	p.Amount AS Amount,
+                    	CAST(p.Amount as bigint) AS Amount,
                         p.BankName AS BankName
                     From [CustomerWarehouse].dbo.{parameters.TableField} p
                     WHERE 
