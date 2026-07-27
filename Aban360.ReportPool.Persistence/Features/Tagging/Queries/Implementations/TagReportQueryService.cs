@@ -2,16 +2,13 @@
 using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.Tagging;
+using Aban360.ReportPool.Persistence.Features.Tagging.Queries.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
-namespace Aban360.ReportPool.Persistence.Features.Tagging
+namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementations
 {
-    public interface ITagReportQueryService
-    {
-        Task<ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto>> Get(TagsInputDto input, bool isZoneTitle);
-    }
     internal sealed class TagReportQueryService : AbstractBaseConnection, ITagReportQueryService
     {
         public TagReportQueryService(IConfiguration configuration)
@@ -26,11 +23,11 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
             string reportTitle = ReportLiterals.TagSummary + "-" + summaryTitle;
 
             string TagQueryString = GetTagSummaryQuery(input.TagIds.Any() == true, groupedParam);
-            IEnumerable<TagsReportSummaryDataOutputDto> tagData = await _sqlReportConnection.QueryAsync<TagsReportSummaryDataOutputDto>(TagQueryString, new { TagIds = input.TagIds });
+            IEnumerable<TagsReportSummaryDataOutputDto> tagData = await _sqlReportConnection.QueryAsync<TagsReportSummaryDataOutputDto>(TagQueryString, new { input.TagIds });
             TagsHeaderOutputDto tagHeader = new TagsHeaderOutputDto()
             {
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (tagData is not null && tagData.Any()) ? tagData.Count() : 0,
+                RecordCount = tagData is not null && tagData.Any() ? tagData.Count() : 0,
                 CustomerCount = tagData.Sum(r => r.CustomerCount),
                 Title = reportTitle
             };

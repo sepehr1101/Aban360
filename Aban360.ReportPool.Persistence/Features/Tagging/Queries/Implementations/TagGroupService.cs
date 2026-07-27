@@ -1,21 +1,12 @@
 ﻿using Aban360.Common.Db.Dapper;
 using Aban360.ReportPool.Domain.Features.Tagging;
 using Aban360.ReportPool.Domain.Features.Tagging.Commands;
+using Aban360.ReportPool.Persistence.Features.Tagging.Queries.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
-namespace Aban360.ReportPool.Persistence.Features.Tagging
+namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementations
 {
-    public interface ITagGroupService
-    {
-        Task<int> Create(CreateTagGroupDto dto);
-        Task<bool> Delete(int id);
-        Task<IEnumerable<TagGroupDto>> GetAll();
-        Task<TagGroupDto?> GetById(int id);
-        Task<TagGroupDto?> GetByStringCode(string input);
-        Task<bool> Update(UpdateTagGroupDto dto);
-    }
-
     internal sealed class TagGroupService : AbstractBaseConnection, ITagGroupService
     {
         public TagGroupService(IConfiguration configuration) :

@@ -5,17 +5,13 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Domain.Features.Tagging;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
+using Aban360.ReportPool.Persistence.Features.Tagging.Queries.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
-namespace Aban360.ReportPool.Persistence.Features.Tagging
+namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementations
 {
-    public interface ITagGroupReportQueryService
-    {
-        Task<ReportOutput<TagsHeaderOutputDto, TagGroupReportDetailDataOutputDto>> Get(TagsInputDto input);
-        Task<ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto>> Get(TagsInputDto input, bool isZoneTitle);
-    }
     internal sealed class TagGroupReportQueryService : AbstractBaseConnection, ITagGroupReportQueryService
     {
         public TagGroupReportQueryService(IConfiguration configuration)
@@ -30,9 +26,9 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
             TagsHeaderOutputDto tagGroupHeader = new TagsHeaderOutputDto()
             {
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = (tagGroupData is not null && tagGroupData.Any()) ? tagGroupData.Count() : 0,
-                CustomerCount = (tagGroupData is not null && tagGroupData.Any()) ? tagGroupData.Count() : 0,
-				Title= ReportLiterals.TagGroupDetail,
+                RecordCount = tagGroupData is not null && tagGroupData.Any() ? tagGroupData.Count() : 0,
+                CustomerCount = tagGroupData is not null && tagGroupData.Any() ? tagGroupData.Count() : 0,
+                Title = ReportLiterals.TagGroupDetail,
             };
 
             ReportOutput<TagsHeaderOutputDto, TagGroupReportDetailDataOutputDto> result = new ReportOutput<TagsHeaderOutputDto, TagGroupReportDetailDataOutputDto>(ReportLiterals.TagGroupDetail, tagGroupHeader, tagGroupData);
@@ -46,12 +42,12 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging
 
             string TagGroupQueryString = GetTagGroupSummaryQuery(input.TagIds.Any() == true, groupedParam);
             IEnumerable<TagsReportSummaryDataOutputDto> tagGroupData = await _sqlReportConnection.QueryAsync<TagsReportSummaryDataOutputDto>(TagGroupQueryString, new { TagGroupIds = input.TagIds });
-			TagsHeaderOutputDto tagGroupHeader = new TagsHeaderOutputDto()
-			{
-				ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-				RecordCount = (tagGroupData is not null && tagGroupData.Any()) ? tagGroupData.Count() : 0,
-				CustomerCount = tagGroupData.Sum(r => r.CustomerCount),
-			};
+            TagsHeaderOutputDto tagGroupHeader = new TagsHeaderOutputDto()
+            {
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                RecordCount = tagGroupData is not null && tagGroupData.Any() ? tagGroupData.Count() : 0,
+                CustomerCount = tagGroupData.Sum(r => r.CustomerCount),
+            };
 
             ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto> result = new ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto>(ReportLiterals.TagGroupSummary + "-" + reportTitle, tagGroupHeader, tagGroupData);
             return result;
