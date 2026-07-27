@@ -4,6 +4,7 @@ using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Features.Tagging;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using System.Collections.Generic;
 using System.Data;
 
 namespace Aban360.ReportPool.Persistence.Features.Tagging.Commands
@@ -37,10 +38,10 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Commands
             };
 
             string command = GetInsertByStringCodeCommand();
-            int effectedRecords = await _connection.ExecuteAsync(command, input, _transaction);
+            int effectedRecords = await _connection.ExecuteAsync(command, null, _transaction);
             if (effectedRecords != (input?.Count() ?? 0))
             {
-                throw new InvalidBillIdException(ExceptionLiterals.InvalidInsertBillIdTag);
+               throw new InvalidBillIdException(ExceptionLiterals.InvalidInsertBillIdTag);
             }
         }
         public async Task<bool> Delete(long id)
@@ -63,6 +64,8 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Commands
                 row["BillId"] = item.BillId;
                 row["StringCode"] = item.StringCode;
                 row["ExpireDateJalali"] = item.ExpireDateJalali ?? (object)DBNull.Value;
+
+                table.Rows.Add(row);
             }
 
             string createTemplateTable = @"Create Table #BillIdTagTemplate
@@ -88,7 +91,7 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Commands
                     SELECT bt.BillId, t.Id, t.Title, bt.ExpireDateJalali, GETUTCDATE()  
                     FROM [CustomerWarehouse].dbo.Tags t
                     JOIN #BillIdTagTemplate bt
-                        ON t.StringCode=bt.StringCode;";
+                        ON bt.StringCode COLLATE Persian_100_CI_AI=t.StringCode COLLATE Persian_100_CI_AI;";
         }
         private string GetDeleteCommand()
         {
