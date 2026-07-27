@@ -147,6 +147,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 UsageTitle = memberInfo.UsageTitle,
                 MobileNumber = memberInfo.MobileNumber,
                 PaymentId = requestBillDetails?.FirstOrDefault()?.PayId ?? string.Empty,
+                TrackNumber=requestBillDetails?.FirstOrDefault()?.TrackNumber??string.Empty,
                 FinalAmount = requestBillDetails?.Sum(s => s.Amount) ?? 0,
                 Title = _title,
                 RecordCount = requestBillDetails?.Count() ?? 0,
