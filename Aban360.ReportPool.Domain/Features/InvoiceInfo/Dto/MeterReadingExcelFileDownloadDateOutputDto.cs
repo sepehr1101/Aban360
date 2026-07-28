@@ -4,7 +4,7 @@
     {
         public string CurrentNumber { get; set; } = string.Empty;
         public string CurretnDateJalali { get; set; } = string.Empty;
-        public string CurrentCounterStateCode { get; set; } = string.Empty;
+        public string CurrentCounterStateCode { get; set; } 
         public string AgentCode { get; set; } = string.Empty;
 
         public int ZoneId { get; set; }

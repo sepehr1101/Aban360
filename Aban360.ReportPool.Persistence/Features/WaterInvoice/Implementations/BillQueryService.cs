@@ -314,7 +314,9 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 							m.town=@ZoneId AND
 							m.eshtrak BETWEEN @FromReadingNumber AND @ToReadingNumber
 					)
-					Select TOP {_latestListRecordMax} * 
+					Select TOP {_latestListRecordMax} 
+						*,
+						0 CurrentCounterStateCode
 					From CTE
 					WHERE
 						rn=1 AND
