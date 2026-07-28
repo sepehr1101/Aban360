@@ -22,7 +22,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     internal sealed class FazelabCalculator : BaseExpressionCalculator, IFazelabCalculator
     {       
         private const string _minimumValidDate = "1330/01/01";
-        private const string date_1405_03_15 = "1406/03/15";
+        private const string date_1405_03_15 = "1405/03/15";
         private const int _withoutSewage = 0;
         private const int _firstCalculation = 1;
         private const int _normal = 2;
@@ -31,7 +31,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
         public TariffItemResult Calculate(NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier)
         {
-            if (date2.IsLt(date_1405_03_15))
+            if (date2.IsLtEq(date_1405_03_15))
             {
                 double sewageAmount = 0;
 
@@ -167,7 +167,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         }
         public TariffItemResult CalculateDiscount(NerkhGetDto nerkh,TariffItemResult fazelabCalculationResult, double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo)
         {
-            if (nerkh.Date2.IsLt(date_1405_03_15))
+            if (nerkh.Date2.IsLtEq(date_1405_03_15))
             {
                 if (abBahaDiscount <= 0)
                 {

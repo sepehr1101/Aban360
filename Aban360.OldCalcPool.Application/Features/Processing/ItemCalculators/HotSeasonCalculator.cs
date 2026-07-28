@@ -18,7 +18,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     {
         //const string date_1404_02_31 = "1404/02/31";
         const string date_1403_12_30 = "1403/12/30";
-        const string date_1405_03_15 = "1406/03/15";
+        const string date_1405_03_15 = "1405/03/15";
         const string date_02_31 = "/02/31";
         const string date_06_31 = "/06/31";
         const double _hotSeasonRate = 0.2;
@@ -121,7 +121,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         #region private methods
         private TariffItemResult GetDurationAndAmount(string date1, string date2, int duration, CustomerInfoOutputDto customerInfo, double baseAmount, TariffItemResult fazelabCalcResult, ConsumptionPartialInfo consumptionPartialInfo, bool isVillageCalculation, double villageMultiplier, bool aboveZero = true, double fazelabMultiplier = 1)
         {
-            if (date1.IsLt(date_1405_03_15))
+            if (date1.IsLtEq(date_1405_03_15))
             {
                 string hotSeasonStart = GetHotSeasonStart(date2);
                 string hotSeasonEnd = GetHotSeasonEnd(date2);

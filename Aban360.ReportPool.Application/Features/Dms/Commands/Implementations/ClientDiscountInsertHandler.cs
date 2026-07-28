@@ -13,12 +13,12 @@ namespace Aban360.ReportPool.Application.Features.Dms.Commands.Implementations
     {
         private readonly IRequestDiscountService _clientDiscountService;
         public ClientDiscountInsertHandler(
-            IRequestDiscountService clientDiscountService,
+            IRequestDiscountService requestDiscountService,
             IConfiguration configuration)
             : base(configuration)
         {
-            _clientDiscountService = clientDiscountService;
-            _clientDiscountService.NotNull(nameof(clientDiscountService));
+            _clientDiscountService = requestDiscountService;
+            _clientDiscountService.NotNull(nameof(requestDiscountService));
         }
 
         public async Task Handle(ClientDiscountInsertDto input, CancellationToken cancellationToken)
