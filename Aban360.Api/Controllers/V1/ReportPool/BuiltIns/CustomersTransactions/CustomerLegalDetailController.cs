@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [HttpPost]
         [Route("legal-detail-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CustomerLegalDetailHeaderOutputDto, CustomerLegalDetailDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> DetailRaw([FromBody] CustomerLegalInputDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> DetailRaw([FromBody] CustomerLegalDetailInputDto input, CancellationToken cancellationToken)
         {
             ReportOutput<CustomerLegalDetailHeaderOutputDto, CustomerLegalDetailDataOutputDto> result = await _detailHandler.Handle(input, cancellationToken);
             return Ok(result);
@@ -37,7 +37,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         
         [HttpPost]
         [Route("legal-detail-excel/{connectionId}")]
-        public async Task<IActionResult> DetailExcel(string connectionId,[FromBody] CustomerLegalInputDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> DetailExcel(string connectionId,[FromBody] CustomerLegalDetailInputDto input, CancellationToken cancellationToken)
         {
             ReportOutput<CustomerLegalDetailHeaderOutputDto, CustomerLegalDetailDataOutputDto> result = await _detailHandler.Handle(input, cancellationToken);
             await _reportGenerator.FireAndInform(input, cancellationToken, _detailHandler.Handle, CurrentUser, ReportLiterals.CustomerLegalDetail, connectionId);

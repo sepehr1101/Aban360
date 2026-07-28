@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.ReportPool.Domain.Features.Transactions;
@@ -14,6 +15,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
     {
         private int _lagalNationalCodeCharecter = 11;
         private int _naturalNationalCodeCharecter = 10;
+        private int _invalidNationalCodeCharecter = 0;
         public CustomerInfoQueryService(IConfiguration configuration)
             : base(configuration)
         {
@@ -47,9 +49,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
             return result;
         }
-        public async Task<IEnumerable<CustomerLegalDetailDataOutputDto>> GetDetail(CustomerLegalInputDto input)
+        public async Task<IEnumerable<CustomerLegalDetailDataOutputDto>> GetDetail(CustomerLegalDetailInputDto input)
         {
-            string query = GetLegalsInfoDetailQuery();
+            string query = GetLegalsInfoDetailQuery(input.Type);
             IEnumerable<CustomerLegalDetailDataOutputDto> data = await _sqlReportConnection.QueryAsync<CustomerLegalDetailDataOutputDto>(query, input);
             return data;
         }
@@ -89,8 +91,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 		BillId=@billId AND
                 		ToDayJalali IS NULL";
         }
-        private string GetLegalsInfoDetailQuery()
+        private string GetLegalsInfoDetailQuery(CustomerLegalDetailEnum type)
         {
+            string nationalCondition = type switch
+            {
+                CustomerLegalDetailEnum.Legal => $" LEN(c.NationalId)={_lagalNationalCodeCharecter} ",
+                CustomerLegalDetailEnum.Natural => $" LEN(c.NationalId)={_naturalNationalCodeCharecter} ",
+                CustomerLegalDetailEnum.Invalid => $" (LEN(c.NationalId)>{_invalidNationalCodeCharecter} AND LEN(c.NationalId)<{_naturalNationalCodeCharecter}) OR LEN(c.NationalId)>{_lagalNationalCodeCharecter} ",
+                CustomerLegalDetailEnum.Empty => $" LEN(c.NationalId)={_invalidNationalCodeCharecter} ",
+                _ => string.Empty,
+            };
             return @$"Select 
                     	t51.C0 ZoneId,
                     	t51.C2 ZoneTitle,
@@ -112,7 +122,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	c.ToDayJalali IS NULL AND
                     	c.ZoneId IN @ZoneIds AND
                     	c.NationalId IS NOT NULL AND
-                    	LEN(c.NationalId)={_lagalNationalCodeCharecter}";
+                    	{nationalCondition}";
         }
         private string GetLegalsInfoSummaryQuery()
         {

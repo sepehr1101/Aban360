@@ -4,6 +4,7 @@ namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outp
 {
     public record CustomerLegalDetailHeaderOutputDto
     {
+        public string TypeTitle { get; set; }
         public int ZoneCount { get; set; }
         public int CustomerCount { get; set; }
         public int RecordCount { get; set; }

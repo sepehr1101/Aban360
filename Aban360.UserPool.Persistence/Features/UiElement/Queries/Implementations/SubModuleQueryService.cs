@@ -50,9 +50,10 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Implementation
         public async Task<IEnumerable<SubModule>> GetChildrens(int id)
         {
             return await _subModules
-                .Where(app => app.Id == id)
-                .Include(app => app.Endpoints)
-                .Include(app => app.Module)
+                .Where(subModule => subModule.Id == id)
+                .Include(subModule => subModule.Endpoints)
+                .Include(subModule => subModule.Module)
+                .Where(subModule => subModule.IsActive == true)
                 .ToListAsync();
         }
     }
