@@ -585,6 +585,17 @@ namespace Aban360.Common.Extensions
                     { "LegalCount", "حقوقی"},
                     { "NaturalCount", "حقیقی"},
                     { "InvalidCount", "ناصحیح"},
+                    { "CommonCounterState", "عادی"},
+                    { "MalfunctionCounterState", "کنتور خراب"},
+                    { "ChangeCounterState", "تعویض"},
+                    { "ReverseCounterState", "معکوس"},
+                    { "CloseCounterState", "بسته"},
+                    { "NextRoundCounterState", "دور مجدد"},
+                    { "WithoutConsumptionCounterState", "بدون مصرف"},
+                    { "BlockCounterState", "مانع"},
+                    { "NonReadCounterState", "عدم قرائت"},
+                    { "DesolateUnitCounterState", "واحد متروکه"},
+                    { "DisconnectionCounterState", "انشعاب قطع شده"},
             };
         }
     }
