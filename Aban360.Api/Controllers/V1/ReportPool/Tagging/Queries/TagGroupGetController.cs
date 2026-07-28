@@ -17,7 +17,6 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging
             _getHandler.NotNull(nameof(getHandler));
         }
 
-
         [HttpGet]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<TagGroupDto>>), StatusCodes.Status200OK)]
