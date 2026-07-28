@@ -285,7 +285,8 @@
         public static string ServiceLinkUnconfirmed { get { return "برگشتی تایید نشده حق انشعاب"; } }
 
 
-        public static string MeterReadingFilePath { get { return @"AppData\Dbfs"; } }
+        public static string DbfFolderPath { get { return @"AppData\Dbfs"; } }
+        public static string ExcelFolderPath { get { return @"AppData\Excels"; } }
         public static string MeterReadingNonReadCreate { get { return "قبض دسته‌ای علی‌الحساب"; } }
         public static string MeterReadingCreateFile { get { return "آپلود و محاسبه اولیه"; } }
         public static string MeterReadingExcluded { get { return "قرائت‌های خارج شده از لیست"; } }

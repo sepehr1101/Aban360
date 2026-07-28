@@ -16,6 +16,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
         private readonly IOtherExpensesInsertHandler _otherExpensesInsertHandler;
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IBackgroundJobClient _backgroundJobClient;
+        private int _taxItemId = 550;
         public ServiceLinkOtherExpensesController(
             IOtherExpensesInsertHandler otherExpensesInsertHandler,
             ISmsOldHandler smsOldHandler,
@@ -38,8 +39,10 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
         {
             int reportCode = 2540;
             ReportOutput<OtherExpensesHeaderOutputDto, OtherExpensesDataOutputDto> result = await _otherExpensesInsertHandler.Handle(inputDto, CurrentUser, cancellationToken);
-            string message = SmsTemplates.ServiceLinkOtherExpensesInsert;
-            _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(result.ReportHeader.MobileNumber, message, Guid.NewGuid()));
+            string offeringTitle = result?.ReportData?.Where(r => r.OfferingId != _taxItemId)?.FirstOrDefault()?.OfferingTitle ?? string.Empty;
+            string message = string.Format(SmsTemplates.ServiceLinkOtherExpensesInsert, offeringTitle, result?.ReportHeader?.TrackNumber, result?.ReportHeader?.FinalAmount, result?.ReportHeader?.BillId, result?.ReportHeader?.PaymentId, Environment.NewLine);
+            //_backgroundJobClient.Enqueue(() => _smsOldHandler.Send(result.ReportHeader.MobileNumber, message, Guid.NewGuid()));
+            _backgroundJobClient.Enqueue(() => _smsOldHandler.Send("09925306265", message, Guid.NewGuid()));
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
