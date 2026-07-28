@@ -13,25 +13,23 @@ using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.Virtual
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
-    internal interface IFazelabCalculator
+    internal interface IAbonmanFazelabCalculator
     {
         TariffItemResult Calculate(NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier);
         TariffItemResult CalculateDiscount(NerkhGetDto nerkh, TariffItemResult fazelabCalculationResult , double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo);
     }
 
-    internal sealed class FazelabCalculator : BaseExpressionCalculator, IFazelabCalculator
+    internal sealed class AbonmanFazelabCalculator : BaseExpressionCalculator, IFazelabCalculator
     {       
         private const string _minimumValidDate = "1330/01/01";
         private const string date_1405_03_15 = "1405/03/15";
         private const int _withoutSewage = 0;
         private const int _firstCalculation = 1;
         private const int _normal = 2;
-        const double _villageAllowedMultiplier = 0.5;
-        const double _villageDisallowedMultiplier = 0.65;
 
         public TariffItemResult Calculate(NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier)
         {
-            if (date2.IsLtEq(date_1405_03_15) || isAbonman)
+            if (date2.IsLtEq(date_1405_03_15))
             {
                 double sewageAmount = 0;
 
@@ -102,67 +100,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             else
             {               
                 multiplier = 1;
-                if (isAbonman)
-                {
-                    return new TariffItemResult();
-                }
-
-                if (IsConstruction(customerInfo.BranchType))
-                {
-                    return new TariffItemResult();
-                }
-                if (IsUsageConstructor(customerInfo.UsageId))
-                {
-                    return new TariffItemResult();
-                }
-                if (IsTankerSale(customerInfo.UsageId))
-                {
-                    return new TariffItemResult();
-                }
-                if (customerInfo.SewageCalcState == _withoutSewage || string.IsNullOrWhiteSpace(customerInfo.SewageInstallationDateJalali))
-                {
-                    return new TariffItemResult();
-                }
-
-                int duration=0;
-                // ثبت نصب بعد از تاریخ قرائت لحاظ شده
-                if (IsInstallAfterReading(date2, customerInfo))
-                {
-                    return new TariffItemResult();
-                }                
-                else if (IsFirstCalculation(date2, customerInfo))
-                {
-                    CalcDistanceResultDto calcDistance = CalcDistance(customerInfo.SewageInstallationDateJalali, date2, true, customerInfo);                   
-                    if (calcDistance.HasError)
-                    {
-                        throw new TariffDateException(customerInfo.BillId + " - " + ExceptionLiterals.Incalculable);
-                    }
-                    //TODO: Update SewageStateToNormal in DB
-                    duration = calcDistance.Distance;
-                }
-                //نرمال اما تاریخ نصب قبل از تاریخ قرائت و بعد از ابتدای دوره مصرف، پس بخشی از آن باید حساب شود
-                else if (InstallBetweenReadingPeriod(date1, date2, customerInfo))
-                {
-                    CalcDistanceResultDto calcDistance = CalcDistance(customerInfo.SewageInstallationDateJalali, date2, true, customerInfo);                    
-                    if (calcDistance.HasError)
-                    {
-                        throw new TariffDateException(customerInfo.BillId + " - " + ExceptionLiterals.Incalculable);
-                    }
-                    duration = calcDistance.Distance;
-                }
-                else if (IsTotallyNormal(customerInfo, currentDateJalali))
-                {
-                    duration = consumptionPartialInfo.Duration;
-                }
-                bool isVillage = IsRural(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption.Value, s.Value);
-                bool isDomestic = IsDomesticWithoutUnspecified(customerInfo.UsageId);
-                decimal multiplierAbBaha = GetMultiplier(zarib, s.Value, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption.Value, customerInfo.BranchType);
-                decimal k1 = GetK1(zarib, s.Value, isVillageCalculation, isDomestic);
-                decimal allowedKModifier = isVillage && isDomestic ? (decimal)_villageAllowedMultiplier : 1M;
-                decimal disAllowedKModifier = isVillage && isDomestic ? (decimal)_villageDisallowedMultiplier : 1M;
-
-                (double, double) values = CalcFormula(nerkh, monthlyConsumption.Value, s.Value, c, zoneMultiplier: multiplierAbBaha, zoneMultiplier2:k1, duration, allowedKModifier, disAllowedKModifier, customerInfo, consumptionPartialInfo);
-                return new TariffItemResult(values.Item1, values.Item2);
+                return new TariffItemResult();
             }
         }
         public TariffItemResult CalculateDiscount(NerkhGetDto nerkh,TariffItemResult fazelabCalculationResult, double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo)
