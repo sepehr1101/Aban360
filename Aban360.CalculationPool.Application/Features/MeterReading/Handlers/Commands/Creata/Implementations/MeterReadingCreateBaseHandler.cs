@@ -7,7 +7,9 @@ using Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Impleme
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
@@ -21,6 +23,7 @@ using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
@@ -28,6 +31,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 {
     internal sealed class MeterReadingCreateBaseHandler : AbstractBaseConnection, IMeterReadingCreateBaseHandler
     {
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMeterFlowQueryService _meterFlowService;
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
@@ -53,6 +57,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         const int _desolateUnitMeterStateId = 9;//todo: rename
         const int _disconnectionMeterStateId = 10;
         public MeterReadingCreateBaseHandler(
+            IHttpContextAccessor contextAccessor,
             IMeterFlowQueryService meterFlowService,
             ICustomerInfoService customerInfoService,
             IMeterReadingDetailQueryService meterReadingDetailService,
@@ -64,6 +69,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             IConfiguration configuration)
             : base(configuration)
         {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
             _meterFlowService = meterFlowService;
             _meterFlowService.NotNull(nameof(_meterFlowService));
 
@@ -349,6 +357,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             int zoneId = readingDetailsCreate.FirstOrDefault().ZoneId;
             string fromReadingNumber = readingDetailsCreate?.Min(m => m.ReadingNumber) ?? string.Empty;
             string toReadingNumber = readingDetailsCreate?.Max(m => m.ReadingNumber) ?? string.Empty;
+            string opLogText = string.Format(OpLogLiterals.MeterReadingFileInportOpLog, firstFlowId, fileInfo.FileName, readingDetailsCreate?.Count() ?? 0);
 
             MeterFlowDeleteDto meterFlowDeleteDto = new(firstFlowId, appUser.UserId, DateTime.Now);
 
@@ -362,11 +371,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 {
                     MeterReadingDetailCommandService meterReadingDetailService = new(connection, transaction);
                     MeterFlowCommandService meterFlowCommand = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     try
                     {
                         await meterReadingDetailService.Insert(readingDetailsCreate);
                         await MeterFlowCommands(connection, transaction, firstFlowId, firstFlowId, zoneId, fromReadingNumber, toReadingNumber, readingDetailsCreate?.Count() ?? 0, fileInfo.FileName, appUser, fileInfo.Description);
+                        await opLogCommandService.Insert(opLogText, appUser);
 
                         transaction.Commit();
                     }

@@ -5,9 +5,12 @@ using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Implementations;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
@@ -15,16 +18,21 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 {
     internal sealed class ConsumptionCheckedHandler : AbstractBaseConnection, IConsumptionCheckedHandler
     {
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
         private readonly IMeterFlowQueryService _meterFlowQueryService;
         public ConsumptionCheckedHandler(
+            IHttpContextAccessor contextAccessor,
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IMeterReadingDetailQueryService meterReadingDetailService,
             IMeterFlowQueryService meterFlowQueryService,
             IConfiguration configuration)
             : base(configuration)
         {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
             _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
             _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
 
@@ -53,12 +61,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 InsertDateTime = DateTime.Now,
                 Description = meterflow.Description
             };
+            string opLogText = string.Format(OpLogLiterals.MeterReadingFileConsumptionCheckOpLog, meterflow.FirstFlowId, meterflow.FileName);
 
-            int newMeterFlowId = await ExecSql(meterFlowUpdate, newMeterFlow, latestFlowId, appUser);
+            int newMeterFlowId = await ExecSql(meterFlowUpdate, newMeterFlow, latestFlowId, appUser, opLogText);
 
             return new MeterReadingCheckedOutputDto(newMeterFlowId, MeterFlowStepEnum.CalculationConfirmed, MessageLiterals.SuccessfullOperation);
         }
-        private async Task<int> ExecSql(MeterFlowUpdateDto meterFlowUpdate, MeterFlowCreateDto newMeterFlow, int latestFlowId, IAppUser appUser)
+        private async Task<int> ExecSql(MeterFlowUpdateDto meterFlowUpdate, MeterFlowCreateDto newMeterFlow, int latestFlowId, IAppUser appUser, string opLogText)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -69,8 +78,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     MeterFlowCommandService meterFlowCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+
                     await meterFlowCommandService.Update(meterFlowUpdate);
                     int newMeterFlowId = await meterFlowCommandService.Insert(newMeterFlow);
+                    await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                     return newMeterFlowId;

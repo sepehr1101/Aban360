@@ -2,6 +2,8 @@
 {
     public static class OpLogLiterals
     {
+        public static string MeterReadingFileInportOpLog => @"فایل قرائت آپلود شد.شناسه فایل:{0}  نام فایل:{1}  تعداد سطر{2}";
+        public static string MeterReadingFileConsumptionCheckOpLog => @"فایل قرائت، تایید مصرف شد.شناسه فایل:{0}  نام فایل:{1}  ";
         public static string GenerateBillIssueRemianedOpLog => @"قبض تسویه صادر شد. شناسه قبض:{0}  شناسه پرداخت:{1}  مبلغ:{2}";
         public static string GenerateBatchBillOpLog => @"قبض دسته‌ای صادر شد. ناحیه:{0}  تعداد قبض:{1}";
         public static string GenerateBillOpLog => @"قبض صادر شد. شناسه قبض:{0}  شناسه پرداخت:{1}  مبلغ:{2}";
