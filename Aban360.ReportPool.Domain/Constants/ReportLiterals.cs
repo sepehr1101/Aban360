@@ -303,7 +303,11 @@
 
         public static string CustomerLegalSummary { get { return "خلاصه مشترکین حقیقی/حقوقی"; } }
         public static string CustomerLegalDetail { get { return "جزئیات مشترکین حقیقی/حقوقی"; } }
-    
+        public static string Legal { get { return "حقوقی"; } }
+        public static string Natural { get { return "حقیقی"; } }
+        public static string Empty { get { return "مقدار ندارد"; } }
+        public static string Invalid { get { return " اشتباه"; } }
+
         public static string ServiceLinkOtherExpenses { get { return "هزینه های متفرقه حق انشعاب"; } }
 
 

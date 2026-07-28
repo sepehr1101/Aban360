@@ -2,6 +2,7 @@
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
@@ -18,15 +19,24 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             _customerInfoQueryService.NotNull(nameof(customerInfoQueryService));
         }
 
-        public async Task<ReportOutput<CustomerLegalDetailHeaderOutputDto, CustomerLegalDetailDataOutputDto>> Handle(CustomerLegalInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<CustomerLegalDetailHeaderOutputDto, CustomerLegalDetailDataOutputDto>> Handle(CustomerLegalDetailInputDto input, CancellationToken cancellationToken)
         {
             IEnumerable<CustomerLegalDetailDataOutputDto> data = await _customerInfoQueryService.GetDetail(input);
+            string TypeTitle = input.Type switch
+            {
+                CustomerLegalDetailEnum.Legal => ReportLiterals.Legal,
+                CustomerLegalDetailEnum.Natural => ReportLiterals.Natural,
+                CustomerLegalDetailEnum.Empty => ReportLiterals.Empty,
+                CustomerLegalDetailEnum.Invalid => ReportLiterals.Invalid,
+                _ => string.Empty,
+            };
             CustomerLegalDetailHeaderOutputDto header = new()
             {
+                TypeTitle=TypeTitle,
                 ZoneCount = input?.ZoneIds?.Count() ?? 0,
                 CustomerCount = data?.Count() ?? 0,
                 RecordCount = data?.Count() ?? 0,
-                Title =_title   ,
+                Title = _title,
             };
             return new ReportOutput<CustomerLegalDetailHeaderOutputDto, CustomerLegalDetailDataOutputDto>(_title, header, data);
         }

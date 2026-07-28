@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 {
     public interface ICustomerLegalDetailHandler
     {
-        Task<ReportOutput<CustomerLegalDetailHeaderOutputDto, CustomerLegalDetailDataOutputDto>> Handle(CustomerLegalInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<CustomerLegalDetailHeaderOutputDto, CustomerLegalDetailDataOutputDto>> Handle(CustomerLegalDetailInputDto input, CancellationToken cancellationToken);
     }
 }

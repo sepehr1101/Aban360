@@ -52,6 +52,7 @@ namespace Aban360.UserPool.Persistence.Features.UiElement.Queries.Implementation
             return await _modules
                 .Where(app => app.Id == id)
                 .Include(app => app.SubModules)
+                .Where(app => app.IsActive == true)
                 .ToListAsync();
         }
     }

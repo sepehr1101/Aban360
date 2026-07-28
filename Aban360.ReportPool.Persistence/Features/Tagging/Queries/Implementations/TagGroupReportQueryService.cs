@@ -95,7 +95,7 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementation
 					Join [CustomerWarehouse].dbo.Tags t
 						On tg.Id=t.TagGroupId
 					Join [CustomerWarehouse].dbo.MainTagGroup mt
-						On tg.MianTagGroupId=mt.Id
+						On tg.MainTagGroupId=mt.Id
 					Join [CustomerWarehouse].dbo.BillIdTags bt
 						On bt.TagId=t.Id
 					Join [CustomerWarehouse].dbo.Clients c

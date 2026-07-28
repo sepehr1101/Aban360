@@ -2,6 +2,6 @@
 {
     public record CustomerLegalInputDto
     {
-        public ICollection<int>  ZoneIds { get; set; }
+        public ICollection<int> ZoneIds { get; set; }
     }
 }
