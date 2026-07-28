@@ -128,7 +128,8 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementation
 					Where
 						c.ToDayJalali IS NULL
 						{queryTagGroups} 
-					Group By c.{groupedParam},tg.Title";
+					Group By c.{groupedParam},tg.Title
+					Order By c.{groupedParam},tg.Title";
         }
     }
 }
