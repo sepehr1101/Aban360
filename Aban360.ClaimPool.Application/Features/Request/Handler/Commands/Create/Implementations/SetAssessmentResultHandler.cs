@@ -1,4 +1,5 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
@@ -17,6 +18,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     internal sealed class SetAssessmentResultHandler : AbstractBaseConnection, ISetAssessmentResultHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IExaminationQueryService _assessmentQueryService;
         private readonly IT64QueryService _t64QueryService;
         private readonly IValidator<AssessmentResultInputDto> _validator;
@@ -26,6 +28,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         static int _requestOrigin = 12;
         public SetAssessmentResultHandler(
             IHttpContextAccessor contextAccessor,
+            IMoshtrakQueryService moshtrakQueryService,
             IExaminationQueryService assessmentQueryService,
             IT64QueryService t64QueryService,
             IValidator<AssessmentResultInputDto> validator,
@@ -34,6 +37,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
+
+            _moshtrakQueryService = moshtrakQueryService;
+            _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
 
             _assessmentQueryService = assessmentQueryService;
             _assessmentQueryService.NotNull(nameof(assessmentQueryService));
@@ -50,14 +56,22 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             string? requestBody = await new StreamReader(_contextAccessor.HttpContext.Request.Body).ReadToEndAsync();
 
             AssessmentResultInputDto inputDto = JsonOperation.Unmarshal<AssessmentResultInputDto>(requestBody);
-            await InputValidation(inputDto, cancellationToken);
+            await InputValidate(inputDto, cancellationToken);
 
             bool isSuccessResult = await GetIsSucces(inputDto.ResultId);
+            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(inputDto.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto = new(inputDto.TrackNumber, _seenByAssessmentStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true);
             TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(inputDto.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, isSuccessResult, false);
             AssessmentUpdateDto assessmentUpdateDto = await GetAssessmentUpdateDto(inputDto, assessmentCode, trackingInsertSetAssessmentResultDto.TrackId, requestBody);
-            await Validation(inputDto.TrackingId);
+            MoshtrkUpdateDto moshtrakUpdateDto = GetMoshtrackUpdateDto(inputDto);
+            await Validate(moshtrakInfo, inputDto.TrackingId);
 
+            await ExecSql(inputDto, moshtrakUpdateDto, assessmentUpdateDto, trackingInsertSetAssessmentResultDto, trackingInsertSeenAssessmentDto);
+            return inputDto;
+
+        }
+        private async Task ExecSql(AssessmentResultInputDto inputDto, MoshtrkUpdateDto moshtrakUpdateDto, AssessmentUpdateDto assessmentUpdateDto, TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto, TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto)
+        {
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -74,11 +88,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     await _trackingCommandService.UpdateIsConsiderdLatest(inputDto.TrackNumber, true);
                     await _trackingCommandService.InsertDuplicate(trackingInsertSeenAssessmentDto);
                     await _trackingCommandService.InsertDuplicate(trackingInsertSetAssessmentResultDto);
-                    await _moshtrackCommandService.Update(GetMoshtrackUpdateDto(inputDto), dbName);//todo: uncommited
+                    await _moshtrackCommandService.Update(moshtrakUpdateDto, dbName);//todo: uncommited
                     await _assessmentCommandService.Update(assessmentUpdateDto);
 
                     transaction.Commit();
-                    return inputDto;
                 }
             }
         }
@@ -214,7 +227,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AllInJson = requestBody
             };
         }
-        private async Task Validation(Guid trackId)
+        private async Task Validate(MoshtrakOutputDto moshtrakInfo, Guid trackId)
         {
             //if (previousStatusId != _setAssessmentTimeStatus)
             //{
@@ -225,8 +238,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidSetResultDuplicate);
             }
+            if (moshtrakInfo.IsRegistered)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.TrackingRegistered);
+            }
         }
-        private async Task InputValidation(AssessmentResultInputDto inputDto, CancellationToken cancellationToken)
+        private async Task InputValidate(AssessmentResultInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)

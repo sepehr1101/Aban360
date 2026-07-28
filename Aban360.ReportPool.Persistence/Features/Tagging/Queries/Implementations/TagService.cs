@@ -13,49 +13,45 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementation
             : base(configuration)
         {
         }
-        public async Task<int> Create(CreateTagDto dto)
-        {
-            var sql = @"
-                INSERT INTO Tags (Title, TagGroupId, TagGroupTitle, StringCode)
-                SELECT @Title, @TagGroupId, tg.Title, @StringCode
-                FROM TagGroups tg
-                WHERE tg.Id = @TagGroupId;
-                SELECT CAST(SCOPE_IDENTITY() as int);";
-
-            return await _sqlReportConnection.ExecuteScalarAsync<int>(sql, dto);
-        }
 
         public async Task<IEnumerable<TagDto>> GetAll()
         {
-            var sql = "SELECT Id, Title, TagGroupId, TagGroupTitle, StringCode FROM Tags";
+            var sql = @"SELECT 
+                        	t.Id,
+                        	t.Title,
+                        	t.TagGroupId, 
+                        	t.TagGroupTitle, 
+                        	t.StringCode ,
+                        	tg.MainTagGroupId ,
+                        	mtg.Title MainTagGroupTitle
+                        FROM CustomerWarehouse.dbo.Tags t
+                        Join CustomerWarehouse.dbo.TagGroups tg
+                        	ON t.TagGroupId=tg.Id
+                        Join CustomerWarehouse.dbo.MainTagGroup mtg
+                        	ON tg.MainTagGroupId=mtg.Id
+                        WHERE
+                        	t.DeleteDateTime IS NULL ";
             return await _sqlReportConnection.QueryAsync<TagDto>(sql);
         }
-
         public async Task<TagDto?> GetById(int id)
         {
-            var sql = "SELECT Id, Title, TagGroupId, TagGroupTitle, StringCode FROM Tags WHERE Id = @Id";
+            var sql = @"Select
+                        	t.Id,
+                        	t.Title,
+                        	t.TagGroupId, 
+                        	t.TagGroupTitle, 
+                        	t.StringCode ,
+                        	tg.MainTagGroupId ,
+                        	mtg.Title MainTagGroupTitle
+                        FROM CustomerWarehouse.dbo.Tags t
+                        Join CustomerWarehouse.dbo.TagGroups tg
+                        	ON t.TagGroupId=tg.Id
+                        Join CustomerWarehouse.dbo.MainTagGroup mtg
+                        	ON tg.MainTagGroupId=mtg.Id
+                        WHERE
+                        	t.DeleteDateTime IS NULL AND
+                        	t.Id = @Id";
             return await _sqlReportConnection.QueryFirstOrDefaultAsync<TagDto>(sql, new { Id = id });
-        }
-
-        public async Task<bool> Update(UpdateTagDto dto)
-        {
-            var sql = @"
-                UPDATE Tags
-                SET Title = @Title,
-                    TagGroupId = @TagGroupId,
-                    TagGroupTitle = (SELECT Title FROM TagGroups WHERE Id = @TagGroupId),
-                    StringCode= @StringCode
-                WHERE Id = @Id";
-
-            var rows = await _sqlReportConnection.ExecuteAsync(sql, dto);
-            return rows > 0;
-        }
-
-        public async Task<bool> Delete(int id)
-        {
-            var sql = "DELETE FROM Tags WHERE Id = @Id";
-            var rows = await _sqlReportConnection.ExecuteAsync(sql, new { Id = id });
-            return rows > 0;
         }
     }
 }
