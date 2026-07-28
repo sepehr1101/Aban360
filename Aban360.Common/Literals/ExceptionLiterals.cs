@@ -51,6 +51,7 @@
         public static string InvoiceNotFound => " قبض یافت نشد";
         public static string BillIdNotFound => "شناسه قبض یافت نشد";
         public static string InvalidBillId => "شناسه قبض معتبر نیست";
+        public static string NotFoundBillId(string billId) => $"شناسه:{billId} قبض معتبر نیست";
         public static string InvalidCustomerNumber => "ردیف یافت نشد";
         public static string NotFoundCustomer => "مشترک با اطلاعات وارد شده یافت نشد";
         public static string NotFoundAnyCustomer => "هیچ مشترکی با اطلاعات وارد شده یافت نشد";
@@ -222,6 +223,7 @@
         public static string InvalidStatusId => "خطا در کد وضعیت ";
         public static string NotFoundAssessment => "اطلاعات ارزیابی یافت نشد.";
         public static string InvalidSetResultDuplicate => "ثبت نتیجه ارزیابی قبلا انجام شده.";
+        public static string TrackingRegistered => "درخواست بسته شده است";
         public static string InvalidAssessmentResultId => "کد نتیجه ارزیابی یافت نشد.";
         public static string InvalidOpenRequest(string trackNumber) => $"شمار دارای درخواست نیمه تمام با شماره پیگیری {trackNumber} هستید. ";
         public static string InvalidMonthlyDuration(int normalDuration) => $"دوره اقساط باید کمتر از {normalDuration} ماه باشد.";

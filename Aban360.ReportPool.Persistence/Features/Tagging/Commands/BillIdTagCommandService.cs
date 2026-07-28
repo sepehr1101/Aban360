@@ -13,7 +13,9 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Commands
     {
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
-        public BillIdTagCommandService(IDbConnection connection, IDbTransaction transaction)
+        public BillIdTagCommandService(
+            IDbConnection connection, 
+            IDbTransaction transaction)
         {
             _connection = connection;
             _connection.NotNull(nameof(connection));

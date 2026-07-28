@@ -1,4 +1,5 @@
 ﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
@@ -20,16 +21,21 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
     internal sealed class BillIdTagInsertExcelFileHandler : AbstractBaseConnection, IBillIdTagInsertExcelFileHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly ITagService _tagService;
         private string _filePath = ReportLiterals.ExcelFolderPath;
         public BillIdTagInsertExcelFileHandler(
             IHttpContextAccessor contextAccessor,
+            ICommonMemberQueryService commonMemberQueryService,
             ITagService tagService,
             IConfiguration configuration)
                 : base(configuration)
         {
             _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
+
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
 
             _tagService = tagService;
             _tagService.NotNull(nameof(tagService));
@@ -56,6 +62,14 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
                     BillIdTagCommandService billIdTagCommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
+
+                    IEnumerable<ZoneIdAndCustomerNumberAndBillId> billIdWithCustomerNumbers= await _commonMemberQueryService.Get(billIdTagInsertDto.Select(b => b.BillId),connection,transaction);
+                    foreach (var item in billIdWithCustomerNumbers)
+                    {
+                        if (item.ZoneId <= 0 || item.CustomerNumber <= 0)
+                            throw new InvalidBillIdException(ExceptionLiterals.NotFoundBillId(item.BillId));
+                    }
+                    
                     await billIdTagCommandService.Create(billIdTagInsertDto);
                     await opLogCommandService.Insert(opLogText, appUser);
 
@@ -66,7 +80,7 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
         private ICollection<BillIdTagByStringCodeDto> ReadExcel(string filePath, Guid userId)
         {
             ICollection<BillIdTagByStringCodeDto> billIdTagList = new List<BillIdTagByStringCodeDto>();
-            var rows = Excel.MiniExcel.Query(filePath, useHeaderRow: false, sheetName: ExceptionLiterals.Page(1));
+            var rows = Excel.MiniExcel.Query(filePath, useHeaderRow: false);//, sheetName: ExceptionLiterals.Page(1));
             string errorMessage = ExceptionLiterals.InvalidReadingFile;
             int count = 0;
 
@@ -81,14 +95,14 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
                         //0:BillId  1:StringCode  2:ExpireDateJalali
                         string billId = row.ElementAt(0).Value.ToString();
                         string stringCode = row.ElementAt(1).Value.ToString();
-                        string? expireDateJalali = row.ElementAt(2).Value.ToString();
-                        errorMessage = ExceptionLiterals.InvalidRecord(count);
+                        string? expireDateJalali = row.ElementAt(2).Value?.ToString() ?? string.Empty;
 
                         BillIdTagByStringCodeDto singleBillIdTag = new(billId, stringCode, expireDateJalali);
                         billIdTagList.Add(singleBillIdTag);
                     }
                     catch
                     {
+                        errorMessage = ExceptionLiterals.InvalidRecord(count);
                         throw new ReadingException(errorMessage);
                     }
                 }

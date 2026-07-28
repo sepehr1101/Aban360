@@ -1,29 +1,56 @@
-﻿using Aban360.Common.Exceptions;
+﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Contracts;
 using Aban360.ReportPool.Domain.Features.Tagging;
 using Aban360.ReportPool.Domain.Features.Tagging.Commands;
+using Aban360.ReportPool.Persistence.Features.Tagging.Commands;
 using Aban360.ReportPool.Persistence.Features.Tagging.Queries.Contracts;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Implementations
 {
-    public sealed class UpdateTagGroupHandler : IUpdateTagGroupHandler
+    public sealed class UpdateTagGroupHandler : AbstractBaseConnection, IUpdateTagGroupHandler
     {
         private readonly ITagGroupService _service;
-
-        public UpdateTagGroupHandler(ITagGroupService service)
+        public UpdateTagGroupHandler(
+            ITagGroupService service,
+            IConfiguration configuration)
+                : base(configuration)
         {
             _service = service;
+            _service.NotNull(nameof(service));
         }
 
         public async Task<bool> Handle(UpdateTagGroupDto dto)
         {
-            TagGroupDto? result = await _service.GetByStringCode(dto.StringCode);
-            if (result is not null)
+            TagGroupDto? tagGroupData = await _service.GetByStringCode(dto.StringCode);
+            if (tagGroupData is not null)
             {
                 throw new CustomValidationException(ExceptionLiterals.InvalidDuplicateStringCode);
             }
-            return await _service.Update(dto);
+
+            bool result = false;
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    TagGroupCommandService tagGroupCommandService = new(connection, transaction);
+                   TagCommandService tagCommandService = new(connection, transaction);  
+
+                    result = await tagGroupCommandService.Update(dto);
+                    await tagCommandService.UpdateTagGroupTitle(dto.Id, dto.Title);
+
+                    transaction.Commit();
+                }
+            }
+            return result;
         }
     }
 }

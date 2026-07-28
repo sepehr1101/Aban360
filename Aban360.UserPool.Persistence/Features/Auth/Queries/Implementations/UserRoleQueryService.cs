@@ -57,7 +57,7 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                      Id = ur.User.Id,
                      FullName = ur.User.FullName,
                      DisplayName = ur.User.DisplayName,
-                     Username = ur.User.DisplayName,
+                     Username = ur.User.Username,
                      Mobile = ur.User.Mobile,
                      MobileConfirmed = ur.User.MobileConfirmed,
                      HasTwoStepVerification = ur.User.HasTwoStepVerification,

@@ -3,13 +3,16 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Dapper;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.Common.Db.Services
 {
     public interface ICommonMemberQueryService
     {
         Task<ZoneIdAndCustomerNumber> Get(string billId);
+		Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> Get(IEnumerable<string> billId, IDbConnection connection, IDbTransaction transction);
         Task<MemberInfoGetDto> Get(ZoneIdAndCustomerNumber input);
     }
     public sealed class CommonMemberQueryService : AbstractBaseConnection, ICommonMemberQueryService
@@ -52,7 +55,30 @@ namespace Aban360.Common.Db.Services
             input.BlockCode = moshtrakInfo?.BlockCode ?? null;
             return input;
         }
+        public async Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> Get(IEnumerable<string> billId,IDbConnection connection,IDbTransaction transction)
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("ZoneId", typeof(int));
+            table.Columns.Add("CustomerNumbers", typeof(int));
+            table.Columns.Add("BillId", typeof(string));
+            foreach (var item in billId)
+                table.Rows.Add(null, null, item);
 
+            string tempTableCreateCommand = "Create Table #TempCustomerNumbers" +
+                                                "(ZoneId int  Null," +
+                                                "CustomerNumber int  Null," +
+                                                "BillId NVARCHAR(14) Not NUll)";
+            await connection.ExecuteAsync(tempTableCreateCommand,null,transction);
+            using (var bulkCopy = new SqlBulkCopy((SqlConnection)connection, SqlBulkCopyOptions.Default,(SqlTransaction)transction))
+            {
+                bulkCopy.DestinationTableName = "#TempCustomerNumbers";
+                bulkCopy.BatchSize = 10000;
+                await bulkCopy.WriteToServerAsync(table);
+            }
+            await connection.ExecuteAsync(GetUpdateTemplateTableCommand(), null, transction);
+            IEnumerable<ZoneIdAndCustomerNumberAndBillId> result = await connection.QueryAsync<ZoneIdAndCustomerNumberAndBillId>(GetTemplateQuery(),null,transction);
+            return result;
+        }
         private string GetZoneIdAndCustomerNumberQuery()
         {
             return @"Select 
@@ -160,6 +186,22 @@ namespace Aban360.Common.Db.Services
 					Left Join [Db70].dbo.T15 t15
 						ON m.cod_takh=t15.C0
 					where m.radif=@customerNumber";
+        }
+        private string GetUpdateTemplateTableCommand()
+        {
+            return $@"Update t
+					Set
+						ZoneId=c.ZoneId,
+						CustomerNumber=c.CustomerNumber
+					From CustomerWarehouse.dbo.Clients c
+					Join #TempCustomerNumbers t
+						 ON c.BillId collate Persian_100_CI_AI=t.BillId collate Persian_100_CI_AI
+					Where  
+						c.ToDayJalali IS NULL";
+        }
+        private string GetTemplateQuery()
+        {
+            return $@"Select * From #TempCustomerNumbers t";
         }
     }
 }
