@@ -175,15 +175,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
         }
         private string GetAbAzadQuery()
         {
-            return @$"SELECT
-                        MAX(vaj) AS Formula,
-                        MAX(AllowedFormula) as AllowedFormula,
-						MAX(DisallowedFormula) as DisallowedFormula
+            return @$"SELECT top 1
+                        (vaj) AS Formula,
+                        (AllowedFormula) as AllowedFormula,
+						(DisallowedFormula) as DisallowedFormula
                     FROM [OldCalc].dbo.Nerkh
                     WHERE
                         date1 < @toDate AND
                         date2 >= @fromDate AND
-                        cod = 39";
+                        cod = 39
+                    order by date1 desc";
         }
     }
 }
