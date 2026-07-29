@@ -164,7 +164,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     FROM [CustomerWarehouse].dbo.BillIdTags bt
                     Where
                     	bt.BillId=@billId AND
-                    	[CustomerWarehouse].dbo.PersianToMiladi(bt.ExpireDateJalali)>GETDATE() AND
+                        ( bt.ExpireDateJalali IS NULL OR LEN(bt.ExpireDateJalali)=0 OR [CustomerWarehouse].dbo.PersianToMiladi(bt.ExpireDateJalali)>GETDATE() ) AND
                     	bt.DeleteDateTime IS NULL";
         }
     }
