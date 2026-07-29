@@ -1,6 +1,9 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Contracts;
+using Aban360.ReportPool.Domain.Features.Tagging;
 using Aban360.ReportPool.Domain.Features.Tagging.Commands;
 using Aban360.ReportPool.Persistence.Features.Tagging.Commands;
 using Aban360.ReportPool.Persistence.Features.Tagging.Queries.Contracts;
@@ -23,6 +26,12 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
 
         public async Task<int> Handle(CreateTagDto dto)
         {
+            TagDto? tagInfo = await _service.GetByStringCode(dto.StringCode);
+            if (tagInfo is not null)
+            {
+                throw new CustomValidationException(ExceptionLiterals.InvalidDuplicateStringCode);
+            }
+
             int result = 0;
             using (IDbConnection connection = _sqlReportConnection)
             {

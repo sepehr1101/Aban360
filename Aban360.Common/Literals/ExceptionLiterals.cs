@@ -223,7 +223,7 @@
         public static string InvalidStatusId => "خطا در کد وضعیت ";
         public static string NotFoundAssessment => "اطلاعات ارزیابی یافت نشد.";
         public static string InvalidSetResultDuplicate => "ثبت نتیجه ارزیابی قبلا انجام شده.";
-        public static string TrackingRegistered => "درخواست بسته شده است";
+        public static string TrackingRegistered => "درخواست توسط اپراتور مشترکین بسته شده است.";
         public static string InvalidAssessmentResultId => "کد نتیجه ارزیابی یافت نشد.";
         public static string InvalidOpenRequest(string trackNumber) => $"شمار دارای درخواست نیمه تمام با شماره پیگیری {trackNumber} هستید. ";
         public static string InvalidMonthlyDuration(int normalDuration) => $"دوره اقساط باید کمتر از {normalDuration} ماه باشد.";
