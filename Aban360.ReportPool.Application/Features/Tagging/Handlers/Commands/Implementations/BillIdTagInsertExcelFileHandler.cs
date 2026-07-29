@@ -14,6 +14,7 @@ using Aban360.ReportPool.Persistence.Features.Tagging.Queries.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Excel = MiniExcelLibs;
 
 namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Implementations
@@ -22,12 +23,14 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
-        private readonly ITagService _tagService;
+        private readonly ITagQueryService _tagQueryService;
+        private readonly ITagQueryService _tagService;
         private string _filePath = ReportLiterals.ExcelFolderPath;
         public BillIdTagInsertExcelFileHandler(
             IHttpContextAccessor contextAccessor,
             ICommonMemberQueryService commonMemberQueryService,
-            ITagService tagService,
+            ITagQueryService tagQueryService,
+            ITagQueryService tagService,
             IConfiguration configuration)
                 : base(configuration)
         {
@@ -36,6 +39,9 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
 
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+
+            _tagQueryService = tagQueryService;
+            _tagQueryService.NotNull(nameof(tagQueryService));
 
             _tagService = tagService;
             _tagService.NotNull(nameof(tagService));
@@ -63,17 +69,31 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
 
-                    IEnumerable<ZoneIdAndCustomerNumberAndBillId> billIdWithCustomerNumbers= await _commonMemberQueryService.Get(billIdTagInsertDto.Select(b => b.BillId),connection,transaction);
-                    foreach (var item in billIdWithCustomerNumbers)
-                    {
-                        if (item.ZoneId <= 0 || item.CustomerNumber <= 0)
-                            throw new InvalidBillIdException(ExceptionLiterals.NotFoundBillId(item.BillId));
-                    }
-                    
+                    await DataValidate(billIdTagInsertDto, connection, transaction);
                     await billIdTagCommandService.Create(billIdTagInsertDto);
                     await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
+                }
+            }
+        }
+        private async Task DataValidate(ICollection<BillIdTagByStringCodeDto> billIdTagInsertDto, IDbConnection connection, IDbTransaction transaction)
+        {
+            IEnumerable<ZoneIdAndCustomerNumberAndBillId> billIdWithCustomerNumbers = await _commonMemberQueryService.Get(billIdTagInsertDto.Select(b => b.BillId), connection, transaction);
+            foreach (var item in billIdWithCustomerNumbers)
+            {
+                if (item.ZoneId <= 0 || item.CustomerNumber <= 0)
+                {
+                    throw new InvalidBillIdException(ExceptionLiterals.NotFoundBillId(item.BillId));
+                }
+            }
+
+            IEnumerable<TagsStringCodeValidateDto> stringCodes = await _tagQueryService.ValidateStringCodes(billIdTagInsertDto.Select(b => b.StringCode).ToList(), connection, transaction);
+            foreach (var item in stringCodes)
+            {
+                if (!item.IsValid)
+                {
+                    throw new InvalidBillIdException(ExceptionLiterals.NotFoundStringCode(item.StringCode));
                 }
             }
         }
