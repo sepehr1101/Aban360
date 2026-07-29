@@ -57,8 +57,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.I
                     UsageGroup3CommandService usageGroup3CommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
-                    await usageGroup2CommandService.Remove(group1Id);
                     await usageGroup3CommandService.Remove(group3Ids);
+                    await usageGroup2CommandService.Remove(group1Id);
                     await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();

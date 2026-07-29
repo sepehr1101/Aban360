@@ -113,7 +113,7 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
                     try
                     {
                         //0:BillId  1:StringCode  2:ExpireDateJalali
-                        string billId = row.ElementAt(0).Value.ToString();
+                        string billId = row.ElementAt(0).Value.ToString().Trim();
                         string stringCode = row.ElementAt(1).Value.ToString();
                         string? expireDateJalali = row.ElementAt(2).Value?.ToString() ?? string.Empty;
 

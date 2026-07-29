@@ -224,8 +224,8 @@
         public static string MeterLifeSummary { get { return $" {Report} خلاصه عمر کنتور"; } }
 
 
-        public static string TagGroupSummary { get { return $" {Report} خلاصه گروه تگ"; } }
-        public static string TagGroupDetail { get { return $" {Report} جزئیات گروه تگ"; } }
+        public static string TagGroupSummary { get { return $" {Report} خلاصه گروه برچسب"; } }
+        public static string TagGroupDetail { get { return $" {Report} جزئیات گروه برچسب"; } }
 
         public static string TagSummary { get { return $" {Report} خلاصه تگ"; } }
         public static string TagDetail { get { return $" {Report} جزئیات تگ"; } }

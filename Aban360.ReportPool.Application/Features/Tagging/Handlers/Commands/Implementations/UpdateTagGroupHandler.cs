@@ -27,7 +27,7 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
         public async Task<bool> Handle(UpdateTagGroupDto dto)
         {
             TagGroupDto? tagGroupData = await _service.GetByStringCode(dto.StringCode);
-            if (tagGroupData is not null)
+            if (tagGroupData is not null && tagGroupData.Id != dto.Id)
             {
                 throw new CustomValidationException(ExceptionLiterals.InvalidDuplicateStringCode);
             }
@@ -42,7 +42,7 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     TagGroupCommandService tagGroupCommandService = new(connection, transaction);
-                   TagCommandService tagCommandService = new(connection, transaction);  
+                    TagCommandService tagCommandService = new(connection, transaction);
 
                     result = await tagGroupCommandService.Update(dto);
                     await tagCommandService.UpdateTagGroupTitle(dto.Id, dto.Title);
