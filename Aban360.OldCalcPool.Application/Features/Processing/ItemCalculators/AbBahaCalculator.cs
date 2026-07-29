@@ -442,6 +442,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             object parametersAllowed = new
             {
+                customerInfo.UsageId,
                 X = monthlyAverageConsumption,
                 C = c,
                 S = olgoo,
@@ -456,6 +457,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             };
             object parametersDisallowed = new
             {
+                customerInfo.UsageId,
                 X = monthlyAverageConsumption,
                 C = c,
                 S = olgoo,
