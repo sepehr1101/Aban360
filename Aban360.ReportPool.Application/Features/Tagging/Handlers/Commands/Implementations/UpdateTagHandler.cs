@@ -11,9 +11,9 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
 {
     public sealed class UpdateTagHandler : AbstractBaseConnection, IUpdateTagHandler
     {
-        private readonly ITagService _service;
+        private readonly ITagQueryService _service;
         public UpdateTagHandler(
-            ITagService service,
+            ITagQueryService service,
             IConfiguration configuration)
                 : base(configuration)
         {

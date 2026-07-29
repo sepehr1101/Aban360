@@ -10,9 +10,9 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
 {
     public sealed class DeleteTagHandler : AbstractBaseConnection, IDeleteTagHandler
     {
-        private readonly ITagService _service;
+        private readonly ITagQueryService _service;
         public DeleteTagHandler(
-            ITagService service,
+            ITagQueryService service,
             IConfiguration configuration)
                 : base(configuration)
         {

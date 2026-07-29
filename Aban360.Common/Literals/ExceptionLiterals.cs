@@ -51,7 +51,7 @@
         public static string InvoiceNotFound => " قبض یافت نشد";
         public static string BillIdNotFound => "شناسه قبض یافت نشد";
         public static string InvalidBillId => "شناسه قبض معتبر نیست";
-        public static string NotFoundBillId(string billId) => $"شناسه:{billId} قبض معتبر نیست";
+        public static string NotFoundBillId(string billId) => $"شناسه قبض:{billId} معتبر نیست";
         public static string InvalidCustomerNumber => "ردیف یافت نشد";
         public static string NotFoundCustomer => "مشترک با اطلاعات وارد شده یافت نشد";
         public static string NotFoundAnyCustomer => "هیچ مشترکی با اطلاعات وارد شده یافت نشد";
@@ -71,8 +71,8 @@
         public static string InvalidUpdateInstallmentNotCurrentDate => "امکان ویرایش قسط وجود ندارد - خطا در تاریخ قسط";
         public static string InvalidTemporaryDeletionState => "مشترک در وضعیت 'حذف موقت' قرار دارد.";
         public static string InvalidCollectedDeletionState => "مشترک در وضعیت 'جمع آوری' قرار دارد.";
-        public static string InvalidPreviousDateJalali=> "عدم تطبیق تاریخ قبلی";
-        public static string InvalidPreviousNumber=> "عدم تطبیق رقم قبلی";
+        public static string InvalidPreviousDateJalali => "عدم تطبیق تاریخ قبلی";
+        public static string InvalidPreviousNumber => "عدم تطبیق رقم قبلی";
         public static string InvalidDuration => "مدت زمان محاسبه نامعتبر";
         public static string InvalidZeroServiceSelected => "حداقل یک درخواست انتخاب کنید.";
         public static string InvalidZoneTitle => "ناحیه یافت نشد!";
@@ -297,14 +297,15 @@
         public static string NotFoundMeterApkFileVersion => "ورژن وارد شده یافت نشد.";
         public static string InvalidMeterApkFileVersion => "ورژن وارد شده معتبر نیست.";
         public static string InvalidMeterApkFileByDuplicateVersion => "ورژن وارد شده تکراری است.";
-      
-        
+
+
         public static string InvalidInsertBillIdTag => "خطا در ذخیره لیست انتساب برچسب";
         public static string InvalidRemoveBillIdTag => "خطا در حذف لیست انتساب برچسب";
         public static string InvalidInsertMainTagGroup => "خطا در ذخیره گروه بندی اصلی برچسب";
         public static string InvalidUpdateMainTagGroup => "خطا در ویرایش گروه بندی اصلی برچسب";
         public static string InvalidRemoveMainTagGroup => "خطا در حذف گروه بندی اصلی برچسب";
         public static string InvalidDuplicateStringCode => "کد شناسه یکتا تکراری است.";
+        public static string NotFoundStringCode(string stringCode) => $"کد شناسه یکتا:{stringCode} یافت نشد.";
 
     }
 }
