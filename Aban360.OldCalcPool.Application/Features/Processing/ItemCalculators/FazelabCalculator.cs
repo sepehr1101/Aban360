@@ -209,7 +209,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                     return new TariffItemResult();
                 }
                 if (IsUnderSocialService(customerInfo.BranchType) &&
-                   IsDomesticWithoutUnspecified(customerInfo.UsageId))
+                   IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+                   customerInfo.HouseholdNumber < 2)
                 {
                     return new TariffItemResult(fazelabCalculationResult.Allowed);
                 }
@@ -276,6 +277,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             object parametersAllowed = new
             {
                 X = monthlyAverageConsumption,
+                customerInfo.UsageId,
+                customerInfo.BranchType,
                 C = c,
                 S = olgoo,
                 K = (double)(zoneMultiplier * allowedKModifier),
@@ -290,6 +293,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             object parametersDisallwed = new
             {
                 X = monthlyAverageConsumption,
+                customerInfo.UsageId,
+                customerInfo.BranchType,
                 C = c,
                 S = olgoo,
                 K = (double)(zoneMultiplier * disAllowedKModifier),
