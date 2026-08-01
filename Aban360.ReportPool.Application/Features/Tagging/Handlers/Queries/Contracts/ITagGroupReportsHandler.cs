@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Queries.Contr
     public interface ITagGroupReportsHandler
     {
         Task<ReportOutput<TagsHeaderOutputDto, TagGroupReportDetailDataOutputDto>> Handle(TagsInputDto inputDto, CancellationToken cancellationToken);
-        Task<ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto>> Handle(TagsInputDto inputDto, bool isZoneTitle, CancellationToken cancellationToken);
+        Task<ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto>> SummaryHandle(TagsInputDto inputDto, bool isZoneTitle, CancellationToken cancellationToken);
     }
 }

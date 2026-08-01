@@ -80,7 +80,7 @@ namespace Aban360.Api.Cronjobs
         public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId, string? methodName = MethodName, string[]? excludedProperties = null)
         {
             methodName ??= MethodName;
-            await DuplicateReportValidation(JsonConvert.SerializeObject(reportInput), appUser.UserId);//check
+            //await DuplicateReportValidation(JsonConvert.SerializeObject(reportInput), appUser.UserId);//check
             ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(Guid.NewGuid(), reportInput, GetData, appUser, reportTitle, connectionId);
             await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
             BackgroundJob.Enqueue(() => DoFireAndInform(serverReportsCreateDto, methodName, excludedProperties));

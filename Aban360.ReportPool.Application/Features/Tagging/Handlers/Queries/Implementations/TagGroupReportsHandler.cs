@@ -20,7 +20,7 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Queries.Imple
             return await _service.Get(inputDto);
         }
 
-        public async Task<ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto>> Handle(TagsInputDto inputDto, bool isZoneTitle, CancellationToken cancellationToken)
+        public async Task<ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto>> SummaryHandle(TagsInputDto inputDto, bool isZoneTitle, CancellationToken cancellationToken)
         {
             return await _service.Get(inputDto, isZoneTitle);
         }
