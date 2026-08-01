@@ -24,7 +24,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Queries
         [Route("by-zone/raw")]
         public async Task<IActionResult> RawByZone(TagsInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto> result = await _reportHandler.Handle(inputDto, true, cancellationToken);
+            ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto> result = await _reportHandler.SummaryHandle(inputDto, true, cancellationToken);
             return Ok(result);
         }
 
@@ -35,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Queries
         public async Task<IActionResult> GetZoneStiReport(TagsInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 642;
-            ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto> result = await _reportHandler.Handle(inputDto, true, cancellationToken);
+            ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto> result = await _reportHandler.SummaryHandle(inputDto, true, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
@@ -49,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Queries
         [Route("by-usage/raw")]
         public async Task<IActionResult> RawByUsage(TagsInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto> result = await _reportHandler.Handle(inputDto, false, cancellationToken);
+            ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto> result = await _reportHandler.SummaryHandle(inputDto, false, cancellationToken);
             return Ok(result);
         }
 
@@ -60,7 +60,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Queries
         public async Task<IActionResult> GetUsageStiReport(TagsInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 641;
-            ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto> result = await _reportHandler.Handle(inputDto, false, cancellationToken);
+            ReportOutput<TagsHeaderOutputDto, TagsReportSummaryDataOutputDto> result = await _reportHandler.SummaryHandle(inputDto, false, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }

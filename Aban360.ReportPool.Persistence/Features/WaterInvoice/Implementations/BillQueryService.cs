@@ -316,7 +316,8 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 					)
 					Select TOP {_latestListRecordMax} 
 						*,
-						0 CurrentCounterStateCode
+						0 CurrentCounterStateCode,
+						0 AgentCode
 					From CTE
 					WHERE
 						rn=1 AND

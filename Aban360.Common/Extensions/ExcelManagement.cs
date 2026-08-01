@@ -596,6 +596,13 @@ namespace Aban360.Common.Extensions
                     { "NonReadCounterState", "عدم قرائت"},
                     { "DesolateUnitCounterState", "واحد متروکه"},
                     { "DisconnectionCounterState", "انشعاب قطع شده"},
+                    { "MainTagGroupId", "شناسه گروه اصلی برچسب"},
+                    { "MainTagGroupTitle", "گروه اصلی برچسب"},
+                    { "TagGroupId", "کد گروه برچسب"},
+                    { "TagGroupTitle", "گروه برچسب"},
+                    { "TagId", "شناسه برچسب"},
+                    { "TagTitle", "برچسب"},
+                    { "BillIdTagsExpireDateJalali", "تاریخ انقضا برچسب"},
             };
         }
     }
