@@ -8,6 +8,7 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Contracts
     {
         Task<IEnumerable<TagDto>> GetAll();
         Task<TagDto?> GetById(int id);
+        Task<TagDto?> GetByStringCode(string stringCode);
         Task<IEnumerable<TagsStringCodeValidateDto>> ValidateStringCodes(IEnumerable<string> stringCodes, IDbConnection connection, IDbTransaction transaction);
     }
 }

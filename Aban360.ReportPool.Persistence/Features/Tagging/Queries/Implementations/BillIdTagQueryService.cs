@@ -21,7 +21,7 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementation
                     Id, 
                     BillId,
                     ExpireDateJalali, 	
-                    IIF([CustomerWarehouse].dbo.PersianToMiladi(ExpireDateJalali)>GETDATE() OR ExpireDateJalali IS NULL,1,0) IsValid,
+                    IIF(ExpireDateJalali IS NULL OR [CustomerWarehouse].dbo.PersianToMiladi(ExpireDateJalali)>GETDATE()  ,1,0) IsValid,
                     TagId,
                     TagTitle, 
                     CreateDateTime,
@@ -41,7 +41,7 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementation
                 WHERE 
                     BillId = @BillId AND 
                     DeleteDateTime IS NULL  AND
-	                [CustomerWarehouse].dbo.PersianToMiladi(ExpireDateJalali)>GETDATE() 
+                    (ExpireDateJalali IS NULL OR LEN(ExpireDateJalali)=0 OR [CustomerWarehouse].dbo.PersianToMiladi(ExpireDateJalali)>GETDATE() )
                 GROUP BY TagId";
 
             IEnumerable<int> tagIds = await _sqlReportConnection.QueryAsync<int>(sql, new { BillId = billId });

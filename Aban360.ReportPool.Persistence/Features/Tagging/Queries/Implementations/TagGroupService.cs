@@ -19,7 +19,8 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementation
             var sql = @"SELECT t.Id, t.Title, t.StringCode, t.MainTagGroupId,  m.Title MainTagGroupTitle, t.CreateDateTime, t.DeleteDateTime 
                         FROM CustomerWarehouse.dbo.TagGroups t
                         Join CustomerWarehouse.dbo.MainTagGroup m
-                            ON t.MainTagGroupId = m.Id";
+                            ON t.MainTagGroupId = m.Id
+                        Where t.DeleteDateTime IS NULL";
             return await _sqlReportConnection.QueryAsync<TagGroupDto>(sql);
         }
         public async Task<TagGroupDto?> GetById(int id)

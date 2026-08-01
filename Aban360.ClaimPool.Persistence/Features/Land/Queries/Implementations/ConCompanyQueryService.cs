@@ -153,7 +153,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             return @$"Select 
                          c.Id,
                          c.ZoneId,
-						 t51.C2 ZoneId,
+						 t51.C2 ZoneTitle,
                          c.CompanyName,
                          c.CompanyNationalCode, 
                          c.CompanyMobileNumber,

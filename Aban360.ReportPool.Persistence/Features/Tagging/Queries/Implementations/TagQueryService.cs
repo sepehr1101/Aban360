@@ -54,6 +54,26 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementation
                         	t.Id = @Id";
             return await _sqlReportConnection.QueryFirstOrDefaultAsync<TagDto>(sql, new { Id = id });
         }
+        public async Task<TagDto?> GetByStringCode(string stringCode)
+        {
+            var sql = @"Select
+                        	t.Id,
+                        	t.Title,
+                        	t.TagGroupId, 
+                        	t.TagGroupTitle, 
+                        	t.StringCode ,
+                        	tg.MainTagGroupId ,
+                        	mtg.Title MainTagGroupTitle
+                        FROM CustomerWarehouse.dbo.Tags t
+                        Join CustomerWarehouse.dbo.TagGroups tg
+                        	ON t.TagGroupId=tg.Id
+                        Join CustomerWarehouse.dbo.MainTagGroup mtg
+                        	ON tg.MainTagGroupId=mtg.Id
+                        WHERE
+                        	t.DeleteDateTime IS NULL AND
+                        	t.StringCode = @StringCode";
+            return await _sqlReportConnection.QueryFirstOrDefaultAsync<TagDto>(sql, new { stringCode });
+        }
         public async Task<IEnumerable<TagsStringCodeValidateDto>> ValidateStringCodes(IEnumerable<string> stringCodes, IDbConnection connection, IDbTransaction transaction)
         {
             DataTable table = new DataTable();

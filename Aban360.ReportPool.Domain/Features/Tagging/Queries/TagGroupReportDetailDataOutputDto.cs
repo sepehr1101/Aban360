@@ -4,10 +4,10 @@
     {
         public int MainTagGroupId { get; set; }
         public string MainTagGroupTitle { get; set; }
-        public string TagGroupTitle { get; set; }
         public int TagGroupId { get; set; }
-        public string TagTitle { get; set; }
+        public string TagGroupTitle { get; set; }
         public int TagId { get; set; }
+        public string TagTitle { get; set; }
         public string BillIdTagsExpireDateJalali { get; set; }
         public int CustomerNumber { get; set; }
         public string ReadingNumber { get; set; }
