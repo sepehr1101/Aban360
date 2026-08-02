@@ -235,7 +235,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 }
 
                 if (IsUnderSocialService(customerInfo.BranchType) &&
-                    IsDomesticWithoutUnspecified(customerInfo.UsageId))
+                    IsDomesticWithoutUnspecified(customerInfo.UsageId) &&
+                    customerInfo.HouseholdNumber<2)
                 {
                     return new TariffItemResult(calculateAbBahaOutputDto.Allowed);
                 }
@@ -442,6 +443,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             object parametersAllowed = new
             {
+                customerInfo.UsageId,
+                customerInfo.BranchType,
                 X = monthlyAverageConsumption,
                 C = c,
                 S = olgoo,
@@ -456,6 +459,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             };
             object parametersDisallowed = new
             {
+                customerInfo.UsageId,
+                customerInfo.BranchType,
                 X = monthlyAverageConsumption,
                 C = c,
                 S = olgoo,

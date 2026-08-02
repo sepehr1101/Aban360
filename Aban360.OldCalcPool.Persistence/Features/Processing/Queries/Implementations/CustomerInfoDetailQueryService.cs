@@ -4,6 +4,7 @@ using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Dapper;
+using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementations
@@ -15,14 +16,24 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
         }
 
-        public async Task<CustomerInfoOutputDto> GetInfo(string billId)
+        public async Task<CustomerInfoOutputDto> GetInfo(string billId, string readingDate="")
         {
             ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = await GetZoneIdCustomerNumber(billId);
 
             string dbName = GetDbName(zoneIdAndCustomerNumber.ZoneId);
             string query = GetCustomerInfoDataQuery(dbName);
             CustomerInfoOutputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerInfoOutputDto>(query, new { zoneId = zoneIdAndCustomerNumber.ZoneId, customerNumber = zoneIdAndCustomerNumber.CustomerNumber });
-
+            try
+            {
+                if(string.IsNullOrWhiteSpace(readingDate))
+                {
+                    readingDate = DateTime.Now.ToShortPersianDateString();
+                }
+                result.HouseholdNumber= GetHouseholdUnit(result.HouseholdNumber, result.HouseholdDate, readingDate);
+            }
+            catch
+            {
+            }
             return result;
         }
         public async Task<ZoneIdAndCustomerNumberOutputDto> GetZoneIdCustomerNumber(string billId)
@@ -82,6 +93,32 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     Where 
                     	c.BillId=@billId AND
                     	c.ToDayJalali IS NULL";
+        }
+        private int GetHouseholdUnit(int householdUnit, string? householdDate, string readingDateJalali)
+        {
+            if (householdUnit <= 0)
+            {
+                return 0;
+            }
+            if (string.IsNullOrWhiteSpace(householdDate))
+            {
+                return 0;
+            }
+            DateTime? expireHouseHoldGregorian = householdDate.ToGregorianDateTime();
+            if (!expireHouseHoldGregorian.HasValue)
+            {
+                return 0;
+            }
+            DateTime? readingDateGregorian = readingDateJalali.ToGregorianDateTime();
+            if (!readingDateGregorian.HasValue)
+            {
+                return 0;//throw new InvalidDateException(readingDateJalali);
+            }
+            if (expireHouseHoldGregorian.Value.AddYears(1) < readingDateGregorian.Value)
+            {
+                return 0;
+            }
+            return householdUnit;
         }
     }
 }

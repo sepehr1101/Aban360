@@ -4,6 +4,7 @@
     {       
         public int MonthDays { get; } = 30;
         public int FinalDomesticUnit { get; set; }
+        public int HouseholdUnit { get; set; }
         public double Consumption { get; set; }
         public int Duration { get; set; }
         public double DailyAverageConsumption { get; set; }

@@ -1,5 +1,4 @@
-﻿using Aban360.OldCalcPool.Application.Features.Processing.Helpers;
-using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
+﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffDateOperations;
 using static Aban360.OldCalcPool.Application.Features.Processing.Helpers.TariffRuleChecker;
@@ -112,8 +111,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
         public TariffItemResult CalculateDiscount(int usageId, int branchTypeId, double abonmanAmount, double bahaDiscountAmount, bool isSpecial, ConsumptionInfo consumptionInfo, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, double abonAllowed, TariffItemResult abonmanResult, double before1403_12_02, double before1404)
         {
-            if (consumptionPartialInfo.EndDateJalali.IsLtEq(date1405_03_15))
-            {
+            /*if (consumptionPartialInfo.EndDateJalali.IsLtEq(date1405_03_15))
+            {*/
                 if (IsSpecialEducation(usageId, isSpecial))
                 {
                     return new TariffItemResult();
@@ -213,11 +212,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 }
                 return bahaDiscountAmount > 0 && !IsReligiousWithCharity(usageId) ?
                 new TariffItemResult(abonmanAmount) : new TariffItemResult();
-            }
+            /*}
             else
             {
                 return new TariffItemResult();
-            }
+            }*/
         }
     }
 }
