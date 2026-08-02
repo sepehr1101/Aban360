@@ -36,6 +36,18 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
             RuleFor(c => c.AdministratorMobileNumber)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .Must(IsValidMobileNumber).WithMessage(ExceptionLiterals.MobileNumberFormat);
+
+            RuleFor(c => c.CompanyNationalCode)
+                .Must(IsValidNullableNationalCode).WithMessage(ExceptionLiterals.NationalCodeFormat);
+
+            RuleFor(c => c.RepresentativeNationalCode)
+                .Must(IsValidNullableNationalCode).WithMessage(ExceptionLiterals.NationalCodeFormat);
+
+            RuleFor(c=>c.RepresentativeBirthDateJalali)
+                .Must(IsValidNullableDateJalali).WithMessage(ExceptionLiterals.DateFormat);
+
+            RuleFor(c=>c.ContractDataJalali)
+                .Must(IsValidNullableDateJalali).WithMessage(ExceptionLiterals.DateFormat);
         }
     }
 }
