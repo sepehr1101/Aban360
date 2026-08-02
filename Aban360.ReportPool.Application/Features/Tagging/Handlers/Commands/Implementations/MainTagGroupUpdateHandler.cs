@@ -12,9 +12,9 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
 {
     public sealed class MainTagGroupUpdateHandler : AbstractBaseConnection, IMainTagGroupUpdateHandler
     {
-        private readonly IMainTagGroupService _service;
+        private readonly IMainTagGroupQueryService _service;
         public MainTagGroupUpdateHandler(
-            IMainTagGroupService service,
+            IMainTagGroupQueryService service,
             IConfiguration configuration)
                 : base(configuration)
         {

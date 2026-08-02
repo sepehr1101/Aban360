@@ -14,9 +14,9 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
 {
     public sealed class UpdateTagGroupHandler : AbstractBaseConnection, IUpdateTagGroupHandler
     {
-        private readonly ITagGroupService _service;
+        private readonly ITagGroupQueryService _service;
         public UpdateTagGroupHandler(
-            ITagGroupService service,
+            ITagGroupQueryService service,
             IConfiguration configuration)
                 : base(configuration)
         {

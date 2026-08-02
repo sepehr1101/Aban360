@@ -31,6 +31,17 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertUsageGroup1);
             }
         }
+        public async Task<short> InsertDuplicate(UsageGroup1DuplicateInsertDto inputDto)
+        {
+            string command = GetInsertDuplicateCommand();
+            short id = await _connection.QueryFirstOrDefaultAsync<short>(command, inputDto, _transaction);
+            if (id <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertUsageGroup1);
+            }
+
+            return id;
+        }
         public async Task Update(UsageGroup1UpdateDto inputDto)
         {
             string command = GetUpdateCommand();
@@ -54,6 +65,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         {
             return @"INSERT INTO [Db70].dbo.UsageGroup1(Title)
                     VALUES(@Title)";
+        }
+        private string GetInsertDuplicateCommand()
+        {
+            return @"Insert Into [Db70].dbo.UsageGroup1(Title)	
+                    Select @Title
+                    From [Db70].dbo.UsageGroup1
+                    Where Id=@Id;
+
+                    Select SCOPE_IDENTITY();";
         }
         private string GetUpdateCommand()
         {

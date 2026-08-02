@@ -7,9 +7,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementations
 {
-    internal sealed class TagGroupService : AbstractBaseConnection, ITagGroupService
+    internal sealed class TagGroupQueryService : AbstractBaseConnection, ITagGroupQueryService
     {
-        public TagGroupService(IConfiguration configuration) :
+        public TagGroupQueryService(IConfiguration configuration) :
             base(configuration)
         {
         }

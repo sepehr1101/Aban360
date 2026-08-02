@@ -9,9 +9,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementations
 {
-    internal sealed class MainTagGroupService : AbstractBaseConnection, IMainTagGroupService
+    internal sealed class MainTagGroupQueryService : AbstractBaseConnection, IMainTagGroupQueryService
     {
-        public MainTagGroupService(IConfiguration configuration)
+        public MainTagGroupQueryService(IConfiguration configuration)
                 : base(configuration)
         {
         }

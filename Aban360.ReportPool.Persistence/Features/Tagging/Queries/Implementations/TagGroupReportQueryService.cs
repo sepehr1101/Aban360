@@ -107,7 +107,8 @@ namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Implementation
 					Join [Db70].dbo.T46 t46
 						On t51.C1=t46.C0
 					Where
-						c.ToDayJalali IS NULL 
+						c.ToDayJalali IS NULLAND
+						c.DeletionStateId NOT IN (1) 
 						{queryTagGroups}";
         }
 

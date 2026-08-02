@@ -32,6 +32,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             }
             return effectedRecords;
         }
+        public async Task<int> InsertByParentId(short previousGroup2Id, short newGroup2Id)
+        {
+            string command = GetInsertDuplicateByParentIdCommand();
+            int effectedRecords = await _connection.ExecuteAsync(command, new { newGroup2Id, previousGroup2Id }, _transaction);
+            if (effectedRecords <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertUsageGroup3);
+            }
+            return effectedRecords;
+        }
         public async Task Update(UsageGroup3UpdateDto inputDto)
         {
             string command = GetUpdateCommand();
@@ -41,7 +51,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateUsageGroup3);
             }
         }
-        public async Task<int> RemoveByUsageGroup2(short id,bool hasException)
+        public async Task<int> RemoveByUsageGroup2(short id, bool hasException)
         {
             string command = GetRemoveByUsageGroup2Command();
             int recordCount = await _connection.ExecuteAsync(command, new { id }, _transaction);
@@ -79,6 +89,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                      	t41.C1
                      FROM [Db70].dbo.T41 t41
                      Where t41.C0 In @UsageIds;";
+        }
+        private string GetInsertDuplicateByParentIdCommand()
+        {
+            return @"INSERT INTO [Db70].dbo.UsageGroup3(Group2Id,UsageId,UsageTitle)
+                    Select @NewGroup2Id,UsageId,UsageTitle
+                    From [Db70].dbo.UsageGroup3
+                    Where Group2Id=@PreviousGroup2Id;";
         }
         private string GetUpdateCommand()
         {
