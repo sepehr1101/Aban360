@@ -140,9 +140,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
                     double allowedDiscount = isVillageCalculation ? (fazelabCalcResult.Allowed / 0.65) * 0.5 : fazelabCalcResult.Allowed;
                     double remained = fazelabCalcResult.Summation - allowedDiscount;
+                    double hotSeasonBelowOlgoo = (hotSeasonDuration * allowedDiscount / duration) * _hotSeasonRate;
                     double hotseasonDiscount = hotSeasonDuration > 0 ? (hotSeasonDuration * remained / duration) * _hotSeasonRate : 0;
 
-                    return new TariffItemResult(0, hotseasonDiscount * fazelabMultiplier, hotSeasonDuration);
+                    //طبق نظر دفتر تعرفه ها در تاریخ 11 مرداد 1405 تغییر کرد تا بخش زیر الگوی مصرف نیز مشمول فصل گرم شود
+                    //return new TariffItemResult(0, hotseasonDiscount * fazelabMultiplier, hotSeasonDuration);
+                    return new TariffItemResult(hotSeasonBelowOlgoo, hotseasonDiscount * fazelabMultiplier, hotSeasonDuration);
                 }
                 if (IsMullah(customerInfo.BranchType) && IsVillage(customerInfo.ZoneId))
                 {
@@ -154,9 +157,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                     //else 1404 or more
                     double allowedDiscount = (fazelabCalcResult.Allowed / 0.65) * 0.5;
                     double remained = fazelabCalcResult.Summation - allowedDiscount;
+                    double hotSeasonBelowOlgoo = (hotSeasonDuration * allowedDiscount / duration) * _hotSeasonRate;
                     double hotseasonMullah = hotSeasonDuration > 0 ? (hotSeasonDuration * remained / duration) * _hotSeasonRate : 0;
-                    return new TariffItemResult(0, hotseasonMullah * fazelabMultiplier, hotSeasonDuration);
-                }
+
+                    //طبق نظر دفتر تعرفه ها در تاریخ 11 مرداد 1405 تغییر کرد تا بخش زیر الگوی مصرف نیز مشمول فصل گرم شود
+                    //return new TariffItemResult(0, hotseasonMullah * fazelabMultiplier, hotSeasonDuration);
+                    return new TariffItemResult(hotSeasonBelowOlgoo, hotseasonMullah * fazelabMultiplier, hotSeasonDuration);
+                }               
                 return new TariffItemResult(amount1 * fazelabMultiplier, amount2 * fazelabMultiplier, hotSeasonDuration);
             }
             else
@@ -164,19 +171,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 string hotSeasonStart = GetHotSeasonStart(date2);
                 string hotSeasonEnd = GetHotSeasonEnd(date2);
                 int hotSeasonDuration = PartTime(hotSeasonStart, hotSeasonEnd, date1, date2, new { customerInfo.BillId, customerInfo.ZoneId, customerInfo.UsageId });
-                double hotSeasonAllowed = hotSeasonDuration > 0 ? (long)((hotSeasonDuration * (fazelabCalcResult.Allowed > 0 && aboveZero ? fazelabCalcResult.Allowed : baseAmount) / duration) * _hotSeasonRate) : 0;                
+                double hotSeasonAllowed = hotSeasonDuration > 0 ? (long)((hotSeasonDuration * (fazelabCalcResult.Allowed > 0 && aboveZero ? fazelabCalcResult.Allowed : baseAmount) / duration) * _hotSeasonRate) : 0;
                 double hotSeasonDisallowed = hotSeasonDuration > 0 ? (long)((hotSeasonDuration * (fazelabCalcResult.Disallowed > 0 && aboveZero ? fazelabCalcResult.Disallowed : 0) / duration) * _hotSeasonRate) : 0;
-                /*double hotSeasonRemained= hotSeasonDuration > 0 ? (long)((hotSeasonDuration * ((fazelabCalcResult.Disallowed-fazelabCalcResult.Allowed) > 0 && aboveZero ? (fazelabCalcResult.Disallowed - fazelabCalcResult.Allowed) : 0) / duration) * _hotSeasonRate) : 0;
-
-                if (IsUnderSocialService(customerInfo.BranchType) &&
-                   IsDomesticWithoutUnspecified(customerInfo.UsageId))
-                {                    
-                    return new TariffItemResult(0, hotSeasonRemained, hotSeasonDuration);
-                }
-                if (IsMullah(customerInfo.BranchType) && IsVillage(customerInfo.ZoneId))
-                {                   
-                    return new TariffItemResult(0, hotSeasonRemained, hotSeasonDuration);
-                }*/
+                
                 return new TariffItemResult(hotSeasonAllowed, hotSeasonDisallowed, hotSeasonDuration);
             }
         }

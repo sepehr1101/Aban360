@@ -4,7 +4,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
 {
     public interface ICustomerInfoDetailQueryService
     {
-        Task<CustomerInfoOutputDto> GetInfo(string billId);
+        Task<CustomerInfoOutputDto> GetInfo(string billId, string readingDate="");
         Task<ZoneIdAndCustomerNumberOutputDto> GetZoneIdCustomerNumber(string billId);
     }
 }

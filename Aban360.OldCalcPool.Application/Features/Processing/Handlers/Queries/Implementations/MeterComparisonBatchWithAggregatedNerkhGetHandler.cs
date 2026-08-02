@@ -6,6 +6,7 @@ using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Contr
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
+using DNTPersianUtils.Core;
 using FluentValidation;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Implementations
@@ -123,6 +124,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
                     VirtualCategoryId = data.VirtualCategoryId,
                 }
             };
+            try
+            {
+                meterInfoData.CustomerInfo.HouseholdNumber = GetHouseholdUnit(meterInfoData.CustomerInfo?.HouseholdNumber??0, meterInfoData.CustomerInfo.HouseholdDate, meterInfoData.MeterPreviousData.CurrentDateJalali);
+            }
+            catch
+            {
+                meterInfoData.CustomerInfo.HouseholdNumber = 0;
+            }
             return meterInfoData;
         }
         private bool GetTolarance(double previousAmount, double currentAmount, double tolerance, bool isPercent)
@@ -142,6 +151,32 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
         private double GetComparison(double firstAmount, double secondAmount)
         {
             return Math.Abs(firstAmount - secondAmount);
+        }
+        private int GetHouseholdUnit(int householdUnit, string? householdDate, string readingDateJalali)
+        {
+            if (householdUnit <= 0)
+            {
+                return 0;
+            }
+            if (string.IsNullOrWhiteSpace(householdDate))
+            {
+                return 0;
+            }
+            DateTime? expireHouseHoldGregorian = householdDate.ToGregorianDateTime();
+            if (!expireHouseHoldGregorian.HasValue)
+            {
+                return 0;
+            }
+            DateTime? readingDateGregorian = readingDateJalali.ToGregorianDateTime();
+            if (!readingDateGregorian.HasValue)
+            {
+                return 0;//throw new InvalidDateException(readingDateJalali);
+            }
+            if (expireHouseHoldGregorian.Value.AddYears(1) < readingDateGregorian.Value)
+            {
+                return 0;
+            }
+            return householdUnit;
         }
     }
 }
