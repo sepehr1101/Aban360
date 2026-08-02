@@ -10,14 +10,14 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Handlers.Implementations
 {
-    internal sealed class WaterDiscountDetailHandler : IWaterDiscountDetailHandler
+    internal sealed class WaterDiscountByDiscountTypeDetailHandler : IWaterDiscountByDiscountTypeDetailHandler
     {
         private readonly IWaterDiscountQueryService _waterDiscountDetailQueryService;
-        private readonly IValidator<WaterDiscountDetailInputDto> _validator;
+        private readonly IValidator<WaterDiscountByTypeDetailInputDto> _validator;
         private string _title = ReportLiterals.WaterDiscountDetail;
-        public WaterDiscountDetailHandler(
+        public WaterDiscountByDiscountTypeDetailHandler(
             IWaterDiscountQueryService waterDiscountDetailQueryService,
-            IValidator<WaterDiscountDetailInputDto> validator)
+            IValidator<WaterDiscountByTypeDetailInputDto> validator)
         {
             _waterDiscountDetailQueryService = waterDiscountDetailQueryService;
             _waterDiscountDetailQueryService.NotNull(nameof(waterDiscountDetailQueryService));
@@ -26,7 +26,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<WaterDiscountDetailHeaderOutputDto, WaterDiscountDetailDataOutputDto>> Handle(WaterDiscountDetailInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<WaterDiscountDetailHeaderOutputDto, WaterDiscountDetailDataOutputDto>> Handle(WaterDiscountByTypeDetailInputDto input, CancellationToken cancellationToken)
         {
             await InputValidate(input, cancellationToken);
 
@@ -61,7 +61,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             };
             return new ReportOutput<WaterDiscountDetailHeaderOutputDto, WaterDiscountDetailDataOutputDto>(_title, header, data);
         }
-        public async Task InputValidate(WaterDiscountDetailInputDto input, CancellationToken cancellationToken)
+        public async Task InputValidate(WaterDiscountByTypeDetailInputDto input, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validationResult.IsValid)

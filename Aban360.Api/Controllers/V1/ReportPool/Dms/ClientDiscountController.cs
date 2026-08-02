@@ -63,7 +63,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Dms
         [HttpPost, HttpGet, HttpDelete]
         [Route("remove/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Remove(int id, CancellationToken cancellationToken)
         {
             await _requestDiscountRemoveHandler.Handle(id, CurrentUser, cancellationToken);
             return Ok(id);

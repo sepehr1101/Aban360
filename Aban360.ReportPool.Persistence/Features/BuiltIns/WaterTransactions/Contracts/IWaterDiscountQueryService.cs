@@ -6,7 +6,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Con
 {
     public interface IWaterDiscountQueryService
     {
-        Task<ReportOutput<WaterDiscountDetailHeaderOutputDto, WaterDiscountDetailDataOutputDto>> GetDetail(WaterDiscountDetailInputDto input);
+        Task<IEnumerable<WaterDiscountDetailDataOutputDto>> GetDetail(WaterDiscountDetailInputDto input);
+        Task<IEnumerable<WaterDiscountDetailDataOutputDto>> GetDetail(WaterDiscountByTypeDetailInputDto input);
         Task<ReportOutput<WaterDiscountSummaryHeaderOutputDto, WaterDiscountSummaryDataOutputDto>> GetSummary(WaterDiscountSummaryInputDto input);
+        Task<ReportOutput<WaterDiscountSummaryHeaderOutputDto, WaterDiscountSummaryDataOutputDto>> GetSummary(WaterDiscountByTypeSummaryInputDto input);
     }
 }

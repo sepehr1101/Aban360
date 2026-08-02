@@ -299,6 +299,7 @@ namespace Aban360.Common.Extensions
                     {"TotalPayedAmount", "پرداخت کل"},
                     {"ZoneCount", "تعداد ناحیه"},
                     {"UsageConsumptionTitle", "کاربری مصرف"},
+                    {"DiscountTypeId", "کد تخفیف"},
                     {"DiscountTypeTitle", "نوع تخفیف"},
                     {"OffTypeTitle", "نوع تخفیف"},
                     {"DiscountTitle", "تخفیف"},

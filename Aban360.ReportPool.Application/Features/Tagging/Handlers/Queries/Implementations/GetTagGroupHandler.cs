@@ -6,9 +6,9 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Queries.Imple
 {
     public sealed class GetTagGroupHandler : IGetTagGroupHandler
     {
-        private readonly ITagGroupService _service;
+        private readonly ITagGroupQueryService _service;
 
-        public GetTagGroupHandler(ITagGroupService service)
+        public GetTagGroupHandler(ITagGroupQueryService service)
         {
             _service = service;
         }

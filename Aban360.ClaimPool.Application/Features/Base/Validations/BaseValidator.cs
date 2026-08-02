@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using Aban360.Common.Literals;
+using Aban360.Common.Timing;
+using FluentValidation;
 
 namespace Aban360.ClaimPool.Application.Features.Base.Validations
 {
@@ -22,11 +24,14 @@ namespace Aban360.ClaimPool.Application.Features.Base.Validations
             IsDigit(input));
         protected virtual bool IsValidPhoneNumber(string? input) =>
             string.IsNullOrWhiteSpace(input)
-            ||((input.Length == 8 || input.Length == 11) && IsDigit(input));
+            || ((input.Length == 8 || input.Length == 11) && IsDigit(input));
         protected virtual bool IsValidNationalCode(string input) =>
             !string.IsNullOrEmpty(input) &&
             input.Length == 10 &&
-            IsDigit(input); 
+            IsDigit(input);
+        protected virtual bool IsValidNullableNationalCode(string? input) =>
+            string.IsNullOrWhiteSpace(input) ||
+            (input.Length == 10 && IsDigit(input));
         protected virtual bool IsValidPostalCode(string input) =>
             !string.IsNullOrEmpty(input) &&
             input.Length == 10 &&
@@ -37,6 +42,18 @@ namespace Aban360.ClaimPool.Application.Features.Base.Validations
             !string.IsNullOrEmpty(input) &&
             input.Length >= 10 &&
             input.All(c => char.IsDigit(c) || c == '/');
-
+        protected virtual bool IsValidNullableDateJalali(string? input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return true;
+            }
+            string gregorianData = ConvertDate.JalaliToGregorian(input);
+            if (gregorianData == ExceptionLiterals.Incalculable)
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

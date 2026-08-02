@@ -11,10 +11,21 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
     public class CustomerUpdateController : BaseController
     {
         private readonly ICustomerUpdateHandler _customerUpdateHandler;
-        public CustomerUpdateController(ICustomerUpdateHandler customerUpdateHandler)
+        private readonly ICustomerBranchTypeToNormalUpdateHandler _branchTypeToNormalUpdateHandler;
+        private readonly ICustomerDeletionStateUpdateHandler _customerDeletionStateUpdateHandler;
+        public CustomerUpdateController(
+            ICustomerUpdateHandler customerUpdateHandler,
+            ICustomerBranchTypeToNormalUpdateHandler branchTypeToNormalUpdateHandler,
+            ICustomerDeletionStateUpdateHandler customerDeletionStateUpdateHandler)
         {
             _customerUpdateHandler = customerUpdateHandler;
             _customerUpdateHandler.NotNull(nameof(customerUpdateHandler));
+
+            _branchTypeToNormalUpdateHandler = branchTypeToNormalUpdateHandler;
+            _branchTypeToNormalUpdateHandler.NotNull(nameof(branchTypeToNormalUpdateHandler));
+
+            _customerDeletionStateUpdateHandler = customerDeletionStateUpdateHandler;
+            _customerDeletionStateUpdateHandler.NotNull(nameof(customerDeletionStateUpdateHandler));
         }
 
         [HttpGet, HttpPost]
@@ -72,6 +83,24 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         public async Task<IActionResult> SetConstructionType([FromBody] CustomerBranchTypeUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
             await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(inputDto);
+        }
+
+        [HttpGet, HttpPost]
+        [Route("set-noraml-branch-type")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<BranchTypeToNormalUpdateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetNormalBranchType([FromBody] BranchTypeToNormalUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _branchTypeToNormalUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(inputDto);
+        }
+        
+        [HttpGet, HttpPost]
+        [Route("update-deletion-state")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerDeletionStateUpdateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateDeletionState([FromBody] CustomerDeletionStateUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _customerDeletionStateUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
     }

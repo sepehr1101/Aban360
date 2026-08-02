@@ -79,6 +79,9 @@
     
         public static string BillIdTagListInsert => @"فایل اکسل برچسب آپلود شد. نام فایل:{0}  تعداد مشترک:{1}";
         public static string BillIdTagListDelete => @"لیست مشترکین دارای تگ حذف شد. تعداد شناسه تگ وارد شده:{0}  تعداد انتساب‌های حذف شده:{1}";
+     
+        public static string CustomerBranchTypeUpdateOpLog => @"نوع واگذاری ویرایش شد. شناسه قبض:{0}  ردیف:{1}  ناحیه:{2}  نوع واگذاری قبلی:{3}  نوع واگذاری فعلی:{4}";
+        public static string CustomerDeletionStateUpdateOpLog => @"وضعیت انشعاب ویرایش شد. شناسه قبض:{0}  ردیف:{1}  ناحیه:{2}  وضعیت قبلی:{3}  وضعیت فعلی:{4}";
 
 
     }

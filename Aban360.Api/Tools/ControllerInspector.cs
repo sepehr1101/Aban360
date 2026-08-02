@@ -8,7 +8,7 @@
 
     public static class ControllerInspector
     {
-        public static void ExportControllerActions(string fileName= "ControllersAndActions.csv")
+        public static void ExportControllerActions(string fileName = "ControllersAndActions.csv")
         {
             var assembly = Assembly.GetExecutingAssembly();
 
@@ -17,7 +17,7 @@
                 .Where(t => typeof(BaseController).IsAssignableFrom(t) && !t.IsAbstract)
                 .ToList();
 
-            var lines = new List<string> { "DirectoryPath, ControllerName, ActionName" };
+            var lines = new List<string> { "DirectoryPath, ControllerName, ActionName, Route" };
 
             foreach (var controller in controllers)
             {
@@ -27,15 +27,19 @@
                 // Get controller name (without "Controller" suffix)
                 var controllerName = controller.Name.Replace("Controller", "");
 
+                // Get controller Route
+                var controllerRoute = controller?.GetCustomAttribute<RouteAttribute>()?.Template ?? "";
+
                 // Find public actions
                 var actions = controller.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
                     .Where(m => m.IsPublic && !m.IsDefined(typeof(NonActionAttribute)))
-                    .Select(m => m.Name)
+                    //.Select(m => m.Name)
                     .ToList();
 
                 foreach (var action in actions)
                 {
-                    lines.Add($"{namespacePath}, {controllerName}, {action}");
+                    var actionRoute = action?.GetCustomAttribute<RouteAttribute>()?.Template ?? "";
+                    lines.Add($"{namespacePath}, {controllerName}, {action.Name}, {controllerRoute}/{actionRoute}");
                 }
             }
             var baseDir = AppContext.BaseDirectory; // bin/Debug/netX.X/...

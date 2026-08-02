@@ -14,12 +14,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
     public class UsageGroup1Controller : BaseController
     {
         private readonly IUsageGroup1InsertHandler _usageGroup1InsertHandler;
+        private readonly IUsageGroup1DuplicateInsertHandler _usageGroup1DuplicateInsertHandler;
         private readonly IUsageGroup1RemoveHandler _usageGroup1RemoveHandler;
         private readonly IUsageGroup1UpdateHandler _usageGroup1UpdateHandler;
         private readonly IUsageGroup1GetAllHandler _usageGroup1GetAllHandler;
         private readonly IUsageGroup1GetByIdHandler _usageGroup1GetByIdHandler;
         public UsageGroup1Controller(
                  IUsageGroup1InsertHandler usageGroup1InsertHandler,
+                 IUsageGroup1DuplicateInsertHandler usageGroup1DuplicateInsertHandler,
                  IUsageGroup1RemoveHandler usageGroup1RemoveHandler,
                  IUsageGroup1UpdateHandler usageGroup1UpdateHandler,
                  IUsageGroup1GetAllHandler usageGroup1GetAllHandle,
@@ -27,6 +29,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         {
             _usageGroup1InsertHandler = usageGroup1InsertHandler;
             _usageGroup1InsertHandler.NotNull(nameof(usageGroup1InsertHandler));
+
+            _usageGroup1DuplicateInsertHandler = usageGroup1DuplicateInsertHandler;
+            _usageGroup1DuplicateInsertHandler.NotNull(nameof(usageGroup1DuplicateInsertHandler));
 
             _usageGroup1RemoveHandler = usageGroup1RemoveHandler;
             _usageGroup1RemoveHandler.NotNull(nameof(usageGroup1RemoveHandler));
@@ -48,6 +53,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         {
             await _usageGroup1InsertHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("insert-duplicate")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<UsageGroup1DuplicateInsertOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> InsertDuplicate([FromBody] UsageGroup1DuplicateInsetInputDto inputDto, CancellationToken cancellationToken)
+        {
+            UsageGroup1DuplicateInsertOutputDto result= await _usageGroup1DuplicateInsertHandler.Handle(inputDto, cancellationToken);
+            return Ok(result);
         }
 
         [HttpPost, HttpGet]

@@ -2,7 +2,7 @@
 
 namespace Aban360.ReportPool.Persistence.Features.Tagging.Queries.Contracts
 {
-    public interface ITagGroupService
+    public interface ITagGroupQueryService
     {
         Task<IEnumerable<TagGroupDto>> GetAll();
         Task<TagGroupDto?> GetById(int id);
