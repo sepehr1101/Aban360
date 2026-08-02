@@ -49,5 +49,7 @@
         public long GhanonBoodje { get; set; }
         public long JavazemKahande { get; set; }
         public long AvarezSanati { get; set; }
+        public int? DiscountTypeId { get; set; }
+        public string? DiscountTypeTitle { get; set; }
     }
 }

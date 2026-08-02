@@ -10,6 +10,8 @@
         public int TotalUnit { get; set; }
         public int BillUnit { get; set; }
         public int Consumption { get; set; }
+        public int? DiscountTypeId { get; set; }
+        public string? DiscountTypeTitle { get; set; }
 
         public long AbBaha { get; set; }
         public long FazelabBaha { get; set; }
