@@ -109,7 +109,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 throw new ReadingException(CommonLiteral.ExceptionLiterals.InvalidUpdateMembersDebtAmount);
             }
         }
-
         private DataTable UpdateDebtAmountDataTable(IEnumerable<MembersFazelabCountAndDebtAmountUpdateDto> input)
         {
             DataTable table = new DataTable();
