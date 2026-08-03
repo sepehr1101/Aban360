@@ -8,21 +8,20 @@ using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Con
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations
 {
-    internal sealed class CustomerLegalSummaryHandler : ICustomerLegalSummaryHandler
+    internal sealed class CustomerLegalSummaryByZoneAndUsageHandler : ICustomerLegalSummaryByZoneAndUsageHandler
     {
         private readonly ICustomerInfoQueryService _customerInfoQueryService;
         private string _title = ReportLiterals.CustomerLegalSummary;
-        public CustomerLegalSummaryHandler(ICustomerInfoQueryService customerInfoQueryService)
+        public CustomerLegalSummaryByZoneAndUsageHandler(ICustomerInfoQueryService customerInfoQueryService)
         {
             _customerInfoQueryService = customerInfoQueryService;
             _customerInfoQueryService.NotNull(nameof(customerInfoQueryService));
         }
 
-        public async Task<ReportOutput<CustomerLegalSummaryHeaderOutputDto, CustomerLegalSummaryDataOutputDto>> Handle(CustomerLegalSummaryDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<CustomerLegalSummaryHeaderOutputDto, CustomerLegalSummaryByZoneAndUsageDataOutputDto>> Handle(CustomerLegalSummaryByZoneAndUsageInputDto input, CancellationToken cancellationToken)
         {
-            IEnumerable<CustomerLegalSummaryDataOutputDto> data = await _customerInfoQueryService.GetSummary(input);
-            string groupTitle = input.IsZone ? ReportLiterals.ByZone : ReportLiterals.ByUsage;
-            string finalTitle = $"{_title} - {groupTitle}";
+            IEnumerable<CustomerLegalSummaryByZoneAndUsageDataOutputDto> data = await _customerInfoQueryService.GetSummary(input);
+            string finalTitle = $"{_title} - {ReportLiterals.ByUsageAndZone}";
             CustomerLegalSummaryHeaderOutputDto header = new()
             {
                 CustomerCount = data?.Sum(d => d.LegalCount + d.NaturalCount + d.InvalidCount) ?? 0,
@@ -30,9 +29,9 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
                 NaturalCount = data?.Sum(d => d.LegalCount) ?? 0,
                 InvalidCount = data?.Sum(d => d.InvalidCount) ?? 0,
                 RecordCount = data?.Count() ?? 0,
-                Title = finalTitle,
+                Title = _title,
             };
-            return new ReportOutput<CustomerLegalSummaryHeaderOutputDto, CustomerLegalSummaryDataOutputDto>(finalTitle, header, data);
+            return new ReportOutput<CustomerLegalSummaryHeaderOutputDto, CustomerLegalSummaryByZoneAndUsageDataOutputDto>(_title, header, data);
         }
     }
 }

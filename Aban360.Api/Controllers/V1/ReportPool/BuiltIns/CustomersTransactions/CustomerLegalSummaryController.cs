@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
         [HttpPost]
         [Route("legal-summary-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CustomerLegalSummaryHeaderOutputDto, CustomerLegalSummaryDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SummaryRaw([FromBody] CustomerLegalInputDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> SummaryRaw([FromBody] CustomerLegalSummaryDto input, CancellationToken cancellationToken)
         {
             ReportOutput<CustomerLegalSummaryHeaderOutputDto, CustomerLegalSummaryDataOutputDto> result = await _summaryHandler.Handle(input, cancellationToken);
             return Ok(result);
@@ -37,7 +37,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
 
         [HttpPost]
         [Route("legal-summary-excel/{connectionId}")]
-        public async Task<IActionResult> SummaryExcel(string connectionId, [FromBody] CustomerLegalInputDto input, CancellationToken cancellationToken)
+        public async Task<IActionResult> SummaryExcel(string connectionId, [FromBody] CustomerLegalSummaryDto input, CancellationToken cancellationToken)
         {
             ReportOutput<CustomerLegalSummaryHeaderOutputDto, CustomerLegalSummaryDataOutputDto> result = await _summaryHandler.Handle(input, cancellationToken);
             await _reportGenerator.FireAndInform(input, cancellationToken, _summaryHandler.Handle, CurrentUser, ReportLiterals.CustomerLegalSummary, connectionId);
