@@ -97,7 +97,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 RecordCount = (data is not null && data.Any()) ? data.Count() : 0,
                 TotalDebtPeriodCount = data.Sum(payment => payment.DebtPeriodCount),
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                Title = ReportLiterals.PendingPayments
+                Title = ReportLiterals.PendingPaymentsDetail
             };
             return new ReportOutput<PendingPaymentsPrintstHeaderOutputDto, PendingPaymentPrintsDataOutputDto>(pendingPayments.Title, header, data);
         }
