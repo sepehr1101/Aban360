@@ -88,7 +88,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         }
         internal static bool IsSpecialEducation(int usageId, bool isSpecial)
         {
-            return CheckConditions(usageId, [7, 8]) && isSpecial;
+            // در تاریخ 12 مرداد 1405 طبق فرمایش اقای اعلایی کد 8 اموزشگاه عالی از تخفیفات خارج شد
+            return CheckConditions(usageId, [7]) && isSpecial;
         }
         internal static bool IsMullah(int branchTypeId)
         {
