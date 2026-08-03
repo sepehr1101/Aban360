@@ -5,12 +5,12 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Validations
 {
-    public class PendingPaymentsValidator : BaseValidator<PendingPaymentsInputDto>
+    public class PendingPaymentsSummaryValidator : BaseValidator<PendingPaymentsSummaryDto>
     {
-        public PendingPaymentsValidator()
+        public PendingPaymentsSummaryValidator()
         {
             RuleFor(payment => payment)
-                .Must(input => ValidationDate(input.FromDateJalali,input.ToDateJalali).IsValid).WithMessage(input => ValidationDate(input.FromDateJalali, input.ToDateJalali).ErrorMessage);
+                .Must(input => ValidationDate(input.FromDateJalali, input.ToDateJalali).IsValid).WithMessage(input => ValidationDate(input.FromDateJalali, input.ToDateJalali).ErrorMessage);
 
             RuleFor(payment => payment.ZoneIds)
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)

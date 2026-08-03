@@ -77,7 +77,8 @@
         public static string DebtorByDayDetail { get { return $"{Report} جزئیات روزنامه بدهکاران"; } }
         public static string DebtorByDaySummary { get { return $"{Report} خلاصه روزنامه بدهکاران"; } }
         public static string LinkServiceStatement { get { return $"{Report} صورت وضعیت (سامانه فروش)"; } }
-        public static string PendingPayments { get { return $"{Report} مشترکین بدهکار"; } }
+        public static string PendingPaymentsDetail { get { return $"{Report} جزئیات مشترکین بدهکار"; } }
+        public static string PendingPaymentsSummary { get { return $"{Report} خلاصه مشترکین بدهکار"; } }
 
         public static string UnspecifiedWaterPayment { get { return $"{Report} وصولی خارج سیستم _ آب بها"; } }
         public static string UnspecifiedServiceLinkPayment { get { return $"{Report} وصولی خارج سیستم - انشعاب"; } }

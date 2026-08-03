@@ -15,49 +15,134 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
     {
         public PendingPaymentsQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
-		}
+        {
+        }
 
         public async Task<ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto>> GetInfo(PendingPaymentsInputDto input)
         {
             string usageTitleQuery = GetUsageTitleById();
-            string pendingPaymentsQueryString = GetPendingPaymentsDataQuery(input.UsageSellIds.HasValue(),input.UsageConsumptionIds.HasValue());
+            string pendingPaymentsQueryString = GetDetailQuery(input.UsageSellIds.HasValue(), input.UsageConsumptionIds.HasValue());
             var @params = new
             {
-                FromReadingNumber = !string.IsNullOrWhiteSpace(input.FromReadingNumber)? input.FromReadingNumber :"0000000000",
-                ToReadingNumber = !string.IsNullOrWhiteSpace(input.ToReadingNumber)? input.ToReadingNumber :"9999999999",
+                FromReadingNumber = !string.IsNullOrWhiteSpace(input.FromReadingNumber) ? input.FromReadingNumber : "0000000000",
+                ToReadingNumber = !string.IsNullOrWhiteSpace(input.ToReadingNumber) ? input.ToReadingNumber : "9999999999",
                 FromDate = input.FromDateJalali,
                 ToDate = input.ToDateJalali,
                 input.FromAmount,
                 input.ToAmount,
-				input.FromDebtPeriodCount,
+                input.FromDebtPeriodCount,
                 input.ToDebtPeriodCount,
                 input.UsageConsumptionIds,
                 input.UsageSellIds,
                 input.ZoneIds
             };
-			IEnumerable<PendingPaymentsDataOutputDto> pendingPaymentsData = await _sqlReportConnection.QueryAsync<PendingPaymentsDataOutputDto>(pendingPaymentsQueryString, @params, null, 120);
+            IEnumerable<PendingPaymentsDataOutputDto> pendingPaymentsData = await _sqlReportConnection.QueryAsync<PendingPaymentsDataOutputDto>(pendingPaymentsQueryString, @params, null, 120);
             PendingPaymentsHeaderOutputDto pendingPaymentsHeader = new PendingPaymentsHeaderOutputDto()
             {
-				FromReadingNumber=input.FromReadingNumber,
-				ToReadingNumber=input.ToReadingNumber,
-				FromDateJalali=input.FromDateJalali,
-				ToDateJalali=input.ToDateJalali,
-				FromAmount=input.FromAmount,
-				ToAmount=input.ToAmount,
-				FromDebtPeriodCount=input.FromDebtPeriodCount,
-				ToDebtPeriodCount=input.ToDebtPeriodCount,
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
+                FromDebtPeriodCount = input.FromDebtPeriodCount,
+                ToDebtPeriodCount = input.ToDebtPeriodCount,
                 ZoneCount = input.ZoneIds.Count(),
                 RecordCount = (pendingPaymentsData is not null && pendingPaymentsData.Any()) ? pendingPaymentsData.Count() : 0,
                 TotalBeginDebt = pendingPaymentsData.Sum(payment => payment.BeginDebt),
                 TotalDebtPeriodCount = pendingPaymentsData.Sum(payment => payment.DebtPeriodCount),
                 TotalEndingDebt = pendingPaymentsData.Sum(payment => payment.EndingDebt),
                 TotalPayedAmount = pendingPaymentsData.Sum(payment => payment.PayedAmount),
-                ReportDateJalali=DateTime.Now.ToShortPersianDateString(),
-				Title= ReportLiterals.PendingPayments
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title = ReportLiterals.PendingPaymentsDetail
             };
 
-            ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto> result = new (ReportLiterals.PendingPayments, pendingPaymentsHeader, pendingPaymentsData);
+            ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto> result = new(ReportLiterals.PendingPaymentsDetail, pendingPaymentsHeader, pendingPaymentsData);
+            return result;
+        }
+        public async Task<ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentSummaryDataOutputDto>> GetSummary(PendingPaymentsSummaryDto input)
+        {
+            var (groupId, groupTitle, typeTitle) = GetGroupField(input.IsZone);
+            string title = $"{ReportLiterals.PendingPaymentsSummary} - {typeTitle}";
+            string pendingPaymentsQueryString = GetSummaryQuery(input.UsageSellIds.HasValue(), input.UsageConsumptionIds.HasValue(), groupId, groupTitle);
+            var @params = new
+            {
+                FromReadingNumber = !string.IsNullOrWhiteSpace(input.FromReadingNumber) ? input.FromReadingNumber : "0000000000",
+                ToReadingNumber = !string.IsNullOrWhiteSpace(input.ToReadingNumber) ? input.ToReadingNumber : "9999999999",
+                FromDate = input.FromDateJalali,
+                ToDate = input.ToDateJalali,
+                input.FromAmount,
+                input.ToAmount,
+                input.FromDebtPeriodCount,
+                input.ToDebtPeriodCount,
+                input.UsageConsumptionIds,
+                input.UsageSellIds,
+                input.ZoneIds
+            };
+            IEnumerable<PendingPaymentSummaryDataOutputDto> pendingPaymentsData = await _sqlReportConnection.QueryAsync<PendingPaymentSummaryDataOutputDto>(pendingPaymentsQueryString, @params, null, 120);
+            PendingPaymentsHeaderOutputDto pendingPaymentsHeader = new PendingPaymentsHeaderOutputDto()
+            {
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
+                FromDebtPeriodCount = input.FromDebtPeriodCount,
+                ToDebtPeriodCount = input.ToDebtPeriodCount,
+                ZoneCount = input.ZoneIds.Count(),
+                RecordCount = (pendingPaymentsData is not null && pendingPaymentsData.Any()) ? pendingPaymentsData.Count() : 0,
+                TotalBeginDebt = pendingPaymentsData.Sum(payment => payment.BeginDebt),
+                TotalDebtPeriodCount = pendingPaymentsData.Sum(payment => payment.DebtPeriodCount),
+                TotalEndingDebt = pendingPaymentsData.Sum(payment => payment.EndingDebt),
+                TotalPayedAmount = pendingPaymentsData.Sum(payment => payment.PayedAmount),
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title = title
+            };
+
+            ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentSummaryDataOutputDto> result = new(title, pendingPaymentsHeader, pendingPaymentsData);
+            return result;
+        }
+        public async Task<ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentSummaryByZoneAndUsageDataOutputDto>> GetSummary(PendingPaymentsInputDto input)
+        {
+            string title = $"{ReportLiterals.PendingPaymentsSummary} - {ReportLiterals.ByUsageAndZone}";
+            string pendingPaymentsQueryString = GetSummaryByZoneAndUsageQuery(input.UsageSellIds.HasValue(), input.UsageConsumptionIds.HasValue());
+            var @params = new
+            {
+                FromReadingNumber = !string.IsNullOrWhiteSpace(input.FromReadingNumber) ? input.FromReadingNumber : "0000000000",
+                ToReadingNumber = !string.IsNullOrWhiteSpace(input.ToReadingNumber) ? input.ToReadingNumber : "9999999999",
+                FromDate = input.FromDateJalali,
+                ToDate = input.ToDateJalali,
+                input.FromAmount,
+                input.ToAmount,
+                input.FromDebtPeriodCount,
+                input.ToDebtPeriodCount,
+                input.UsageConsumptionIds,
+                input.UsageSellIds,
+                input.ZoneIds
+            };
+            IEnumerable<PendingPaymentSummaryByZoneAndUsageDataOutputDto> pendingPaymentsData = await _sqlReportConnection.QueryAsync<PendingPaymentSummaryByZoneAndUsageDataOutputDto>(pendingPaymentsQueryString, @params, null, 120);
+            PendingPaymentsHeaderOutputDto pendingPaymentsHeader = new PendingPaymentsHeaderOutputDto()
+            {
+                FromReadingNumber = input.FromReadingNumber,
+                ToReadingNumber = input.ToReadingNumber,
+                FromDateJalali = input.FromDateJalali,
+                ToDateJalali = input.ToDateJalali,
+                FromAmount = input.FromAmount,
+                ToAmount = input.ToAmount,
+                FromDebtPeriodCount = input.FromDebtPeriodCount,
+                ToDebtPeriodCount = input.ToDebtPeriodCount,
+                ZoneCount = input.ZoneIds.Count(),
+                RecordCount = (pendingPaymentsData is not null && pendingPaymentsData.Any()) ? pendingPaymentsData.Count() : 0,
+                TotalBeginDebt = pendingPaymentsData.Sum(payment => payment.BeginDebt),
+                TotalDebtPeriodCount = pendingPaymentsData.Sum(payment => payment.DebtPeriodCount),
+                TotalEndingDebt = pendingPaymentsData.Sum(payment => payment.EndingDebt),
+                TotalPayedAmount = pendingPaymentsData.Sum(payment => payment.PayedAmount),
+                ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+                Title = title
+            };
+
+            ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentSummaryByZoneAndUsageDataOutputDto> result = new(title, pendingPaymentsHeader, pendingPaymentsData);
             return result;
         }
 
@@ -68,10 +153,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 					Where u.Id In @UsageId";
         }
 
-        private string GetPendingPaymentsDataQuery(bool hasUsageSellId,bool hasUsageConsumptionId)
+        private string GetDetailQuery(bool hasUsageSellId, bool hasUsageConsumptionId)
         {
-			string usageSellQuery = hasUsageSellId == true ? "AND (c.UsageId IN @UsageSellIds)" : string.Empty;
-			string usageConsumptionQuery = hasUsageConsumptionId == true ? "AND ((c.UsageId2 IN @UsageConsumptionIds) OR (c.UsageId IN @UsageConsumptionIds AND c.UsageId2=0))" : string.Empty;
+            string usageSellQuery = hasUsageSellId == true ? "AND (c.UsageId IN @UsageSellIds)" : string.Empty;
+            string usageConsumptionQuery = hasUsageConsumptionId == true ? "AND ((c.UsageId2 IN @UsageConsumptionIds) OR (c.UsageId IN @UsageConsumptionIds AND c.UsageId2=0))" : string.Empty;
             return @$"-- مشتریان هدف
 						WITH FilteredClients AS (
 							SELECT 
@@ -189,6 +274,256 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
 							 D.DebtPeriodsAfter BETWEEN @FromDebtPeriodCount AND @toDebtPeriodCount
 							) 
 						Order By C.ReadingNumber";
+        }
+        private string GetSummaryQuery(bool hasUsageSellId, bool hasUsageConsumptionId, string groupId, string groupTitle)
+        {
+            string usageSellQuery = hasUsageSellId == true ? "AND (c.UsageId IN @UsageSellIds)" : string.Empty;
+            string usageConsumptionQuery = hasUsageConsumptionId == true ? "AND ((c.UsageId2 IN @UsageConsumptionIds) OR (c.UsageId IN @UsageConsumptionIds AND c.UsageId2=0))" : string.Empty;
+            return @$"-- مشتریان هدف
+						WITH FilteredClients AS (
+							SELECT 
+								c.ZoneId,
+								c.ZoneTitle,
+								c.VillageName,
+								c.CustomerNumber,
+								c.BillId,
+								c.ReadingNumber,
+								c.UsageTitle AS UsageSellTitle ,
+								c.UsageId UsageSellId,
+								IIF(c.UsageId2=0,c.UsageTitle,c.UsageTitle2) AS UsageConsumptionTitle,
+								c.UsageId2 UsageConsumptionId,
+								c.FirstName As FirstName,
+								c.SureName Surname,
+								c.FatherName,
+								c.NationalId NationalCode,
+								c.MobileNo  AS MobileNumber,
+								c.PhoneNo  AS PhoneNumber,
+								c.Address Address ,
+								T51.ZoneAddress,
+								c.PostalCode PostalCode ,
+								c.DeletionStateTitle AS UseStateTitle,
+								'--' AS HeadquarterTitle ,
+								t46.C2 AS RegionTitle
+							FROM [CustomerWarehouse].dbo.Clients c
+						    Join [Db70].dbo.T51 t51
+						    	On t51.C0=c.ZoneId
+						    Join [Db70].dbo.T46 t46
+						    	On t51.C1=t46.C0
+							WHERE 
+								c.ToDayJalali IS NULL AND
+								c.ZoneId IN @ZoneIds AND
+								(  
+									@FromReadingNumber IS NULL OR 
+									@ToReadingNumber IS NULL OR 
+									TRIM(c.ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber
+								) 
+								{usageConsumptionQuery}
+						),						
+						-- تجمیعی قبض‌ها
+						BillAgg AS (
+							SELECT 
+								fc.ZoneId,
+								fc.CustomerNumber,
+								SUM(CASE WHEN RegisterDay < @FromDate THEN SumItems ELSE 0 END) AS BillBefore,
+								SUM(CASE WHEN RegisterDay BETWEEN @FromDate AND @ToDate THEN SumItems ELSE 0 END) AS BillBetween,
+								SUM(CASE WHEN RegisterDay > @ToDate THEN SumItems ELSE 0 END) AS BillAfter
+							FROM [CustomerWarehouse].dbo.Bills b
+							INNER JOIN FilteredClients fc
+								 ON b.ZoneId = fc.ZoneId AND b.CustomerNumber =  fc.CustomerNumber
+							WHERE 
+								TypeCode NOT IN(7,8) AND 
+								SumItems<>0
+							GROUP BY fc.ZoneId, fc.CustomerNumber
+						),
+						
+						-- تجمیعی پرداخت‌ها + آخرین پرداخت
+						PaymentAgg AS (
+							SELECT 
+								fc.ZoneId,
+								fc.CustomerNumber,
+								SUM(CASE WHEN RegisterDay < @FromDate THEN Amount ELSE 0 END) AS PaymentBefore,
+								SUM(CASE WHEN RegisterDay BETWEEN @FromDate AND @ToDate	THEN Amount ELSE 0 END) AS PaymentBetween,
+								SUM(CASE WHEN RegisterDay > @ToDate THEN Amount ELSE 0 END) AS PaymentAfter,
+								MAX(RegisterDay) AS LastPaymentDate
+							FROM [CustomerWarehouse].dbo.Payments p
+							INNER JOIN FilteredClients fc
+								ON p.zoneId = fc.ZoneId AND p.CustomerNumber = fc.CustomerNumber
+							WHERE 
+								Amount<>0 
+							GROUP BY fc.ZoneId, fc.CustomerNumber
+						),
+						
+						-- شمارش قبض‌های ثبت‌شده بعد از آخرین پرداخت (با LEFT JOIN)
+						DebtAfterLastPayment AS (
+							SELECT b.ZoneId, b.CustomerNumber, COUNT(1) AS DebtPeriodsAfter
+							FROM [CustomerWarehouse].dbo.Bills b
+							LEFT JOIN PaymentAgg p
+								ON b.ZoneId = p.ZoneId AND b.CustomerNumber = p.CustomerNumber
+							WHERE 
+							  b.RegisterDay > ISNULL(p.LastPaymentDate, '0001/01/01')
+							  AND b.RegisterDay <= @ToDate
+							  AND b.TypeCode NOT IN(3,4,5,7,8) AND
+							  b.SumItems<>0
+							GROUP BY b.ZoneId, b.CustomerNumber
+						)
+						
+						-- کوئری نهایی
+						SELECT
+							MAX({groupId}) ItemId,
+							{groupTitle} ItemTitle,
+							SUM(ISNULL(P.PaymentBetween, 0)) AS PayedAmount,
+							SUM( ISNULL(B.BillBefore, 0) - ISNULL(P.PaymentBefore, 0) ) AS BeginDebt,
+							SUM(ISNULL(B.BillBetween, 0) + ISNULL(B.BillBefore, 0) - ISNULL(P.PaymentBetween, 0) - ISNULL(P.PaymentBefore, 0)) AS EndingDebt,
+							SUM(ISNULL(D.DebtPeriodsAfter, 0)) AS DebtPeriodCount
+						
+						FROM FilteredClients C
+						LEFT JOIN BillAgg B
+							ON C.ZoneId = B.ZoneId AND C.CustomerNumber = B.CustomerNumber
+						LEFT JOIN PaymentAgg P
+							ON C.ZoneId = P.ZoneId AND C.CustomerNumber = P.CustomerNumber
+						LEFT JOIN DebtAfterLastPayment D
+							ON C.ZoneId = D.ZoneId AND C.CustomerNumber = D.CustomerNumber
+						Where
+							(
+							 @FromAmount IS NULL OR
+							 @ToAmount IS NULL OR
+							 (ISNULL(B.BillBetween, 0) + ISNULL(B.BillBefore, 0) - ISNULL(P.PaymentBetween, 0) - ISNULL(P.PaymentBefore, 0)) BETWEEN @FromAmount AND @ToAmount
+							) AND
+							(
+							 @FromDebtPeriodCount IS NULL OR
+							 @toDebtPeriodCount IS NULL OR
+							 D.DebtPeriodsAfter BETWEEN @FromDebtPeriodCount AND @toDebtPeriodCount
+							) 
+						Group By {groupTitle}
+						Order By {groupTitle}";
+        }
+        private string GetSummaryByZoneAndUsageQuery(bool hasUsageSellId, bool hasUsageConsumptionId)
+        {
+            string usageSellQuery = hasUsageSellId == true ? "AND (c.UsageId IN @UsageSellIds)" : string.Empty;
+            string usageConsumptionQuery = hasUsageConsumptionId == true ? "AND ((c.UsageId2 IN @UsageConsumptionIds) OR (c.UsageId IN @UsageConsumptionIds AND c.UsageId2=0))" : string.Empty;
+            return @$"-- مشتریان هدف
+						WITH FilteredClients AS (
+							SELECT 
+								c.ZoneId,
+								c.ZoneTitle,
+								c.VillageName,
+								c.CustomerNumber,
+								c.BillId,
+								c.ReadingNumber,
+								c.UsageTitle AS UsageSellTitle ,
+								c.UsageId UsageSellId,
+								IIF(c.UsageId2=0,c.UsageTitle,c.UsageTitle2) AS UsageConsumptionTitle,
+								c.UsageId2 UsageConsumptionId,
+								c.FirstName As FirstName,
+								c.SureName Surname,
+								c.FatherName,
+								c.NationalId NationalCode,
+								c.MobileNo  AS MobileNumber,
+								c.PhoneNo  AS PhoneNumber,
+								c.Address Address ,
+								T51.ZoneAddress,
+								c.PostalCode PostalCode ,
+								c.DeletionStateTitle AS UseStateTitle,
+								'--' AS HeadquarterTitle ,
+								t46.C2 AS RegionTitle
+							FROM [CustomerWarehouse].dbo.Clients c
+						    Join [Db70].dbo.T51 t51
+						    	On t51.C0=c.ZoneId
+						    Join [Db70].dbo.T46 t46
+						    	On t51.C1=t46.C0
+							WHERE 
+								c.ToDayJalali IS NULL AND
+								c.ZoneId IN @ZoneIds AND
+								(  
+									@FromReadingNumber IS NULL OR 
+									@ToReadingNumber IS NULL OR 
+									TRIM(c.ReadingNumber) BETWEEN @FromReadingNumber AND @ToReadingNumber
+								) 
+								{usageConsumptionQuery}
+						),						
+						-- تجمیعی قبض‌ها
+						BillAgg AS (
+							SELECT 
+								fc.ZoneId,
+								fc.CustomerNumber,
+								SUM(CASE WHEN RegisterDay < @FromDate THEN SumItems ELSE 0 END) AS BillBefore,
+								SUM(CASE WHEN RegisterDay BETWEEN @FromDate AND @ToDate THEN SumItems ELSE 0 END) AS BillBetween,
+								SUM(CASE WHEN RegisterDay > @ToDate THEN SumItems ELSE 0 END) AS BillAfter
+							FROM [CustomerWarehouse].dbo.Bills b
+							INNER JOIN FilteredClients fc
+								 ON b.ZoneId = fc.ZoneId AND b.CustomerNumber =  fc.CustomerNumber
+							WHERE 
+								TypeCode NOT IN(7,8) AND 
+								SumItems<>0
+							GROUP BY fc.ZoneId, fc.CustomerNumber
+						),
+						
+						-- تجمیعی پرداخت‌ها + آخرین پرداخت
+						PaymentAgg AS (
+							SELECT 
+								fc.ZoneId,
+								fc.CustomerNumber,
+								SUM(CASE WHEN RegisterDay < @FromDate THEN Amount ELSE 0 END) AS PaymentBefore,
+								SUM(CASE WHEN RegisterDay BETWEEN @FromDate AND @ToDate	THEN Amount ELSE 0 END) AS PaymentBetween,
+								SUM(CASE WHEN RegisterDay > @ToDate THEN Amount ELSE 0 END) AS PaymentAfter,
+								MAX(RegisterDay) AS LastPaymentDate
+							FROM [CustomerWarehouse].dbo.Payments p
+							INNER JOIN FilteredClients fc
+								ON p.zoneId = fc.ZoneId AND p.CustomerNumber = fc.CustomerNumber
+							WHERE 
+								Amount<>0 
+							GROUP BY fc.ZoneId, fc.CustomerNumber
+						),
+						
+						-- شمارش قبض‌های ثبت‌شده بعد از آخرین پرداخت (با LEFT JOIN)
+						DebtAfterLastPayment AS (
+							SELECT b.ZoneId, b.CustomerNumber, COUNT(1) AS DebtPeriodsAfter
+							FROM [CustomerWarehouse].dbo.Bills b
+							LEFT JOIN PaymentAgg p
+								ON b.ZoneId = p.ZoneId AND b.CustomerNumber = p.CustomerNumber
+							WHERE 
+							  b.RegisterDay > ISNULL(p.LastPaymentDate, '0001/01/01')
+							  AND b.RegisterDay <= @ToDate
+							  AND b.TypeCode NOT IN(3,4,5,7,8) AND
+							  b.SumItems<>0
+							GROUP BY b.ZoneId, b.CustomerNumber
+						)
+						
+						-- کوئری نهایی
+						SELECT
+							MAX(c.ZoneId) ZoneId,
+							c.ZoneTitle,
+							MAX(c.UsageSellId) UsageId,
+							c.UsageSellTitle UsageTitle,
+							SUM(ISNULL(P.PaymentBetween, 0)) AS PayedAmount,
+							SUM( ISNULL(B.BillBefore, 0) - ISNULL(P.PaymentBefore, 0) ) AS BeginDebt,
+							SUM(ISNULL(B.BillBetween, 0) + ISNULL(B.BillBefore, 0) - ISNULL(P.PaymentBetween, 0) - ISNULL(P.PaymentBefore, 0)) AS EndingDebt,
+							SUM(ISNULL(D.DebtPeriodsAfter, 0)) AS DebtPeriodCount
+						FROM FilteredClients C
+						LEFT JOIN BillAgg B
+							ON C.ZoneId = B.ZoneId AND C.CustomerNumber = B.CustomerNumber
+						LEFT JOIN PaymentAgg P
+							ON C.ZoneId = P.ZoneId AND C.CustomerNumber = P.CustomerNumber
+						LEFT JOIN DebtAfterLastPayment D
+							ON C.ZoneId = D.ZoneId AND C.CustomerNumber = D.CustomerNumber
+						Where
+							(
+							 @FromAmount IS NULL OR
+							 @ToAmount IS NULL OR
+							 (ISNULL(B.BillBetween, 0) + ISNULL(B.BillBefore, 0) - ISNULL(P.PaymentBetween, 0) - ISNULL(P.PaymentBefore, 0)) BETWEEN @FromAmount AND @ToAmount
+							) AND
+							(
+							 @FromDebtPeriodCount IS NULL OR
+							 @toDebtPeriodCount IS NULL OR
+							 D.DebtPeriodsAfter BETWEEN @FromDebtPeriodCount AND @toDebtPeriodCount
+							) 
+						Group By c.ZoneTitle,c.UsageSellTitle
+						Order By c.ZoneTitle,c.UsageSellTitle";
+        }
+        private (string, string, string) GetGroupField(bool isZone)
+        {
+            return isZone ? (" c.ZoneId ", " c.ZoneTitle ", ReportLiterals.ByZone) : (" c.UsageSellId ", " c.UsageSellTitle ", ReportLiterals.ByUsage);
+
         }
     }
 }

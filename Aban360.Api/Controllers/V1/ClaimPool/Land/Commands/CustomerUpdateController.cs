@@ -87,7 +87,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         }
 
         [HttpGet, HttpPost]
-        [Route("set-noraml-branch-type")]
+        [Route("set-normal-branch-type")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<BranchTypeToNormalUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetNormalBranchType([FromBody] BranchTypeToNormalUpdateInputDto inputDto, CancellationToken cancellationToken)
         {

@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 {
-    [Route("v1/pending-payments")]
-    public class PendingPaymentsController : BaseController
+    [Route("v1/pending-payments-summary")]
+    public class PendingPaymentsSummaryController : BaseController
     {
-        private readonly IPendingPaymentsHandler _pendingPaymentsHandler;
+        private readonly IPendingPaymentsSummaryHandler _pendingPaymentsHandler;
         private readonly IReportGenerator _reportGenerator;
-        public PendingPaymentsController(
-            IPendingPaymentsHandler pendingPaymentsHandler,
+        public PendingPaymentsSummaryController(
+            IPendingPaymentsSummaryHandler pendingPaymentsHandler,
             IReportGenerator reportGenerator)
         {
             _pendingPaymentsHandler = pendingPaymentsHandler;
@@ -28,28 +28,28 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRaw(PendingPaymentsInputDto inputDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentSummaryDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetRaw(PendingPaymentsSummaryDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto> pendingPayments = await _pendingPaymentsHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentSummaryDataOutputDto> pendingPayments = await _pendingPaymentsHandler.Handle(inputDto, cancellationToken);
             return Ok(pendingPayments);
         }
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        public async Task<IActionResult> GetExcel(string connectionId, PendingPaymentsInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetExcel(string connectionId, PendingPaymentsSummaryDto inputDto, CancellationToken cancellationToken)
         {
-            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _pendingPaymentsHandler.Handle, CurrentUser, ReportLiterals.PendingPaymentsDetail, connectionId);
+            await _reportGenerator.FireAndInform(inputDto, cancellationToken, _pendingPaymentsHandler.Handle, CurrentUser, ReportLiterals.PendingPaymentsSummary, connectionId);
             return Ok(inputDto);
         }
 
         [HttpPost]
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetStiReport(PendingPaymentsInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetStiReport(PendingPaymentsSummaryDto inputDto, CancellationToken cancellationToken)
         {
-            int reportCode = 500;
-            ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto> result = await _pendingPaymentsHandler.Handle(inputDto, cancellationToken);
+            int reportCode = 501;
+            ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentSummaryDataOutputDto> result = await _pendingPaymentsHandler.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
