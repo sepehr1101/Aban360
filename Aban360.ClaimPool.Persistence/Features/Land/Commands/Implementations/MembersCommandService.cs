@@ -41,6 +41,24 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
+       public async Task Update(CustomerTechnicalUpdateDto updateDto, string dbName)
+        {
+            string command = GetTechnicalUpdateCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+        public async Task Update(CustomerEstateUpdateDto updateDto, string dbName)
+        {
+            string command = GetCustomerEstateUpdateCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
         public async Task Update(CustomerMobileUpdateDto updateDto, string dbName)
         {
             string command = GetUpdateMobileCommand(dbName);
@@ -76,10 +94,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             {
                 throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateBillAmount);
             }
-        }  public async Task UpdateBedbes(ZoneIdAndCustomerNumber inputDto, long amount,string currentDateJalali, string dbName)
+        }
+        public async Task UpdateBedbes(ZoneIdAndCustomerNumber inputDto, long amount, string currentDateJalali, string dbName)
         {
             string command = GetUpdateBedBesAndNfasCommand(dbName);
-            int recordCount = await _sqlConnection.ExecuteAsync(command, new { inputDto.CustomerNumber, inputDto.ZoneId, amount ,currentDateJalali}, _dbTransaction);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, new { inputDto.CustomerNumber, inputDto.ZoneId, amount, currentDateJalali }, _dbTransaction);
             if (recordCount <= 0)
             {
                 throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateBillAmount);
@@ -236,11 +255,58 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 						town=@zoneId AND
 						radif=@customerNumber ";
         }
+        private string GetTechnicalUpdateCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+	                    enshab=@MeterDiamterId,
+	                    master_sif=@MainSiphon,
+	                    sif_1=@Siphon100,
+	                    sif_2=@Siphon125,
+	                    sif_3=@Siphon150,
+	                    sif_4=@Siphon200,
+	                    sif_5=@Siphon5,
+	                    sif_6=@Siphon6,
+	                    sif_7=@Siphon7,
+	                    sif_8=@Siphon8,	
+	                    operator=@Operator,
+						serial_co=@BodySerial,
+						sif_mosh_1=@CommonSiphon
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+        private string GetCustomerEstateUpdateCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+	                    cod_enshab=@UsageSellId,
+	                    tedad_vahd=@OtherUnit,
+	                    tedad_mas=@DomesticUnit,
+	                    tedad_tej=@CommertialUnit,
+	                    arse=@Premises,
+	                    aian=@ImprovementOverall,
+	                    aian_mas=@ImprovementDomestic,
+	                    aian_tej=@ImprovementCommertial,
+	                    fix_mas=@ContractualCapacity,
+	                    group1=@UsageConsumptionId,
+	                    operator=@Operator,
+	                    Khali_s=@EmptyUnit,
+						Senf=@GuildId
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
         private string GetUpdateMobileCommand(string dbName)
         {
             return @$"UPDATE [{dbName}].dbo.members
                      SET 
 	                    MOBILE=@MobileNumber,
+	                    operator=@Operator,
 	                    date_sabt=@ToDayDateJalali
                      WHERE 
                         id=@id AND

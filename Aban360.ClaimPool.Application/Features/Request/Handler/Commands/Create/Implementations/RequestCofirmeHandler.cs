@@ -126,7 +126,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     else
                     {
                         await membersCommandService.Update(customerUpdateDto, dbName);
-                        archMemRecordId = await archMemCommandService.InsertByPreviousRecord(customerUpdateDto, dbName, dbName);
+                        archMemRecordId = await archMemCommandService.Insert(customerUpdateDto, dbName, dbName);
                     }
                     string opLogText = string.Format(OpLogLiterals.RequestConfirmTracking, trackNumber, zoneId, archMemRecordId);
                     await clientsCommandService.InsertByArchMemId(archMemRecordId, dbName);

@@ -3,6 +3,8 @@
     public enum BranchTypeEnum : int
     {
         Unspecified = 0,
-        Normal=1,
+        Normal = 1,
+
+        SakhtOSaz = 4,
     }
 }

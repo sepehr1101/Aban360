@@ -21,7 +21,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly ICommonZoneService _zoneService;
         private readonly ICommonMemberQueryService _memberQueryService;
-        private string _normalBranchTypeTitle = "عادی";
         public CustomerBranchTypeToNormalUpdateHandler(
             IHttpContextAccessor contextAccessor,
             ICommonZoneService zoneService,
@@ -49,7 +48,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateBranchType);
             }
             CustomerBranchTypeUpdateDto branchTypeUpdateDto = new(memberInfo.Id, memberInfo.ZoneId, memberInfo.CustomerNumber, memberInfo.BillId, (int)BranchTypeEnum.Normal);
-            string opLogtText = string.Format(OpLogLiterals.CustomerBranchTypeUpdateOpLog, memberInfo.BillId, memberInfo.CustomerNumber, memberInfo.ZoneTitle, memberInfo.UseStateTitle, _normalBranchTypeTitle);
+            string opLogtText = string.Format(OpLogLiterals.CustomerBranchTypeUpdateOpLog, memberInfo.BillId);
 
             await ExecSql(zoneIdAndCustomerNumber, branchTypeUpdateDto, appUser, opLogtText);
         }
@@ -71,7 +70,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await membersCommandService.Update(branchTypeUpdateDto, dbName);
-                    int archMemId = await archMemCommandService.InsertByPreviousRecordAndUpdateBranchType(branchTypeUpdateDto, dbName, dbName);
+                    int archMemId = await archMemCommandService.Insert(branchTypeUpdateDto, dbName, dbName);
                     await clientsCommandService.UpdateToDayJalali(zoneIdAndCustomerNumber, branchTypeUpdateDto.ToDayDateJalali);
                     await clientsCommandService.InsertByArchMemId(archMemId, dbName);
                     await opLogCommandService.Insert(opLogText, appUser);
