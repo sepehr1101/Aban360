@@ -4,8 +4,8 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts
 {
-    public interface ICustomerLegalSummaryHandler
+    public interface ICustomerLegalSummaryByZoneAndUsageHandler
     {
-        Task<ReportOutput<CustomerLegalSummaryHeaderOutputDto, CustomerLegalSummaryDataOutputDto>> Handle(CustomerLegalSummaryDto input, CancellationToken cancellationToken);
-    
-    }}
+        Task<ReportOutput<CustomerLegalSummaryHeaderOutputDto, CustomerLegalSummaryByZoneAndUsageDataOutputDto>> Handle(CustomerLegalSummaryByZoneAndUsageInputDto input, CancellationToken cancellationToken);
+    }
+}

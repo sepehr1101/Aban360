@@ -55,10 +55,17 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             IEnumerable<CustomerLegalDetailDataOutputDto> data = await _sqlReportConnection.QueryAsync<CustomerLegalDetailDataOutputDto>(query, input);
             return data;
         }
-        public async Task<IEnumerable<CustomerLegalSummaryDataOutputDto>> GetSummary(CustomerLegalInputDto input)
+        public async Task<IEnumerable<CustomerLegalSummaryDataOutputDto>> GetSummary(CustomerLegalSummaryDto input)
         {
-            string query = GetLegalsInfoSummaryQuery();
+            var (groupId, groupTitle) = GetGroupField(input.IsZone);
+            string query = GetLegalsInfoSummaryQuery(groupId, groupTitle);
             IEnumerable<CustomerLegalSummaryDataOutputDto> data = await _sqlReportConnection.QueryAsync<CustomerLegalSummaryDataOutputDto>(query, input);
+            return data;
+        }
+        public async Task<IEnumerable<CustomerLegalSummaryByZoneAndUsageDataOutputDto>> GetSummary(CustomerLegalSummaryByZoneAndUsageInputDto input)
+        {
+            string query = GetLegalsInfoSummaryByZoneAndUsageQuery();
+            IEnumerable<CustomerLegalSummaryByZoneAndUsageDataOutputDto> data = await _sqlReportConnection.QueryAsync<CustomerLegalSummaryByZoneAndUsageDataOutputDto>(query, input);
             return data;
         }
 
@@ -124,11 +131,28 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	c.NationalId IS NOT NULL AND
                     	{nationalCondition}";
         }
-        private string GetLegalsInfoSummaryQuery()
+        private string GetLegalsInfoSummaryQuery(string groupId, string groupTitle)
+        {
+            return @$"Select 
+                    	MAX({groupId}) ItemId,
+                    	{groupTitle} ItemTitle,
+                    	COUNT(CASE WHEN c.NationalId IS NOT NULL AND LEN(TRIM(c.NationalId))={_naturalNationalCodeCharecter} THEN 1 ELSE null END ) NaturalCount,
+                    	COUNT(CASE WHEN c.NationalId IS NOT NULL AND LEN(TRIM(c.NationalId))={_lagalNationalCodeCharecter} THEN 1 ELSE null END ) LegalCount,
+                    	COUNT(CASE WHEN c.NationalId IS NULL OR LEN(TRIM(c.NationalId)) NOT IN ({_naturalNationalCodeCharecter},{_lagalNationalCodeCharecter}) THEN 1 ELSE null END ) InvalidCount
+                    From CustomerWarehouse.dbo.Clients c
+                    Where 
+                    	c.ToDayJalali IS NULL AND
+                    	{groupId} IN @ItemIds AND
+                    	c.DeletionStateId IN (0,5)
+                    Group By {groupTitle}";
+        }
+        private string GetLegalsInfoSummaryByZoneAndUsageQuery()
         {
             return @$"Select 
                     	MAX(c.ZoneId) ZoneId,
-                    	c.ZoneTitle,
+                    	c.ZoneTitle ZoneTitle,
+                        MAX(c.UsageId) UsageId,
+                    	c.UsageTitle UsageTitle,
                     	COUNT(CASE WHEN c.NationalId IS NOT NULL AND LEN(TRIM(c.NationalId))={_naturalNationalCodeCharecter} THEN 1 ELSE null END ) NaturalCount,
                     	COUNT(CASE WHEN c.NationalId IS NOT NULL AND LEN(TRIM(c.NationalId))={_lagalNationalCodeCharecter} THEN 1 ELSE null END ) LegalCount,
                     	COUNT(CASE WHEN c.NationalId IS NULL OR LEN(TRIM(c.NationalId)) NOT IN ({_naturalNationalCodeCharecter},{_lagalNationalCodeCharecter}) THEN 1 ELSE null END ) InvalidCount
@@ -136,8 +160,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     Where 
                     	c.ToDayJalali IS NULL AND
                     	c.ZoneId IN @ZoneIds AND
+                        c.UsageId IN @UsageIds AND
                     	c.DeletionStateId IN (0,5)
-                    Group By c.ZoneTitle";
+                    Group By c.ZoneTitle,c.UsageTitle
+                    Order c.ZoneTitle,c.UsageTitle";
+        }
+        private (string, string) GetGroupField(bool isZone)
+        {
+            return isZone ? (" c.ZoneId ", " c.ZoneTitle ") : (" c.UsageId ", " c.UsageTitle ");
         }
     }
 }

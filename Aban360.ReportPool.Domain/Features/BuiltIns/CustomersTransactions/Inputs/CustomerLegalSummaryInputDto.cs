@@ -1,7 +1,8 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs
 {
-    public record CustomerLegalInputDto
+    public record CustomerLegalSummaryInputDto
     {
-        public ICollection<int> ZoneIds { get; set; }
+        public ICollection<int> ItemIds { get; set; }
+
     }
 }

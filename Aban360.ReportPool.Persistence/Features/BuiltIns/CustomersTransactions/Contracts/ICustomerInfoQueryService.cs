@@ -10,6 +10,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         Task<BillIdReppar> Get(CustomerInfoByZoneAndCustomerNumberInputDto input);
         Task<ZoneIdAndCustomerNumberOutputDto> GetZoneIdAndCustomerNumber(string billId);
         Task<IEnumerable<CustomerLegalDetailDataOutputDto>> GetDetail(CustomerLegalDetailInputDto input);
-        Task<IEnumerable<CustomerLegalSummaryDataOutputDto>> GetSummary(CustomerLegalInputDto input);
+        Task<IEnumerable<CustomerLegalSummaryDataOutputDto>> GetSummary(CustomerLegalSummaryDto input);
+        Task<IEnumerable<CustomerLegalSummaryByZoneAndUsageDataOutputDto>> GetSummary(CustomerLegalSummaryByZoneAndUsageInputDto input);
     }
 }

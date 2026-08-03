@@ -2,8 +2,8 @@
 {
     public record CustomerLegalSummaryDataOutputDto
     {
-        public int ZoneId { get; set; }
-        public string ZoneTitle { get; set; }
+        public int ItemId { get; set; }
+        public string ItemTitle { get; set; }
         public int LegalCount { get; set; }
         public int NaturalCount { get; set; }
         public int InvalidCount { get; set; }
