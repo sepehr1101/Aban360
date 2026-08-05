@@ -163,7 +163,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.UsageId IN @UsageIds AND
                     	c.DeletionStateId IN (0,5)
                     Group By c.ZoneTitle,c.UsageTitle
-                    Order c.ZoneTitle,c.UsageTitle";
+                    Order By c.ZoneTitle,c.UsageTitle";
         }
         private (string, string) GetGroupField(bool isZone)
         {

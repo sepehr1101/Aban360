@@ -10,7 +10,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         public PendingPaymentsSummaryValidator()
         {
             RuleFor(payment => payment)
-                .Must(input => ValidationDate(input.FromDateJalali, input.ToDateJalali).IsValid).WithMessage(input => ValidationDate(input.FromDateJalali, input.ToDateJalali).ErrorMessage);
+                .Must(input => DateValidate(input.FromDateJalali, input.ToDateJalali).IsValid).WithMessage(input => DateValidate(input.FromDateJalali, input.ToDateJalali).ErrorMessage);
 
             RuleFor(payment => payment.ZoneIds)
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)

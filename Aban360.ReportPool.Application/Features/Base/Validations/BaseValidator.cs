@@ -11,7 +11,7 @@ namespace Aban360.ReportPool.Application.Features.Base.Validations
             ClassLevelCascadeMode = CascadeMode.Stop;
             RuleLevelCascadeMode = CascadeMode.Stop;
         }
-        protected virtual (bool IsValid, string ErrorMessage) ValidationDate(string FromDateJalali, string ToDateJalali)
+        protected virtual (bool IsValid, string ErrorMessage) DateValidate(string FromDateJalali, string ToDateJalali)
         {
             if (FromDateJalali.CompareTo(ExceptionLiterals.WaterBillMinDate) < 0)
                 return (false, ExceptionLiterals.FromDateMoreThanDate(ExceptionLiterals.WaterBillMinDate));
