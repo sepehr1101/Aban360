@@ -22,11 +22,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
         private string GetQuery()
         {
             return @"Select 
-                    	Id,
-                    	Code,
-                    	Title,
-                    	StringCode
-                    From Db70.dbo.village";
+                    	v.Id,
+                    	v.ZoneId,
+                    	t51.C2 ZoneTitle,
+                    	v.VillageId,
+                    	TRIM(v.VillageName) VillageName,
+                    	v.StringCode
+                    From Db70.dbo.village v
+                    Left Join Db70.dbo.T51 t51
+                    	ON v.ZoneId=t51.C0
+                    Order by t51.C2 , v.VillageName";
         }
     }
 }
