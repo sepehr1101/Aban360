@@ -4,6 +4,7 @@
     {
         public int? Id { get; set; }
         public string Title { get; set; }
+        public string Message { get { return "مستقل از پرداخت یا ثبت برگشتی، این بخش جهت مشاهده آخرین قبض صادر شده است."; } }
 
         public string Headquarters { get; set; }
         public string EconomicalNumber { get; set; }

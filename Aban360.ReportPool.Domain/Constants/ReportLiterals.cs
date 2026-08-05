@@ -55,6 +55,7 @@
         public static string ServiceLinkCalculationDetails { get { return $"{Report} ریز محاسبه - انشعاب"; } }
         public static string WaterCalculationDetails { get { return $"{Report} ریز محاسبه - آب بها"; } }
 
+        public static string LatestWaterInvoice { get { return $"{Report} آخرین قبض"; } }
         public static string WaterInvoice { get { return $"{Report} قبض"; } }
         public static string WaterItemsInvoice { get { return $"{Report} اقلام قبض"; } }
         public static string WaterLatestList { get { return $"{Report} آخرین قبوض (پیش از 15روز اخیر)"; } }

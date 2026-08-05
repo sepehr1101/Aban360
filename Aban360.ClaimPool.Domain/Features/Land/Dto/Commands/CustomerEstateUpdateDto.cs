@@ -21,5 +21,7 @@
         public int UsageConsumptionId { get; set; }
         public int EmptyUnit { get; set; }
         public int ContractualCapacity { get; set; }
+
+        public int Operator { get; set; }
     }
 }

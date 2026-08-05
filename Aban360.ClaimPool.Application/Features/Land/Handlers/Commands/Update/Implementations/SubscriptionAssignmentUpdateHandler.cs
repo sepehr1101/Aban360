@@ -46,7 +46,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     string fromDbName = GetDbName(subscriptionUpdate.ZoneId);
                     string insertToDbName = "Atlas";
 
-                    await _archMemCommandService.InsertByPreviousRecord(subscriptionUpdate, fromDbName, insertToDbName);
+                    await _archMemCommandService.Insert(subscriptionUpdate, fromDbName, insertToDbName);
                     await _membersCommandService.Update(subscriptionUpdate, insertToDbName);
 
                     transaction.Commit();
@@ -82,7 +82,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 OtherUnit = previousSubscription.OtherUnit,
                 HouseholdDateJalali = previousSubscription.HouseholdDateJalali,
                 HouseholdNumber = previousSubscription.HouseholdNumber,
-                MeterDiamterId = previousSubscription.MeterDiameterId,
+                MeterDiameterId = previousSubscription.MeterDiameterId,
                 IsSpecial = previousSubscription.IsSpecial,
                 ContractualCapacity = previousSubscription.ContractualCapacity,
                 ImprovementCommertial = previousSubscription.ImprovementCommertial,

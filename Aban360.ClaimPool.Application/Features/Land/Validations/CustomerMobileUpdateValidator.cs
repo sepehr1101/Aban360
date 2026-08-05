@@ -16,7 +16,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
             RuleFor(f => f.MobileNumber)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
-                .Length(11).WithMessage(ExceptionLiterals.Equal11);
+                .Must(IsValidMobileNumber).WithMessage(ExceptionLiterals.MobileNumberFormat);
         }
     }
 }

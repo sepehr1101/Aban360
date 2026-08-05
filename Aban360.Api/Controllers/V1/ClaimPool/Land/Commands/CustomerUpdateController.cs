@@ -30,13 +30,12 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 
         [HttpGet, HttpPost]
         [Route("update-full")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionGetDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateFull([FromBody] SubscriptionGetDto inputDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerUpdateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateFull([FromBody] CustomerUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
             await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
-
 
         [HttpGet, HttpPost]
         [Route("update-estate")]
@@ -47,7 +46,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             return Ok(inputDto);
         }
 
-
         [HttpGet, HttpPost]
         [Route("update-technical")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerTechnicalUpdateDto>), StatusCodes.Status200OK)]
@@ -56,17 +54,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
-
-
-        //[HttpGet, HttpPost]
-        //[Route("update-3")]
-        //[ProducesResponseType(typeof(ApiResponseEnvelope<CustomerUpdate3Dto>), StatusCodes.Status200OK)]
-        //public async Task<IActionResult> Update3([FromBody] CustomerUpdate3Dto inputDto, CancellationToken cancellationToken)
-        //{
-        //    await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
-        //    return Ok(inputDto);
-        //}
-
 
         [HttpGet, HttpPost]
         [Route("update-mobile")]

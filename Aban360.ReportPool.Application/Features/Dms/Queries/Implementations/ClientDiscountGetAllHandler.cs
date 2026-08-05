@@ -16,7 +16,7 @@ namespace Aban360.ReportPool.Application.Features.Dms.Queries.Implementations
 
         public async Task<IEnumerable<ClientDiscount>> Handle(CancellationToken cancellationToken)
         {
-            var data = await _requestDiscountService.Get();
+            var data = await _requestDiscountService.GetValid();
             return data;
         }
     }

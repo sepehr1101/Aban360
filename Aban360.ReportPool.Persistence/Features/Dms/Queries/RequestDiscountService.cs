@@ -8,6 +8,7 @@ namespace Aban360.ReportPool.Persistence.Features.Dms.Queries
     public interface IRequestDiscountService
     {
         Task<IEnumerable<ClientDiscount>> Get();
+        Task<IEnumerable<ClientDiscount>> GetValid();
         Task<bool> Exists(string codeMeli);
     }
 
@@ -26,6 +27,17 @@ namespace Aban360.ReportPool.Persistence.Features.Dms.Queries
             string GetQuery()
             {
                 string query = "SELECT * FROM AbAndFazelab.[dbo].[ClientDiscount]";
+                return query;
+            }
+        }   
+        public async Task<IEnumerable<ClientDiscount>> GetValid()
+        {
+            IEnumerable<ClientDiscount> data = await _sqlReportConnection.QueryAsync<ClientDiscount>(GetQuery());
+            return data;
+
+            string GetQuery()
+            {
+                string query = "SELECT * FROM AbAndFazelab.[dbo].[ClientDiscount] WHERE RemovedDateTime IS NULL";
                 return query;
             }
         }       

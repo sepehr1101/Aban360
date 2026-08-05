@@ -1,5 +1,4 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
-using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.ApplicationUser;
@@ -48,7 +47,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateDeletionState);
             }
             CustomerDeletionStateUpdateDto deletionStateUpdateDto = new(memberInfo.Id, memberInfo.ZoneId, memberInfo.CustomerNumber, memberInfo.BillId, (int)inputDto.DeletionStateType);
-            string opLogtText = string.Format(OpLogLiterals.CustomerBranchTypeUpdateOpLog, memberInfo.BillId, memberInfo.CustomerNumber, memberInfo.ZoneTitle, memberInfo.DeletionStateId, (int)inputDto.DeletionStateType);
+            string opLogtText = string.Format(OpLogLiterals.CustomerBranchTypeUpdateOpLog, memberInfo.BillId);
 
             await ExecSql(zoneIdAndCustomerNumber, deletionStateUpdateDto, appUser, opLogtText);
         }
@@ -70,7 +69,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await membersCommandService.Update(deletionStateUpdateDto, dbName);
-                    int archMemId = await archMemCommandService.InsertByPreviousRecordAndUpdateDeletionState(deletionStateUpdateDto, dbName, dbName);
+                    int archMemId = await archMemCommandService.Insert(deletionStateUpdateDto, dbName, dbName);
                     await clientsCommandService.UpdateToDayJalali(zoneIdAndCustomerNumber, deletionStateUpdateDto.ToDayDateJalali);
                     await clientsCommandService.InsertByArchMemId(archMemId, dbName);
                     await opLogCommandService.Insert(opLogText, appUser);

@@ -126,7 +126,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     else
                     {
                         await membersCommandService.Update(customerUpdateDto, dbName);
-                        archMemRecordId = await archMemCommandService.InsertByPreviousRecord(customerUpdateDto, dbName, dbName);
+                        archMemRecordId = await archMemCommandService.Insert(customerUpdateDto, dbName, dbName);
                     }
                     string opLogText = string.Format(OpLogLiterals.RequestConfirmTracking, trackNumber, zoneId, archMemRecordId);
                     await clientsCommandService.InsertByArchMemId(archMemRecordId, dbName);
@@ -231,7 +231,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 Premises = memberInfo.Premises,
                 HouseholdNumber = memberInfo.HouseholdNumber,
                 HouseholdDateJalali = memberInfo.HouseholdDateJalali,
-                MeterDiamterId = memberInfo.MeterDiameterId,
+                MeterDiameterId = memberInfo.MeterDiameterId,
                 IsSpecial = memberInfo.IsSpecial,
                 ContractualCapacity = memberInfo.ContractualCapacity,
 
@@ -301,7 +301,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             }
             if (moshtrackService.HasTaqirQotrEnsheab)
             {
-                updateDto.MeterDiamterId = moshtrakInfo.MeterDiameterId;
+                updateDto.MeterDiameterId = moshtrakInfo.MeterDiameterId;
             }
             if (moshtrackService.HasSifoonEzafe)
             {

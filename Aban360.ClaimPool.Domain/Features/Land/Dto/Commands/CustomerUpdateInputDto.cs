@@ -1,8 +1,6 @@
-﻿using DNTPersianUtils.Core;
-
-namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
+﻿namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
 {
-    public record CustomerUpdateDto
+    public record CustomerUpdateInputDto
     {
         public int Id { get; set; }
         public int ZoneId { get; set; }
@@ -37,8 +35,6 @@ namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
         public int MeterDiameterId { get; set; }
         public bool IsSpecial { get; set; }
         public int ContractualCapacity { get; set; }
-        public string ToDayDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
-        public string ToDayDateJalaliWithFragmentYear { get; set; } = DateTime.Now.ToShortPersianDateString().Substring(2, 8);
 
 
         public string MeterInstallationDateJalali { get; set; }
@@ -55,7 +51,6 @@ namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
         public int Siphon8 { get; set; }
         public int MainSiphon { get; set; }
         public int CommonSiphon { get; set; }
-        public int Operator { get; set; }
 
         public int DeletionStateId { get; set; }
         public string BodySerial { get; set; }

@@ -32,7 +32,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 
             return insertResultId.Value;
         }
-        public async Task<int> InsertByPreviousRecord(CustomerUpdateDto updateDto, string fromDbName, string insertToDbName)
+        public async Task<int> Insert(CustomerUpdateDto updateDto, string fromDbName, string insertToDbName)
         {
             string command = GetInsertByPreviousRecordQuery(fromDbName, insertToDbName);
             int? insertResultId = await _sqlConnection.QueryFirstOrDefaultAsync<int>(command, updateDto, _dbTransaction);
@@ -43,7 +43,29 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 
             return insertResultId.Value;
         }
-        public async Task<int> InsertByPreviousRecordAndUpdateBranchType(CustomerBranchTypeUpdateDto updateDto, string fromDbName, string insertToDbName)
+        public async Task<int> Insert(CustomerTechnicalUpdateDto updateDto, string fromDbName, string insertToDbName)
+        {
+            string command = GetInsertByPreviousRecordAndUseCurrentTechnicalQuery(fromDbName, insertToDbName);
+            int? insertResultId = await _sqlConnection.QueryFirstOrDefaultAsync<int>(command, updateDto, _dbTransaction);
+            if (insertResultId is null || insertResultId <= 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidInsertArchmem);
+            }
+
+            return insertResultId.Value;
+        }
+        public async Task<int> Insert(CustomerEstateUpdateDto updateDto, string fromDbName, string insertToDbName)
+        {
+            string command = GetInsertByPreviousRecordAndUseCurrentEstateQuery(fromDbName, insertToDbName);
+            int? insertResultId = await _sqlConnection.QueryFirstOrDefaultAsync<int>(command, updateDto, _dbTransaction);
+            if (insertResultId is null || insertResultId <= 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidInsertArchmem);
+            }
+
+            return insertResultId.Value;
+        }
+        public async Task<int> Insert(CustomerBranchTypeUpdateDto updateDto, string fromDbName, string insertToDbName)
         {
             string command = GetInsertByPreviousRecordAndUseCurrentBranchTypeQuery(fromDbName, insertToDbName);
             int? insertResultId = await _sqlConnection.QueryFirstOrDefaultAsync<int>(command, updateDto, _dbTransaction);
@@ -54,7 +76,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 
             return insertResultId.Value;
         }
-        public async Task<int> InsertByPreviousRecordAndUpdateDeletionState (CustomerDeletionStateUpdateDto updateDto, string fromDbName, string insertToDbName)
+        public async Task<int> Insert(CustomerDeletionStateUpdateDto updateDto, string fromDbName, string insertToDbName)
         {
             string command = GetInsertByPreviousRecordAndUseCurrentDeletionStateQuery(fromDbName, insertToDbName);
             int? insertResultId = await _sqlConnection.QueryFirstOrDefaultAsync<int>(command, updateDto, _dbTransaction);
@@ -149,7 +171,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                     	tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_roz, Khali_s, Senf, date_KHANE--,x,y,DATEINS, 
                     )
                     SELECT 
-                         town, radif, ' ' AS par_no, @ReadingNumber, @FirstName, @SurName, @FatherName, @MeterDiamterId, @UsageSellId,
+                         town, radif, ' ' AS par_no, @ReadingNumber, @FirstName, @SurName, @FatherName, @MeterDiameterId, @UsageSellId,
                         @OtherUnit, @DomesticUnit, @HouseholdNumber, @CommertialUnit, @ToDayDateJalali, @Premises, @ImprovementOverall, @ImprovementDomestic,
                         @ImprovementCommertial, @MeterRequestDateJalali, @MeterInstallationDateJalali, @SewageRequestDateJalali, @SewageInstallationDateJalali, @Address, @Plaque, bed_bes, @IsSpecial,
                         @DeletionStateId, n_ab, n_faz, @BranchTypeId, @MainSiphon, @Siphon100, @Siphon125, @Siphon150, @Siphon200, @CommonSiphon,
@@ -157,6 +179,80 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                         @PhoneNumber, @MobileNumber, @NationalCode, oRadif, @Siphon5, @Siphon6, @Siphon7, @Siphon8, bill_id, MOJAVZ,
                          c20, balansing, tmp_date_sabt, tmp_ask_ab, tmp_ask_fas, tmp_inst_ab,
                         tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_sabt, @EmptyUnit, @GuildId, @HouseholdDateJalali--,@x,@y,@ToDayDateJalaliWithFragmentYear
+                    FROM cte m
+                    WHERE 
+                        m.town=@zoneId AND
+                    	m.radif=@customerNumber 
+
+                    SELECT CAST(SCOPE_IDENTITY() AS INT)";
+        }
+        private string GetInsertByPreviousRecordAndUseCurrentTechnicalQuery(string fromDbName, string insertToDbName)
+        {
+            return @$";With cte as
+                    (
+                    	Select Top 1 *
+                    	From [{fromDbName}].dbo.arch_mem 
+                    	Where 
+                    		town=@zoneId AND
+                    		radif=@customerNumber 
+                    	Order By date_roz desc,id desc
+                    )
+                    INSERT INTO [{insertToDbName}].dbo.arch_mem(
+                    	town, radif, par_no, eshtrak, name, family, father_nam, enshab, cod_enshab,
+                    	tedad_vahd, tedad_mas, ted_khane, tedad_tej, date_sabt, arse, aian, aian_mas,
+                    	aian_tej, ask_ab, inst_ab, ask_fas, inst_fas, address, pelak, bed_bes, edareh_k,
+                    	hasf, n_ab, n_faz, noe_va, master_sif, sif_1, sif_2, sif_3, sif_4, sif_mosh_1,
+                    	fix_mas, group1, serial_co, G_inst_ab, G_inst_fas, operator, date_roz, POST_COD,
+                    	PHONE_NO, MOBILE, MELI_COD, oRadif, sif_5, sif_6, sif_7, sif_8, bill_id, MOJAVZ,
+                    	c20, balansing, tmp_date_sabt, tmp_ask_ab, tmp_ask_fas, tmp_inst_ab,
+                    	tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_roz, Khali_s, Senf, date_KHANE--,x,y,DATEINS, 
+                    )
+                    SELECT 
+                        town, radif, par_no, eshtrak, name, family, father_nam, @MeterDiamterId, cod_enshab,
+                    	tedad_vahd, tedad_mas, ted_khane, tedad_tej, date_sabt, arse, aian, aian_mas,
+                    	aian_tej, ask_ab, inst_ab, ask_fas, inst_fas, address, pelak, bed_bes, edareh_k,
+                    	hasf, n_ab, n_faz, noe_va,  @MainSiphon, @Siphon100, @Siphon125, @Siphon150, @Siphon200, @CommonSiphon,
+                    	fix_mas, group1, @BodySerial, G_inst_ab, G_inst_fas, @Operator, date_roz, POST_COD,
+                    	PHONE_NO, MOBILE, MELI_COD, oRadif, @Siphon5, @Siphon6, @Siphon7, @Siphon8, bill_id, MOJAVZ,
+                    	c20, balansing, tmp_date_sabt, tmp_ask_ab, tmp_ask_fas, tmp_inst_ab,
+                    	tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_roz, Khali_s, Senf, date_KHANE--,x,y,DATEINS, 
+                    FROM cte m
+                    WHERE 
+                        m.town=@zoneId AND
+                    	m.radif=@customerNumber 
+
+                    SELECT CAST(SCOPE_IDENTITY() AS INT)";
+        }
+        private string GetInsertByPreviousRecordAndUseCurrentEstateQuery(string fromDbName, string insertToDbName)
+        {
+            return @$";With cte as
+                    (
+                    	Select Top 1 *
+                    	From [{fromDbName}].dbo.arch_mem 
+                    	Where 
+                    		town=@zoneId AND
+                    		radif=@customerNumber 
+                    	Order By date_roz desc,id desc
+                    )
+                    INSERT INTO [{insertToDbName}].dbo.arch_mem(
+                    	town, radif, par_no, eshtrak, name, family, father_nam, enshab, cod_enshab,
+                    	tedad_vahd, tedad_mas, ted_khane, tedad_tej, date_sabt,  arse, aian, aian_mas,
+                    	aian_tej, ask_ab, inst_ab, ask_fas, inst_fas, address, pelak, bed_bes, edareh_k,
+                    	hasf, n_ab, n_faz, noe_va, master_sif, sif_1, sif_2, sif_3, sif_4, sif_mosh_1,
+                    	fix_mas, group1, serial_co, G_inst_ab, G_inst_fas, operator, date_roz, POST_COD,
+                    	PHONE_NO, MOBILE, MELI_COD, oRadif, sif_5, sif_6, sif_7, sif_8, bill_id, MOJAVZ,
+                    	c20, balansing, tmp_date_sabt, tmp_ask_ab, tmp_ask_fas, tmp_inst_ab,
+                    	tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_roz, Khali_s, Senf, date_KHANE--,x,y,DATEINS, 
+                    )
+                    SELECT 
+                        town, radif, par_no, eshtrak, name, family, father_nam, enshab,  @UsageSellId,
+                    	@OtherUnit, @DomesticUnit, ted_khane, @CommertialUnit, date_sabt, @Premises, @ImprovementOverall, @ImprovementDomestic,
+                    	@ImprovementCommertial, ask_ab, inst_ab, ask_fas, inst_fas, address, pelak, bed_bes, edareh_k,
+                    	hasf, n_ab, n_faz, noe_va, master_sif, sif_1, sif_2, sif_3, sif_4, sif_mosh_1,
+                    	@ContractualCapacity, @UsageConsumptionId, serial_co, G_inst_ab, G_inst_fas, @Operator, date_roz, POST_COD,
+                    	PHONE_NO, MOBILE, MELI_COD, oRadif, sif_5, sif_6, sif_7, sif_8, bill_id, MOJAVZ,
+                    	c20, balansing, tmp_date_sabt, tmp_ask_ab, tmp_ask_fas, tmp_inst_ab,
+                    	tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_roz, @EmptyUnit, @GuildId, date_KHANE--,x,y,DATEINS, 
                     FROM cte m
                     WHERE 
                         m.town=@zoneId AND

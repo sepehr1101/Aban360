@@ -1,6 +1,5 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
-using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
@@ -15,19 +14,26 @@ using FluentValidation;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
 using Aban360.Common.Db.Services;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Constants.Literals;
+using Microsoft.AspNetCore.Http;
+using Aban360.ClaimPool.Domain.Constants;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementationsu
 {
     internal sealed class CustomerUpdateHandler : AbstractBaseConnection, ICustomerUpdateHandler
     {
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly ISubscriptionQueryService _customerQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IMembersQueryService _membersQueryService;
         private readonly ICommonZoneService _commonZoneService;
         private readonly IValidator<CustomerMobileUpdateInputDto> _updateMobilevalidator;
         static int[] _allowedToSetConstructionType = { 0, 1 };
-        static int _constructionId = 4;
+        private string _currentDateJalali = DateTime.Now.ToShortPersianDateString();
+        private int _constructionId = 4;
+        private int _operator = 666;
         public CustomerUpdateHandler(
+            IHttpContextAccessor contextAccessor,
             ISubscriptionQueryService customerQueryService,
             ICommonMemberQueryService commonMemberQueryService,
             IMembersQueryService membersQueryService,
@@ -36,6 +42,9 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             IConfiguration configuration)
             : base(configuration)
         {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
             _customerQueryService = customerQueryService;
             _customerQueryService.NotNull(nameof(customerQueryService));
 
@@ -55,59 +64,51 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             _membersQueryService.NotNull(nameof(membersQueryService));
         }
 
-        public async Task Handle(SubscriptionGetDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task Handle(CustomerUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
-            CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId);
+            CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, memberInfo);
+            string opLogText = string.Format(OpLogLiterals.CustomerFullUpdateOpLog, inputDto.BillId);
 
-            await UpdateCustomer(customerUpdate);
+            await ExecSql(customerUpdate, appUser, opLogText);
         }
         public async Task Handle(CustomerEstateUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
-            CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
+            inputDto.Operator = _operator;
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId);
+            string opLogText = string.Format(OpLogLiterals.CustomerEstateUpdateOpLog, inputDto.BillId);
 
-            await UpdateCustomerAndClient(customerUpdate);
+            await ExecSql(inputDto, appUser, opLogText);
         }
         public async Task Handle(CustomerTechnicalUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
-            CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
+            inputDto.Operator = _operator;
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId);
+            string opLogText = string.Format(OpLogLiterals.CustomerTechnicalUpdateOpLog, inputDto.BillId);
 
-            await UpdateCustomerAndClient(customerUpdate);
-        }
-        public async Task Handle(CustomerUpdate3Dto inputDto, IAppUser appUser, CancellationToken cancellationToken)
-        {
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
-            CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
-
-            await UpdateCustomer(customerUpdate);
-        }
-        public async Task Handle(CustomerUpdate5Dto inputDto, IAppUser appUser, CancellationToken cancellationToken)
-        {
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
-            CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
-
-            await UpdateCustomer(customerUpdate);
+            await ExecSql(inputDto, appUser, opLogText);
         }
         public async Task Handle(CustomerMobileUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await Validation(inputDto, cancellationToken);
-            SubscriptionGetDto previousSubscriptioninfo = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
-            CustomerMobileUpdateDto updateDto = new(previousSubscriptioninfo.Id, previousSubscriptioninfo.ZoneId, previousSubscriptioninfo.CustomerNumber, previousSubscriptioninfo.BillId, inputDto.MobileNumber);
-            await UpdateCustomerAndClient(updateDto);
+            await InputValidate(inputDto, cancellationToken);
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId);
+            CustomerMobileUpdateDto updateDto = new(memberInfo.Id, memberInfo.ZoneId, memberInfo.CustomerNumber, memberInfo.BillId, inputDto.MobileNumber, _operator);
+            string opLogText = string.Format(OpLogLiterals.CustomerMobileNumberUpdateOpLog, inputDto.BillId);
+
+            await ExecSql(updateDto, appUser, opLogText);
         }
         public async Task Handle(CustomerBranchTypeUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellation)
         {
-            SubscriptionGetDto previousSubscriptioninfo = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
-            if (previousSubscriptioninfo.BranchTypeId == 4)
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId);
+            if (memberInfo.UseStateId == (int)BranchTypeEnum.SakhtOSaz)
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidRepeatConstructionBranchType);
             }
-            if (_allowedToSetConstructionType.Contains(previousSubscriptioninfo.BranchTypeId))
+            if (_allowedToSetConstructionType.Contains(memberInfo.UseStateId))
             {
-                CustomerBranchTypeUpdateDto branchTypeUpdateDto = new(previousSubscriptioninfo.Id, previousSubscriptioninfo.ZoneId, previousSubscriptioninfo.CustomerNumber, previousSubscriptioninfo.BillId, _constructionId);
-                await UpdateCustomerAndClient(branchTypeUpdateDto);
+                CustomerBranchTypeUpdateDto updateDto = new(memberInfo.Id, memberInfo.ZoneId, memberInfo.CustomerNumber, memberInfo.BillId, _constructionId);
+                string opLogText = string.Format(OpLogLiterals.CustomerBranchTypeUpdateOpLog, inputDto.BillId);
+                await ExecSql(updateDto, appUser, opLogText);
             }
             else
             {
@@ -115,8 +116,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             }
         }
 
-        private async Task UpdateCustomer(CustomerUpdateDto updateDto)
+
+        private async Task ExecSql(CustomerUpdateDto updateDto, IAppUser appUser, string opLogText)
         {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -125,19 +128,24 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
-                    MembersCommandService _membersCommandService = new(connection, transaction);
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
                     string fromDbName = GetDbName(updateDto.ZoneId);
                     string insertToDbName = "Atlas";
 
-                    int rowId = await _archMemCommandService.InsertByPreviousRecord(updateDto, fromDbName, insertToDbName);
-                    await _membersCommandService.Update(updateDto, insertToDbName);
+                    int rowId = await archMemCommandService.Insert(updateDto, fromDbName, insertToDbName);
+                    await membersCommandService.Update(updateDto, insertToDbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, insertToDbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
             }
         }
-        private async Task UpdateCustomerAndClient(CustomerUpdateDto updateDto)
+        private async Task ExecSql(CustomerEstateUpdateDto updateDto, IAppUser appUser, string opLogText)
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
             using (IDbConnection connection = _sqlReportConnection)
@@ -148,22 +156,23 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
-                    MembersCommandService _membersCommandService = new(connection, transaction);
-                    ClientsCommandService _clientCommandService = new(connection, transaction);
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
                     string dbName = GetDbName(updateDto.ZoneId);
-                    //string dbName = "Atlas";
 
-                    int rowId = await _archMemCommandService.InsertByPreviousRecord(updateDto, dbName, dbName);
-                    await _membersCommandService.Update(updateDto, dbName);
-                    await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
-                    await _clientCommandService.InsertByArchMemId(rowId, dbName);
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
             }
         }
-        private async Task UpdateCustomerAndClient(CustomerMobileUpdateDto updateDto)
+        private async Task ExecSql(CustomerTechnicalUpdateDto updateDto, IAppUser appUser, string opLogText)
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
             using (IDbConnection connection = _sqlReportConnection)
@@ -174,22 +183,23 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
-                    MembersCommandService _membersCommandService = new(connection, transaction);
-                    ClientsCommandService _clientCommandService = new(connection, transaction);
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
                     string dbName = GetDbName(updateDto.ZoneId);
-                    //string dbName = "Atlas";
 
-                    int rowId = await _archMemCommandService.Insert(updateDto, dbName);
-                    await _membersCommandService.Update(updateDto, dbName);
-                    await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
-                    await _clientCommandService.InsertByArchMemId(rowId, dbName);
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
             }
         }
-        private async Task UpdateCustomerAndClient(CustomerBranchTypeUpdateDto updateDto)
+        private async Task ExecSql(CustomerMobileUpdateDto updateDto, IAppUser appUser, string opLogText)
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
             using (IDbConnection connection = _sqlReportConnection)
@@ -200,23 +210,50 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
-                    MembersCommandService _membersCommandService = new(connection, transaction);
-                    ClientsCommandService _clientCommandService = new(connection, transaction);
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
                     string dbName = GetDbName(updateDto.ZoneId);
-                    //string dbName = "Atlas";
 
-                    int rowId = await _archMemCommandService.Insert(updateDto, dbName);
-                    await _membersCommandService.Update(updateDto, dbName);
-                    await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
-                    await _clientCommandService.InsertByArchMemId(rowId, dbName);
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
             }
         }
+        private async Task ExecSql(CustomerBranchTypeUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    string dbName = GetDbName(updateDto.ZoneId);
 
-        private CustomerUpdateDto GetCustomerUpdate(SubscriptionGetDto inputDto, SubscriptionGetDto previousSubscription)
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
+        }
+        private CustomerUpdateDto GetCustomerUpdate(CustomerUpdateInputDto inputDto, MemberInfoGetDto previousSubscription)
         {
             return new CustomerUpdateDto()
             {
@@ -245,14 +282,14 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 OtherUnit = inputDto.OtherUnit,
                 HouseholdDateJalali = DateValidation(inputDto.HouseholdDateJalali, false),
                 HouseholdNumber = inputDto.HouseholdNumber,
-                MeterDiamterId = inputDto.MeterDiameterId,
+                MeterDiameterId = inputDto.MeterDiameterId,
                 IsSpecial = inputDto.IsSpecial,
                 ContractualCapacity = inputDto.ContractualCapacity,
                 ImprovementCommertial = inputDto.ImprovementCommertial,
                 ImprovementDomestic = inputDto.ImprovementDomestic,
                 ImprovementOverall = inputDto.ImprovementOverall,
                 Premises = inputDto.Premises,
-                Operator = inputDto.Operator,
+                Operator = _operator,
                 SewageInstallationDateJalali = DateValidation(inputDto.SewageInstallationDateJalali, false),
                 SewageRequestDateJalali = DateValidation(inputDto.SewageRequestDateJalali, false),
                 MeterInstallationDateJalali = DateValidation(inputDto.MeterInstallationDateJalali, false),
@@ -274,308 +311,13 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 GuildId = inputDto.GuildId
             };
         }
-        private CustomerUpdateDto GetCustomerUpdate(CustomerEstateUpdateDto inputDto, SubscriptionGetDto previousSubscription)
+        private async Task<MemberInfoGetDto> ValidateAndGetMemberInfo(IAppUser appUser, string billId)
         {
-            return new CustomerUpdateDto()
-            {
-                Id = previousSubscription.Id,
-                CustomerNumber = previousSubscription.CustomerNumber,
-                ZoneId = previousSubscription.ZoneId,
-                BillId = inputDto.BillId,
-                X = previousSubscription.X,
-                Y = previousSubscription.Y,
-                ReadingNumber = previousSubscription.ReadingNumber,
-                FirstName = previousSubscription.FirstName,
-                Surname = previousSubscription.Surname,
-                Address = previousSubscription.Address,
-                PostalCode = previousSubscription.PostalCode,
-                Plaque = previousSubscription.Plaque,
-                NationalCode = previousSubscription.NationalCode,
-                PhoneNumber = previousSubscription.PhoneNumber,
-                MobileNumber = previousSubscription.MobileNumber,
-                FatherName = previousSubscription.FatherName,
-                BranchTypeId = previousSubscription.BranchTypeId,
-                UsageSellId = inputDto.UsageSellId,
-                UsageConsumptionId = inputDto.UsageConsumptionId,
-                EmptyUnit = inputDto.EmptyUnit,
-                CommertialUnit = inputDto.CommertialUnit,
-                DomesticUnit = inputDto.DomesticUnit,
-                OtherUnit = inputDto.OtherUnit,
-                HouseholdDateJalali = DateValidation(previousSubscription.HouseholdDateJalali, false),
-                HouseholdNumber = previousSubscription.HouseholdNumber,
-                MeterDiamterId = previousSubscription.MeterDiameterId,
-                IsSpecial = previousSubscription.IsSpecial,
-                ContractualCapacity = inputDto.ContractualCapacity,
-                ImprovementCommertial = inputDto.ImprovementCommertial,
-                ImprovementDomestic = inputDto.ImprovementDomestic,
-                ImprovementOverall = inputDto.ImprovementOverall,
-                Premises = inputDto.Premises,
-                Operator = previousSubscription.Operator,
-                SewageInstallationDateJalali = DateValidation(previousSubscription.SewageInstallationDateJalali, false),
-                SewageRequestDateJalali = DateValidation(previousSubscription.SewageRequestDateJalali, false),
-                MeterInstallationDateJalali = DateValidation(previousSubscription.MeterInstallationDateJalali, false),
-                MeterRequestDateJalali = DateValidation(previousSubscription.MeterRequestDateJalali, false),
-                Siphon100 = previousSubscription.Siphon100,
-                Siphon125 = previousSubscription.Siphon125,
-                Siphon150 = previousSubscription.Siphon150,
-                Siphon200 = previousSubscription.Siphon200,
-                Siphon5 = previousSubscription.Siphon5,
-                Siphon6 = previousSubscription.Siphon6,
-                Siphon7 = previousSubscription.Siphon7,
-                Siphon8 = previousSubscription.Siphon8,
-                MainSiphon = previousSubscription.MainSiphon,
-                DeletionStateId = previousSubscription.DeletionStateId,
-                BodySerial = previousSubscription.BodySerial ?? string.Empty,
-                CommonSiphon = previousSubscription.CommonSiphon,
-                MeterRegisterDateJalali = DateValidation(previousSubscription.MeterRegisterDateJalali, false),
-                SewageRegisterDateJalali = DateValidation(previousSubscription.SewageRegisterDateJalali, false),
-                GuildId = inputDto.GuildId
-            };
-        }
-        private CustomerUpdateDto GetCustomerUpdate(CustomerTechnicalUpdateDto inputDto, SubscriptionGetDto previousSubscription)
-        {
-            return new CustomerUpdateDto()
-            {
-                Id = previousSubscription.Id,
-                CustomerNumber = previousSubscription.CustomerNumber,
-                ZoneId = previousSubscription.ZoneId,
-                BillId = inputDto.BillId,
-                X = previousSubscription.X,
-                Y = previousSubscription.Y,
-                ReadingNumber = previousSubscription.ReadingNumber,
-                FirstName = previousSubscription.FirstName,
-                Surname = previousSubscription.Surname,
-                Address = previousSubscription.Address,
-                PostalCode = previousSubscription.PostalCode,
-                Plaque = previousSubscription.Plaque,
-                NationalCode = previousSubscription.NationalCode,
-                PhoneNumber = previousSubscription.PhoneNumber,
-                MobileNumber = previousSubscription.MobileNumber,
-                FatherName = previousSubscription.FatherName,
-                BranchTypeId = previousSubscription.BranchTypeId,
-                UsageSellId = previousSubscription.UsageSellId,
-                UsageConsumptionId = previousSubscription.UsageConsumptionId,
-                EmptyUnit = previousSubscription.EmptyUnit,
-                CommertialUnit = previousSubscription.CommertialUnit,
-                DomesticUnit = previousSubscription.DomesticUnit,
-                OtherUnit = previousSubscription.OtherUnit,
-                HouseholdDateJalali = DateValidation(previousSubscription.HouseholdDateJalali, false),
-                HouseholdNumber = previousSubscription.HouseholdNumber,
-                MeterDiamterId = inputDto.MeterDiameterId,
-                IsSpecial = previousSubscription.IsSpecial,
-                ContractualCapacity = previousSubscription.ContractualCapacity,
-                ImprovementCommertial = previousSubscription.ImprovementCommertial,
-                ImprovementDomestic = previousSubscription.ImprovementDomestic,
-                ImprovementOverall = previousSubscription.ImprovementOverall,
-                Premises = previousSubscription.Premises,
-                Operator = previousSubscription.Operator,
-                SewageInstallationDateJalali = DateValidation(previousSubscription.SewageInstallationDateJalali, false),
-                SewageRequestDateJalali = DateValidation(previousSubscription.SewageRequestDateJalali, false),
-                MeterInstallationDateJalali = DateValidation(previousSubscription.MeterInstallationDateJalali, false),
-                MeterRequestDateJalali = DateValidation(previousSubscription.MeterRequestDateJalali, false),
-                Siphon100 = inputDto.Siphon100,
-                Siphon125 = inputDto.Siphon125,
-                Siphon150 = inputDto.Siphon150,
-                Siphon200 = inputDto.Siphon200,
-                Siphon5 = inputDto.Siphon5,
-                Siphon6 = inputDto.Siphon6,
-                Siphon7 = inputDto.Siphon7,
-                Siphon8 = inputDto.Siphon8,
-                MainSiphon = inputDto.MainSiphon,
-                DeletionStateId = previousSubscription.DeletionStateId,
-                BodySerial = inputDto.BodySerial ?? string.Empty,
-                CommonSiphon = inputDto.CommonSiphon,
-                MeterRegisterDateJalali = DateValidation(previousSubscription.MeterRegisterDateJalali, false),
-                SewageRegisterDateJalali = DateValidation(previousSubscription.SewageRegisterDateJalali, false),
-                GuildId = previousSubscription.GuildId
-            };
-        }
-        private CustomerUpdateDto GetCustomerUpdate(CustomerUpdate3Dto inputDto, SubscriptionGetDto previousSubscription)
-        {
-            return new CustomerUpdateDto()
-            {
-                Id = previousSubscription.Id,
-                CustomerNumber = previousSubscription.CustomerNumber,
-                ZoneId = previousSubscription.ZoneId,
-                BillId = inputDto.BillId,
-                X = previousSubscription.X,
-                Y = previousSubscription.Y,
-                ReadingNumber = previousSubscription.ReadingNumber,
-                FirstName = previousSubscription.FirstName,
-                Surname = previousSubscription.Surname,
-                Address = previousSubscription.Address,
-                PostalCode = previousSubscription.PostalCode,
-                Plaque = previousSubscription.Plaque,
-                NationalCode = previousSubscription.NationalCode,
-                PhoneNumber = previousSubscription.PhoneNumber,
-                MobileNumber = previousSubscription.MobileNumber,
-                FatherName = previousSubscription.FatherName,
-                BranchTypeId = previousSubscription.BranchTypeId,
-                UsageSellId = inputDto.UsageSellId,
-                UsageConsumptionId = inputDto.UsageConsumptionId,
-                EmptyUnit = previousSubscription.EmptyUnit,
-                CommertialUnit = inputDto.CommertialUnit,
-                DomesticUnit = inputDto.DomesticUnit,
-                OtherUnit = inputDto.OtherUnit,
-                HouseholdDateJalali = DateValidation(previousSubscription.HouseholdDateJalali, false),
-                HouseholdNumber = previousSubscription.HouseholdNumber,
-                MeterDiamterId = previousSubscription.MeterDiameterId,
-                IsSpecial = previousSubscription.IsSpecial,
-                ContractualCapacity = inputDto.ContractualCapacity,
-                ImprovementCommertial = inputDto.ImprovementCommertial,
-                ImprovementDomestic = inputDto.ImprovementDomestic,
-                ImprovementOverall = inputDto.ImprovementOverall,
-                Premises = inputDto.Premises,
-                Operator = previousSubscription.Operator,
-                SewageInstallationDateJalali = DateValidation(previousSubscription.SewageInstallationDateJalali, false),
-                SewageRequestDateJalali = DateValidation(previousSubscription.SewageRequestDateJalali, false),
-                MeterInstallationDateJalali = DateValidation(previousSubscription.MeterInstallationDateJalali, false),
-                MeterRequestDateJalali = DateValidation(previousSubscription.MeterRequestDateJalali, false),
-                Siphon100 = previousSubscription.Siphon100,
-                Siphon125 = previousSubscription.Siphon125,
-                Siphon150 = previousSubscription.Siphon150,
-                Siphon200 = previousSubscription.Siphon200,
-                Siphon5 = previousSubscription.Siphon5,
-                Siphon6 = previousSubscription.Siphon6,
-                Siphon7 = previousSubscription.Siphon7,
-                Siphon8 = previousSubscription.Siphon8,
-                MainSiphon = previousSubscription.MainSiphon,
-                DeletionStateId = previousSubscription.DeletionStateId,
-                BodySerial = previousSubscription.BodySerial ?? string.Empty,
-                CommonSiphon = previousSubscription.CommonSiphon,
-                MeterRegisterDateJalali = DateValidation(previousSubscription.MeterRegisterDateJalali, false),
-                SewageRegisterDateJalali = DateValidation(previousSubscription.SewageRegisterDateJalali, false),
-                GuildId = previousSubscription.GuildId
-            };
-        }
-        private CustomerUpdateDto GetCustomerUpdate(CustomerUpdate5Dto inputDto, SubscriptionGetDto previousSubscription)
-        {
-            return new CustomerUpdateDto()
-            {
-                Id = previousSubscription.Id,
-                CustomerNumber = previousSubscription.CustomerNumber,
-                ZoneId = previousSubscription.ZoneId,
-                BillId = inputDto.BillId,
-                X = previousSubscription.X,
-                Y = previousSubscription.Y,
-                ReadingNumber = previousSubscription.ReadingNumber,
-                FirstName = previousSubscription.FirstName,
-                Surname = previousSubscription.Surname,
-                Address = previousSubscription.Address,
-                PostalCode = previousSubscription.PostalCode,
-                Plaque = previousSubscription.Plaque,
-                NationalCode = previousSubscription.NationalCode,
-                PhoneNumber = previousSubscription.PhoneNumber,
-                MobileNumber = previousSubscription.MobileNumber,
-                FatherName = previousSubscription.FatherName,
-                BranchTypeId = previousSubscription.BranchTypeId,
-                UsageSellId = previousSubscription.UsageSellId,
-                UsageConsumptionId = previousSubscription.UsageConsumptionId,
-                EmptyUnit = previousSubscription.EmptyUnit,
-                CommertialUnit = previousSubscription.CommertialUnit,
-                DomesticUnit = previousSubscription.DomesticUnit,
-                OtherUnit = previousSubscription.OtherUnit,
-                HouseholdDateJalali = DateValidation(inputDto.HouseholdDateJalali, false),
-                HouseholdNumber = previousSubscription.HouseholdNumber,
-                MeterDiamterId = inputDto.MeterDiameterId,
-                IsSpecial = previousSubscription.IsSpecial,
-                ContractualCapacity = previousSubscription.ContractualCapacity,
-                ImprovementCommertial = previousSubscription.ImprovementCommertial,
-                ImprovementDomestic = previousSubscription.ImprovementDomestic,
-                ImprovementOverall = previousSubscription.ImprovementOverall,
-                Premises = previousSubscription.Premises,
-                Operator = previousSubscription.Operator,
-                SewageInstallationDateJalali = DateValidation(inputDto.SewageInstallationDateJalali, false),
-                SewageRequestDateJalali = DateValidation(inputDto.SewageRequestDateJalali, false),
-                MeterInstallationDateJalali = DateValidation(inputDto.MeterInstallationDateJalali, false),
-                MeterRequestDateJalali = DateValidation(inputDto.MeterRequestDateJalali, false),
-                Siphon100 = inputDto.Siphon100,
-                Siphon125 = inputDto.Siphon125,
-                Siphon150 = inputDto.Siphon150,
-                Siphon200 = inputDto.Siphon200,
-                Siphon5 = inputDto.Siphon5,
-                Siphon6 = inputDto.Siphon6,
-                Siphon7 = inputDto.Siphon7,
-                Siphon8 = inputDto.Siphon8,
-                MainSiphon = previousSubscription.MainSiphon,
-                DeletionStateId = previousSubscription.DeletionStateId,
-                BodySerial = inputDto.BodySerial ?? string.Empty,
-                CommonSiphon = inputDto.CommonSiphon,
-                MeterRegisterDateJalali = DateValidation(inputDto.MeterRegisterDateJalali, false),
-                SewageRegisterDateJalali = DateValidation(inputDto.SewageRegisterDateJalali, false),
-                GuildId = previousSubscription.GuildId
-            };
-        }
-        private CustomerUpdateDto GetCustomerUpdate(ServiceLinkConnectionInput inputDto, int deletionStateId, SubscriptionGetDto previousSubscription)
-        {
-            return new CustomerUpdateDto()
-            {
-                Id = previousSubscription.Id,
-                CustomerNumber = previousSubscription.CustomerNumber,
-                ZoneId = previousSubscription.ZoneId,
-                BillId = previousSubscription.BillId,
-                X = previousSubscription.X,
-                Y = previousSubscription.Y,
-                ReadingNumber = previousSubscription.ReadingNumber,
-                FirstName = previousSubscription.FirstName,
-                Surname = previousSubscription.Surname,
-                Address = previousSubscription.Address,
-                PostalCode = previousSubscription.PostalCode,
-                Plaque = previousSubscription.Plaque,
-                NationalCode = previousSubscription.NationalCode,
-                PhoneNumber = previousSubscription.PhoneNumber,
-                MobileNumber = previousSubscription.MobileNumber,
-                FatherName = previousSubscription.FatherName,
-                BranchTypeId = previousSubscription.BranchTypeId,
-                UsageSellId = previousSubscription.UsageSellId,
-                UsageConsumptionId = previousSubscription.UsageConsumptionId,
-                EmptyUnit = previousSubscription.EmptyUnit,
-                CommertialUnit = previousSubscription.CommertialUnit,
-                DomesticUnit = previousSubscription.DomesticUnit,
-                OtherUnit = previousSubscription.OtherUnit,
-                HouseholdDateJalali = DateValidation(previousSubscription.HouseholdDateJalali, false),
-                HouseholdNumber = previousSubscription.HouseholdNumber,
-                MeterDiamterId = previousSubscription.MeterDiameterId,
-                IsSpecial = previousSubscription.IsSpecial,
-                ContractualCapacity = previousSubscription.ContractualCapacity,
-                ImprovementCommertial = previousSubscription.ImprovementCommertial,
-                ImprovementDomestic = previousSubscription.ImprovementDomestic,
-                ImprovementOverall = previousSubscription.ImprovementOverall,
-                Premises = previousSubscription.Premises,
-                Operator = 0,//todo
-                SewageInstallationDateJalali = DateValidation(previousSubscription.SewageInstallationDateJalali, false),
-                SewageRequestDateJalali = DateValidation(previousSubscription.SewageRequestDateJalali, false),
-                MeterInstallationDateJalali = DateValidation(previousSubscription.MeterInstallationDateJalali, false),
-                MeterRequestDateJalali = DateValidation(previousSubscription.MeterRequestDateJalali, false),
-                Siphon100 = previousSubscription.Siphon100,
-                Siphon125 = previousSubscription.Siphon125,
-                Siphon150 = previousSubscription.Siphon150,
-                Siphon200 = previousSubscription.Siphon200,
-                Siphon5 = previousSubscription.Siphon5,
-                Siphon6 = previousSubscription.Siphon6,
-                Siphon7 = previousSubscription.Siphon7,
-                Siphon8 = previousSubscription.Siphon8,
-                MainSiphon = previousSubscription.MainSiphon,
-                DeletionStateId = deletionStateId,
-                BodySerial = previousSubscription.BodySerial ?? string.Empty,
-                CommonSiphon = previousSubscription.CommonSiphon,
-                MeterRegisterDateJalali = DateValidation(previousSubscription.MeterRegisterDateJalali, false),
-                SewageRegisterDateJalali = DateValidation(previousSubscription.SewageRegisterDateJalali, false),
-                GuildId = previousSubscription.GuildId,
-                ToDayDateJalali = DateTime.Now.ToShortPersianDateString(),
-                ToDayDateJalaliWithFragmentYear = DateTime.Now.ToShortPersianDateString().Substring(2, 8),
-            };
-        }
-        private async Task<SubscriptionGetDto> GetCustomerPreviousInfo(IAppUser appUser, string billId)
-        {
-            SubscriptionGetDto previousSubscription = await _customerQueryService.GetInfo(billId);
-            if (previousSubscription == null)
-            {
-                throw new BaseException("شناسه قبض یافت نشد");
-            }
-            await _commonZoneService.IsUserInZone(appUser, previousSubscription.ZoneId);
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(billId);
+            MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
+            await _commonZoneService.IsUserInZone(appUser, memberInfo.ZoneId);
 
-            return previousSubscription;
+            return memberInfo;
         }
         private string DateValidation(string? inputDate, bool hasException)
         {
@@ -587,16 +329,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             }
             return string.IsNullOrWhiteSpace(inputDate) ? string.Empty : inputDate.Trim();
         }
-        private async Task LastDeletionStateValidation(string billId, int deletionStateId)
-        {
-            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(billId);
-            MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
-            if (memberInfo.DeletionStateId == deletionStateId)
-            {
-                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateDeletionState);
-            }
-        }
-        private async Task Validation(CustomerMobileUpdateInputDto inputDto, CancellationToken cancellationToken)
+        private async Task InputValidate(CustomerMobileUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _updateMobilevalidator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
