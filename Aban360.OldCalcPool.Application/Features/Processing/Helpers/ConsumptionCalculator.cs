@@ -41,7 +41,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             }
             int duration = GetDuration(meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali);
             int finalDomesticUnit = GetFinalDomesticUnit(customerInfo, meterInfo.CurrentDateJalali);
-            double dailyAverage = GetDailyConsumptionAverage(consumption, duration, finalDomesticUnit);
+            double dailyAverage = GetDailyConsumptionAverage(consumption, duration, GetDivider(customerInfo, finalDomesticUnit));
             ConsumptionInfo consumptionInfo = new(meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali, consumption, duration, dailyAverage, finalDomesticUnit);
             return consumptionInfo;
         }
@@ -50,7 +50,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             int duration = GetDuration(meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali);
             int finalDomesticUnit = GetFinalDomesticUnit(customerInfo, meterInfo.CurrentDateJalali);
             double dailyAverage = meterInfo.MonthlyAverageConsumption / 30;
-            double consumption = GetConsumption(dailyAverage, duration, finalDomesticUnit);
+            double consumption = GetConsumption(dailyAverage, duration, GetDivider(customerInfo, finalDomesticUnit));
             ConsumptionInfo consumptionInfo = new(meterInfo.PreviousDateJalali, meterInfo.CurrentDateJalali, consumption, duration, dailyAverage, finalDomesticUnit);
             return consumptionInfo;
         }
@@ -114,8 +114,20 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             double consumption = dailyCosumption * duration * domesticUnit;
             return consumption;
         }
+        private int GetDivider(CustomerInfoOutputDto customerInfo, int finalDomesticUnit)
+        {
+            if (IsCommercial(customerInfo.UsageId))
+            {
+                return 1;
+            }
+            return finalDomesticUnit;
+        }
         private int GetFinalDomesticUnit(CustomerInfoOutputDto customerInfo, string readingDateJalali)
         {
+            if(IsConstruction(customerInfo.BranchType) && IsDomesticWithoutUnspecified(customerInfo.UsageId))
+            {
+                return customerInfo.DomesticUnit < 1 ? 1 : customerInfo.DomesticUnit;
+            }
             if (IsGardenAndResidence(customerInfo.UsageId))
             {
                 //در تاریخ 11 مرداد 1405 با نظر دفتر تعرفه ها باغ و اقامتگاه بیش از یک واحد هم لحاظ میشود

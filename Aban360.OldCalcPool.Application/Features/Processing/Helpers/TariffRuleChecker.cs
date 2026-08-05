@@ -70,6 +70,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             return CheckConditions(usageId, [25, 34]);
         }
+        internal static bool IsCommercial(int usageId)
+        {
+            return CheckConditions(usageId, [2]);
+        }
         internal static bool IsUsageConstructor(int usageId)
         {
             return CheckConditions(usageId, [5, 39]);
