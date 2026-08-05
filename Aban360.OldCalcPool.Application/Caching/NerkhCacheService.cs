@@ -37,7 +37,7 @@ namespace Aban360.OldCalcPool.Application.Caching
         public async Task<(IEnumerable<NerkhGetDto>, IEnumerable<AbAzadFormulaDto>, IEnumerable<ZaribGetDto>, int, IEnumerable<NerkhGetDto>)>
             GetWithAggregatedNerkh(NerkhByConsumptionInputDto input)
         {
-            return await _inner.GetWithAggregatedNerkh(input);//TODO: use cache sometimes
+            //return await _inner.GetWithAggregatedNerkh(input);//TODO: use cache sometimes
             string key = GetCacheKey("NerkhGetAggr", input);
 
             return await _cache.GetOrCreateAsync(key, async entry =>
@@ -49,7 +49,9 @@ namespace Aban360.OldCalcPool.Application.Caching
 
         private string GetCacheKey(string prefix, NerkhByConsumptionInputDto input)
         {
-            return $"{prefix}_{input.ZoneId}_{input.UsageId}_{(double)input.AverageConsumption}_{input.PreviousDateJalali}_{input.CurrentDateJalali}";
+            int upperBound = (int)Math.Ceiling(input.AverageConsumption);
+            int lowerBound = upperBound - 1;
+            return $"{prefix}_{input.ZoneId}_{input.UsageId}_{lowerBound}_{upperBound}_{input.PreviousDateJalali}_{input.CurrentDateJalali}";
         }
     }
 }
