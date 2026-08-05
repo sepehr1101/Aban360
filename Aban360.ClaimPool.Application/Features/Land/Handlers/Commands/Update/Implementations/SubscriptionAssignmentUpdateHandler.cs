@@ -82,7 +82,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 OtherUnit = previousSubscription.OtherUnit,
                 HouseholdDateJalali = previousSubscription.HouseholdDateJalali,
                 HouseholdNumber = previousSubscription.HouseholdNumber,
-                MeterDiamterId = previousSubscription.MeterDiameterId,
+                MeterDiameterId = previousSubscription.MeterDiameterId,
                 IsSpecial = previousSubscription.IsSpecial,
                 ContractualCapacity = previousSubscription.ContractualCapacity,
                 ImprovementCommertial = previousSubscription.ImprovementCommertial,

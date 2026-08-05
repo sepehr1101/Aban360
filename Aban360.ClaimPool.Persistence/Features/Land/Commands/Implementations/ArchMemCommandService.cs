@@ -171,7 +171,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                     	tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_roz, Khali_s, Senf, date_KHANE--,x,y,DATEINS, 
                     )
                     SELECT 
-                         town, radif, ' ' AS par_no, @ReadingNumber, @FirstName, @SurName, @FatherName, @MeterDiamterId, @UsageSellId,
+                         town, radif, ' ' AS par_no, @ReadingNumber, @FirstName, @SurName, @FatherName, @MeterDiameterId, @UsageSellId,
                         @OtherUnit, @DomesticUnit, @HouseholdNumber, @CommertialUnit, @ToDayDateJalali, @Premises, @ImprovementOverall, @ImprovementDomestic,
                         @ImprovementCommertial, @MeterRequestDateJalali, @MeterInstallationDateJalali, @SewageRequestDateJalali, @SewageInstallationDateJalali, @Address, @Plaque, bed_bes, @IsSpecial,
                         @DeletionStateId, n_ab, n_faz, @BranchTypeId, @MainSiphon, @Siphon100, @Siphon125, @Siphon150, @Siphon200, @CommonSiphon,

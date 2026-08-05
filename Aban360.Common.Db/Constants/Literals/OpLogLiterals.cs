@@ -85,6 +85,7 @@
         public static string CustomerEstateUpdateOpLog => @"اطلاعات واحد و ملک ویرایش شد. شناسه قبض:{0}";
         public static string CustomerTechnicalUpdateOpLog => @"مشخصات فنی ویرایش شد. شناسه قبض:{0}";
         public static string CustomerMobileNumberUpdateOpLog => @"تلفن همراه مشترک ویرایش شد. شناسه قبض:{0}";
+        public static string CustomerFullUpdateOpLog => @"ویرایش کامل اطلاعات مشترک انجام شد. شناسه قبض:{0}";
 
 
     }

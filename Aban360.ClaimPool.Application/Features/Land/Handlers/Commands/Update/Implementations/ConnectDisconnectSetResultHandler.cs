@@ -137,7 +137,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 OtherUnit = memberInfo.OtherUnit,
                 HouseholdDateJalali = DateValidation(memberInfo.HouseholdDateJalali, false),
                 HouseholdNumber = memberInfo.HouseholdNumber,
-                MeterDiamterId = memberInfo.MeterDiameterId,
+                MeterDiameterId = memberInfo.MeterDiameterId,
                 IsSpecial = memberInfo.IsSpecial,
                 ContractualCapacity = memberInfo.ContractualCapacity,
                 ImprovementCommertial = memberInfo.CommercialImprovement,

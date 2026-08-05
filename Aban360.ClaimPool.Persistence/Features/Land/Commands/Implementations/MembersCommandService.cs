@@ -204,7 +204,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 	                    name=@FirstName,
 	                    family=@SurName,
 	                    father_nam=@FatherName,
-	                    enshab=@MeterDiamterId,
+	                    enshab=@MeterDiameterId,
 	                    cod_enshab=@UsageSellId,
 	                    tedad_vahd=@OtherUnit,
 	                    tedad_mas=@DomesticUnit,

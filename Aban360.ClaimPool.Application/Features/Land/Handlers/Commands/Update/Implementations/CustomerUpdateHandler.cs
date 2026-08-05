@@ -1,6 +1,5 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
-using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
@@ -18,7 +17,6 @@ using Aban360.Common.ApplicationUser;
 using Aban360.Common.Db.Constants.Literals;
 using Microsoft.AspNetCore.Http;
 using Aban360.ClaimPool.Domain.Constants;
-using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementationsu
 {
@@ -66,12 +64,13 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             _membersQueryService.NotNull(nameof(membersQueryService));
         }
 
-        public async Task Handle(SubscriptionGetDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task Handle(CustomerUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto previousSubscription = await GetCustomerPreviousInfo(appUser, inputDto.BillId);
-            CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, previousSubscription);
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId);
+            CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, memberInfo);
+            string opLogText = string.Format(OpLogLiterals.CustomerFullUpdateOpLog, inputDto.BillId);
 
-            await UpdateCustomer(customerUpdate);
+            await ExecSql(customerUpdate, appUser, opLogText);
         }
         public async Task Handle(CustomerEstateUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
@@ -97,7 +96,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             string opLogText = string.Format(OpLogLiterals.CustomerMobileNumberUpdateOpLog, inputDto.BillId);
 
             await ExecSql(updateDto, appUser, opLogText);
-            await UpdateCustomerAndClient(updateDto);
         }
         public async Task Handle(CustomerBranchTypeUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellation)
         {
@@ -119,6 +117,34 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         }
 
 
+        private async Task ExecSql(CustomerUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    string fromDbName = GetDbName(updateDto.ZoneId);
+                    string insertToDbName = "Atlas";
+
+                    int rowId = await archMemCommandService.Insert(updateDto, fromDbName, insertToDbName);
+                    await membersCommandService.Update(updateDto, insertToDbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, insertToDbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
+        }
         private async Task ExecSql(CustomerEstateUpdateDto updateDto, IAppUser appUser, string opLogText)
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
@@ -130,17 +156,17 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
-                    MembersCommandService _membersCommandService = new(connection, transaction);
-                    ClientsCommandService _clientCommandService = new(connection, transaction);
-                    OpLogWithTransactionCommandService _opLogCommandService = new(_contextAccessor, connection, transaction);
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
                     string dbName = GetDbName(updateDto.ZoneId);
 
-                    int rowId = await _archMemCommandService.Insert(updateDto, dbName, dbName);
-                    await _membersCommandService.Update(updateDto, dbName);
-                    await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
-                    await _clientCommandService.InsertByArchMemId(rowId, dbName);
-                    await _opLogCommandService.Insert(opLogText, appUser);
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
@@ -157,17 +183,17 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
-                    MembersCommandService _membersCommandService = new(connection, transaction);
-                    ClientsCommandService _clientCommandService = new(connection, transaction);
-                    OpLogWithTransactionCommandService _opLogCommandService = new(_contextAccessor, connection, transaction);
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
                     string dbName = GetDbName(updateDto.ZoneId);
 
-                    int rowId = await _archMemCommandService.Insert(updateDto, dbName, dbName);
-                    await _membersCommandService.Update(updateDto, dbName);
-                    await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
-                    await _clientCommandService.InsertByArchMemId(rowId, dbName);
-                    await _opLogCommandService.Insert(opLogText, appUser);
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
@@ -184,17 +210,17 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
-                    MembersCommandService _membersCommandService = new(connection, transaction);
-                    ClientsCommandService _clientCommandService = new(connection, transaction);
-                    OpLogWithTransactionCommandService _opLogCommandService = new(_contextAccessor, connection, transaction);
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
                     string dbName = GetDbName(updateDto.ZoneId);
 
-                    int rowId = await _archMemCommandService.Insert(updateDto, dbName);
-                    await _membersCommandService.Update(updateDto, dbName);
-                    await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
-                    await _clientCommandService.InsertByArchMemId(rowId, dbName);
-                    await _opLogCommandService.Insert(opLogText, appUser);
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
@@ -211,71 +237,23 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
-                    MembersCommandService _membersCommandService = new(connection, transaction);
-                    ClientsCommandService _clientCommandService = new(connection, transaction);
-                    OpLogWithTransactionCommandService _opLogCommandService = new(_contextAccessor, connection, transaction);
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
                     string dbName = GetDbName(updateDto.ZoneId);
 
-                    int rowId = await _archMemCommandService.Insert(updateDto, dbName);
-                    await _membersCommandService.Update(updateDto, dbName);
-                    await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
-                    await _clientCommandService.InsertByArchMemId(rowId, dbName);
-                    await _opLogCommandService.Insert(opLogText, appUser);
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
             }
         }
-        private async Task UpdateCustomer(CustomerUpdateDto updateDto)
-        {
-            using (IDbConnection connection = _sqlReportConnection)
-            {
-                if (connection.State != ConnectionState.Open)
-                {
-                    connection.Open();
-                }
-                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
-                {
-                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
-                    MembersCommandService _membersCommandService = new(connection, transaction);
-                    string fromDbName = GetDbName(updateDto.ZoneId);
-                    string insertToDbName = "Atlas";
-
-                    int rowId = await _archMemCommandService.Insert(updateDto, fromDbName, insertToDbName);
-                    await _membersCommandService.Update(updateDto, insertToDbName);
-
-                    transaction.Commit();
-                }
-            }
-        }
-        private async Task UpdateCustomerAndClient(CustomerMobileUpdateDto updateDto)
-        {
-            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
-            using (IDbConnection connection = _sqlReportConnection)
-            {
-                if (connection.State != ConnectionState.Open)
-                {
-                    connection.Open();
-                }
-                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
-                {
-                    ArchMemCommandService _archMemCommandService = new(connection, transaction);
-                    MembersCommandService _membersCommandService = new(connection, transaction);
-                    ClientsCommandService _clientCommandService = new(connection, transaction);
-                    string dbName = GetDbName(updateDto.ZoneId);
-                    //string dbName = "Atlas";
-
-                    int rowId = await _archMemCommandService.Insert(updateDto, dbName);
-                    await _membersCommandService.Update(updateDto, dbName);
-                    await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
-                    await _clientCommandService.InsertByArchMemId(rowId, dbName);
-
-                    transaction.Commit();
-                }
-            }
-        }
-        private CustomerUpdateDto GetCustomerUpdate(SubscriptionGetDto inputDto, SubscriptionGetDto previousSubscription)
+        private CustomerUpdateDto GetCustomerUpdate(CustomerUpdateInputDto inputDto, MemberInfoGetDto previousSubscription)
         {
             return new CustomerUpdateDto()
             {
@@ -304,14 +282,14 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 OtherUnit = inputDto.OtherUnit,
                 HouseholdDateJalali = DateValidation(inputDto.HouseholdDateJalali, false),
                 HouseholdNumber = inputDto.HouseholdNumber,
-                MeterDiamterId = inputDto.MeterDiameterId,
+                MeterDiameterId = inputDto.MeterDiameterId,
                 IsSpecial = inputDto.IsSpecial,
                 ContractualCapacity = inputDto.ContractualCapacity,
                 ImprovementCommertial = inputDto.ImprovementCommertial,
                 ImprovementDomestic = inputDto.ImprovementDomestic,
                 ImprovementOverall = inputDto.ImprovementOverall,
                 Premises = inputDto.Premises,
-                Operator = inputDto.Operator,
+                Operator = _operator,
                 SewageInstallationDateJalali = DateValidation(inputDto.SewageInstallationDateJalali, false),
                 SewageRequestDateJalali = DateValidation(inputDto.SewageRequestDateJalali, false),
                 MeterInstallationDateJalali = DateValidation(inputDto.MeterInstallationDateJalali, false),
@@ -332,17 +310,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 SewageRegisterDateJalali = DateValidation(inputDto.SewageRegisterDateJalali, false),
                 GuildId = inputDto.GuildId
             };
-        }
-        private async Task<SubscriptionGetDto> GetCustomerPreviousInfo(IAppUser appUser, string billId)
-        {
-            SubscriptionGetDto previousSubscription = await _customerQueryService.GetInfo(billId);
-            if (previousSubscription == null)
-            {
-                throw new BaseException("شناسه قبض یافت نشد");
-            }
-            await _commonZoneService.IsUserInZone(appUser, previousSubscription.ZoneId);
-
-            return previousSubscription;
         }
         private async Task<MemberInfoGetDto> ValidateAndGetMemberInfo(IAppUser appUser, string billId)
         {

@@ -1,5 +1,4 @@
 ﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
-using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.ApplicationUser;

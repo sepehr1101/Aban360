@@ -6,7 +6,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.C
 {
     public interface ICustomerUpdateHandler
     {
-        Task Handle(SubscriptionGetDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
+        Task Handle(CustomerUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
         Task Handle(CustomerEstateUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
         Task Handle(CustomerTechnicalUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
         Task Handle(CustomerMobileUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
