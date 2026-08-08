@@ -23,7 +23,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
         public async Task<IEnumerable<CollectBillsDetailGetDto>> Get()
         {
             string query = GetQuery();
-            IEnumerable<CollectBillsDetailGetDto> data = await _sqlReportConnection.QueryAsync<CollectBillsDetailGetDto>(query, new { id });
+            IEnumerable<CollectBillsDetailGetDto> data = await _sqlReportConnection.QueryAsync<CollectBillsDetailGetDto>(query);
 
             return data;
         }

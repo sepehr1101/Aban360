@@ -25,13 +25,13 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementat
         public async Task<int> Insert(CollectBillsDetailInsertDto input)
         {
             string command = GetInsertCommand();
-            int id = await _connection.ExecuteScalarAsync<int>(command, input, _transaction);
-            if (id <= 0)
+            int newId = await _connection.QueryFirstOrDefaultAsync<int>(command, input, _transaction);
+            if (newId <= 0)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidInsertCollectBillDetail);
             }
 
-            return id;
+            return newId;
         }
         public async Task Update(CollectBillsDetailUpdateDto input)
         {
@@ -44,13 +44,15 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementat
         }
         private string GetInsertCommand()
         {
-            return @"Insert Into  [Atlas].dbo.CollectBillsDetail ( GroupingId, StepId, InsertDateTime, Description )
-                    Values( @GroupingId, @StepId, @InsertDateTime, @Description )";
+            return @"Insert Into  [Atlas].dbo.CollectBillsDetail ( GroupingId, StepId, InsertDateTime, FinishDateTime, Description )
+                    Values( @GroupingId, @StepId, @InsertDateTime, @FinishDateTime, @Description );
+
+                    Select SCOPE_IDENTITY();";
         }
         private string GetUpdateCommand()
         {
-            return @"Update Atlas.dbo.CollectBillsDetail(GroupingId,StepId,InsertDateTime,Description)
-                    Set FinishDateTime = @FinishDateTime
+            return @"Update Atlas.dbo.CollectBillsDetail
+                    Set FinishDateTime = @FinishDateTime , Description = Description+'-'+@Description
                     Where Id = @Id";
         }
     }

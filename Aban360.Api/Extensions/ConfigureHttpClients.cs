@@ -1,5 +1,6 @@
 ﻿using Aban360.Api.Exceptions;
 using Aban360.BlobPool.Domain.Providers.Dto;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.TaxPool.Domain.Features.MaaherSTP.Dto;
@@ -15,6 +16,7 @@ namespace Aban360.Api.Extensions
             services.AddGeo(configuration);
             services.AddMaaher(configuration);
             services.AddMap(configuration);
+            services.AddCollectBills(configuration);
             return services;
         }
         private static void AddOpenKm(this IServiceCollection services, IConfiguration configuration)
@@ -61,6 +63,18 @@ namespace Aban360.Api.Extensions
                 if (options is null || string.IsNullOrWhiteSpace(options.Value.BaseUrl))
                 {
                     throw new InvalidConfigFileException(ExceptionLiterals.InvalidConfiguration(nameof(MapOptions), nameof(MapOptions.BaseUrl)));
+                }
+                HttpClient.BaseAddress = new Uri(options.Value.BaseUrl);
+            });
+        }
+        private static void AddCollectBills(this IServiceCollection service, IConfiguration configuration)
+        {
+            service.AddHttpClient(HttpClientNames.CollectBills, (sp, HttpClient) =>
+            {
+                var options = sp.GetRequiredService<IOptions<CollectBillsOptions>>();
+                if (options is null || string.IsNullOrWhiteSpace(options.Value.BaseUrl))
+                {
+                    throw new InvalidConfigFileException(ExceptionLiterals.InvalidConfiguration(nameof(CollectBillsOptions), nameof(CollectBillsOptions.BaseUrl)));
                 }
                 HttpClient.BaseAddress = new Uri(options.Value.BaseUrl);
             });

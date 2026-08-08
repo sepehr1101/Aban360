@@ -71,6 +71,7 @@
     <ProjectReference Include="..\Aban360.CalculationPool.Application\Aban360.CalculationPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.Domain\Aban360.CalculationPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.GatewayAdhoc\Aban360.CalculationPool.GatewayAdhoc.csproj" />
+    <ProjectReference Include="..\Aban360.CalculationPool.Infrastructore\Aban360.CalculationPool.Infrastructure.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.Persistence\Aban360.CalculationPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPoolTest.Evaluation\Aban360.CalculationPoolTest.Evaluation.csproj" />
     <ProjectReference Include="..\Aban360.ClaimPool.Application\Aban360.ClaimPool.Application.csproj" />
@@ -116,6 +117,7 @@
 
   <ItemGroup>
     <Folder Include="AppData\AssessmentLogs\" />
+    <Folder Include="AppData\CollectBills\" />
     <Folder Include="AppData\Dbfs\" />
     <Folder Include="AppData\Excels\" />
     <Folder Include="AppData\MeterApkLogs\" />

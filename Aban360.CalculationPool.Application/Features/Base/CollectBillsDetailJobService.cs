@@ -1,53 +1,95 @@
-﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+﻿using Aban360.CalculationPool.Domain.Constants;
+using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
-using Aban360.Common.ApplicationUser;
-using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
-using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
-using Microsoft.AspNetCore.Http;
+using Aban360.Common.Literals;
+using DNTPersianUtils.Core;
+using Hangfire;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Data;
+using System.IO.Compression;
+using System.Text;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
-    public sealed class CollectBillsDetailJobService : AbstractBaseConnection
+    public interface ICollectBillsDetailJobService
     {
-        private readonly IHttpContextAccessor _contextAccessor;
-        private readonly ICollectBillsDetailQueryService _detailQueryService;
+        Task Initialize();
+    }
+    public sealed class CollectBillsDetailJobService : AbstractBaseConnection, ICollectBillsDetailJobService
+    {
+        private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly ICollectBillsQueryService _collectBillsQueryService;
+        private string _basePath = @"AppData\CollectBills";
         public CollectBillsDetailJobService(
-            IHttpContextAccessor contextAccessor,
-            ICollectBillsDetailQueryService detailQueryService,
+            IBackgroundJobClient backgroundJobClient,
+            ICollectBillsQueryService collectBillsQueryService,
             IConfiguration configuration)
                 : base(configuration)
         {
-            _contextAccessor = contextAccessor;
-            _contextAccessor.NotNull(nameof(contextAccessor));
+            _backgroundJobClient = backgroundJobClient;
+            _backgroundJobClient.NotNull(nameof(backgroundJobClient));
 
-            _detailQueryService = detailQueryService;
-            _detailQueryService.NotNull(nameof(detailQueryService));
+            _collectBillsQueryService = collectBillsQueryService;
+            _collectBillsQueryService.NotNull(nameof(collectBillsQueryService));
         }
-        ///inComplete
-        public async Task Insert(IAppUser appUser, int stepId, string? description)
-        {
-            CollectBillsDetailInsertDto insertDto = new(Guid.NewGuid(), stepId, DateTime.Now, description);
-            string opLogText = string.Format(OpLogLiterals.CollectBillsDetailInsertOpLog, insertDto.GroupingId, insertDto.StepId);
 
-            await ExecSql(insertDto, appUser, opLogText);
-            //
-        }
-        public async Task Update(IAppUser appUser, int id)
+        public async Task Initialize()
         {
-            CollectBillsDetailGetDto collectBillDetailInfo = await _detailQueryService.Get(id);
-            CollectBillsDetailUpdateDto updateDto = new(id, DateTime.Now);
-            string opLogText = string.Format(OpLogLiterals.CollectBillsDetailUpdateOpLog, collectBillDetailInfo.GroupingId, collectBillDetailInfo.StepId);
+            CollectBillsDetailInsertDto insertDto = new(Guid.NewGuid(), (int)CollectBillStepEnum.Initialize, DateTime.Now, DateTime.Now, string.Empty);
+            //Validate
+            int effectedId = await CollectgBillsDetailInsert(insertDto);
+            _backgroundJobClient.Enqueue(() => CreateFile(insertDto.GroupingId));
 
-            await ExecSql(updateDto, appUser, opLogText);
         }
-        private async Task ExecSql(CollectBillsDetailInsertDto insertDto, IAppUser appUser, string opLogText)
+        public async Task CreateFile(Guid groupingId)
         {
+            CollectBillsDetailInsertDto createfile = new(groupingId, (int)CollectBillStepEnum.CreateZip, DateTime.Now, null, string.Empty);
+            int effectedId = await CollectgBillsDetailInsert(createfile);
+
+            IEnumerable<CollectBillsDataDto> data = await _collectBillsQueryService.Get();
+            string zipFileName = await CreateZip(data.Select(s => s.Text).ToList());
+            string description = $"فایل:{zipFileName} با تعداد سطر:{data?.Count() ?? 0} ایجاد شد.";
+            CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, description, DateTime.Now);
+            await CollectBillsDetailUpdate(finalCreateFile);
+        }
+        public async Task Upload()
+        {
+
+        }
+        public async Task<string> CreateZip(ICollection<string> data)
+        {
+            var timeNow = DateTime.Now.ToString("HH-mm-ss");
+            var persianDate = DateTime
+                                      .Now
+                                      .ToShortPersianDateString()
+                                      .Replace('/', '-')
+                                      .Replace(':', '-')
+                                      .Replace(' ', '_');
+            string baseFileName = $"{persianDate}-{timeNow}-قبوض تجمیعی";
+            string txtFileName = $"{baseFileName}.txt";
+            string zipFileName = $"{baseFileName}.zip";
+            string txtPath = Path.Combine(_basePath, txtFileName);
+            string zipPath = Path.Combine(_basePath, zipFileName);
+
+
+            await File.WriteAllLinesAsync(txtPath, data, new UTF8Encoding(true));
+            using (var archive = ZipFile.Open(zipPath, ZipArchiveMode.Create))
+            {
+                archive.CreateEntryFromFile(txtPath, txtFileName);
+            }
+
+            return zipFileName;
+        }
+
+        private async Task<int> CollectgBillsDetailInsert(CollectBillsDetailInsertDto insertDto)
+        {
+            int effectedId = 0;
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -57,16 +99,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     CollectBillsDetailCommandService collectBillsDetailCommandService = new(connection, transaction);
-                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
-
-                    await collectBillsDetailCommandService.Insert(insertDto);
-                    await opLogCommandService.Insert(opLogText, appUser);
+                    effectedId = await collectBillsDetailCommandService.Insert(insertDto);
 
                     transaction.Commit();
                 }
             }
+            return effectedId;
         }
-        private async Task ExecSql(CollectBillsDetailUpdateDto updateDto, IAppUser appUser, string opLogText)
+        private async Task CollectBillsDetailUpdate(CollectBillsDetailUpdateDto updateDto)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -77,10 +117,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     CollectBillsDetailCommandService collectBillsDetailCommandService = new(connection, transaction);
-                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
-
                     await collectBillsDetailCommandService.Update(updateDto);
-                    await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
