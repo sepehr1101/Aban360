@@ -36,10 +36,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         {
             string command = GetInsertDuplicateByParentIdCommand();
             int effectedRecords = await _connection.ExecuteAsync(command, new { newGroup2Id, previousGroup2Id }, _transaction);
-            if (effectedRecords <= 0)
-            {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertUsageGroup3);
-            }
             return effectedRecords;
         }
         public async Task Update(UsageGroup3UpdateDto inputDto)

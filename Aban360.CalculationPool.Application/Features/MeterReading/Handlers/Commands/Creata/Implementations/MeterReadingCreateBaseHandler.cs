@@ -261,8 +261,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
             foreach (var item in customersInfo.BedBesInfo)
             {
-                if (item.IsReturned || _invalidLatestCounterStateCode.Contains(item.LastCounterStateCode ?? 0))
-                {
+                //if (item.IsReturned || _invalidLatestCounterStateCode.Contains(item.LastCounterStateCode ?? 0))
+                //{
                     BedBesPreviousNumberAndDateOutputDto? previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId, false);
                     if (previousInfo is null)
                     {
@@ -273,13 +273,19 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                         }
                         item.LastMeterNumber = 0;
                         item.LastMeterDateJalali = waterInstallationDateJalali;
+                        item.LastCounterStateCode = 0;
+                        item.LastConsumption = 0;
+                        item.LastMonthlyConsumption = 0;
                     }
                     else
                     {
                         item.LastMeterNumber = previousInfo.PreviousNumber;
                         item.LastMeterDateJalali = previousInfo.PreviousDateJalali;
+                        item.LastCounterStateCode = previousInfo.CounterStateCode;
+                        item.LastConsumption = previousInfo.Consumption;
+                        item.LastMonthlyConsumption = previousInfo.ConsumptionAverage;
                     }
-                }
+                //}
             }
 
             return (customersInfo, meterFlowId);

@@ -51,7 +51,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 	                    b.Payable,
 	                    b.SumItems,
 						b.ReturnCauseId,
-						b.ReturnCauseTitle
+						IIF(b.TypeCode IN (3,4), N'اصلاح حساب', b.ReturnCauseTitle )  ReturnCauseTitle 
+                         
                     From [CustomerWarehouse].dbo.Bills b
                     Where	
                     	b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali AND

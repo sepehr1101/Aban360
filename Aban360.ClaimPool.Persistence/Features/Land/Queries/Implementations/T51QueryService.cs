@@ -35,10 +35,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
         {
             string query = GetAddressByIdQuery();
             string? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(query, new { id });
-            if (result is null && hasException)
-            {
-                throw new InvalidDataException(ExceptionLiterals.InvalidZoneTitle);
-            }
             return result;
         }
 

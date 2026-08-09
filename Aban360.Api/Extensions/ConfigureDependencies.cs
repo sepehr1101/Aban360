@@ -37,6 +37,7 @@ using Aban360.TaxPool.Persistence.Extensions;
 using Aban360.NotificationPool.Application.Extensions;
 using Aban360.Common.Db.Extensions;
 using Aban360.Common.Db.Services;
+using Aban360.CalculationPool.Infrastructure.Extensions;
 
 namespace Aban360.Api.Extensions
 {
@@ -98,6 +99,7 @@ namespace Aban360.Api.Extensions
             services.AddCalculationPoolApplicationInjections();
             services.AddCalculationPoolPersistenceInjections();
             services.AddCalculationPoolGatewayInjections();
+            services.AddCalculationPoolInfrastructureInjections();
         }
         private static void AddMeterPoolDI(this IServiceCollection services)
         {
