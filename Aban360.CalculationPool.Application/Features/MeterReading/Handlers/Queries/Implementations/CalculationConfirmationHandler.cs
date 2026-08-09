@@ -193,6 +193,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                     WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
+
                     await bedBesCreateService.InsertByBulk(BedBesBatch, dbName);
                     if ((kasrHaBatch?.Count() ?? 0) > 0)
                     {

@@ -71,21 +71,24 @@
         public static string UsageGroup3UpdateOpLog => @"گروه کاربری3 ویرایش شد. کاربری: از {0} به {1}  /  شناسه گروه2: از {2} به {3}";
         public static string UsageGroup3DeleteOpLog => @"گروه کاربری3 حذف شد. شناسه جدول:{0}";
         public static string UsageGroup3DeleteListOpLog => @"گروه کاربری3 حذف شد. شناسه گروه کاربری 2:{0}  تعداد :{1}";
-      
+
         public static string RequestConfirmTracking => @"ثبت قطعی درخواست انجام شد. شماره پیگیری:{0} ناحیه:{1}  شناسه جدول لاگ اطلاعات کاربر:{2}";
 
         public static string MeterApkFileInsertOpLog => @"فایل برنامه قرائت ذخیره شد. نام:{0}  ورژن:{1}";
         public static string MeterApkFileRemoveOpLog => @"فایل برنامه قرائت حذف شد. شناسه فایل:{0}";
-    
+
         public static string BillIdTagListInsert => @"فایل اکسل برچسب آپلود شد. نام فایل:{0}  تعداد مشترک:{1}";
         public static string BillIdTagListDelete => @"لیست مشترکین دارای تگ حذف شد. تعداد شناسه تگ وارد شده:{0}  تعداد انتساب‌های حذف شده:{1}";
-     
+
         public static string CustomerBranchTypeUpdateOpLog => @"نوع واگذاری ویرایش شد. شناسه قبض:{0} ";
         public static string CustomerDeletionStateUpdateOpLog => @"وضعیت انشعاب ویرایش شد. شناسه قبض:{0}  ردیف:{1}  ناحیه:{2}  وضعیت قبلی:{3}  وضعیت فعلی:{4}";
         public static string CustomerEstateUpdateOpLog => @"اطلاعات واحد و ملک ویرایش شد. شناسه قبض:{0}";
         public static string CustomerTechnicalUpdateOpLog => @"مشخصات فنی ویرایش شد. شناسه قبض:{0}";
         public static string CustomerMobileNumberUpdateOpLog => @"تلفن همراه مشترک ویرایش شد. شناسه قبض:{0}";
         public static string CustomerFullUpdateOpLog => @"ویرایش کامل اطلاعات مشترک انجام شد. شناسه قبض:{0}";
+
+        public static string CollectBillsDetailInsertOpLog => @"اطلاعات فایل قبوض تجمیعی ذخیره شد.شناسه گروه:{0}   مرحله:{1} ";
+        public static string CollectBillsDetailUpdateOpLog => @"اطلاعات فایل قبوض تجمیعی ویرایش شد.شناسه گروه:{0}   مرحله:{1} ";
 
 
     }

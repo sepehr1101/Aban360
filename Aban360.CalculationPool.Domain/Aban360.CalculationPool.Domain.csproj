@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Features\Bill\Dtos\Queries\CollectBillsDetailGetDto.cs~RF4b843355.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Aban360.ClaimPool.Domain\Aban360.ClaimPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
   </ItemGroup>

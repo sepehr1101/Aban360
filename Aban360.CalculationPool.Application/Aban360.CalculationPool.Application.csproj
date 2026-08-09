@@ -16,11 +16,13 @@
     <PackageReference Include="DotNetDBF" Version="7.0.1" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
+    <PackageReference Include="Hangfire.Core" Version="1.8.17" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Aban360.CalculationPool.Domain\Aban360.CalculationPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.Evaluation\Aban360.CalculationPool.Evaluation.csproj" />
+    <ProjectReference Include="..\Aban360.CalculationPool.Infrastructore\Aban360.CalculationPool.Infrastructure.csproj" />
     <ProjectReference Include="..\Aban360.CalculationPool.Persistence\Aban360.CalculationPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.ClaimPool.GatewayAdhoc\Aban360.ClaimPool.GatewayAdhoc.csproj" />
     <ProjectReference Include="..\Aban360.OldCalcPool.Application\Aban360.OldCalcPool.Application.csproj" />

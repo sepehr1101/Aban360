@@ -308,5 +308,9 @@
         public static string InvalidDuplicateStringCode => "کد شناسه یکتا تکراری است.";
         public static string NotFoundStringCode(string stringCode) => $"کد شناسه یکتا:{stringCode} یافت نشد.";
 
+
+        //CollectBills
+        public static string InvalidInsertCollectBillDetail => "خطا در ذخیره اطلاعات قبوض تجمیعی";
+        public static string InvalidUpdateCollectBillDetail => "خطا در ویرایش تاریخ اتمام اطلاعات قبوض تجمیعی";
     }
 }

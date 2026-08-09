@@ -715,7 +715,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     		b.today_no,
                     		r.elat,
                     		b.del,
-							b.cod_vas,
+							b.cod_vas CounterStateCode,
+							b.rate ConsumptionAverage,
+							b.masraf Consumption,
                             Case 
                                 When b.del = 0 And b.cod_vas In (4,7,8) Then NULL
                                 When b.del = 0 And b.cod_vas Not In (4,7,8) Then b.today_no
@@ -736,11 +738,17 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	 Where b.radif=@CustomerNumber And b.town=@ZoneId
                     )
                     Select Top 1 
-                    		PreviousDateJalali,
-                    		PreviousNumber
-                    From Cte
+                    		c.PreviousDateJalali,
+                    		c.PreviousNumber,
+							c.CounterStateCode,
+							cv.Title CounterStateTitle,
+							c.ConsumptionAverage,
+							c.Consumption
+                    From Cte c
+					Join [Db70].dbo.CounterVaziat cv
+						ON c.CounterStateCode=cv.MoshtarakinId
                     Where PreviousNumber Is Not Null 
-                    Order By date_bed Desc";
+                    Order By c.date_bed Desc";
         }
         private string GetInvalidPreviousBedBesBySqlBulkCopyQuery(string dbName)
         {
