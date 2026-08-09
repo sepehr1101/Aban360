@@ -274,6 +274,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         }
         private (double, double) CalcFormula(NerkhGetDto nerkh, double monthlyAverageConsumption, int olgoo, int? c, decimal zoneMultiplier, decimal zoneMultiplier2, int duration, decimal allowedKModifier, decimal disAllowedKModifier, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, [Optional] IEnumerable<int> tagIds)
         {
+            double t = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.DomesticUnitForHousehold : customerInfo.UnitAll);
+            if (IsConstruction(customerInfo.BranchType) && IsDomesticWithoutUnspecified(customerInfo.UsageId))
+            {
+                t = customerInfo.DomesticUnit <= 1 ? 1 : customerInfo.DomesticUnit;
+            }
+            if (IsGardenAndResidence(customerInfo.UsageId))
+            {
+                t = (customerInfo.DomesticUnit + customerInfo.OtherUnit) < 1 ? 1 : customerInfo.DomesticUnit + customerInfo.OtherUnit;
+            }
             object parametersAllowed = new
             {
                 X = monthlyAverageConsumption,
@@ -286,7 +295,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 D = (double)duration,
                 L = consumptionPartialInfo.AllowedConsumption,
                 Q = consumptionPartialInfo.DisallowedConsumtion,
-                T = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.DomesticUnitForHousehold : customerInfo.UnitAll),
+                T = t,
                 Z = (double)customerInfo.ContractualCapacity,
                 tags = tagIds?.ToArray()
             };
@@ -302,7 +311,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 D = (double)duration,
                 L = consumptionPartialInfo.AllowedConsumption,
                 Q = consumptionPartialInfo.DisallowedConsumtion,
-                T = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.DomesticUnitForHousehold : customerInfo.UnitAll),
+                T = t,
                 Z = (double)customerInfo.ContractualCapacity,
                 tags = tagIds?.ToArray()
             };

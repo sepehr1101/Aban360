@@ -441,6 +441,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         }     
         private (double,double) CalcFormula(string allowedFormula, string disallowedFormula, double monthlyAverageConsumption, int olgoo, int? c, decimal zoneMultiplier, decimal zoneMultipler2, decimal allowedKModifier, decimal disAllowedKModifier, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo,[Optional] IEnumerable<int> tagIds)
         {
+            double t = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.DomesticUnitForHousehold : customerInfo.UnitAll);
+            if(IsConstruction(customerInfo.BranchType) && IsDomesticWithoutUnspecified(customerInfo.UsageId))
+            {
+                t = customerInfo.DomesticUnit <= 1 ? 1 : customerInfo.DomesticUnit;
+            }
+            if (IsGardenAndResidence(customerInfo.UsageId))
+            {
+                t = (customerInfo.DomesticUnit + customerInfo.OtherUnit) < 1 ? 1 : customerInfo.DomesticUnit + customerInfo.OtherUnit;
+            }
             object parametersAllowed = new
             {
                 customerInfo.UsageId,
@@ -453,7 +462,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 D = (double)consumptionPartialInfo.Duration,
                 L = (double)consumptionPartialInfo.AllowedConsumption,
                 Q = (double)consumptionPartialInfo.DisallowedConsumtion,
-                T = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.DomesticUnitForHousehold : customerInfo.UnitAll),
+                T = t,
                 Z = (double)customerInfo.ContractualCapacity,
                 tags = tagIds.ToArray()
             };
@@ -469,7 +478,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 D = (double)consumptionPartialInfo.Duration,
                 L = (double)consumptionPartialInfo.AllowedConsumption,
                 Q = (double)consumptionPartialInfo.DisallowedConsumtion,
-                T = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.DomesticUnitForHousehold : customerInfo.UnitAll),
+                T = t,
                 Z = (double)customerInfo.ContractualCapacity,
                 tags = tagIds.ToArray()
             };
