@@ -95,7 +95,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         {
             string query = GetDeleteByCustomerNumberQuery(dbName);
             int rowsAffected = await _connection.ExecuteAsync(query, input, _transaction);
-            
+
             if (rowsAffected == 0)
             {
                 throw new ReadingException(ExceptionLiterals.NotFoundBillsToRemoved);

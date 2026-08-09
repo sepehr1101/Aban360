@@ -5,7 +5,8 @@
         Initialize = 1,
         CreateZip = 2,
         Upload = 3,
-        Confirm = 4,
-        GetState = 5
+        AssingUploadedFile = 4,
+        Confirm = 5,
+        GetState = 6
     }
 }

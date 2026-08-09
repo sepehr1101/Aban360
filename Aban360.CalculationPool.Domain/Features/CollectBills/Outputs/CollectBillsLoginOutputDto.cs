@@ -3,5 +3,6 @@
     public record CollectBillsLoginOutputDto
     {
         public string Token { get; set; }
+        public DateTime ExpirationDateTime { get; set; }
     }
 }
