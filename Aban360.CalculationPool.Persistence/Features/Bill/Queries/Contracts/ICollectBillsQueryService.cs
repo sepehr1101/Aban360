@@ -1,9 +1,10 @@
-﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
+﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
 
 namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts
 {
     public interface ICollectBillsQueryService
     {
-        Task<IEnumerable<CollectBillsDataDto>> Get();
+        Task<IEnumerable<CollectBillsDataDto>> Get(CollectBillsGetDataToSendInputDto input);
     }
 }

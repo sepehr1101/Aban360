@@ -282,7 +282,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             string returnMode = isPartial ? "محاسبه مجدد" : "کامل";
             string logText = string.Format(OpLogLiterals.BillReturnOpLog, returnMode, customerInfo.BillId, billCount, fromDateJalali, toDateJalali, different.Baha, confirmNumber);
 
-            await SqlCommands(bedBes, newCalculation, different, appUser, logText);
+            await ExecSql(bedBes, newCalculation, different, appUser, logText);
             return result;
         }
         public AutoBackCreateDto GetFullNewCalculation(BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, int jalaseNumber)
@@ -697,8 +697,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 return minutesNumber.Value;
             }
 
-            ZoneIdAndCustomerNumberOutputDto customerInfo = new(zoneId, customerNumber);
-            int? currentDaypreviousMinutes = await _bedBesQueryService.GetLatestJalaseNumber(customerInfo);
+            int? currentDaypreviousMinutes = await _bedBesQueryService.GetLatestJalaseNumber();
             if (!currentDaypreviousMinutes.HasValue || currentDaypreviousMinutes <= 0)
             {
                 var currentDateJalali = DateTime.Now.ToShortPersianDateString();
@@ -707,7 +706,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             }
             else
             {
-                return currentDaypreviousMinutes.Value + 1;
+                Random rand=new Random();
+                int random = rand.Next(0,9);
+                return currentDaypreviousMinutes.Value + random;
             }
         }
         public async Task FullValidate(ReturnBillFullInputDto input, CancellationToken cancellationToken)
@@ -771,7 +772,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 _ => userInput.Value
             };
         }
-        private async Task SqlCommands(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, IAppUser appUser, string logText)
+        private async Task ExecSql(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, IAppUser appUser, string logText)
         {
             ICollection<AutoBackCreateDto> datas = new List<AutoBackCreateDto>() { bedBes, newCalculation, different };
             RepairCreateDto repairCreateDto = GetRepairCreateDto(different);

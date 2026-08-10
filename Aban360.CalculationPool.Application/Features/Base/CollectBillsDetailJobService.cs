@@ -60,8 +60,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
             CollectBillsDetailInsertDto createfile = new(groupingId, (int)CollectBillStepEnum.CreateZip, DateTime.Now, null, string.Empty);
             int effectedId = await CollectgBillsDetailInsert(createfile);
 
-            IEnumerable<CollectBillsDataDto> data = await _collectBillsQueryService.Get();
-            string zipFileName = await CreateZip(data.Select(s => s.Text).ToList());
+            string fromDateJalali = "1405/01/01";
+            string toDateJalali = "1405/02/01";
+            //todo: ZoneIds
+            CollectBillsGetDataToSendInputDto gatData = new(new List<int> { 131301, 131302 }, fromDateJalali, toDateJalali);
+            IEnumerable<CollectBillsDataDto> data = await _collectBillsQueryService.Get(gatData);//todo: remove "Top 1" from query
+            string zipFileName = await CreateZip(data.Select(s => s.Row).ToList(), fromDateJalali, toDateJalali);
             string description = $"فایل:{zipFileName} با تعداد سطر:{data?.Count() ?? 0} ایجاد شد.";
             CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, description, DateTime.Now);
             await CollectBillsDetailUpdate(finalCreateFile);
@@ -113,18 +117,18 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             //get State
         }
-        private async Task<string> CreateZip(ICollection<string> data)
+
+        private async Task<string> CreateZip(ICollection<string> data, string fromDateJalali, string toDateJalali)
         {
             var timeNow = DateTime.Now.ToString("HH-mm-ss");
-            var persianDate = DateTime
-                                      .Now
-                                      .ToShortPersianDateString()
-                                      .Replace('/', '-')
-                                      .Replace(':', '-')
-                                      .Replace(' ', '_');
-            string baseFileName = $"{persianDate}-{timeNow}-قبوض تجمیعی";
-            string txtFileName = $"{baseFileName}.txt";
-            string zipFileName = $"{baseFileName}.zip";
+            var persianDate = DateTime.Now.ToShortPersianDateString().Replace("/", "");
+
+            //string baseFileName = $"{persianDate}-{timeNow}-قبوض تجمیعی";
+            //string txtFileName = $"{baseFileName}.txt";
+            //string zipFileName = $"{baseFileName}.zip";
+            var txtFileName = $"NWW_{persianDate}.txt";
+            var zipFileName = $"NWW_{persianDate}_{fromDateJalali}_{toDateJalali}.zip";
+
             string txtPath = Path.Combine(_basePath, txtFileName);
             string zipPath = Path.Combine(_basePath, zipFileName);
 

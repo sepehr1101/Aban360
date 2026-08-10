@@ -120,14 +120,14 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                     BedBesCommandService bedBesCommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
-                    //await autoBackCommandService.UpdateIsConfirmed((int)repairCreateDto.JalaseNo, atlasDbName);
-                    //await autoBackCommandService.Create(autoBacksCreateDto, zoneDbName, false);
+                    await autoBackCommandService.UpdateIsConfirmed((int)repairCreateDto.JalaseNo, atlasDbName);
+                    await autoBackCommandService.Create(autoBacksCreateDto, zoneDbName, false);
                     int repairId = await repairCommandService.Insert(repairCreateDto, zoneDbName);
-                    //await waterDebtCommandService.UpdateAmount(memberInfo.BillId, (long)repairCreateDto.Baha);
-                    //await membersCommandService.UpdateBedbes(new ZoneIdAndCustomerNumber(memberInfo.ZoneId, memberInfo.CustomerNumber), (long)repairCreateDto.Baha * -1, zoneDbName);
-                    //await billCommandService.InsertReturnByRepair(repairId, zoneDbName);
-                    //await bedBesCommandService.UpdateDel(bedBesUpdateDelDto, zoneDbName);
-                    //await opLogCommandService.Insert(logText, appUser);
+                    await waterDebtCommandService.UpdateAmount(memberInfo.BillId, (long)repairCreateDto.Baha);
+                    await membersCommandService.UpdateBedbes(new ZoneIdAndCustomerNumber(memberInfo.ZoneId, memberInfo.CustomerNumber), (long)repairCreateDto.Baha * -1, zoneDbName);
+                    await billCommandService.InsertReturnByRepair(repairId, zoneDbName);
+                    await bedBesCommandService.UpdateDel(bedBesUpdateDelDto, zoneDbName);
+                    await opLogCommandService.Insert(logText, appUser);
 
                     transaction.Commit();
                 }
