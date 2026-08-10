@@ -7,7 +7,7 @@
         public DateTime InsertDateTime { get; set; }
         public DateTime? FinishDateTime { get; set; }
         public string? Description { get; set; }
-        public CollectBillsDetailInsertDto(Guid groupingId, int stepId, DateTime insertDateTime,DateTime? finishDateTime, string? description)
+        public CollectBillsDetailInsertDto(Guid groupingId, int stepId, DateTime insertDateTime, DateTime? finishDateTime, string? description)
         {
             GroupingId = groupingId;
             StepId = stepId;

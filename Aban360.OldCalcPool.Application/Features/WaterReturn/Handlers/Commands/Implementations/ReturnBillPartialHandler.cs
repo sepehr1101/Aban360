@@ -33,6 +33,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IReturnBillBaseHandler _returnBillBaseHandler;
         private readonly IRepairQueryService _repairQueryService;
         private readonly IBillReturnCauseQueryService _billReturnCauseQueryService;
+        private static int[] _specialCounterStateCodes = { (int)CounterStateCodeEnum.Malfunction, (int)CounterStateCodeEnum.Change, (int)CounterStateCodeEnum.Reverse, (int)CounterStateCodeEnum.NextRound };
         private const int _11Olgoo = 11;
         private const int _12Olgoo = 12;
         private const int _13Olgoo = 13;
@@ -163,7 +164,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             int previousNumber = (int)bedBesList.Min(x => x.PriNo);
             int currentNumber = (int)bedBesList.Max(x => x.TodayNo);
 
-            if (bedBesList.Any(bedBes => bedBes.CodVas == (int)CounterStateCodeEnum.Malfunction))
+            if (bedBesList.Any(bedBes => _specialCounterStateCodes.Contains((int)bedBes.CodVas)))
             {
                 decimal masraf = bedBesResult.Masraf;
                 float consumptionAverage = (float)masraf * _dayOfMonth / (float)(customerInfoOutputDto.PureDomesticUnit * bedBesResult.Modat);

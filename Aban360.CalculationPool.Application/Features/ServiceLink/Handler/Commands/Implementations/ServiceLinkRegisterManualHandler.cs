@@ -93,7 +93,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
             {
                 throw new InvalidDateException(ExceptionLiterals.InvalidDate);
             }
-            if (_todayJalali.CompareTo(checkDateJalali) < 0)
+            if (_todayJalali.CompareTo(checkDateJalali) <= 0)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidPaymentInsertAfterDateCheck);
             }

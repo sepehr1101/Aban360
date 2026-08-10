@@ -188,18 +188,12 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             int count = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, @params);
             return count;
         }
-        public async Task<int?> GetLatestJalaseNumber(ZoneIdAndCustomerNumberOutputDto input)
+        public async Task<int?> GetLatestJalaseNumber()
         {
             //string dbName = GetDbName(input.ZoneId);
             string dbName = "Atlas";
             string query = GetLatestJalaseNumberQuery(dbName);
-            var @params = new
-            {
-                zoneId = input.ZoneId,
-                customerNumber = input.CustomerNumber,
-                date = DateTime.Now.ToShortPersianDateString()
-            };
-            int? jalaseNumber = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, @params);
+            int? jalaseNumber = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query);
             return jalaseNumber;
         }
         public async Task<BedBesWithConsumptionOutputDto> GetPrevious(ZoneIdAndCustomerNumberOutputDto input, string dateJalali)
@@ -604,10 +598,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
             return $@"Select top 1 jalase_no
                     From atlas.dbo.autoback
-                    Where 
-                    	town=@ZoneId AND
-                    	radif=@CustomerNumber AND
-                    	date_bed=@Date
                     Order By date_bed desc,id desc";
         }
         private string GetLatest(string dbName)

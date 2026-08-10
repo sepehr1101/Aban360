@@ -19,5 +19,6 @@
         public string BillId { get; set; }
         public string? ToDayDateJalali { get; set; }
         public long Discount { get; set; }
+        public int Operator { get; set; }
     }
 }

@@ -90,7 +90,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         private async Task DateValidate(RequestBillDetailGetDto requestBillDetailInfo)
         {
             string dateCheck = await _variabService.GetDateCheck(requestBillDetailInfo.ZoneId);
-            if (requestBillDetailInfo.RegisterDateJalali.CompareTo(dateCheck) < 0)
+            if (requestBillDetailInfo.RegisterDateJalali.CompareTo(dateCheck) <= 0)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidServiceLinkReturnRemoveBeforDateCheck);
             }

@@ -31,6 +31,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IVariabService _variabService;
         private readonly IBedBesQueryService _bedBesQueryService;
         private readonly ITavizQueryService _tavizQueryService;
+        private int _operator = 666;
 
         public RemoveBillHandler(
             IHttpContextAccessor contextAccessor,
@@ -162,6 +163,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ReportPoolDomain.ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = await _customerInfoQueryService.GetZoneIdAndCustomerNumber(input.BillId);
             RemoveBillGetDto removebillGet = new(input.Id, zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
             RemoveBillDataInputDto result = await _billQueryService.GetToRemove(removebillGet);
+            result.Operator = _operator;
             return result;
         }
     }

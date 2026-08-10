@@ -46,12 +46,12 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         public async Task<bool> IsOperationValid(int zoneId, string operationDate)
         {
             string dateCheck = await _sqlReportConnection.QuerySingleAsync<string>(GetCheckDate1(GetDbName(zoneId)), new { @zoneId });
-            if (operationDate.CompareTo(dateCheck) < 0)
+            if (operationDate.CompareTo(dateCheck) <= 0)
             {
                 return false;
             }
             string _35daysAgo = DateTime.Now.AddDays(-35).ToShortPersianDateString();
-            if (operationDate.CompareTo(_35daysAgo) < 0)
+            if (operationDate.CompareTo(_35daysAgo) <= 0)
             {
                 return false;
             }

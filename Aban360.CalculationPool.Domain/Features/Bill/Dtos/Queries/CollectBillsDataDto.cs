@@ -2,6 +2,6 @@
 {
     public record CollectBillsDataDto
     {
-        public string Text { get; set; }
+        public string Row { get; set; }
     }
 }
