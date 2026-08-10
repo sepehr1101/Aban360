@@ -442,9 +442,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         private (double,double) CalcFormula(string allowedFormula, string disallowedFormula, double monthlyAverageConsumption, int olgoo, int? c, decimal zoneMultiplier, decimal zoneMultipler2, decimal allowedKModifier, decimal disAllowedKModifier, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo,[Optional] IEnumerable<int> tagIds)
         {
             double t = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.DomesticUnitForHousehold : customerInfo.UnitAll);
-            if(IsConstruction(customerInfo.BranchType) && IsDomesticWithoutUnspecified(customerInfo.UsageId))
+            if(IsConstruction(customerInfo.BranchType) && IsPureDomestic(customerInfo.UsageId))
             {
                 t = customerInfo.DomesticUnit <= 1 ? 1 : customerInfo.DomesticUnit;
+            }
+            if (IsConstruction(customerInfo.BranchType) && IsDomesticCommercial(customerInfo.UsageId))
+            {
+                t = customerInfo.DomesticUnit + customerInfo.CommertialUnit + customerInfo.OtherUnit <= 1 ? 1 : customerInfo.DomesticUnit + customerInfo.CommertialUnit + customerInfo.OtherUnit;
             }
             if (IsGardenAndResidence(customerInfo.UsageId))
             {

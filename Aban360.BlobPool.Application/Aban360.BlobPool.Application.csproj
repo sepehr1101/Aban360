@@ -17,6 +17,7 @@
     <ProjectReference Include="..\Aban260.BlobPool.Infrastructure\Aban260.BlobPool.Infrastructure.csproj" />
     <ProjectReference Include="..\Aban360.BlobPool.Domain\Aban360.BlobPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.BlobPool.Persistence\Aban360.BlobPool.Persistence.csproj" />
+    <ProjectReference Include="..\Aban360.ClaimPool.Persistence\Aban360.ClaimPool.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

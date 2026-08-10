@@ -6,5 +6,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Contracts
     public interface ITrackingKartableQueryService
     {
         Task<ReportOutput<TrackingDisplayFlowHeaderOutputDto, TrackingDisplayFlowDateOutputDto>> Get(int trackNumber);
+        Task<string?> RepairBillId(int trackNumber);
     }
 }

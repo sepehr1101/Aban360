@@ -120,6 +120,18 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             {
                 return 1;
             }
+            if (IsCharityOrSchool(customerInfo.UsageId))
+            {
+                return 1;
+            }
+            if(IsIndustrial(customerInfo.UsageId))
+            {
+                return 1;
+            }
+            if (IsGardenAndResidence(customerInfo.UsageId))
+            {
+                return customerInfo.DomesticUnit + customerInfo.OtherUnit < 1 ? 1 : customerInfo.DomesticUnit + customerInfo.OtherUnit;
+            }
             return finalDomesticUnit;
         }
         private int GetFinalDomesticUnit(CustomerInfoOutputDto customerInfo, string readingDateJalali)
