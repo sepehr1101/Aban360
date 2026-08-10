@@ -91,7 +91,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             {
                 throw new TankerException(ExceptionLiterals.InvalidDeleteTankerAfterPaid);
             }
-            if (tankerInfo.RegisterDateJalali.CompareTo(DateCheckVariab) < 0)
+            if (tankerInfo.RegisterDateJalali.CompareTo(DateCheckVariab) <= 0)
             {
                 throw new TankerException(ExceptionLiterals.InvalidDeleteTankerAfterDateCheck);
             }

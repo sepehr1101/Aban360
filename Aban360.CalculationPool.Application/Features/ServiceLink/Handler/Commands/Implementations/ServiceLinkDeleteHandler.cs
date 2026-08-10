@@ -62,7 +62,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         private async Task ValidateDate(int zoneId, string payDateJalali)
         {
             string checkDateJalali = await _variabService.GetDateCheck(zoneId);
-            if (payDateJalali.CompareTo(checkDateJalali) < 0)
+            if (payDateJalali.CompareTo(checkDateJalali) <= 0)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidIPaymentDeleteAfterDateCheck);
             }

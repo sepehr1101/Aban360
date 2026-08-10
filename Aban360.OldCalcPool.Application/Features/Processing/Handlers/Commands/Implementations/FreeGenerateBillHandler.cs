@@ -542,12 +542,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 if (!currentDate.HasValue)
                 {
                     var message = string.Join("تاریخ ناصحیح");
-                    throw new BaseException(message);
+                    throw new  InvalidBillCommandException(message);
                 }
                 if (currentDate.Value > DateTime.Now.ToDateOnly())
                 {
                     var message = string.Join("تاریخ ناصحیح");
-                    throw new BaseException(message);
+                    throw new InvalidBillCommandException(message);
+                }
+                if (currentDate.Value < DateTime.Now.AddDays(-5).ToDateOnly())
+                {
+                    var message = string.Join("تاریخ ناصحیح");
+                    throw new InvalidBillCommandException(message);
                 }
             }
         }

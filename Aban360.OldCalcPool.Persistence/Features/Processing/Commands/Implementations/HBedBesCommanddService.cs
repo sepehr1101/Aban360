@@ -43,7 +43,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         @ZoneId,@CustomerNumber,@Barge,
                         @RegisterDateJalali,@PreviousDateJalali,@CurrentDateJalali,@PreviousNumber,@CurrentNumber,
                         @Consumption,@AbBahaAmount,@FazelabAmount,@Baha,
-                        @BillId,@PaymentId,@ToDayDateJalali,0)";
+                        @BillId,@PaymentId,@ToDayDateJalali,@Operator)";
         }
     }
 }
