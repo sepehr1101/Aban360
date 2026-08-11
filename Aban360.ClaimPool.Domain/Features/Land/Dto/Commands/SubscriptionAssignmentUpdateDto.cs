@@ -1,6 +1,4 @@
-﻿using DNTPersianUtils.Core;
-
-namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
+﻿namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
 {
     public record SubscriptionAssignmentUpdateDto
     {
