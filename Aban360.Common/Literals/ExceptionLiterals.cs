@@ -210,6 +210,7 @@
         public static string InvalidDiscountCount => "تعداد تخفیف را وارد کنید";
 
         //Tracking
+        public static string NotFoundMoshtrak => "اطلاعات مشترک یافت نشد.";
         public static string InvalidShowPreviousRequest => "درخواست در سیستم قدیم ثبت شده است. امکان نمایش وجود ندارد.";
         public static string UseUpdateApi => "از آدرس  ویرایش استفاده کنید.";
         public static string InvalidMotherRequest => "درخواست مادر-فرزند قابل پذیرش نیست";

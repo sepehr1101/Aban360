@@ -26,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ConsumptionManagementHeaderOutputDto, ConsumptionManagementDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<FlatReportOutput<MemberInfoGetDto, CosnumptionManagementByBillIdDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ConsumptionManagementByBillIdInputDto input, CancellationToken cancellationToken)
         {
             FlatReportOutput<MemberInfoGetDto, CosnumptionManagementByBillIdDataOutputDto> result = await _consumptionManagerHandler.Handle(input, CurrentUser, cancellationToken);

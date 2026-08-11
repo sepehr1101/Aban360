@@ -29,6 +29,7 @@
         public static string InvalidInsertComment => "خطا در ذخیره کامنت";
         public static string InvalidSwapRequestType => "خطا در ویرایش نوع درخواست";
         public static string InvalidUpdateMoshtrakInstallment => "خطا در ویرایش اطلاعات اقساط مشترک";
+        public static string InvalidUpdateMoshtrak => "خطا در ویرایش اطلاعات مشترک";
         public static string InvalidInsertQueue => "خطا در ذخیره پیامک";
         public static string InvalidInsertAssessmentOff => "خطا در ثبت مرخصی";
         public static string NotFoundId => "شناسه وارد شده یافت نشد";
