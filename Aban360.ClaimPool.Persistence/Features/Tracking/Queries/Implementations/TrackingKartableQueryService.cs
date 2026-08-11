@@ -26,6 +26,45 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
             header.BillId = data.LastOrDefault().BillId;
             return new ReportOutput<TrackingDisplayFlowHeaderOutputDto, TrackingDisplayFlowDateOutputDto>(_title, header, data);
         }
+        public async Task<string?> RepairBillId(int trackNumber)
+        {
+            TrackingBillIdRepairDto? trackingInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<TrackingBillIdRepairDto>(
+                GetTrackingInfoForBillIdRepairQuery(), new { trackNumber });
+            if (trackingInfo is null)
+            {
+                return null;
+            }
+            if(!string.IsNullOrWhiteSpace(trackingInfo.BillId) && trackingInfo.BillId.Length>6)
+            {
+                return trackingInfo.BillId;
+            }
+
+            string dbName = GetDbName(trackingInfo.ZoneId);
+            string? billId = await _sqlReportConnection.QueryFirstOrDefaultAsync<string?>(
+                GetBillIdFromGhestQuery(dbName), new { trackNumber });
+
+            if (string.IsNullOrWhiteSpace(billId) || billId.Length < 6)
+            {
+                int? customerNumber = await _sqlReportConnection.QueryFirstOrDefaultAsync<int?>(
+                    GetCustomerNumberFromMoshtrakQuery(dbName), new { trackNumber });
+                if (customerNumber is null || customerNumber==0)
+                {
+                    return null;
+                }
+
+                billId = await _sqlReportConnection.QueryFirstOrDefaultAsync<string?>(
+                    GetBillIdFromMembersQuery(dbName), new { customerNumber });
+            }
+
+            if (string.IsNullOrWhiteSpace(billId) || billId.Length<6)
+            {
+                return null;
+            }
+
+            await _sqlReportConnection.ExecuteAsync(
+                GetTrackingBillIdUpdateCommand(), new { trackingInfo.TrackId, billId });
+            return billId;
+        }
         private async Task<IEnumerable<TrackingDisplayFlowDateOutputDto>> GetDataByTrackNumber(int trackNumber)
         {
             string query = GetDataQuery();
@@ -98,6 +137,54 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
                     From AbAndFazelab.dbo.tracking 
                     where tracknumber=@trackNumber
                     Order by DateAndTime ";
+        }
+
+        private string GetTrackingInfoForBillIdRepairQuery()
+        {
+            return @"Select Top 1
+                        TrackID,
+                        ZoneID,
+                        BillID BillId
+                    From [AbAndFazelab].dbo.Tracking
+                    Where
+                        TrackNumber=@trackNumber AND
+                        IsConsiderd=0
+                    Order By DateAndTime Desc";
+        }
+        private string GetBillIdFromGhestQuery(string dbName)
+        {
+            return $@"Select Top 1 TRIM(sh_ghabs1)
+                    From [{dbName}].dbo.ghest
+                    Where
+                        par_no=REPLICATE('0', 11-LEN(CAST(@trackNumber AS varchar(11))))+CAST(@trackNumber AS varchar(11)) AND
+                        NULLIF(TRIM(sh_ghabs1), '') IS NOT NULL";
+        }
+        private string GetCustomerNumberFromMoshtrakQuery(string dbName)
+        {
+            return $@"Select Top 1 radif
+                    From [{dbName}].dbo.moshtrak
+                    Where par_no=REPLICATE('0', 11-LEN(CAST(@trackNumber AS varchar(11))))+CAST(@trackNumber AS varchar(11))";
+        }
+        private string GetBillIdFromMembersQuery(string dbName)
+        {
+            return $@"Select Top 1 TRIM(bill_id)
+                    From [{dbName}].dbo.members
+                    Where
+                        radif=@customerNumber AND
+                        NULLIF(TRIM(bill_id), '') IS NOT NULL";
+        }
+        private string GetTrackingBillIdUpdateCommand()
+        {
+            return @"Update [AbAndFazelab].dbo.Tracking
+                    Set BillID=@billId
+                    Where TrackID=@trackId";
+        }
+
+        private sealed record TrackingBillIdRepairDto
+        {
+            public Guid TrackId { get; init; }
+            public int ZoneId { get; init; }
+            public string? BillId { get; set; }
         }
 
     }

@@ -25,6 +25,14 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         {
             return CheckConditions(usageId, [0, 1, 3, 25, 34]);
         }
+        internal static bool IsPureDomestic(int usageId)
+        {
+            return CheckConditions(usageId, [1]);
+        }
+        internal static bool IsDomesticCommercial(int usageId)
+        {
+            return CheckConditions(usageId, [3]);
+        }
         internal static bool IsDomesticWithoutUnspecified(int usageId)
         {
             return CheckConditions(usageId, [1, 3]);

@@ -29,6 +29,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             ReportOutput<TrackingDisplayFlowHeaderOutputDto, TrackingDisplayFlowDateOutputDto> result= await _trackingQueryService.Get(trackNumber);
             AllowedZoneValidation zoneValidation = new(_commontZoneService);
             await zoneValidation.Validation(result.ReportHeader.ZoneId, appUser);
+            result.ReportHeader.BillId = await _trackingQueryService.RepairBillId(trackNumber) ?? result.ReportHeader.BillId;
 
             return result;
         }
