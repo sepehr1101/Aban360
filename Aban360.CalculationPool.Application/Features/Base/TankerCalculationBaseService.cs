@@ -1,27 +1,35 @@
 ﻿using Aban360.CalculationPool.Domain.Constants;
+using Aban360.CalculationPool.Domain.Features.Rule.Dto.Queries;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
+using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.Extensions;
-using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
-using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using DNTPersianUtils.Core;
+using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
+using org.matheval;
+using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
-    public sealed class TankerCalculationBaseService
+    internal sealed class TankerCalculationBaseService : BaseExpressionCalculator
     {
         private readonly ITankerWaterDistanceTariffQueryService _tankerQueryService;
+        private readonly ITankerTariffQueryService _tankerTariffQueryService;
         private readonly IZaribCQueryService _zaribCQueryService;
         private readonly IZaribGetService _zaribGetService;
         static float _hotSeasonMultiple = 0.2f;
         public TankerCalculationBaseService(
             ITankerWaterDistanceTariffQueryService tankerQueryService,
+            ITankerTariffQueryService tankerTariffQueryService,
             IZaribCQueryService zaribCQueryService,
             IZaribGetService zaribGetService)
         {
             _tankerQueryService = tankerQueryService;
             _tankerQueryService.NotNull(nameof(tankerQueryService));
+
+            _tankerTariffQueryService = tankerTariffQueryService;
+            _tankerTariffQueryService.NotNull(nameof(zaribCQueryService));
 
             _zaribCQueryService = zaribCQueryService;
             _zaribCQueryService.NotNull(nameof(zaribCQueryService));
@@ -36,16 +44,26 @@ namespace Aban360.CalculationPool.Application.Features.Base
             var (c, zb) = await GetZarib(input.ZoneId);
             decimal saleStateZarib = input.SaleState == TankerWaterSaleStateEnum.Nomads ? 1.5m : 4;
 
+
             long deliveryAmount = await CalcDeliveryAmount(input);
-            decimal abBaha = (input.Consumption * saleStateZarib * c) * zb;
+            decimal abBaha = await GetWaterAmount(input, c, zb, saleStateZarib);
             decimal boodjeh = input.Consumption * 2000m;
             decimal multiplier = GetVarzaneMultiplier(input);
-
 
             decimal water = abBaha * multiplier;
             decimal hotSeason = IsHotSeasonDate() ? water * (decimal)_hotSeasonMultiple : 0;
 
             return new TankerWaterCalculationOutputDto(null, null, null, mobileNumber, water, boodjeh, deliveryAmount, hotSeason);
+        }
+        private async Task<decimal> GetWaterAmount(TankerWaterCalculationInputDto input, int c, decimal zb, decimal saleStateZarib)
+        {
+            TankerTariffGetDto tankerTariffInfo = await _tankerTariffQueryService.Get(input.ZoneId);
+
+            object parameters = new { M = input.Consumption, SS = saleStateZarib, C = c, K = zb };
+            Expression expression = GetExpression(tankerTariffInfo.WaterFormula, parameters);
+            decimal abBaha = expression.Eval<decimal>();
+
+            return abBaha;
         }
         private decimal GetVarzaneMultiplier(TankerWaterCalculationInputDto input)
         {

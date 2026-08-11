@@ -2,7 +2,10 @@
 {
     public record CollectBillsOutputDto<T>
     {
-        public T Parameters { get; set; }
-        public CollectBillsStatusOutputDto Status { get; set; }
+        public bool IsSuccess { get; set; }
+        public int Code { get; set; }
+        public T? Result { get; set; }
+        public string Message { get; set; }
+        public IEnumerable<CollectBillsErrorOutputDto>? Errors{ get; set; }
     }
 }

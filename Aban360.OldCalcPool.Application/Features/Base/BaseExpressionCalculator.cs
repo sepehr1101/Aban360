@@ -11,7 +11,7 @@ namespace Aban360.OldCalcPool.Application.Features.Base
         {
             try
             {
-                if(string.IsNullOrWhiteSpace(formula) || formula.Trim()=="0")
+                if (string.IsNullOrWhiteSpace(formula) || formula.Trim() == "0")
                 {
                     return default(T);
                 }
@@ -23,7 +23,7 @@ namespace Aban360.OldCalcPool.Application.Features.Base
                         .ToDictionary();
                 }
                 Interpreter interpreter = new();
-                
+
                 BindVariables(interpreter, propertyDictionary);
                 return interpreter.Eval<T>(formula);
             }

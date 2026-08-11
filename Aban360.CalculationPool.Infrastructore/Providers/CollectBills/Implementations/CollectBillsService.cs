@@ -21,6 +21,7 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
         private const string _accept = "application/json";
         private const string _contentType = "application/json";
         private const string _tokenCacheKey = "CollectBills_AccessToken";
+        private const string _bearerToken = "Bearer";
         public CollectBillsService(
             IHttpClientFactory httpClientFactory,
             IOptions<CollectBillsOptions> options,
@@ -36,23 +37,29 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
             _catch.NotNull(nameof(_catch));
         }
 
+        private async Task<AuthenticationHeaderValue> GetAuthenticationValue()
+        {
+            CollectBillsLoginOutputDto tokenResult = await GetToken();
+            return new AuthenticationHeaderValue(_bearerToken, tokenResult.token_access);
+        }
         private async Task<CollectBillsLoginOutputDto> GetToken()
         {
             if (_catch.TryGetValue(_tokenCacheKey, out CollectBillsLoginOutputDto cachedToken))
             {
                 return cachedToken;
             }
-            CollectBillsOutputDto<CollectBillsLoginOutputDto> tokenResult = await GetNewToken();
-            var expireSecond = (tokenResult.Parameters.ExpirationDateTime - DateTime.Now).TotalSeconds;
+            CollectBillsLoginOutputDto tokenResult = await GetNewToken();
+            //var expireSecond = (tokenResult.Parameters.ExpirationDateTime - DateTime.Now).TotalSeconds;//todo: expireDate?
+            var expireSecond = 3600;
             var cacheOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(expireSecond - 30)
             };
-            _catch.Set(_tokenCacheKey, tokenResult.Parameters, cacheOptions);
+            _catch.Set(_tokenCacheKey, tokenResult, cacheOptions);
 
-            return tokenResult.Parameters;
+            return tokenResult;
         }
-        private async Task<CollectBillsOutputDto<CollectBillsLoginOutputDto>> GetNewToken()
+        private async Task<CollectBillsLoginOutputDto> GetNewToken()
         {
             CollectBillsLoginInputDto loginInput = new(_options.UserName, _options.Password);
             string url = $"{_options.BaseUrl}{_options.Login}";
@@ -62,15 +69,32 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
-            CollectBillsOutputDto<CollectBillsLoginOutputDto> result = await response.Content.ReadFromJsonAsync<CollectBillsOutputDto<CollectBillsLoginOutputDto>>();
+            CollectBillsLoginOutputDto result = await response.Content.ReadFromJsonAsync<CollectBillsLoginOutputDto>();
             return result;
         }
         private async Task<CollectBillsInputDto<T>> GetInputDto<T>(T inputDto)
         {
             CollectBillsLoginOutputDto token = await GetToken();
-            CollectBillsIdentityInputDto identity = new(token.Token);
+            CollectBillsIdentityInputDto identity = new(token.token_access);
             return new CollectBillsInputDto<T>(inputDto, identity);
         }
+
+        //*
+        public async Task<CollectBillsOutputDto<CollectBillsUploadOutputDto>> SendCustomerInfo(IEnumerable<string> sampleInputDto)
+        {
+            string url = $"{_options.BaseUrl}{_options.Upload}";
+            using var request = new HttpRequestMessage(HttpMethod.Post, url);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
+            request.Content = new StringContent(JsonSerializer.Serialize(sampleInputDto), Encoding.UTF8, _contentType);
+            request.Headers.Authorization = await GetAuthenticationValue();
+            //xAuthorization
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            CollectBillsOutputDto<CollectBillsUploadOutputDto> result = await response.Content.ReadFromJsonAsync<CollectBillsOutputDto<CollectBillsUploadOutputDto>>();
+            return result;
+        }
+
 
         public async Task<CollectBillsOutputDto<CollectBillsUploadOutputDto>> Upload(CollectBillsUploadInputDto input)
         {
@@ -129,6 +153,7 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
         public async Task<CollectBillsOutputDto<CollectBillsConfirmFileOutputDto>> ConfirmFileBills(CollectBillsConfirmFileInputDto input)
         {
             CollectBillsInputDto<CollectBillsConfirmFileInputDto> inputDto = await GetInputDto(input);
+
 
             string url = $"{_options.BaseUrl}{_options.ConfirmFile}";
             using var request = new HttpRequestMessage(HttpMethod.Post, url);

@@ -20,6 +20,7 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.ApplicationUser;
 using Aban360.CalculationPool.Application.Features.Base;
 using Aban360.Common.Db.Constants.Literals;
+using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Implementations
 {
@@ -28,6 +29,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IVariabService _variabService;
         private readonly ITankerWaterDistanceTariffQueryService _tankerQueryService;
+        private readonly ITankerTariffQueryService _tankerTariffQueryService;
         private readonly IZaribCQueryService _zaribCQueryService;
         private readonly IZaribGetService _zaribGetService;
         private readonly IT52QueryService _t52QueryService;
@@ -39,6 +41,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             IHttpContextAccessor contextAccessor,
             IVariabService variabService,
             ITankerWaterDistanceTariffQueryService tankerQueryService,
+            ITankerTariffQueryService tankerTariffQueryService,
             IZaribCQueryService zaribCQueryService,
             IZaribGetService zaribGetService,
             IT52QueryService t52QueryService,
@@ -66,12 +69,15 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
 
             _tankerQueryService = tankerQueryService;
             _tankerQueryService.NotNull(nameof(tankerQueryService));
+
+            _tankerTariffQueryService = tankerTariffQueryService;
+            _tankerTariffQueryService.NotNull(nameof(tankerTariffQueryService));
         }
 
         public async Task<TankerCalculationResultOutputDto> Handle(TankerInsertInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             TrimInputProp(inputDto);
-            TankerCalculationBaseService tankerService = new TankerCalculationBaseService(_tankerQueryService, _zaribCQueryService, _zaribGetService);
+            TankerCalculationBaseService tankerService = new TankerCalculationBaseService(_tankerQueryService, _tankerTariffQueryService, _zaribCQueryService, _zaribGetService);
             TankerWaterCalculationOutputDto calcResult = await tankerService.Calculate(GetTankerServiceDto(inputDto), inputDto.MobileNumber);
             if (!inputDto.IsConfirm)
             {
