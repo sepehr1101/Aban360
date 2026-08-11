@@ -249,6 +249,7 @@
         public static string InvalidRemoveTanker => "خطا در حذف اطلاعات تانکر";
         public static string InvalidDeleteTankerAfterPaid => "امکان حذف آب تانکری پس از پرداخت وجود ندارد.";
         public static string InvalidDeleteTankerAfterDateCheck => "امکان حذف آب تانکری پس از بسته شدن دوره وجود ندارد.";
+        public static string NotFoundTankerTariffForCurrentZone => "برای ناحیه مورد نظر، تعرفه آب تانکری یافت نشد.";
 
         public static string InvalidInsertOpLog => "خطا در ثبت لاگ";
 
