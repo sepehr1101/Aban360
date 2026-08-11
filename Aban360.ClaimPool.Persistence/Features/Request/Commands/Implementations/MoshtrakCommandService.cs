@@ -95,6 +95,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrakInstallment);
             }
         }
+		public async Task Update(SubscriptionAssignmentByTrackNumberUpdateDto input, string dbName)
+        {
+            string command = GetTrackingAssignmentUpdateCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
+            if (recordCount != 1)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrak);
+            }
+        }
 
         //   private string GetInsertCommand(string dbName)
         //   {
@@ -420,6 +429,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 				      Set 
 						drsd_gest = @PrePaymentPrecent , 
 						tedad_gest = @InstallmentCount 
+					  Where TrackingNumber=@TrackNumber";
+        }
+		private string GetTrackingAssignmentUpdateCommand(string dbName)
+        {
+            return $@"Update [{dbName}].dbo.moshtrak
+				      Set 
+						eshtrak = @ReadingNumber , 
+						address = @Address ,
+						post_cod = @PostalCode
 					  Where TrackingNumber=@TrackNumber";
         }
     }
