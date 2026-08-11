@@ -2,7 +2,7 @@
 {
     public record CollectBillsLoginOutputDto
     {
-        public string Token { get; set; }
-        public DateTime ExpirationDateTime { get; set; }
+        public string token_access { get; set; }
+        public DateTime in_expires { get; set; }//Type?
     }
 }

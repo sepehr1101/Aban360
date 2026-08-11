@@ -81,11 +81,11 @@ namespace Aban360.CalculationPool.Application.Features.Base
             CollectBillsOutputDto<CollectBillsUploadOutputDto> result = await _collectBillsService.Upload(uploadInputDto);
             //validate on result
 
-            string description = $"فایل آپلود شد. کد فایل:{result.Parameters.FileID}  کد وضعیت:{result.Status.Code}  توضیحات:{result.Status.Description}";
+            string description =string.Empty;// $"فایل آپلود شد. کد فایل:{result.Parameters.FileID}  کد وضعیت:{result.Status.Code}  توضیحات:{result.Status.Description}";
             CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, description, DateTime.Now);
             await CollectBillsDetailUpdate(finalCreateFile);
 
-            _backgroundJobClient.Enqueue(() => SetFileDetail(groupingId, result.Parameters.FileID));
+            _backgroundJobClient.Enqueue(() => SetFileDetail(groupingId,0 /*result.Parameters.FileID*/));
         }
         public async Task SetFileDetail(Guid groupingId, long fileId)
         {
