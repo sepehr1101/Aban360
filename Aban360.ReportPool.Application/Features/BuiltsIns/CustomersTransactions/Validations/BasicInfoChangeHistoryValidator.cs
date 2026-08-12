@@ -5,15 +5,19 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Validations
 {
-    public class BranchTypeChangeHistoryValidator : BaseValidator<BranchTypeChangeHistoryInputDto>
+    public class BasicInfoChangeHistoryValidator : BaseValidator<BasicInfoChangeHistoryInputDto>
     {
-        public BranchTypeChangeHistoryValidator()
+        public BasicInfoChangeHistoryValidator()
         {
-            RuleFor(c => c.FromUseStateIds)
+            RuleFor(c => c.FromDateJalali)
             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
             .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(c => c.ToUseStateIds)
+            RuleFor(c => c.ToDateJalali)
+            .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+            .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(c => c.ItemChange)
             .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
             .NotNull().WithMessage(ExceptionLiterals.NotNull);
         }

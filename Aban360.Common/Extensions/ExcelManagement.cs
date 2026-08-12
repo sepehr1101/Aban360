@@ -604,6 +604,8 @@ namespace Aban360.Common.Extensions
                     { "TagId", "شناسه برچسب"},
                     { "TagTitle", "برچسب"},
                     { "BillIdTagsExpireDateJalali", "تاریخ انقضا برچسب"},
+                    {"FromItem","از" },
+                    {"ToItem","به" },
             };
         }
     }
