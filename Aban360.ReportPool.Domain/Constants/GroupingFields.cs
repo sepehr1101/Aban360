@@ -2,9 +2,9 @@
 {
     public static class GroupingFields
     {
-        public static string ZoneTitle=nameof(ZoneTitle);
+        public static string ZoneTitle = nameof(ZoneTitle);
         public static string UsageId = nameof(UsageId);
-        public static string UsageTitle=nameof(UsageTitle);
+        public static string UsageTitle = nameof(UsageTitle);
         public static string NextDay = nameof(NextDay);
         public static string Payments = nameof(Payments);
         public static string PaymentsEn = nameof(PaymentsEn);

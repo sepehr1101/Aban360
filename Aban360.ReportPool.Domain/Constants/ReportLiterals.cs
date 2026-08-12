@@ -128,6 +128,7 @@
         public static string BranchTypeChangeHistory { get { return $"{Report} تاریخچه تغیرات نوع واگذاری"; } }
         public static string UsageChangeHistory { get { return $"{Report} تاریخچه تغیرات کاربری"; } }
         public static string DeletionStateChangeHistory { get { return $"{Report} تاریخچه تغیرات وضعیت انشعاب"; } }
+        public static string BasicInfoChangeHistory { get { return $"{Report} تاریخچه اطلاعات پایه"; } }
 
 
         public static string WaterMeterReplacements(string reason) => $"{Report}  کنتور های تعویضی بر اساس {reason}";
