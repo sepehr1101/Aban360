@@ -125,11 +125,11 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
                     List<string> roleEndpointsValue = await _endpointQueryService.GetAuthValue(roleEndpiontsId);
                     if (roleEndpointsValue.Any())
                     {
-                        userRoleEndpoints = endpointValues.Select(e => new EndpointInfo(e, role.Id));
+                        userRoleEndpoints = roleEndpointsValue.Select(e => new EndpointInfo(e, role.Id));
                     }
                 }
             }
-            IEnumerable<EndpointInfo> allEndpoints= userDirectEndpoints.Union(userRoleEndpoints);
+            IEnumerable<EndpointInfo> allEndpoints= userRoleEndpoints.Union(userDirectEndpoints);
             IEnumerable<EndpointInfo> distinctEndpoints= allEndpoints.GroupBy(e=>e.endpoint).Select(grp=>new EndpointInfo(grp.Key,grp.FirstOrDefault()?.roleId));
             return distinctEndpoints;
         }
