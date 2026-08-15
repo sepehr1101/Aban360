@@ -40,35 +40,33 @@ namespace Aban360.CalculationPool.Application.Features.Base
         public async Task<TankerWaterCalculationOutputDto> Calculate(TankerWaterCalculationInputDto input, string? mobileNumber)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-
             var (c, zb) = await GetZarib(input.ZoneId);
-            decimal saleStateZarib = input.SaleState == TankerWaterSaleStateEnum.Nomads ? 1.5m : 4;
-
 
             long deliveryAmount = await CalcDeliveryAmount(input);
-            decimal abBaha = await GetWaterAmount(input, c, zb, saleStateZarib);
+            decimal abBaha = await GetWaterAmount(input, c, zb);
             decimal boodjeh = input.Consumption * 2000m;
-            decimal multiplier = GetVarzaneMultiplier(input);
+            //decimal multiplier = GetVarzaneMultiplier(input);
 
-            decimal water = abBaha * multiplier;
+            decimal water = abBaha;// * multiplier;
             decimal hotSeason = IsHotSeasonDate() ? water * (decimal)_hotSeasonMultiple : 0;
 
             return new TankerWaterCalculationOutputDto(null, null, null, mobileNumber, water, boodjeh, deliveryAmount, hotSeason);
         }
-        private async Task<decimal> GetWaterAmount(TankerWaterCalculationInputDto input, int c, decimal zb, decimal saleStateZarib)
+        private async Task<decimal> GetWaterAmount(TankerWaterCalculationInputDto input, int c, decimal zb)
         {
             TankerTariffGetDto tankerTariffInfo = await _tankerTariffQueryService.Get(input.ZoneId);
 
+            float saleStateZarib = input.SaleState == TankerWaterSaleStateEnum.Nomads ? tankerTariffInfo.NomandSS : tankerTariffInfo.CommonSS;
             object parameters = new { M = input.Consumption, SS = saleStateZarib, C = c, K = zb };
             Expression expression = GetExpression(tankerTariffInfo.WaterFormula, parameters);
             decimal abBaha = expression.Eval<decimal>();
 
             return abBaha;
         }
-        private decimal GetVarzaneMultiplier(TankerWaterCalculationInputDto input)
-        {
-            return input.SaleState != TankerWaterSaleStateEnum.Nomads && input.ZoneId == 133111 ? 0.5m : 1m;
-        }
+        //private decimal GetVarzaneMultiplier(TankerWaterCalculationInputDto input)
+        //{
+        //    return input.SaleState != TankerWaterSaleStateEnum.Nomads && input.ZoneId == 133111 ? 0.5m : 1m;
+        //}
         private async Task<long> CalcDeliveryAmount(TankerWaterCalculationInputDto input)
         {
             if (input.SaleState != TankerWaterSaleStateEnum.WithTanker)

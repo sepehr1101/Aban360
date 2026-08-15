@@ -312,6 +312,7 @@
         public static string Invalid { get { return " اشتباه"; } }
 
         public static string ServiceLinkOtherExpenses { get { return "هزینه های متفرقه حق انشعاب"; } }
+        public static string ReadingSequenceDetail { get { return $" {Report} توالی قرائت"; } }
 
 
     }
