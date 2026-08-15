@@ -541,17 +541,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 DateOnly? currentDate = inputDto.CurrentDateJalali.ToGregorianDateOnly();
                 if (!currentDate.HasValue)
                 {
-                    var message = string.Join("تاریخ ناصحیح");
+                    var message = string.Join(",", "تاریخ ناصحیح");
                     throw new  InvalidBillCommandException(message);
                 }
                 if (currentDate.Value > DateTime.Now.ToDateOnly())
                 {
-                    var message = string.Join("تاریخ ناصحیح");
+                    var message = string.Join(",", "تاریخ ناصحیح");
                     throw new InvalidBillCommandException(message);
                 }
-                if (currentDate.Value < DateTime.Now.AddDays(-5).ToDateOnly())
+                if (currentDate.Value < DateTime.Now.AddMonths(-5).ToDateOnly())
                 {
-                    var message = string.Join("تاریخ ناصحیح");
+                    var message = string.Join(","," تاریخ قرائت نباید بیش از 5 روز پیش باشد.");
                     throw new InvalidBillCommandException(message);
                 }
             }

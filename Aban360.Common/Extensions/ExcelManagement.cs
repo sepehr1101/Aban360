@@ -288,6 +288,8 @@ namespace Aban360.Common.Extensions
                     {"PreviousMeterNumber", "شماره کنتور قبلی"},
                     {"CurrentDateJalali", "تاریخ قرائت فعلی"},
                     {"PreviousDateJalali", "تاریخ قرائت قبلی"},
+                    {"PreviousCurrentDateJalali", "تاریخ قرائت سطر قبلی"},
+                    {"PreviousCurrentNumber", "شماره کنتور سطر قبلی"},
                     {"RemovedDateJalali", "تاریخ حذف"},
                     {"DebtPeriodCount", "تعداد دوره بدهی"},
                     {"BeginDebt", "شروغ بدهی"},

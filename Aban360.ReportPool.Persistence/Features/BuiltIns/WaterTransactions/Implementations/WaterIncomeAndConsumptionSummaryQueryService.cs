@@ -220,6 +220,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 return "UsageTitle";
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Region)
                 return "RegionTitle";
+            if (enumState == WaterIncomeAndConsumptionSummaryEnum.UsageAndZone)
+                return "RegionTitle";
 
             return "ZoneTitle";
         }
