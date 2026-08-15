@@ -12,13 +12,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 {
-    [Route("v1/water-income-and-consumption-summary")]
-    public class WaterIncomeAndConsumptionSummaryController : BaseController
+    [Route("v1/water-income-and-consumption-summary-by-usage-group")]
+    public class WaterIncomeAndConsumptionSummaryByUsageGroupController : BaseController
     {
-        private readonly IWaterIncomeAndConsumptionSummaryHandler _waterIncomeAndConsumptionSummary;
+        private readonly IWaterIncomeAndConsumptionSummaryByUsageGroupHandler _waterIncomeAndConsumptionSummary;
         private readonly IReportGenerator _reportGenerator;
-        public WaterIncomeAndConsumptionSummaryController(
-            IWaterIncomeAndConsumptionSummaryHandler waterIncomeAndConsumptionSummary,
+        public WaterIncomeAndConsumptionSummaryByUsageGroupController(
+            IWaterIncomeAndConsumptionSummaryByUsageGroupHandler waterIncomeAndConsumptionSummary,
             IReportGenerator reportGenerator)
         {
             _waterIncomeAndConsumptionSummary = waterIncomeAndConsumptionSummary;
@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [HttpPost, HttpGet]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRaw(WaterIncomeAndConsumptionSummaryInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetRaw(WaterIncomeAndConsumptionSummaryByUsageGroupInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto> waterIncomeAndConsumption = await _waterIncomeAndConsumptionSummary.Handle(inputDto, cancellationToken);
             return Ok(waterIncomeAndConsumption);
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        public async Task<IActionResult> GetExcel(string connectionId, WaterIncomeAndConsumptionSummaryInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetExcel(string connectionId, WaterIncomeAndConsumptionSummaryByUsageGroupInputDto inputDto, CancellationToken cancellationToken)
         {
             string reportTitle = GetReportTitle(inputDto.EnumInput);
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _waterIncomeAndConsumptionSummary.Handle, CurrentUser, ReportLiterals.WaterIncomeAndConsumptionSummary + reportTitle, connectionId);
@@ -51,9 +51,9 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> GetStiReport(WaterIncomeAndConsumptionSummaryInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetStiReport(WaterIncomeAndConsumptionSummaryByUsageGroupInputDto inputDto, CancellationToken cancellationToken)
         {
-            int reportCode = 228;
+            int reportCode = 229;//todo  : check Reportcode
             ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto> calculationDetails = await _waterIncomeAndConsumptionSummary.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);

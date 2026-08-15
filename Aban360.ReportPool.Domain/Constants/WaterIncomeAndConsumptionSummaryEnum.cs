@@ -7,5 +7,6 @@
         RegisterDay = 2,
         AverageConsumption = 4,
         Region = 5,
+        UsageAndZone = 6,
     }
 }

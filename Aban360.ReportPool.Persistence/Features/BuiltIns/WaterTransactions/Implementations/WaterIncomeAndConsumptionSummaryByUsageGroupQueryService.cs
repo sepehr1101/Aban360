@@ -1,8 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
-using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;
@@ -13,17 +11,17 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class WaterIncomeAndConsumptionSummaryQueryService : WaterIncomeAndConsumptionBase, IWaterIncomeAndConsumptionSummaryQueryService
+    internal sealed class WaterIncomeAndConsumptionSummaryByUsageGroupQueryService : WaterIncomeAndConsumptionBase, IWaterIncomeAndConsumptionSummaryByUsageGroupQueryService
     {
-        public WaterIncomeAndConsumptionSummaryQueryService(IConfiguration configuration)
+        public WaterIncomeAndConsumptionSummaryByUsageGroupQueryService(IConfiguration configuration)
             : base(configuration)
         {
         }
 
-        public async Task<ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>> Get(WaterIncomeAndConsumptionSummaryInputDto input)
+        public async Task<ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>> Get(WaterIncomeAndConsumptionSummaryByUsageGroupInputDto input)
         {
             string reportTitle = ReportLiterals.WaterIncomeAndConsumptionSummary + GetIsZoneOrVillageTitle(input.ZoneIds);
-            string waterIncomeAndConsumptionSummarys = GetSummaryQuery(false, input.ZoneIds.HasValue(), input.UsageIds.HasValue(), input.BranchTypeIds.HasValue(), input.EnumInput);
+            string waterIncomeAndConsumptionSummarys = GetSummaryQuery(true, input.ZoneIds.HasValue(), false, input.BranchTypeIds.HasValue(), input.EnumInput);
 
             var @params = new
             {
@@ -38,7 +36,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
                 typeCodes = input.IsNet ? new[] { 1, 3, 4, 5 } : new[] { 1 },
 
-                usageIds = input.UsageIds,
                 zoneIds = input.ZoneIds,
                 branchTypeIds = input.BranchTypeIds,
             };

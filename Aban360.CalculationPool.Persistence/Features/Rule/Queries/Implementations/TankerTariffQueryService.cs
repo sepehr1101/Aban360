@@ -40,7 +40,9 @@ namespace Aban360.CalculationPool.Persistence.Features.Rule.Queries.Implementati
                     	Id,
                     	ZoneId,
                     	ZoneTitle,
-                    	WaterFormula
+                    	WaterFormula,
+                        NomandSS,
+                        CommonSS
                     From OldCalc.dbo.TankerTariff
                     Where ZoneId = @ZoneId";
         }
@@ -50,7 +52,9 @@ namespace Aban360.CalculationPool.Persistence.Features.Rule.Queries.Implementati
                     	Id,
                     	ZoneId,
                     	ZoneTitle,
-                    	WaterFormula
+                    	WaterFormula,
+                        NomandSS,
+                        CommonSS
                     From OldCalc.dbo.TankerTariff";
         }
     }
