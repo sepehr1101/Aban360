@@ -2,8 +2,8 @@
 {
     public record CollectBillsFileDetailInputDto
     {
-        public long FileId { get; set; }
-        public CollectBillsFileDetailInputDto(long fileId)
+        public string FileId { get; set; }
+        public CollectBillsFileDetailInputDto(string fileId)
         {
             FileId = fileId;
         }
