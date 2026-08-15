@@ -2,11 +2,11 @@
 {
     public record CollectBillsAssignUploadedFileInputDto
     {
-        public long FileId { get; set; }
-        public long FileYear { get; set; }
-        public long FileCycle { get; set; }
+        public string FileId { get; set; }
+        public string FileYear { get; set; }
+        public string FileCycle { get; set; }
         public string FileDescription { get; set; }
-        public CollectBillsAssignUploadedFileInputDto(long fileId, long fileYear, long fileCycle, string fileDescription)
+        public CollectBillsAssignUploadedFileInputDto(string fileId, string fileYear, string fileCycle, string fileDescription)
         {
             FileId = fileId;
             FileYear = fileYear;
