@@ -19,6 +19,7 @@ using Aban360.ReportPool.Persistence.Extentions;
 using Aban360.UserPool.Application.Extensions;
 using Aban360.UserPool.Persistence.Extensions;
 using Aban360.NotificationPool.Application.Extensions;
+using Aban360.CalculationPool.Infrastructure.Extensions;
 
 namespace Aban360.BrdigeApi.Extensions
 {
@@ -66,6 +67,7 @@ namespace Aban360.BrdigeApi.Extensions
         {
             services.AddCalculationPoolApplicationInjections();
             services.AddCalculationPoolPersistenceInjections();
+            services.AddCalculationPoolInfrastructureInjections();
         }
         private static void AddClaimPoolDI(this IServiceCollection services)
         {

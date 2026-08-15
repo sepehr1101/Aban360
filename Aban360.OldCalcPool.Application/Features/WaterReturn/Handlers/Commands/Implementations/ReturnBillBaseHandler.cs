@@ -380,7 +380,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 TodayDate = tariffInfo.MeterInfo.CurrentDateJalali,
                 AbonFas = (decimal)tariffInfo.AbonmanFazelabAmount,
                 FasBaha = (decimal)tariffInfo.FazelabAmount + (decimal)tariffInfo.HotSeasonFazelabAmount,
-                AbBaha = (decimal)tariffInfo.AbBahaAmount,
+                AbBaha = (decimal)tariffInfo.AbBahaAmount + (decimal)abHadarAmount,
                 Ztadil = bedBes.Ztadil,//todo
                 Masraf = (decimal)tariffInfo.Consumption,
                 Shahrdari = (decimal)tariffInfo.MaliatAmount + (decimal)wastedWaterTax,
