@@ -111,7 +111,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
             string branchTypeQuery = hasBranchType ? "AND b.BranchTypeId IN @branchTypeIds" : string.Empty;
 
-            string groupKey = GetEnumQuery(enumState);
+            var (groupKey,SelectKey) = GetEnumQuery(enumState);
 
             return @$";With cte as(
                     	Select
@@ -175,7 +175,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                     Select
 						MAX(RegionId) RegionId,
 						MAX(RegionTitle) RegionTitle,
-                    	{groupKey} as GroupKey,
+                    	{SelectKey} as GroupKey,
                     	Count(1) as BillCount,
                     	SUM(SewageConsumption) as SewageConsumption,
                     	SUM(Consumption) as Consumption,
@@ -205,25 +205,26 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                         SUM(BillUnit) as BillUnit,
                         SUM(TotalUnit) as TotalUnit
                     From cte
-                    Group By {groupKey}";
+                    Group By {groupKey}
+                    Order By {groupKey}";
         }
 
-        private string GetEnumQuery(WaterIncomeAndConsumptionSummaryEnum enumState)
+        private (string, string) GetEnumQuery(WaterIncomeAndConsumptionSummaryEnum enumState)
         {
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.AverageConsumption)
-                return "Ceiling(ConsumptionAverage)";
+                return ("Ceiling(ConsumptionAverage)", "Ceiling(ConsumptionAverage)");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.RegisterDay)
-                return "RegisterDay";
+                return ("RegisterDay", "RegisterDay");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Zone)
-                return "ZoneTitle";
+                return ("ZoneTitle", "ZoneTitle");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Usage)
-                return "UsageTitle";
+                return ("UsageTitle", "UsageTitle");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Region)
-                return "RegionTitle";
+                return ("RegionTitle", "RegionTitle");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.UsageAndZone)
-                return "RegionTitle";
+                return ("ZoneTitle, UsageTitle", "(ZoneTitle CollaTe SQL_Latin1_General_CP1_CI_AS+' - '+UsageTitle)");
 
-            return "ZoneTitle";
+            return ("ZoneTitle", "ZoneTitle");
         }
     }
 }
