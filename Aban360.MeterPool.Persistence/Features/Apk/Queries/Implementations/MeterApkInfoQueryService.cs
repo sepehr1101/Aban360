@@ -13,33 +13,27 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
         {
         }
 
-        public async Task<IEnumerable<ApkInfoGetDto>> Get()
+        public async Task<IEnumerable<ApkInfoGetDto>> GetValid()
         {
-            string query = GetQuery();
+            string query = GetValidQuery();
             IEnumerable<ApkInfoGetDto> result = await _sqlConnection.QueryAsync<ApkInfoGetDto>(query);
             return result;
         }
-        public async Task<ApkInfoGetDto> GetLatest()
+        public async Task<ApkInfoGetDto> GetLatestVersion()
         {
-            string query = GetLatestQuery();
+            string query = GetLatestVersionQuery();
             ApkInfoGetDto result = await _sqlConnection.QueryFirstOrDefaultAsync<ApkInfoGetDto>(query);
             return result;
         }
-        public async Task<string> GetLatestVersion()
-        {
-            string query = GetLatestVersionQuery();
-            string? result = await _sqlConnection.QueryFirstOrDefaultAsync<string?>(query);
-            return result;
-        }
-        public async Task<ApkInfoGetDto?> Get(short id)
+        public async Task<ApkInfoGetDto?> GetValid(short id)
         {
             string query = GetByIdQuery();
             ApkInfoGetDto? result = await _sqlConnection.QueryFirstOrDefaultAsync<ApkInfoGetDto>(query, new { id });
             return result;
         }
-        public async Task<ApkInfo?> Get(string version)
+        public async Task<ApkInfo?> GetValid(string version)
         {
-            string query = GetByVersionQuery();
+            string query = GetValidByVersionQuery();
             ApkInfo? result = await _sqlConnection.QueryFirstOrDefaultAsync<ApkInfo>(query, new { version });
             return result;
         }
@@ -50,18 +44,19 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
             return result;
         }
    
-        private string GetQuery()
+        private string GetValidQuery()
         {
             return @"Select 
                     	Id,
                     	Name,
-                        FileContent,
+                        --FileContent,
                     	Version,
                     	Description,
                     	InsertedDateTime
-                    From Aban360.MeterPool.ApkInfo";
+                    From Aban360.MeterPool.ApkInfo
+                    Where RemovedBy IS NULL";
         }
-        private string GetLatestQuery()
+        private string GetLatestVersionQuery()
         {
             return @"Select Top 1
                     	Id,
@@ -72,9 +67,10 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	InsertedDateTime
                     From Aban360.MeterPool.ApkInfo
                     Where
+                        IsActive = 1 AND
                         RemovedBy IS NULL AND
                         ExpiredBy IS NULL
-                    Order By InsertedDateTime Desc";
+                    Order By version Desc";
         }
         private string GetByIdQuery()
         {
@@ -86,9 +82,12 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	Description,
                     	InsertedDateTime
                     From Aban360.MeterPool.ApkInfo
-                    Where Id=@Id";
+                    Where 
+                        Id=@Id AND
+                        RemovedBy IS NULL AND
+                        ExpiredBy IS NULL";
         }
-        private string GetByVersionQuery()
+        private string GetValidByVersionQuery()
         {
             return @"Select 
                     	Id,
@@ -99,24 +98,17 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	InsertedDateTime,
                         RemovedBy,
                         ExpiredBy
-                    From Aban360.MeterPool.ApkInfo
-                    Where Version=@Version";
+                    From [Aban360].MeterPool.ApkInfo
+                    Where 
+                        Version=@Version AND
+                        RemovedBy IS NULL AND
+                        ExpiredBy IS NULL";
         }
         private string GetFileByIdQuery()
         {
             return @"Select FileContent
                     From Aban360.MeterPool.ApkInfo
                     Where Id=@Id";
-        }
-        private string GetLatestVersionQuery()
-        {
-            return @"Select TOP 1                   	
-                    	Version
-                    From Aban360.MeterPool.ApkInfo
-                    Where
-                        RemovedBy IS NULL AND
-                        ExpiredBy IS NULL
-                    Order By InsertedDateTime Desc";
         }
     }
 }

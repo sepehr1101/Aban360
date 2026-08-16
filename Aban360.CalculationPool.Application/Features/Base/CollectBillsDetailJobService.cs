@@ -85,14 +85,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
             CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, description, DateTime.Now);
             await CollectBillsDetailUpdate(finalCreateFile);
 
-            _backgroundJobClient.Enqueue(() => SetFileDetail(groupingId,0 /*result.Parameters.FileID*/));
+            _backgroundJobClient.Enqueue(() => SetFileDetail(groupingId,"" /*result.Parameters.FileID*/));
         }
-        public async Task SetFileDetail(Guid groupingId, long fileId)
+        public async Task SetFileDetail(Guid groupingId, string fileId)
         {
             CollectBillsDetailInsertDto createfile = new(groupingId, (int)CollectBillStepEnum.AssingUploadedFile, DateTime.Now, null, string.Empty);
             int effectedId = await CollectgBillsDetailInsert(createfile);
 
-            CollectBillsAssignUploadedFileInputDto assignUploadedFileDto = new(fileId, 0, 0, string.Empty);//todo: 2params from GetServiceConfig -> how to use?
+            CollectBillsAssignUploadedFileInputDto assignUploadedFileDto = new(fileId, "", "", string.Empty);//todo: 2params from GetServiceConfig -> how to use?
             CollectBillsOutputDto<CollectBillsAssignUploadedFileOutputDto> result = await _collectBillsService.AssignUploadedFile(assignUploadedFileDto);
             //validate 
 
@@ -102,7 +102,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             _backgroundJobClient.Enqueue(() => Confirm(groupingId, fileId));
         }
-        public async Task Confirm(Guid groupingId, long fileId)
+        public async Task Confirm(Guid groupingId, string fileId)
         {
             CollectBillsDetailInsertDto createfile = new(groupingId, (int)CollectBillStepEnum.Confirm, DateTime.Now, null, string.Empty);
             int effectedId = await CollectgBillsDetailInsert(createfile);
@@ -189,7 +189,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             string fileName = Path.GetFileNameWithoutExtension(filePath);
             string extension = Path.GetExtension(filePath);
 
-            return new CollectBillsUploadInputDto(base64, extension, fileName);
+            return new CollectBillsUploadInputDto(base64, extension, fileName, "");//todo:CityCode
         }
     }
 }

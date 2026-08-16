@@ -49,8 +49,7 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
                 return cachedToken;
             }
             CollectBillsLoginOutputDto tokenResult = await GetNewToken();
-            //var expireSecond = (tokenResult.Parameters.ExpirationDateTime - DateTime.Now).TotalSeconds;//todo: expireDate?
-            var expireSecond = 3600;
+            var expireSecond = (tokenResult.in_expires - DateTime.Now).TotalSeconds;
             var cacheOptions = new MemoryCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(expireSecond - 30)
@@ -72,17 +71,10 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
             CollectBillsLoginOutputDto result = await response.Content.ReadFromJsonAsync<CollectBillsLoginOutputDto>();
             return result;
         }
-        private async Task<CollectBillsInputDto<T>> GetInputDto<T>(T inputDto)
+  
+        public async Task<CollectBillsOutputDto<object>> SendCustomerInfo(CollectBillsSubscriptionInfoSendInputDto sampleInputDto)
         {
-            CollectBillsLoginOutputDto token = await GetToken();
-            CollectBillsIdentityInputDto identity = new(token.token_access);
-            return new CollectBillsInputDto<T>(inputDto, identity);
-        }
-
-        //*
-        public async Task<CollectBillsOutputDto<CollectBillsUploadOutputDto>> SendCustomerInfo(IEnumerable<string> sampleInputDto)
-        {
-            string url = $"{_options.BaseUrl}{_options.Upload}";
+            string url = $"{_options.BaseUrl}{_options.SubscriptionsInfo}";
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
             request.Content = new StringContent(JsonSerializer.Serialize(sampleInputDto), Encoding.UTF8, _contentType);
@@ -91,19 +83,15 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
-            CollectBillsOutputDto<CollectBillsUploadOutputDto> result = await response.Content.ReadFromJsonAsync<CollectBillsOutputDto<CollectBillsUploadOutputDto>>();
+            CollectBillsOutputDto<object> result = await response.Content.ReadFromJsonAsync<CollectBillsOutputDto<object>>();
             return result;
         }
-
-
         public async Task<CollectBillsOutputDto<CollectBillsUploadOutputDto>> Upload(CollectBillsUploadInputDto input)
         {
-            CollectBillsInputDto<CollectBillsUploadInputDto> inputDto = await GetInputDto(input);
-
             string url = $"{_options.BaseUrl}{_options.Upload}";
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
-            request.Content = new StringContent(JsonSerializer.Serialize(inputDto), Encoding.UTF8, _contentType);
+            request.Content = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, _contentType);
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
@@ -112,12 +100,10 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
         }
         public async Task<CollectBillsOutputDto<CollectBillsAssignUploadedFileOutputDto>> AssignUploadedFile(CollectBillsAssignUploadedFileInputDto input)
         {
-            CollectBillsInputDto<CollectBillsAssignUploadedFileInputDto> inputDto = await GetInputDto(input);
-
             string url = $"{_options.BaseUrl}{_options.AssingUploadedFile}";
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
-            request.Content = new StringContent(JsonSerializer.Serialize(inputDto), Encoding.UTF8, _contentType);
+            request.Content = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, _contentType);
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
@@ -126,43 +112,37 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
         }
         public async Task<CollectBillsOutputDto<CollectBillsFileDetailOutputDto>> GetFileDetails(CollectBillsFileDetailInputDto input)
         {
-            CollectBillsInputDto<CollectBillsFileDetailInputDto> inputDto = await GetInputDto(input);
-
             string url = $"{_options.BaseUrl}{_options.GetFileDetail}";
-            using var request = new HttpRequestMessage(HttpMethod.Post, url);
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
-            request.Content = new StringContent(JsonSerializer.Serialize(inputDto), Encoding.UTF8, _contentType);
-
-            var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            CollectBillsOutputDto<CollectBillsFileDetailOutputDto> result = await response.Content.ReadFromJsonAsync<CollectBillsOutputDto<CollectBillsFileDetailOutputDto>>();
-            return result;
-        }
-        public async Task<CollectBillsOutputDto<CollectBillsServerConfigOutputDto>> GetServiceConfigForPanel(CollectBillsIdentityInputDto input)
-        {
-            string url = $"{_options.BaseUrl}{_options.GetServiceConfigure}";
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
             request.Content = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, _contentType);
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
-            CollectBillsOutputDto<CollectBillsServerConfigOutputDto> result = await response.Content.ReadFromJsonAsync<CollectBillsOutputDto<CollectBillsServerConfigOutputDto>>();
+            CollectBillsOutputDto<CollectBillsFileDetailOutputDto> result = await response.Content.ReadFromJsonAsync<CollectBillsOutputDto<CollectBillsFileDetailOutputDto>>();
             return result;
         }
         public async Task<CollectBillsOutputDto<CollectBillsConfirmFileOutputDto>> ConfirmFileBills(CollectBillsConfirmFileInputDto input)
         {
-            CollectBillsInputDto<CollectBillsConfirmFileInputDto> inputDto = await GetInputDto(input);
-
-
             string url = $"{_options.BaseUrl}{_options.ConfirmFile}";
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
-            request.Content = new StringContent(JsonSerializer.Serialize(inputDto), Encoding.UTF8, _contentType);
+            request.Content = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, _contentType);
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
             CollectBillsOutputDto<CollectBillsConfirmFileOutputDto> result = await response.Content.ReadFromJsonAsync<CollectBillsOutputDto<CollectBillsConfirmFileOutputDto>>();
+            return result;
+        }
+        public async Task<CollectBillsOutputDto<CollectBillsServerConfigOutputDto>> GetLastSubscriptionInfoByBillId(string billId)
+        {
+            string url = $"{_options.BaseUrl}{_options.SubscriptionByBillId}?billId={billId}";
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            CollectBillsOutputDto<CollectBillsServerConfigOutputDto> result = await response.Content.ReadFromJsonAsync<CollectBillsOutputDto<CollectBillsServerConfigOutputDto>>();
             return result;
         }
     }

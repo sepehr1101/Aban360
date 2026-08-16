@@ -52,7 +52,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                             BillId,
                             RegisterDayJalali,
                     		{titleField} ItemTitle,
-                            LAG({titleField}) OVER(PARTITION BY BillId ORDER BY RegisterDayJalali, Id) AS PreviousItemTitle
+                            LAG({titleField}) OVER(PARTITION BY BillId ORDER BY RegisterDayJalali, localId) AS PreviousItemTitle
                         FROM CustomerWarehouse.dbo.Clients
                     	Where 
                             ZoneId IN @ZoneIds AND
@@ -78,8 +78,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	c.UsageTitle,
                     
                         h.RegisterDayJalali AS ChangeDateJalali, 
-                    	h.ItemTitle FromItem,
-                        h.PreviousItemTitle ToItem
+                        h.PreviousItemTitle FromItem,
+                    	h.ItemTitle ToItem
                     FROM History h
                     JOIN CustomerWarehouse.dbo.Clients c
                         ON c.BillId = h.BillId
