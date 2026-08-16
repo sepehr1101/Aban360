@@ -31,6 +31,24 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Commands.Implementations
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertMeterApkFile);
             }
         }
+        public async Task Update(ApkInfoIsActiveUpdateDto inputDto)
+        {
+            string command = GetUpdateIsActiveQuery(true);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, inputDto, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateIsActiveMeterApkFile);
+            }
+        }
+        public async Task Update(bool isActive)
+        {
+            string command = GetUpdateIsActiveQuery(false);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, new { isActive }, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateIsActiveMeterApkFile);
+            }
+        }
         public async Task Remove(ApkInfoRemoveDto inputDto)
         {
             string command = GetRemoveQuery();
@@ -46,13 +64,15 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Commands.Implementations
                     (
                         Name, Version, 
                         FileContent, Description, 
-                        InsertedBy, InsertedDateTime
+                        InsertedBy, InsertedDateTime,
+                        IsActive
                     )
                     Values
                     (
                         @Name, @Version, 
                         @FileContent, @Description, 
-                        @InsertedBy, @InsertedDateTime
+                        @InsertedBy, @InsertedDateTime,
+                        @IsActive
                     );";
         }
         private string GetRemoveQuery()
@@ -60,6 +80,13 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Commands.Implementations
             return $@"Update [Aban360].MeterPool.ApkInfo
                     Set RemovedBy = @RemovedBy, RemovedDateTime = @RemovedDateTime
                     Where Id = @Id";
+        }
+        private string GetUpdateIsActiveQuery(bool isSingleRecord)
+        {
+            string idCondition = isSingleRecord ? "Where Id = @Id " : string.Empty;
+            return $@"Update [Aban360].MeterPool.ApkInfo
+                    Set IsActive = @IsActive
+                    {idCondition}";
         }
     }
 }

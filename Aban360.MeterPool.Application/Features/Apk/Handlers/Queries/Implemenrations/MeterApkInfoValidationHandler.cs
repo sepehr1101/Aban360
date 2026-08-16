@@ -1,6 +1,4 @@
-﻿using Aban360.Common.Exceptions;
-using Aban360.Common.Extensions;
-using Aban360.Common.Literals;
+﻿using Aban360.Common.Extensions;
 using Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Contracts;
 using Aban360.MeterPool.Domain.Features.Apk.Queries;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Queries;
@@ -18,15 +16,15 @@ namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Implemenra
         }
         public async Task<MeterApkValidateOutputDto> Handle(string version, CancellationToken cancellationToken)
         {
-            ApkInfo? apkInfo = await _meterApkInfoQueryService.Get(version);
-            IEnumerable<ApkInfoGetDto> apkList = await _meterApkInfoQueryService.Get();
-            string latestValidVersion = await _meterApkInfoQueryService.GetLatestVersion();
+            ApkInfo? apkInfo = await _meterApkInfoQueryService.GetValid(version);
+            IEnumerable<ApkInfoGetDto> apkList = await _meterApkInfoQueryService.GetValid();
+            string latestValidVersion = (await _meterApkInfoQueryService.GetLatestVersion()).Version;
 
             //if (apkInfo is null)
             //{
-                ////throw new ReadingException(ExceptionLiterals.NotFoundMeterApkFileVersion);
+            ////throw new ReadingException(ExceptionLiterals.NotFoundMeterApkFileVersion);
             //}
-            if (apkInfo is null || apkInfo.RemovedBy is not null || apkInfo.ExpiredBy is not null)
+            if (apkInfo is null)
             {
                 return new MeterApkValidateOutputDto(false, latestValidVersion, version);
             }

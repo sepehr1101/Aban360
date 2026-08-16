@@ -2,6 +2,7 @@
 using Aban360.Common.Extensions;
 using Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Create.Contracts;
 using Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Delete.Contracts;
+using Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Update.Contracts;
 using Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Contracts;
 using Aban360.MeterPool.Domain.Features.Apk.Commands;
 using Aban360.MeterPool.Domain.Features.Apk.Queries;
@@ -13,8 +14,9 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
     [Route("v1/meter-apk-file")]
     public class MeterApkFileController : BaseController
     {
-        private readonly IMeteApkFileInsertHandler _meterApkFileDeleteHandler;
-        private readonly IMeteApkFileRemoveHandler _meterApkFileRemoveHandler;
+        private readonly IMeterApkFileInsertHandler _meterApkFileDeleteHandler;
+        private readonly IMeterApkFileSetIsActiveHandler _meterApkFileSetIsActiveHandler;
+        private readonly IMeterApkFileRemoveHandler _meterApkFileRemoveHandler;
         private readonly IMeterApkInfoGetAllHandler _meterApkInfoGetAllHandler;
         private readonly IMeterApkInfoGetByIdHandler _meterApkInfoGetByIdHandler;
         private readonly IMeterApkDownloadGetByIdHandler _meterApkDownloadGetByIdHandler;
@@ -22,8 +24,9 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
         private readonly IMeterApkInfoValidationHandler _meterApkInfoValidationHandler;
         private string _contentType = "application/vnd.android.package-archive";
         public MeterApkFileController(
-            IMeteApkFileInsertHandler meterApkFileDeleteHandler,
-            IMeteApkFileRemoveHandler meterApkFileRemoveHandler,
+            IMeterApkFileInsertHandler meterApkFileDeleteHandler,
+            IMeterApkFileSetIsActiveHandler meterApkFileSetIsActiveHandler,
+            IMeterApkFileRemoveHandler meterApkFileRemoveHandler,
             IMeterApkInfoGetAllHandler meterApkInfoGetAllHandler,
             IMeterApkInfoGetByIdHandler meterApkInfoGetByIdHandler,
             IMeterApkDownloadGetByIdHandler meterApkDownloadGetByIdHandler,
@@ -32,6 +35,9 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
         {
             _meterApkFileDeleteHandler = meterApkFileDeleteHandler;
             _meterApkFileDeleteHandler.NotNull(nameof(meterApkFileDeleteHandler));
+
+            _meterApkFileSetIsActiveHandler = meterApkFileSetIsActiveHandler;
+            _meterApkFileSetIsActiveHandler.NotNull(nameof(meterApkFileSetIsActiveHandler));
 
             _meterApkFileRemoveHandler = meterApkFileRemoveHandler;
             _meterApkFileRemoveHandler.NotNull(nameof(meterApkFileRemoveHandler));
@@ -59,6 +65,15 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
         {
             await _meterApkFileDeleteHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("update-is-active/{id}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UdpateIsActive(int id, CancellationToken cancellationToken)
+        {
+            await _meterApkFileSetIsActiveHandler.Handle(id, CurrentUser, cancellationToken);
+            return Ok(id);
         }
 
         [HttpPost]

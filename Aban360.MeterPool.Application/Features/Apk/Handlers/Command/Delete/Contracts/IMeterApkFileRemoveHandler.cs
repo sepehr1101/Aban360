@@ -2,7 +2,7 @@
 
 namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Delete.Contracts
 {
-    public interface IMeteApkFileRemoveHandler
+    public interface IMeterApkFileRemoveHandler
     {
         Task Handle(short id, IAppUser appUser, CancellationToken cancellationToken);
     }

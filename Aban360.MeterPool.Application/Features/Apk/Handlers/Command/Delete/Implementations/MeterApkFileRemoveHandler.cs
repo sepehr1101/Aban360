@@ -2,9 +2,12 @@
 using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Delete.Contracts;
 using Aban360.MeterPool.Domain.Features.Apk.Commands;
+using Aban360.MeterPool.Domain.Features.Apk.Queries;
 using Aban360.MeterPool.Persistence.Features.Apk.Commands.Implementations;
 using Aban360.MeterPool.Persistence.Features.Apk.Queries.Contracts;
 using Microsoft.AspNetCore.Http;
@@ -13,11 +16,11 @@ using System.Data;
 
 namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Delete.Implementations
 {
-    internal sealed class MeteApkFileRemoveHandler : AbstractBaseConnection, IMeteApkFileRemoveHandler
+    internal sealed class MeterApkFileRemoveHandler : AbstractBaseConnection, IMeterApkFileRemoveHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMeterApkInfoQueryService _meterApkFileQueryService;
-        public MeteApkFileRemoveHandler(
+        public MeterApkFileRemoveHandler(
             IHttpContextAccessor contextAccessor,
             IMeterApkInfoQueryService meterApkFileQueryService,
             IConfiguration configuration)
@@ -32,6 +35,7 @@ namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Delete.Imp
 
         public async Task Handle(short id, IAppUser appUser, CancellationToken cancellationToken)
         {
+            await Validate(id);
             ApkInfoRemoveDto removedDto = new(id, appUser.UserId);
             string opLogText = string.Format(OpLogLiterals.MeterApkFileRemoveOpLog, id);
             await ExecSql(removedDto, appUser, opLogText);
@@ -63,6 +67,15 @@ namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Delete.Imp
                     sqlReportTransaction.Commit();
                 }
             }
+        }
+        private async Task Validate(short id)
+        {
+            ApkInfoGetDto? apkInfo = await _meterApkFileQueryService.GetValid(id);
+            if (apkInfo is null)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveMeterApkFile);
+            }
+
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Implemenra
         }
         public async Task<ApkInfoGetDto> Handle(short id, CancellationToken cancellationToken)
         {
-            ApkInfoGetDto result = await _meterApkInfoQueryService.Get(id);
+            ApkInfoGetDto result = await _meterApkInfoQueryService.GetValid(id);
             return result;
         }
     }
