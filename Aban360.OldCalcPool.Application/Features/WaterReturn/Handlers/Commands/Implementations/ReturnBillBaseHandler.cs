@@ -365,10 +365,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         public AutoBackCreateDto GetNewCalculation(AbBahaCalculationDetails tariffInfo, BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, float? consumptionHadar, long? abHadarAmount, int jalaseNumber)
         {
             double wastedWaterTax = _taxCalculator.Calculate(new[] { (double)abHadarAmount }).Allowed;
-            double boodjeTax = _taxCalculator.Calculate(new[] { tariffInfo.SumBoodje }).Allowed;
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string currentDateJalali10Char = currentDateJalali.Substring(2);
-            decimal sumItemsWithAbHadarValues = (decimal)tariffInfo.SumItems + (decimal)wastedWaterTax - (decimal)boodjeTax;// + (decimal)abHadarAmount;
+            decimal sumItemsWithAbHadarValues = (decimal)tariffInfo.SumItems + (decimal)wastedWaterTax;// + (decimal)abHadarAmount;
 
             return new AutoBackCreateDto()
             {
@@ -385,7 +384,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 AbBaha = (decimal)tariffInfo.AbBahaAmount,// + (decimal)abHadarAmount,
                 Ztadil = bedBes.Ztadil,//todo
                 Masraf = (decimal)tariffInfo.Consumption,
-                Shahrdari = (decimal)tariffInfo.MaliatAmount + (decimal)wastedWaterTax - (decimal)boodjeTax,
+                Shahrdari = (decimal)tariffInfo.MaliatAmount + (decimal)wastedWaterTax,
                 Modat = tariffInfo.Duration,
                 DateBed = currentDateJalali,
                 JalaseNo = jalaseNumber,
@@ -467,7 +466,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 AbBaha = Diff(bedBes.AbBaha, repair.AbBaha) - repair.AbHadar,
                 Ztadil = Diff(bedBes.Ztadil, repair.Ztadil),
                 Masraf = Diff(bedBes.Masraf, repair.Masraf),
-                Shahrdari = Diff(bedBes.Shahrdari, repair.Shahrdari) ,
+                Shahrdari = Diff(bedBes.Shahrdari, repair.Shahrdari),
                 Modat = bedBes.Modat,
                 DateBed = currentDateJalali,
                 JalaseNo = jalaseNumber,
