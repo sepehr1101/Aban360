@@ -34,7 +34,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
             {
                 return null;
             }
-            if(!string.IsNullOrWhiteSpace(trackingInfo.BillId) && trackingInfo.BillId.Length>6)
+            if(!string.IsNullOrWhiteSpace(trackingInfo.BillId) && trackingInfo.BillId.Trim().Length>6)
             {
                 return trackingInfo.BillId;
             }
@@ -56,7 +56,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
                     GetBillIdFromMembersQuery(dbName), new { customerNumber });
             }
 
-            if (string.IsNullOrWhiteSpace(billId) || billId.Length<6)
+            if (string.IsNullOrWhiteSpace(billId) || billId.Trim().Length<6)
             {
                 return null;
             }
