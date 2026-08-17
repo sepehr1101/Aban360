@@ -13,4 +13,17 @@
         public ICollection<int> ZoneIds { get; set; }
         public ICollection<int> UsageIds { get; set; }
     }
+    public record SewageWaterRequestByUsageGroupInputDto
+    {
+        public bool IsWater { get; set; }
+
+        public string FromDateJalali { get; set; }
+        public string ToDateJalali { get; set; }
+        
+        public string? FromReadingNumber{ get; set; }
+        public string? ToReadingNumber { get; set; }
+
+        public ICollection<int> ZoneIds { get; set; }
+        public int UsageGroupId { get; set; }
+    }
 }

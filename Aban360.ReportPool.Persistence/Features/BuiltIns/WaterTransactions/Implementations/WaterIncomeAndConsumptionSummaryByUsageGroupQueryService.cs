@@ -38,6 +38,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 
                 zoneIds = input.ZoneIds,
                 branchTypeIds = input.BranchTypeIds,
+                usageGroupId=input.UsageGroupId
             };
             IEnumerable<WaterIncomeAndConsumptionSummaryDataOutputDto> waterIncomeAndConsumptionData = await _sqlReportConnection.QueryAsync<WaterIncomeAndConsumptionSummaryDataOutputDto>(waterIncomeAndConsumptionSummarys, @params);
             WaterIncomeAndConsumptionSummaryHeaderOutputDto waterIncomeAndConsumptionHeader = new WaterIncomeAndConsumptionSummaryHeaderOutputDto()

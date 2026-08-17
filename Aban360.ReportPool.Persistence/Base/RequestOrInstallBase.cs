@@ -169,6 +169,60 @@ namespace Aban360.ReportPool.Persistence.Base
                     GROUP BY
                         {groupingParam}";
         }
+        internal string GetGroupedByUsageGroupQuery(bool isWater, InstallOrRequestOrInstallDepartmentEnum inputEnum)
+        {
+            QueryParams queryParams = GetQueryParams(isWater, inputEnum);
+            return $@";WITH CTE AS
+                    (
+	                    SELECT 
+		                    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
+		                    *
+                        From [CustomerWarehouse].dbo.Clients c
+	                    Where				
+		                    c.ZoneId IN @zoneIds AND
+		                    (
+			                    @fromReadingNumber IS NULL OR 
+			                    @toReadingNumber IS NULL OR
+			                    c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+		                    ) AND
+		                    c.CustomerNumber<>0 AND
+		                    c.RegisterDayJalali <= @ToDateJalali
+                    )
+                    Select	
+	                    MAX(t46.C2) AS RegionTitle,
+                        u2.Title ItemTitle,
+                        COUNT(1) AS CustomerCount,
+	                    SUM(IIF((c.DomesticCount+c.CommercialCount +c.OtherCount=0) ,1, (c.DomesticCount+c.CommercialCount +c.OtherCount))) AS TotalUnit,
+	                    SUM(ISNULL(c.CommercialCount, 0)) AS CommercialUnit,
+                        SUM(ISNULL(c.DomesticCount, 0)) AS DomesticUnit,
+                        SUM(ISNULL(c.OtherCount, 0)) AS OtherUnit,
+                        SUM(CASE WHEN c.WaterDiameterId = 0 THEN 1 ELSE 0 END) AS UnSpecified,
+	                    SUM(CASE WHEN c.WaterDiameterId = 1 THEN 1 ELSE 0 END) AS Field0_5,
+	                    SUM(CASE WHEN c.WaterDiameterId = 2 THEN 1 ELSE 0 END) AS Field0_75,
+	                    SUM(CASE WHEN c.WaterDiameterId = 3 THEN 1 ELSE 0 END) AS Field1,
+	                    SUM(CASE WHEN c.WaterDiameterId = 4 THEN 1 ELSE 0 END) AS Field1_2,
+	                    SUM(CASE WHEN c.WaterDiameterId = 5 THEN 1 ELSE 0 END) AS Field1_5,
+	                    SUM(CASE WHEN c.WaterDiameterId = 6 THEN 1 ELSE 0 END) AS Field2,
+	                    SUM(CASE WHEN c.WaterDiameterId = 7 THEN 1 ELSE 0 END) AS Field3,
+	                    SUM(CASE WHEN c.WaterDiameterId = 8 THEN 1 ELSE 0 END) AS Field4,
+	                    SUM(CASE WHEN c.WaterDiameterId = 9 THEN 1 ELSE 0 END) AS Field5,
+	                    SUM(CASE WHEN c.WaterDiameterId In (10,11,12,13,15) THEN 1 ELSE 0 END) AS MoreThan6
+                    FROM CTE c
+                    JOIN [Db70].dbo.T51 t51
+	                    On t51.C0=c.ZoneId
+                    JOIN [Db70].dbo.T46 t46
+	                    On t51.C1=t46.C0
+	                Join [Db70].dbo.UsageGroup2 u2
+                     	ON u2.Group1Id = @UsageGroupId 
+                    Join [Db70].dbo.UsageGroup3 u3 
+                    	ON u2.Id=u3.Group2Id AND c.UsageId=u3.UsageId	
+                    WHERE	  
+                        c.RN=1 AND
+	                    c.DeletionStateId NOT IN(1,2) AND
+		                c.{queryParams.DataField} BETWEEN @FromDateJalali AND @ToDateJalali 
+                    GROUP BY
+                        u2.Title";
+        }
         private (string, string) GetGroupingField(bool hasTwoParams, string firstParam, string? secondParam)
         {
             if (hasTwoParams)

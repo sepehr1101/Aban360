@@ -11,17 +11,17 @@ namespace Aban360.ReportPool.Persistence.Base
         {
         }
 
-        internal string GetSummaryQuery(bool isUsageGroup,bool hasZone, bool hasUsage, bool hasBranchType, WaterIncomeAndConsumptionSummaryEnum enumState)
+        internal string GetSummaryQuery(bool isUsageGroup, bool hasZone, bool hasUsage, bool hasBranchType, WaterIncomeAndConsumptionSummaryEnum enumState)
         {
-            string usageGroupJoinQuery=isUsageGroup? @"	Join [Db70].dbo.UsageGroup2 u2
-				                                    	 	ON u2.Group1Id=4
+            string usageGroupJoinQuery = isUsageGroup ? @"	Join [Db70].dbo.UsageGroup2 u2
+				                                    	 	ON u2.Group1Id = @UsageGroupId 
 				                                    	Join [Db70].dbo.UsageGroup3 u3 
 				                                    		ON u2.Id=u3.Group2Id AND b.UsageId=u3.UsageId	" : string.Empty;
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
             string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
             string branchTypeQuery = hasBranchType ? "AND b.BranchTypeId IN @branchTypeIds" : string.Empty;
 
-            var (groupKey, SelectKey) = GetEnumQuery(enumState);
+            var (groupKey, SelectKey) = GetEnumQuery(enumState, isUsageGroup);
 
             return @$";With cte as(
                     	Select
@@ -30,6 +30,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     		b.ZoneTitle,
                     		TRIM(b.BillId) as BillId,
                     		t41.C1 as UsageTitle, 
+                            u2.Title UsageGroup2Title,
                     		b.ReadingNumber,
                     		(b.CommercialCount+b.DomesticCount+b.OtherCount) as BillUnitCounts,
                     		Case When b.UsageId IN (1,3) AND b.BranchTypeId NOT IN (4) Then b.Consumption*0.7 Else b.Consumption End SewageConsumption,
@@ -119,7 +120,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     Group By {groupKey}
                     Order By {groupKey}";
         }
-        internal (string, string) GetEnumQuery(WaterIncomeAndConsumptionSummaryEnum enumState)
+        internal (string, string) GetEnumQuery(WaterIncomeAndConsumptionSummaryEnum enumState, bool isUsageGroup)
         {
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.AverageConsumption)
                 return ("Ceiling(ConsumptionAverage)", "Ceiling(ConsumptionAverage)");
@@ -128,11 +129,13 @@ namespace Aban360.ReportPool.Persistence.Base
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Zone)
                 return ("ZoneTitle", "ZoneTitle");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Usage)
-                return ("UsageTitle", "UsageTitle");
+                return isUsageGroup ? ("UsageGroup2Title", "UsageGroup2Title") : ("UsageTitle", "UsageTitle");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Region)
                 return ("RegionTitle", "RegionTitle");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.UsageAndZone)
-                return ("ZoneTitle, UsageTitle", "(ZoneTitle CollaTe SQL_Latin1_General_CP1_CI_AS+' - '+UsageTitle)");
+                return isUsageGroup ?
+                    ("ZoneTitle, UsageGroup2Title", "(ZoneTitle CollaTe SQL_Latin1_General_CP1_CI_AS+' - '+ UsageGroup2Title)") :
+                    ("ZoneTitle, UsageTitle", "(ZoneTitle CollaTe SQL_Latin1_General_CP1_CI_AS+' - '+UsageTitle)");
 
             return ("ZoneTitle", "ZoneTitle");
         }
