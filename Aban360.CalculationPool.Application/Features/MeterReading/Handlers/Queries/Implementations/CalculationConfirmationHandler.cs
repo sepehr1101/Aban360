@@ -145,7 +145,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
             foreach (var mr in meterReadings)
             {
-                BedBesCreateDto bedBes = await GetBedBes(mr, $"1{month}");
+                BedBesCreateDto bedBes = await GetBedBes(mr, $"{CommonLiterals.WaterPayIdUniqueCode}{month}");
                 BedBesBatch.Add(bedBes);
 
                 if (mr.DiscountSum > 0)

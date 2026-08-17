@@ -321,7 +321,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 DueDateJalali = DateTime.Now.AddDays(_intervalDueDate).ToShortPersianDateString(),
                 InsertBy = _insertBy,
                 BillId = billId ?? string.Empty,//todo:remove
-                PaymentId = TransactionIdGenerator.GeneratePaymentId(header.FinalAmount, billId, $"200")
+                PaymentId = TransactionIdGenerator.GeneratePaymentId(header.FinalAmount, billId, $"{CommonLiterals.Temp2}00")
             };
         }
     }

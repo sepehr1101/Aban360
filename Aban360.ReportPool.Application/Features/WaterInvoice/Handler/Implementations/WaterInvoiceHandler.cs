@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
@@ -75,7 +76,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                 input.DebtorOrCreditorAmount = 0;
                 input.PayableAmount = (input.Sum / 1000) * 1000;
             }
-            input.PayId = displayPreviousDebt ? input.PayId : TransactionIdGenerator.GeneratePaymentId(input.Sum, input.BillId,"100");
+            input.PayId = displayPreviousDebt ? input.PayId : TransactionIdGenerator.GeneratePaymentId(input.Sum, input.BillId, $"{CommonLiterals.WaterPayIdUniqueCode}00");
             
             input.BarCode = (input.BillId is null ? new string('0', 13) : input.BillId.PadLeft(13, '0')) +
                             (input.PayId is null ? new string('0', 13) : input.PayId.PadLeft(13, '0'));

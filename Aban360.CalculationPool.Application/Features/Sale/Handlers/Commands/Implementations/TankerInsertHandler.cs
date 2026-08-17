@@ -21,6 +21,7 @@ using Aban360.Common.ApplicationUser;
 using Aban360.CalculationPool.Application.Features.Base;
 using Aban360.Common.Db.Constants.Literals;
 using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
+using Aban360.Common.Literals;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Implementations
 {
@@ -157,7 +158,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             //string _3digitZoneId = await _t52QueryService.Get(new ZoneIdAndCustomerNumber(tankerInsertDto.ZoneId, tankerInsertDto.CustomerNumber));
             string _3digitZoneId = "000";
             string billId = TransactionIdGenerator.GenerateBillId(tankerInsertDto.CustomerNumber.ToString(), _3digitZoneId);
-            string payId = TransactionIdGenerator.GeneratePaymentId((long)calcResult.Final, billId, "100");
+            string payId = TransactionIdGenerator.GeneratePaymentId((long)calcResult.Final, billId, $"{CommonLiterals.WaterPayIdUniqueCode}00");
 
             return new BedBesCreateDto()
             {

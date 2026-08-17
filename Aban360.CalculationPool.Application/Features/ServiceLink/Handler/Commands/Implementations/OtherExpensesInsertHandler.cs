@@ -12,15 +12,14 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
-using Aban360.OldCalcPool.Persistence.Features.Rules.Commands.Implementations;
 using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using System.Reflection;
 
 namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Implementations
 {
@@ -359,7 +358,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         private async Task<IEnumerable<RequestBillDetailsInsertDto>> GetRequestBillDetailsInsertDto(IEnumerable<KartInsertDto> items, MemberInfoGetDto memberInfo)
         {
             ICollection<RequestBillDetailsInsertDto> requests = new List<RequestBillDetailsInsertDto>();
-            string paymentId = TransactionIdGenerator.GeneratePaymentId(items?.FirstOrDefault()?.TotalServicesAmount ?? 0, memberInfo.BillId, "200");
+            string paymentId = TransactionIdGenerator.GeneratePaymentId(items?.FirstOrDefault()?.TotalServicesAmount ?? 0, memberInfo.BillId, $"{CommonLiterals.Temp2}00");
             foreach (var item in items)
             {
                 ModifyTypeGetDto modifyTypeInfo = await _modifyTypeQueryService.GetByKarten75(item.Type);

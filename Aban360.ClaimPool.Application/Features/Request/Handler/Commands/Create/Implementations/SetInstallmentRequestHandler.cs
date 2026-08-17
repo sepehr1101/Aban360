@@ -183,14 +183,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private IEnumerable<InstallmentRequestDataOutputDto> GetInstallments(InstallmentRequestInputDto inputDto, string billId, string[] dueDatesJalali, long payable)
         {
             var (firstInstallmentWithoutZero, eachInstallmentAmountWithoutZero, remain) = GetInstallmentAmount(inputDto, payable);
-            string firstPaymentId = TransactionIdGenerator.GeneratePaymentId(firstInstallmentWithoutZero, billId, $"20{0}");
+            string firstPaymentId = TransactionIdGenerator.GeneratePaymentId(firstInstallmentWithoutZero, billId, $"{CommonLiterals.BranchPayIdUniqueCode}00");
             InstallmentRequestDataOutputDto firstInstallment = new(firstInstallmentWithoutZero + remain, dueDatesJalali[0], firstPaymentId, 0);
             ICollection<InstallmentRequestDataOutputDto> data = new List<InstallmentRequestDataOutputDto>(); ;
             data.Add(firstInstallment);
             for (int i = 1; i <= inputDto.InstallmentCount; i++)
             {
                 string dueDateJalali = dueDatesJalali[i];
-                string paymentId = TransactionIdGenerator.GeneratePaymentId(eachInstallmentAmountWithoutZero, billId, $"20{i}");
+                string paymentId = TransactionIdGenerator.GeneratePaymentId(eachInstallmentAmountWithoutZero, billId, $"{CommonLiterals.BranchPayIdUniqueCode}0{i}");
                 InstallmentRequestDataOutputDto otherinstallment = new(eachInstallmentAmountWithoutZero, dueDateJalali, paymentId, i);
                 data.Add(otherinstallment);
             }
@@ -200,7 +200,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private IEnumerable<InstallmentRequestDataOutputDto> GetCashInstallments(string billId, string dueDateJalali, long payable)
         {
             ICollection<InstallmentRequestDataOutputDto> data = new List<InstallmentRequestDataOutputDto>();
-            data.Add(new InstallmentRequestDataOutputDto(payable, dueDateJalali, TransactionIdGenerator.GeneratePaymentId(payable, billId, $"200"), 0));
+            data.Add(new InstallmentRequestDataOutputDto(payable, dueDateJalali, TransactionIdGenerator.GeneratePaymentId(payable, billId, $"{CommonLiterals.Temp2}00"), 0));
 
             return data;
         }

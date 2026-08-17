@@ -80,7 +80,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
                 MobileNumber = memberInfo.MobileNumber,
                 ReadingNumber = memberInfo.ReadingNumber,
                 BillId = memberInfo.BillId,
-                PaymentId = TransactionIdGenerator.GeneratePaymentId(connectDisconnectInfo.WaterDebt, "100"),
+                PaymentId = TransactionIdGenerator.GeneratePaymentId(connectDisconnectInfo.WaterDebt, $"{CommonLiterals.WaterPayIdUniqueCode}00"),
                 UsageTitle = memberInfo.UsageTitle,
                 MeterDiameterId = memberInfo.MeterDiameterId,
                 MeterDiameterTitle = memberInfo.MeterDiameterTitle,
