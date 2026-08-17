@@ -37,13 +37,19 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
             ApkInfo? result = await _sqlConnection.QueryFirstOrDefaultAsync<ApkInfo>(query, new { version });
             return result;
         }
+        public async Task<ApkInfo?> GetLatestValidVersion()
+        {
+            string query = GetLatestValidVersionQuery();
+            IEnumerable<ApkInfo> result = await _sqlConnection.QueryAsync<ApkInfo>(query);
+            return result.ElementAt(1);
+        }
         public async Task<byte[]> GetFile(short id)
         {
             string query = GetFileByIdQuery();
             byte[] result = await _sqlConnection.QueryFirstOrDefaultAsync<byte[]>(query, new { id });
             return result;
         }
-   
+
         private string GetValidQuery()
         {
             return @"Select 
@@ -107,6 +113,24 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                         Version=@Version AND
                         RemovedBy IS NULL AND
                         ExpiredBy IS NULL";
+        }
+        private string GetLatestValidVersionQuery()
+        {
+            return @"Select Top 2
+                    	Id,
+                    	Name,
+                    	Version,
+                        FileContent,
+                        IsActive,   
+                    	Description,
+                    	InsertedDateTime,
+                        RemovedBy,
+                        ExpiredBy
+                    From [Aban360].MeterPool.ApkInfo
+                    Where 
+                        RemovedBy IS NULL AND
+                        ExpiredBy IS NULL
+                    Order by Version Desc";
         }
         private string GetFileByIdQuery()
         {

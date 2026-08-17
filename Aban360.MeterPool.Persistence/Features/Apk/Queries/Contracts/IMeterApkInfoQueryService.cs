@@ -8,6 +8,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Contracts
         Task<ApkInfoGetDto?> GetLatestVersion();
         Task<ApkInfoGetDto?> GetValid(short id);
         Task<ApkInfo?> GetValid(string version);
+        Task<ApkInfo?> GetLatestValidVersion();
         Task<byte[]> GetFile(short id);
     }
 }
