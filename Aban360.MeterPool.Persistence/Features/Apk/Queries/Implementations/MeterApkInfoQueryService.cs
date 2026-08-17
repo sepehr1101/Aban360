@@ -19,10 +19,10 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
             IEnumerable<ApkInfoGetDto> result = await _sqlConnection.QueryAsync<ApkInfoGetDto>(query);
             return result;
         }
-        public async Task<ApkInfoGetDto> GetLatestVersion()
+        public async Task<ApkInfoGetDto?> GetLatestVersion()
         {
             string query = GetLatestVersionQuery();
-            ApkInfoGetDto result = await _sqlConnection.QueryFirstOrDefaultAsync<ApkInfoGetDto>(query);
+            ApkInfoGetDto? result = await _sqlConnection.QueryFirstOrDefaultAsync<ApkInfoGetDto>(query);
             return result;
         }
         public async Task<ApkInfoGetDto?> GetValid(short id)
@@ -50,6 +50,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	Id,
                     	Name,
                         --FileContent,
+                        IsActive,
                     	Version,
                     	Description,
                     	InsertedDateTime
@@ -63,6 +64,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	Name,
                     	Version,
                         FileContent,
+                        IsActive,
                     	Description,
                     	InsertedDateTime
                     From Aban360.MeterPool.ApkInfo
@@ -79,6 +81,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	Name,
                     	Version,
                         FileContent,
+                        IsActive,
                     	Description,
                     	InsertedDateTime
                     From Aban360.MeterPool.ApkInfo
@@ -94,6 +97,7 @@ namespace Aban360.MeterPool.Persistence.Features.Apk.Queries.Implementations
                     	Name,
                     	Version,
                         FileContent,
+                        IsActive,   
                     	Description,
                     	InsertedDateTime,
                         RemovedBy,
