@@ -5,18 +5,22 @@ using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Implementations;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Diagnostics;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Update.Implementations
 {
@@ -34,7 +38,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         const int _conditionPayableAmount = 10000;
         const int _paymentDeadline = 7;
         const int _malfunctionMeterStateId = 1;
-        const int _changeCounterStateId = 2;
         private int[] _domesticUnits = { 1, 3 };
 
         public MeterReadingDetailUpdateHandler(
@@ -377,7 +380,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             AbBahaCalculationDetails abBaha;
 
             MeterReadingDetailDataOutputDto meterReadingDetail = await _meterReadingDetailService.GetById(meterReadingDetailUpdate.Id);
-            if (meterReadingDetailUpdate.CurrentCounterStateCode == 1 && meterReadingDetailUpdate.MonthlyAverage.HasValue)
+            if (meterReadingDetailUpdate.CurrentCounterStateCode == (int)CounterStateCodeEnum.Malfunction && meterReadingDetailUpdate.MonthlyAverage.HasValue)
             {
                 MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto()
                 {
@@ -389,7 +392,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 AbBahaCalculationDetails abBahaCalc = await _oldTariffEngine.Handle(meterInfo, cancellationToken);
                 return abBahaCalc;
             }
-            else if (meterReadingDetailUpdate.CurrentCounterStateCode == _changeCounterStateId)
+            else if (meterReadingDetailUpdate.CurrentCounterStateCode == (int)CounterStateCodeEnum.Change)
             {
                 if (string.IsNullOrWhiteSpace(customerInfo.TavizInfo.TavizDateJalali) ||
                     customerInfo.TavizInfo.TavizDateJalali.CompareTo(meterReadingDetailUpdate.CurrentDateJalali) > 0 ||
@@ -416,6 +419,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     }
                 }
             }
+            else if (meterReadingDetailUpdate.CurrentCounterStateCode == (int)CounterStateCodeEnum.Close)
+            {
+                abBaha = GetAbBahaCalcWithZeroValues(meterReadingDetailUpdate, customerInfo);
+            }
             else
             {
                 MeterImaginaryInputDto meterImaginary = GetMeterImaginary(meterReadingDetail, meterReadingDetailUpdate, previousMeterDetailDto, null, false);
@@ -423,6 +430,61 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
 
             return abBaha;
+        }
+        private AbBahaCalculationDetails GetAbBahaCalcWithZeroValues(MeterReadingDetailUpdateDto inputDto, CustomerInfoGetDto customerInfo)
+        {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            inputDto.CurrentNumber = 0;
+            string previousDate = customerInfo.BedBesInfo?.LastMeterDateJalali ?? customerInfo.MembersInfo.WaterInstallationDateJalali;
+            int previousNumber = customerInfo.BedBesInfo?.LastMeterNumber ?? 0;
+            int finalUnit = GetFinalDomesticUnit(customerInfo, inputDto.CurrentDateJalali);
+            ConsumptionInfo consumptionInfo = new(previousDate, inputDto.CurrentDateJalali, 0, GetDuration(previousDate, inputDto.CurrentDateJalali), 0, finalUnit);
+            MeterInfoOutputDto meterInfo = new(previousDate, inputDto.CurrentDateJalali, previousNumber, 0, inputDto.CurrentCounterStateCode);
+
+            CustomerDetailInfoInputDto customerDetailInfo = new()
+            {
+                ZoneId = customerInfo.MembersInfo.ZoneId,
+                Radif = customerInfo.MembersInfo.CustomerNumber,
+                BranchType = customerInfo.MembersInfo.BranchTypeId,
+                UsageId = customerInfo.MembersInfo.UsageId,
+                DomesticUnit = customerInfo.MembersInfo.DomesticUnit,
+                CommertialUnit = customerInfo.MembersInfo.CommercialUnit,
+                OtherUnit = customerInfo.MembersInfo.OtherUnit,
+                EmptyUnit = customerInfo.MembersInfo.EmptyUnit,
+                WaterInstallationDateJalali = customerInfo.MembersInfo.WaterInstallationDateJalali,
+                SewageInstallationDateJalali = customerInfo.MembersInfo.SewageInstallationDateJalali,
+                WaterRegisterDate = customerInfo.MembersInfo.WaterRegisterDate,
+                SewageRegisterDate = customerInfo.MembersInfo.SewageRegisterDate,
+                SewageCalcState = customerInfo.MembersInfo.SewageCalcState,
+                ContractualCapacity = customerInfo.MembersInfo.ContractualCapacity,
+                HouseholdNumber = customerInfo.MembersInfo.HouseholdNumber,
+                HouseholdDate = customerInfo.MembersInfo.HouseholdDate,
+                ReadingNumber = customerInfo.MembersInfo.ReadingNumber,
+                VillageId = customerInfo.MembersInfo.VillageId,
+                IsSpecial = customerInfo.MembersInfo.IsSpecial,
+                VirtualCategoryId = customerInfo.MembersInfo.VirtualCategoryId,
+                CounterStateCode = inputDto.CurrentCounterStateCode,
+            };
+            MeterInfoByPreviousDataInputDto previousMeterInfo = new()
+            {
+                BillId = customerInfo.MembersInfo.BillId,
+                PreviousDateJalali = previousDate,
+                PreviousNumber = previousNumber,
+                CurrentDateJalali = inputDto.CurrentDateJalali,
+                CurrentMeterNumber = inputDto.CurrentNumber ?? 0,
+                CounterStateCode = inputDto.CurrentCounterStateCode,
+            };
+            MeterImaginaryInputDto meterImaginaryDto = new() { CustomerInfo = customerDetailInfo, MeterPreviousData = previousMeterInfo };
+            CustomerInfoOutputDto customerInfoOutputDto = new(meterImaginaryDto);
+            stopWatch.Stop();
+
+
+            AbBahaCalculationDetails abBahaCalcResult = new AbBahaCalculationDetails(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            new List<NerkhGetDto>(), new List<AbAzadFormulaDto>(), new List<ZaribGetDto>(),
+            consumptionInfo, meterInfo, customerInfoOutputDto, stopWatch.ElapsedMilliseconds, 0);
+
+            return abBahaCalcResult;
         }
         private MeterImaginaryInputDto GetMeterImaginary(MeterReadingDetailDataOutputDto readingDetail, MeterReadingDetailUpdateDto meterReadingDetailUpdate, MeterReadingDetailDataOutputDto previousMeterDetailDto, string? meterChangeDateJalali, bool isChangeCounterState)
         {
@@ -489,5 +551,62 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 return (sumItems, jam, 0);
             }
         }
+        private int GetDuration(string previousDate, string currentDate)
+        {
+            int thresholdDay = 1;
+            var previousGregorian = previousDate.ToGregorianDateTime();
+            var currentGregorian = currentDate.ToGregorianDateTime();
+            int duration = (currentGregorian.Value - previousGregorian.Value).Days;
+            if (duration < thresholdDay)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.InvalidDuration);
+            }
+            return duration;
+        }
+        private int GetFinalDomesticUnit(CustomerInfoGetDto customerInfo, string readingDateJalali)
+        {
+            if (IsGardenAndResidence(customerInfo.MembersInfo.UsageId))
+            {
+                return customerInfo.MembersInfo.DomesticUnit < 1 ? 1 : customerInfo.MembersInfo.DomesticUnit;//((/*customerInfo.OtherUnit + */customerInfo.DomesticUnit) == 0 ? 1 : /*customerInfo.OtherUnit + */ customerInfo.DomesticUnit);
+            }
+            int finalHousehold = GetHouseholdUnit(customerInfo.MembersInfo.HouseholdNumber, customerInfo.MembersInfo.HouseholdDate, readingDateJalali);
+            if (finalHousehold > 1)
+            {
+                return customerInfo.MembersInfo.HouseholdNumber;//customerInfo.DomesticUnit;
+            }
+            return customerInfo.MembersInfo.DomesticUnit - customerInfo.MembersInfo.EmptyUnit < 1 ? 1 : customerInfo.MembersInfo.DomesticUnit - customerInfo.MembersInfo.EmptyUnit;
+        }
+        internal static bool IsGardenAndResidence(int usageId)
+        {
+            int[] s = [25, 34];
+            return s.Contains(usageId);
+        }
+        private int GetHouseholdUnit(int householdUnit, string? householdDate, string readingDateJalali)
+        {
+            if (householdUnit <= 0)
+            {
+                return 0;
+            }
+            if (string.IsNullOrWhiteSpace(householdDate))
+            {
+                return 0;
+            }
+            DateTime? expireHouseHoldGregorian = householdDate.ToGregorianDateTime();
+            if (!expireHouseHoldGregorian.HasValue)
+            {
+                return 0;
+            }
+            DateTime? readingDateGregorian = readingDateJalali.ToGregorianDateTime();
+            if (!readingDateGregorian.HasValue)
+            {
+                throw new InvalidDateException(readingDateJalali);
+            }
+            if (expireHouseHoldGregorian.Value.AddYears(1) < readingDateGregorian.Value)
+            {
+                return 0;
+            }
+            return householdUnit;
+        }
+
     }
 }

@@ -10,6 +10,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts
         Task<IEnumerable<BillLatestListDataOutputDto>> GetLatestList(BillLatestListInputDto inputDto);
         Task<IEnumerable<BillLatestListDataOutputDto>> GetLatestListByBedBes(BillLatestListInputDto inputDto);
         Task<IEnumerable<MeterReadingExcelFileDownloadDateOutputDto>> GetLatestListForExcel(BillLatestListInputDto inputDto);
-        Task<IEnumerable<BillLatestListDataOutputDto>> GetLatestForNonRead(BillLatestListInputDto inputDto,string dateJalali);
+        Task<IEnumerable<BillLatestListDataOutputDto>> GetLatestForNonRead(BillLatestListInputDto inputDto, string dateJalali);
+        Task<IEnumerable<BillsOldDbDelUpdateDto>> GetReturnedId(BillFindReturnedInputDto inputDto);
     }
 }

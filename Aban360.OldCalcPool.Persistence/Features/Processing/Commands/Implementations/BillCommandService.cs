@@ -5,6 +5,7 @@ using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Persistence.Constants;
+using Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -62,7 +63,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidRemoveBill);
             }
         }
-       
+        public async Task UpdateOldDbDel(IEnumerable<BillsOldDbDelUpdateDto> input)
+        {
+            string command = GetUpdateOldDbDelCommand();
+            int recordEffected = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordEffected != (input?.Count() ?? 0))
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidSaveReturn);
+            }
+        }
         public async Task InsertByBulk(ICollection<BillInsertDto> input)
         {
             var dt = ToDataTable(input);
@@ -499,7 +508,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	rc.Title,
                     	b.noe_va,
                     	0 IsSettlement,
-                        0 OldDbDel ,
+                        1 OldDbDel ,
                         0 OldDbSerial
                     from [{dbName}].dbo.REPAIR b
                     join Db70.dbo.T51 z
@@ -517,6 +526,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     LEFT OUTER JOIN [Db70].dbo.BillReturnCause rc
                     	ON b.elat=rc.Id
                     WHERE b.id=@id";
+        }
+        private string GetUpdateOldDbDelCommand()
+        {
+            return $@"Update CustomerWarehouse.dbo.Bills 
+                    Set OldDbDel = 1
+                    Where 
+                        ZoneId = @ZoneId AND 
+                        CustomerNumber = @CustomerNumber AND 
+                        Id =@Id AND
+                        TypeCode = @TypeCode";
         }
         //private string GetTempTableFieldTitlesCommand()
         //{

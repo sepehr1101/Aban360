@@ -17,6 +17,7 @@ namespace Aban360.ReportPool.Persistence.Base
 				                                    	 	ON u2.Group1Id = @UsageGroupId 
 				                                    	Join [Db70].dbo.UsageGroup3 u3 
 				                                    		ON u2.Id=u3.Group2Id AND b.UsageId=u3.UsageId	" : string.Empty;
+            string usageGroup2TitleSelect = isUsageGroup ? " u2.Title UsageGroup2Title, " : string.Empty;
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
             string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
             string branchTypeQuery = hasBranchType ? "AND b.BranchTypeId IN @branchTypeIds" : string.Empty;
@@ -30,7 +31,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     		b.ZoneTitle,
                     		TRIM(b.BillId) as BillId,
                     		t41.C1 as UsageTitle, 
-                            u2.Title UsageGroup2Title,
+                            {usageGroup2TitleSelect}
                     		b.ReadingNumber,
                     		(b.CommercialCount+b.DomesticCount+b.OtherCount) as BillUnitCounts,
                     		Case When b.UsageId IN (1,3) AND b.BranchTypeId NOT IN (4) Then b.Consumption*0.7 Else b.Consumption End SewageConsumption,
