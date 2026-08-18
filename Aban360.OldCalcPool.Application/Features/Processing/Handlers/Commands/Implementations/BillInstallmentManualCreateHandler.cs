@@ -157,7 +157,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     Payable = s.Payable,
                     QueueNumber = s.QueueNumber,
                     BillId = memberInfo.BillId,
-                    PaymentId = TransactionIdGenerator.GeneratePaymentId(s.Payable, memberInfo.BillId, $"10{s.QueueNumber}"),
+                    PaymentId = TransactionIdGenerator.GeneratePaymentId(s.Payable, memberInfo.BillId, $"{CommonLiterals.WaterPayIdUniqueCode}0{s.QueueNumber}"),
                     QueueNumberTitle = $"قسط {s.QueueNumber.NumberToText(Language.Persian)}"
                 };
             });

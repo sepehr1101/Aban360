@@ -35,12 +35,18 @@ namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Delete.Imp
 
         public async Task Handle(short id, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await Validate(id);
+            ApkInfoGetDto? apkInfo = await _meterApkFileQueryService.GetValid(id);
+            if (apkInfo is null)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveMeterApkFile);
+            }
+            ApkInfo? latestValidVersionInfo = await _meterApkFileQueryService.GetLatestValidVersion();
+            int? latestValidId = apkInfo.IsActive ? latestValidVersionInfo.Id : null;
             ApkInfoRemoveDto removedDto = new(id, appUser.UserId);
             string opLogText = string.Format(OpLogLiterals.MeterApkFileRemoveOpLog, id);
-            await ExecSql(removedDto, appUser, opLogText);
+            await ExecSql(removedDto, latestValidId, appUser, opLogText);
         }
-        private async Task ExecSql(ApkInfoRemoveDto RemoveDto, IAppUser appUser, string opLogText)
+        private async Task ExecSql(ApkInfoRemoveDto RemoveDto, int? latestValidId, IAppUser appUser, string opLogText)
         {
             using (IDbConnection sqlConnection = _sqlConnection)
             {
@@ -61,21 +67,17 @@ namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Delete.Imp
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, sqlReportConnection, sqlReportTransaction);
 
                     await apkInfoCommandService.Remove(RemoveDto);
+                    if (latestValidId != null)
+                    {
+                        await apkInfoCommandService.Update(new ApkInfoIsActiveUpdateDto(latestValidId.Value, true));
+                        await apkInfoCommandService.Update(new ApkInfoIsActiveUpdateDto(RemoveDto.Id, false));
+                    }
                     await opLogCommandService.Insert(opLogText, appUser);
 
                     sqlTransaction.Commit();
                     sqlReportTransaction.Commit();
                 }
             }
-        }
-        private async Task Validate(short id)
-        {
-            ApkInfoGetDto? apkInfo = await _meterApkFileQueryService.GetValid(id);
-            if (apkInfo is null)
-            {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidRemoveMeterApkFile);
-            }
-
         }
     }
 }

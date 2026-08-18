@@ -698,6 +698,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
             return $@"With Cte As(
                         Select 
+							b.id,
                     		b.date_bed,
                     		b.pri_date,
                     		b.today_date,
@@ -722,7 +723,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                                 When b.del = 1 And r.elat Not In(2,3,4,5,6,10) And b.cod_vas In (4,7,8) Then NULL
                                 Else NULL
                             End As PreviousDateJalali
-                        From  [{dbName}].dbo.bed_bes b
+                         From  [{dbName}].dbo.bed_bes b
                     	 Left Join [{dbName}].dbo.REPAIR r
                     		On b.town=r.town And b.radif=r.radif And b.pri_date>=r.pri_date And b.today_date<=r.today_date
                     	 Where b.radif=@CustomerNumber And b.town=@ZoneId
@@ -738,7 +739,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 					Join [Db70].dbo.CounterVaziat cv
 						ON c.CounterStateCode=cv.MoshtarakinId
                     Where PreviousNumber Is Not Null 
-                    Order By c.date_bed Desc";
+                    Order By c.date_bed Desc ,c.Id Desc";
         }
         private string GetInvalidPreviousBedBesBySqlBulkCopyQuery(string dbName)
         {

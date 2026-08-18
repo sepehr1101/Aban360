@@ -1,4 +1,6 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Contracts;
 using Aban360.MeterPool.Domain.Features.Apk.Queries;
 using Aban360.MeterPool.Persistence.Features.Apk.Queries.Contracts;
@@ -13,9 +15,13 @@ namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Implemenra
             _meterApkInfoQueryService = meterApkInfoQueryService;
             _meterApkInfoQueryService.NotNull(nameof(meterApkInfoQueryService));
         }
-        public async Task<ApkInfoGetDto> Handle( CancellationToken cancellationToken)
+        public async Task<ApkInfoGetDto?> Handle( CancellationToken cancellationToken)
         {
-            ApkInfoGetDto result = await _meterApkInfoQueryService.GetLatestVersion();
+            ApkInfoGetDto? result = await _meterApkInfoQueryService.GetLatestVersion();
+            if (result is null || result.FileContent is null)
+            {
+                throw new ReadingException(ExceptionLiterals.NotFoundMeterApkFileToDownload);
+            }
             return result;
         }
     }

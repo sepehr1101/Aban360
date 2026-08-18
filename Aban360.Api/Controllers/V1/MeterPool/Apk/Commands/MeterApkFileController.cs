@@ -117,7 +117,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Apk.Commands
         [Route("download/latest")]
         public async Task<FileResult> LatestDownload(CancellationToken cancellationToken)
         {
-            ApkInfoGetDto result = await _meterApkInfoGetLatestHandler.Handle(cancellationToken);
+            ApkInfoGetDto? result = await _meterApkInfoGetLatestHandler.Handle(cancellationToken);
             var stream = new MemoryStream(result.FileContent);
             return File(stream, _contentType, result.Name);
 

@@ -1,0 +1,40 @@
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
+using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
+using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
+using FluentValidation;
+
+namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Implementations
+{
+    internal sealed class SewageWaterRequestSummaryByUsageGroupHandler : ISewageWaterRequestSummaryByUsageGroupHandler
+    {
+        private readonly ISewageWaterRequestSummaryByUsageGroupQueryService _sewageWaterRequestSummaryQuery;
+        private readonly IValidator<SewageWaterRequestByUsageGroupInputDto> _validator;
+        public SewageWaterRequestSummaryByUsageGroupHandler(
+            ISewageWaterRequestSummaryByUsageGroupQueryService sewageWaterRequestSummaryQuery,
+            IValidator<SewageWaterRequestByUsageGroupInputDto> validator)
+        {
+            _sewageWaterRequestSummaryQuery = sewageWaterRequestSummaryQuery;
+            _sewageWaterRequestSummaryQuery.NotNull(nameof(sewageWaterRequestSummaryQuery));
+
+            _validator = validator;
+            _validator.NotNull(nameof(validator));
+        }
+
+        public async Task<ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryDataOutputDto>> Handle(SewageWaterRequestByUsageGroupInputDto input, CancellationToken cancellationToken)
+        {
+            var validatioResult = await _validator.ValidateAsync(input, cancellationToken);
+            if (!validatioResult.IsValid)
+            {
+                var message = string.Join(", ", validatioResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomValidationException(message);
+            }
+
+            var result = await _sewageWaterRequestSummaryQuery.Get(input);
+            return result;
+        }
+    }
+}

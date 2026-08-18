@@ -17,6 +17,7 @@
         public static string ZoneTitle { get { return "ZoneTitle"; } }
         public static string ByDay { get { return " بر اساس روز "; } }
         public static string ByUsage { get { return " بر اساس کاربری "; } }
+        public static string ByUsageGroup { get { return " بر اساس گروه کاربری "; } }
         public static string UsageTitle { get { return "UsageTitle"; } }
         public static string ByUsageAndZone { get { return " بر اساس کاربری و ناحیه "; } }
         public static string ByCustomer { get { return " بر اساس مشترک "; } }

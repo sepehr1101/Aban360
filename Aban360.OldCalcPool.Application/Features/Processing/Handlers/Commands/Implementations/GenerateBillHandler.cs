@@ -378,7 +378,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             var (sumItems, jam, pard) = GetAmounts(preDebtAmount, abBahaCalc.SumItems);
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
-            string paymentIdOption = $"1{currentDateJalali.Substring(5, 2)}";
+            string paymentIdOption = $"{CommonLiterals.WaterPayIdUniqueCode}{currentDateJalali.Substring(5, 2)}";
             string paymentId = IsAllowedZeroMeterNumber(counterSatetCode) ?
                 string.Empty :
                 TransactionIdGenerator.GeneratePaymentId((long)pard, abBahaCalc.Customer.BillId, paymentIdOption);

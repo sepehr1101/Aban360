@@ -7,6 +7,7 @@ namespace Aban360.MeterPool.Domain.Features.Apk.Queries
         public short Id { get; set; }
         public string Name { get; set; }
         public string Version { get; set; }
+        public bool IsActive { get; set; }
         public byte[]? FileContent { get; set; }
         public string? Description { get; set; }
         public DateTime InsertedDateTime { get; set; }
@@ -17,6 +18,7 @@ namespace Aban360.MeterPool.Domain.Features.Apk.Queries
         public short Id { get; set; }
         public string Name { get; set; }
         public string Version { get; set; }
+        public bool IsActive { get; set; }
         public byte[] FileContent { get; set; }
         public string? Description { get; set; }
         public DateTime InsertedDateTime { get; set; }

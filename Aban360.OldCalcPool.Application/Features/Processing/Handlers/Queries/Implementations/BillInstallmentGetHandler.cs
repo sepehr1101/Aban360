@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -44,7 +45,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.I
             foreach (var dataItem in data)
             {
                 dataItem.BillId = input;
-                dataItem.PaymentId = TransactionIdGenerator.GeneratePaymentId(dataItem.Payable, input, $"10{dataItem.QueueNumber}");
+                dataItem.PaymentId = TransactionIdGenerator.GeneratePaymentId(dataItem.Payable, input, $"{CommonLiterals.WaterPayIdUniqueCode}0{dataItem.QueueNumber}");
             }
             MemberGetDto memberInfo = await _membersQueryService.Get(input);
 
