@@ -358,7 +358,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         private async Task<IEnumerable<RequestBillDetailsInsertDto>> GetRequestBillDetailsInsertDto(IEnumerable<KartInsertDto> items, MemberInfoGetDto memberInfo)
         {
             ICollection<RequestBillDetailsInsertDto> requests = new List<RequestBillDetailsInsertDto>();
-            string paymentId = TransactionIdGenerator.GeneratePaymentId(items?.FirstOrDefault()?.TotalServicesAmount ?? 0, memberInfo.BillId, $"{CommonLiterals.Temp2}00");
+            string paymentId = TransactionIdGenerator.GeneratePaymentId(items?.FirstOrDefault()?.TotalServicesAmount ?? 0, memberInfo.BillId, $"{CommonLiterals.BranchPayIdUniqueCode}00");
             foreach (var item in items)
             {
                 ModifyTypeGetDto modifyTypeInfo = await _modifyTypeQueryService.GetByKarten75(item.Type);

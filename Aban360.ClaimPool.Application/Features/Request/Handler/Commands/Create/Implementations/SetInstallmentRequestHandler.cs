@@ -200,7 +200,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private IEnumerable<InstallmentRequestDataOutputDto> GetCashInstallments(string billId, string dueDateJalali, long payable)
         {
             ICollection<InstallmentRequestDataOutputDto> data = new List<InstallmentRequestDataOutputDto>();
-            data.Add(new InstallmentRequestDataOutputDto(payable, dueDateJalali, TransactionIdGenerator.GeneratePaymentId(payable, billId, $"{CommonLiterals.Temp2}00"), 0));
+            data.Add(new InstallmentRequestDataOutputDto(payable, dueDateJalali, TransactionIdGenerator.GeneratePaymentId(payable, billId, $"{CommonLiterals.BranchPayIdUniqueCode}00"), 0));
 
             return data;
         }
