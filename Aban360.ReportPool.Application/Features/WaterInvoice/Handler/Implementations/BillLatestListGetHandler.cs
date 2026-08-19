@@ -8,7 +8,6 @@ using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
-using NetTopologySuite.Index.HPRtree;
 
 namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implementations
 {
@@ -17,11 +16,13 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         private readonly IBillQueryService _billQueryService;
         private readonly IBedBesQueryService _bedBesQueryService;
         private readonly ICommonZoneService _commonZoneService;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
         private string _title = ReportLiterals.WaterLatestList;
         public BillLatestListGetHandler(
             IBillQueryService billQueryService,
             IBedBesQueryService bedBesQueryService,
-            ICommonZoneService commonZoneService)
+            ICommonZoneService commonZoneService,
+            ICommonMemberQueryService commonMemberQueryService)
         {
             _billQueryService = billQueryService;
             _billQueryService.NotNull(nameof(billQueryService));
@@ -31,6 +32,9 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
 
             _commonZoneService = commonZoneService;
             _commonZoneService.NotNull(nameof(commonZoneService));
+
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
         }
 
         public async Task<ReportOutput<BillLatestListHeaderOutputDto, BillLatestListDataOutputDto>> Handle(BillLatestListInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
@@ -39,9 +43,11 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
             IEnumerable<BillLatestListDataOutputDto> data = await _billQueryService.GetLatestList(inputDto);
             foreach (var item in data)
             {
-                BedBesPreviousNumberAndDateOutputDto billInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId, true);
-                item.PreviousNumber = billInfo.PreviousNumber;
-                item.PreviousDateJalali = billInfo.PreviousDateJalali;
+                MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber));
+                BedBesPreviousNumberAndDateOutputDto? billInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId, true);
+                
+                item.PreviousNumber = billInfo is not null ? billInfo.PreviousNumber : 1;
+                item.PreviousDateJalali = billInfo is not null ? billInfo.PreviousDateJalali : memberInfo.MeterInstallationDateJalali;
             }
             BillLatestListHeaderOutputDto header = new()
             {
@@ -64,9 +70,11 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
             {
                 if (item.IsReturned)
                 {
-                    BedBesPreviousNumberAndDateOutputDto billInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId, true);
-                    item.PreviousNumber = billInfo.PreviousNumber;
-                    item.PreviousDateJalali = billInfo.PreviousDateJalali;
+                    MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber));
+                    BedBesPreviousNumberAndDateOutputDto? billInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId, true);
+
+                    item.PreviousNumber = billInfo is not null ? billInfo.PreviousNumber : 1;
+                    item.PreviousDateJalali = billInfo is not null ? billInfo.PreviousDateJalali : memberInfo.MeterInstallationDateJalali;
                 }
             }
             BillLatestListHeaderOutputDto header = new()
