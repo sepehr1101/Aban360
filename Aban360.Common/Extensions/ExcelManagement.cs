@@ -608,6 +608,18 @@ namespace Aban360.Common.Extensions
                     { "BillIdTagsExpireDateJalali", "تاریخ انقضا برچسب"},
                     {"FromItem","از" },
                     {"ToItem","به" },
+                    {"UsageGroupTitle","گروه کاربری" },
+                    {"ConsumptionTotalUnit","آحاد مصرف کننده" },
+                    {"DailyAverage","متوسط روز قرائت" },
+                    {"NetConsumption","ناخالص - مقدار هزار مترمکعب" },
+                    {"NetAmount","ناخالص - آب بها (ناخالص)" },
+                    {"ReturnedConsumption","برگشت از فروش - مقدار هزار مترمکعب" },
+                    {"ReturnedAmount","برگشت از فروش - مبلغ" },
+                    {"DiscountAmount","تخفیفات - مبلغ" },
+                    {"RawConsumption","خالص - مقدار هزار مترمکعب" },
+                    {"RawAmount","خالص - آب بها (خالص)" },
+                    {"RawAmountAverage","خالص - متوسط نرخ آب بها(ریال)" },
+                    {"ConsumptionAverageInMonth","خالص - متوسط مصرف مترمکعب در ماه" },
             };
         }
     }
