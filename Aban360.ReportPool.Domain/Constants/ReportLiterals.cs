@@ -314,6 +314,8 @@
 
         public static string ServiceLinkOtherExpenses { get { return "هزینه های متفرقه حق انشعاب"; } }
         public static string ReadingSequenceDetail { get { return $" {Report} توالی قرائت"; } }
+      
+        public static string FinancialStatementTotal { get { return $" {Report} صورت‌های مالی"; } }
 
 
     }

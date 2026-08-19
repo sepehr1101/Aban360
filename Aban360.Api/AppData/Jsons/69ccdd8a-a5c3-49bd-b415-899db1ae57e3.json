@@ -1,0 +1,69 @@
+﻿{
+  "title": " گزارش صورت‌های مالی",
+  "reportHeader": {
+    "fromDateJalali": "1405/01/01",
+    "toDateJalali": "1405/03/01",
+    "title": " گزارش صورت‌های مالی",
+    "reportDateJalali": "1405/05/28",
+    "recordCount": 3,
+    "customerCount": 994383,
+    "consumptionTotalUnit": 2613299,
+    "dailyAverage": 8835774,
+    "netConsumption": 45267482,
+    "netAmount": 3385422888692,
+    "returnedConsumption": -65585,
+    "returnedAmount": -38341867512,
+    "discountAmount": 17171824098,
+    "rawConsumption": 45201897,
+    "rawAmount": 3347620943680,
+    "rawAmountAverage": 148281.0,
+    "consumptionAverageInMonth": 25.66297
+  },
+  "reportData": [
+    {
+      "usageGroupTitle": "آزاد و بنايی",
+      "customerCount": 305964,
+      "consumptionTotalUnit": 804092,
+      "dailyAverage": 2945258,
+      "netConsumption": 13928456,
+      "netAmount": 1041668581136,
+      "returnedConsumption": -20180,
+      "returnedAmount": -11797497696,
+      "discountAmount": 5283638184,
+      "rawConsumption": 13908276,
+      "rawAmount": 1030037213440,
+      "rawAmountAverage": 50304.0,
+      "consumptionAverageInMonth": 8.554323
+    },
+    {
+      "usageGroupTitle": "تجاری",
+      "customerCount": 535437,
+      "consumptionTotalUnit": 1407161,
+      "dailyAverage": 2945258,
+      "netConsumption": 24374798,
+      "netAmount": 1822920016988,
+      "returnedConsumption": -35315,
+      "returnedAmount": -20645620968,
+      "discountAmount": 9246366822,
+      "rawConsumption": 24339483,
+      "rawAmount": 1802565123520,
+      "rawAmountAverage": 42412.0,
+      "consumptionAverageInMonth": 8.554323
+    },
+    {
+      "usageGroupTitle": "صنعتی",
+      "customerCount": 152982,
+      "consumptionTotalUnit": 402046,
+      "dailyAverage": 2945258,
+      "netConsumption": 6964228,
+      "netAmount": 520834290568,
+      "returnedConsumption": -10090,
+      "returnedAmount": -5898748848,
+      "discountAmount": 2641819092,
+      "rawConsumption": 6954138,
+      "rawAmount": 515018606720,
+      "rawAmountAverage": 55565.0,
+      "consumptionAverageInMonth": 8.554323
+    }
+  ]
+}
