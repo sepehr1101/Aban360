@@ -18,5 +18,9 @@ namespace Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto
 
         public string? PreviousMeterDateJalali { get; set; }
         public int PreviousMeterNumber { get; set; }
+
+        public string CurrentMeterDeteJalali { get; set; }
+        public int CurrentMeterNumber { get; set; }
+        public int CurrentCounterStateCode { get; set; }
     }
 }

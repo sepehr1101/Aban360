@@ -51,6 +51,7 @@
         public static string InvoiceNotFound => " قبض یافت نشد";
         public static string BillIdNotFound => "شناسه قبض یافت نشد";
         public static string InvalidBillId => "شناسه قبض معتبر نیست";
+        public static string InvalidReadingNumber => "شماره اشتراک معتبر نیست";
         public static string NotFoundBillId(string billId) => $"شناسه قبض:{billId} معتبر نیست";
         public static string InvalidCustomerNumber => "ردیف یافت نشد";
         public static string NotFoundCustomer => "مشترک با اطلاعات وارد شده یافت نشد";
@@ -173,6 +174,7 @@
         public static string NotFoundBillsToConfirm => "قبضی برای تایید یافت نشد.";
         public static string InvalidMeterSmsStateId => "خطا در شناسه نوع پیامک";
         public static string InvalidMeterSmsFlowId => "خطا در مراحل پیامک";
+        public static string InvalidLatestMeterReadingWithExpireMeterFlow => "آخرین سطر اطلاعات قرائت برای شناسه وارد شده، قابل دسترسی نیست - فایل بسته شده.";
 
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";
