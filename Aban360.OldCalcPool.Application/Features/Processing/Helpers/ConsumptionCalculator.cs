@@ -116,23 +116,18 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         }
         private int GetDivider(CustomerInfoOutputDto customerInfo, int finalDomesticUnit)
         {
-            if (IsCommercial(customerInfo.UsageId))
-            {
-                return 1;
-            }
-            if (IsCharityOrSchool(customerInfo.UsageId))
-            {
-                return 1;
-            }
-            if(IsIndustrial(customerInfo.UsageId))
-            {
-                return 1;
-            }
             if (IsGardenAndResidence(customerInfo.UsageId))
             {
                 return customerInfo.DomesticUnit + customerInfo.OtherUnit < 1 ? 1 : customerInfo.DomesticUnit + customerInfo.OtherUnit;
             }
-            return finalDomesticUnit;
+            if (IsDomesticWithoutUnspecified(customerInfo.UsageId))
+            {
+                return finalDomesticUnit;
+            }
+            else
+            {               
+                return 1;
+            }
         }
         private int GetFinalDomesticUnit(CustomerInfoOutputDto customerInfo, string readingDateJalali)
         {
