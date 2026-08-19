@@ -87,7 +87,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 						On m.town=t51.C0
                     Where
                     	m.town=@zoneId AND 
-						b.cod_vas IN (0) AND
+						b.cod_vas IN (0, 6) AND
                         b.del=0 AND
 						{conditionDateQuery}
                         {usageQuery}";
