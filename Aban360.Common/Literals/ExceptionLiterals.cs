@@ -179,6 +179,7 @@
 
 
         //ReturnedBill
+        public static string InvalidBillIdToReturn => "تعداد قبوض قابل برگشتی در جدول جدید، مغایرت دارد.";
         public static string NotFoundBillsToReturned => "قبضی برای برگشتی یافت نشد.";
         public static string CantReturn => "برگشتی در بازه تاریخی وارد شده امکان پذیر نیست.";
         public static string RepairAmountMoreThanBedBesAmount => "مبلغ برگشتی از مبلغ قبوض بیشتر است.";

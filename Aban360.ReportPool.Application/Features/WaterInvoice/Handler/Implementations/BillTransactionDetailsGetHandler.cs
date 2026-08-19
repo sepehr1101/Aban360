@@ -8,7 +8,6 @@ using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto;
 using Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Aban360.ReportPool.Persistence.Features.WaterInvoice.Contracts;
-using System.Reflection;
 
 namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implementations
 {
@@ -18,6 +17,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         private readonly IBedBesQueryService _bedBesQueryService;
         private readonly ILatestWaterMeterInfoQueryService _latestWaterMeterInfoQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private int _firstMeterNumber = 1;
         public BillTransactionDetailsGetHandler(
             IBillQueryService billQueryService,
             IBedBesQueryService bedBesQueryService,
@@ -69,7 +69,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                 CounterStateTitle = b.CounterStateTitle,
 
             });
-            BedBesPreviousNumberAndDateOutputDto bedBesPreviousNumberAndDate = await _bedBesQueryService.GetPreviousDateAndNumber(zoneIdAndCustomerNumber, billId, true);
+            BedBesPreviousNumberAndDateOutputDto? bedBesPreviousNumberAndDate = await _bedBesQueryService.GetPreviousDateAndNumber(zoneIdAndCustomerNumber, billId, true);
 
             BillTransactionDetailHeaderOutputDto header = new()
             {
@@ -80,11 +80,11 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                 Title = title,
                 RecordCount = data?.Count() ?? 0,
                 LatestMeterChangeDateJalali = latestMeterChangeDateJalali,
-                PreviousMeterDateJalali = bedBesPreviousNumberAndDate.PreviousDateJalali,
-                PreviousMeterNumber = bedBesPreviousNumberAndDate.PreviousNumber,
-                FirstName = memberInfo.FirstName,
-                Surname = memberInfo.Surname,
-                FullName = memberInfo.FullName,
+                PreviousMeterDateJalali = bedBesPreviousNumberAndDate is not null ? bedBesPreviousNumberAndDate.PreviousDateJalali : (memberInfo?.MeterInstallationDateJalali ?? string.Empty),
+                PreviousMeterNumber = bedBesPreviousNumberAndDate is not null ? bedBesPreviousNumberAndDate.PreviousNumber : _firstMeterNumber,
+                FirstName = memberInfo?.FirstName ?? string.Empty,
+                Surname = memberInfo?.Surname ?? string.Empty,
+                FullName = memberInfo?.FullName ?? string.Empty,
             };
 
             return new ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto>(title, header, data);

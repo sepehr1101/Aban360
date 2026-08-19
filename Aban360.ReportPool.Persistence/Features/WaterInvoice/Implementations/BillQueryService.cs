@@ -65,6 +65,12 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
             IEnumerable<BillLatestListDataOutputDto> result = await _sqlReportConnection.QueryAsync<BillLatestListDataOutputDto>(query, new { inputDto.ZoneId, inputDto.FromReadingNumber, inputDto.ToReadingNumber, dateJalali }, null, 180);
             return result;
         }
+        public async Task<IEnumerable<BillsOldDbDelUpdateDto>> GetReturnedId(BillFindReturnedInputDto inputDto)
+        {
+            string query = GetBillsIdReturnedQuery();
+            IEnumerable<BillsOldDbDelUpdateDto> result = await _sqlReportConnection.QueryAsync<BillsOldDbDelUpdateDto>(query, inputDto);
+            return result;
+        }
 
         private string GetItemsByBillIdQuery()
         {
@@ -375,5 +381,23 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						rn=1 AND
 						RegisterDateJalali<@dateJalali";
         }
+		private string GetBillsIdReturnedQuery()
+		{
+			return $@"Select 
+						Id ,
+						ZoneId ,
+						CustomerNumber,
+						TypeCode
+					From CustomerWarehouse.dbo.Bills
+					Where 
+						ZoneId = @ZoneId AND
+						CustomerNumber = @CustomerNumber AND
+						PreviousNumber >= @PreviousNumber AND
+						NextNumber  <= @CurrentNumber AND
+						PreviousDay >= @PreviousDateJalali AND
+						NextDay <= @CurrentDateJalali AND
+						OldDbDel <> 1 AND
+						TypeCode = 1";
+		}
     }
 }

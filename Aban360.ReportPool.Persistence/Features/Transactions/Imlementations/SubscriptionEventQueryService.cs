@@ -121,7 +121,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
            	     CounterStateCode,
            	     CounterStateTitle,
                  ReadingStateTitle,
-                 OldDbDel
+                 OldDbDel IsReturned
              from [CustomerWarehouse].dbo.Bills
              LEFT Join [Db70].dbo.CounterVaziat v On
             	CounterStateCode=v.MoshtarakinId
@@ -161,7 +161,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
            	     0 CounterStateCode,
            	     '-' CounterStateTitle,
                  '-' ReadingStateTitle,
-                 0 IsReturn
+                 0 IsReturned
              from [CustomerWarehouse].dbo.RemovedBills
              where 
                 (BillId=@billId )
@@ -199,7 +199,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
            	     0 CounterStateCode,
            	     '-' CounterStateTitle,
                  '-' ReadingStateTitle,
-                 0 IsReturn
+                 0 IsReturned
              from [CustomerWarehouse].dbo.Payments
              where 
                 (BillId)=@billId  ";

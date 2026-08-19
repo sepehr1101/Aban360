@@ -298,10 +298,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             string dbName = GetDbName(input.ZoneId);
             string query = GetPreviousMeterDateAndNumberQuery(dbName);
             BedBesPreviousNumberAndDateOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesPreviousNumberAndDateOutputDto>(query, input);
-            if (result is null && hasException)
-            {
-                throw new InvalidBillCommandException(ExceptionLiterals.InvalidBedBesPreviousNumberAndDate(billId));
-            }
+            //if (result is null && hasException)
+            //{
+            //    throw new InvalidBillCommandException(ExceptionLiterals.InvalidBedBesPreviousNumberAndDate(billId));
+            //}
 
             return result;
         }

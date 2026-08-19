@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -37,17 +38,18 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IVariabService _variabService;
         static int[] _domesticUsage = { 1, 3 };//todo: IsTrue?
         static int[] _allowedZeroMeterNumberCounterState = { 4, 7 };
-        const int _paymentDeadline = 7;
-        const int _conditionPayableAmount = 10000;
-        const float _domesticMaltiplier = 0.7f;
-        const int _collectedDeletionStateId = 1;
-        const int _temporaryDeletionStateId = 5;
-        const int _malfunctionCounterState = 1;
-        const int _changeCounterState = 2;
-        const int _reverseCounterState = 3;
-        const int _nextRoundCounterSatate = 5;
-        const int _withoutConsumptionMeterState = 6;
-        const int _payIdMaxChar = 13;
+        private int _paymentDeadline = 7;
+        private int _conditionPayableAmount = 10000;
+        private float _domesticMaltiplier = 0.7f;
+        private int _collectedDeletionStateId = 1;
+        private int _temporaryDeletionStateId = 5;
+        private int _malfunctionCounterState = 1;
+        private int _changeCounterState = 2;
+        private int _reverseCounterState = 3;
+        private int _nextRoundCounterSatate = 5;
+        private int _withoutConsumptionMeterState = 6;
+        private int _payIdMaxChar = 13;
+        private int _firstMeterNumber = 1;
         public FreeGenerateBillHandler(
             IHttpContextAccessor contextAccessor,
             ICustomerInfoService customerInfoService,
@@ -524,7 +526,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         }
         private async Task Validate(FreeGenerateBillInputDto inputDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, CustomerInfoGetDto customerInfo)
         {
-            await InputPreviousDataValidate(inputDto, zoneIdAndCustomerNumber);
+            await InputPreviousDataValidate(inputDto, zoneIdAndCustomerNumber, customerInfo);
             await DeletionStateValidation(zoneIdAndCustomerNumber);
             CounterStateValidation(inputDto);
         }
@@ -542,7 +544,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 if (!currentDate.HasValue)
                 {
                     var message = string.Join(",", "تاریخ ناصحیح");
-                    throw new  InvalidBillCommandException(message);
+                    throw new InvalidBillCommandException(message);
                 }
                 if (currentDate.Value > DateTime.Now.ToDateOnly())
                 {
@@ -551,7 +553,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 }
                 if (currentDate.Value < DateTime.Now.AddMonths(-5).ToDateOnly())
                 {
-                    var message = string.Join(","," تاریخ قرائت نباید بیش از 5 روز پیش باشد.");
+                    var message = string.Join(",", " تاریخ قرائت نباید بیش از 5 روز پیش باشد.");
                     throw new InvalidBillCommandException(message);
                 }
             }
@@ -585,14 +587,18 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 throw new ReadingException(ExceptionLiterals.InvalidNotEqualMeterNumberInWithoutConsumption);
             }
         }
-        private async Task InputPreviousDataValidate(FreeGenerateBillInputDto inputDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber)
+        private async Task InputPreviousDataValidate(FreeGenerateBillInputDto inputDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, CustomerInfoGetDto customerInfo)
         {
-            BedBesPreviousNumberAndDateOutputDto previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(zoneIdAndCustomerNumber, inputDto.BillId, true);
-            if (inputDto.PreviousDateJalali.CompareTo(previousInfo.PreviousDateJalali) != 0)
+            BedBesPreviousNumberAndDateOutputDto? previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(zoneIdAndCustomerNumber, inputDto.BillId, true);
+
+            string previousDateExpected = previousInfo is not null ? previousInfo.PreviousDateJalali : customerInfo.MembersInfo.WaterInstallationDateJalali;
+            int previousMeterNumberExpected = previousInfo is not null ? previousInfo.PreviousNumber : _firstMeterNumber;
+
+            if (inputDto.PreviousDateJalali.CompareTo(previousDateExpected) != 0)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidPreviousDateJalali);
             }
-            if (inputDto.PreviousMeterNumber != previousInfo.PreviousNumber)
+            if (inputDto.PreviousMeterNumber != previousMeterNumberExpected)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidPreviousNumber);
             }
