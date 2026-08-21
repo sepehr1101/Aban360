@@ -329,6 +329,37 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						rn=1 AND
 						CustomerWarehouse.dbo.PersianToMiladi(PreviousRegisterDateJalali)<DATEADD(DAY,-15,Cast(GETDATE() AS date))";
         }
+        private string GetMultizoneExcelQuery()
+        {
+            return $@"use customerWarehouse
+						select 
+						b.CustomerNumber,
+						b.NextDay,
+						b.CounterStateCode,
+						666,
+						b.ZoneId,
+						b.ZoneTitle,
+						b.CustomerNumber,
+						b.BillId,
+						b.ReadingNumber,
+						PreviousNumber,
+						PreviousDay PreviousDateJalali,
+						0 PreviousCounterStateCode,
+						RegisterDay PreviousRegisterDateJalali,
+						TRIM(m.FirstName)+' '+TRIM(m.SureName) FullName,
+						b.ZoneId RegionId,
+						b.ZoneTitle RegionTitle,
+						b.UsageId UsageId,
+						b.UsageTitle UsageTitle,
+						b.BranchTypeId,
+						b.BranchType BranchTypeTitle,
+						b.CounterStateCode
+
+						from Bills b join Clients m
+						on b.BillId=m.BillId and m.ToDayJalali is null
+						where registerDay>='1405/05/01' and branchTypeId=4 and 
+						Consumption=0 and Item1=0 and CounterStateCode in (0,6)";
+        }
         private string GetBedBesLatestForNonReadQuery(string dbName)
         {
             return $@";WITH CTE AS(

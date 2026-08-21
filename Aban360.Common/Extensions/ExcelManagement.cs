@@ -615,7 +615,6 @@ namespace Aban360.Common.Extensions
                     {"NetAmount","ناخالص - آب بها (ناخالص)" },
                     {"ReturnedConsumption","برگشت از فروش - مقدار هزار مترمکعب" },
                     {"ReturnedAmount","برگشت از فروش - مبلغ" },
-                    {"DiscountAmount","تخفیفات - مبلغ" },
                     {"RawConsumption","خالص - مقدار هزار مترمکعب" },
                     {"RawAmount","خالص - آب بها (خالص)" },
                     {"RawAmountAverage","خالص - متوسط نرخ آب بها(ریال)" },
