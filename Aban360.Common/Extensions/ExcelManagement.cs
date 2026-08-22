@@ -70,6 +70,7 @@ namespace Aban360.Common.Extensions
             foreach (var prop in props)
             {
                 var propName = persianProp?.ContainsKey(prop.Name) == true ? persianProp[prop.Name] : prop.Name;
+
                 row[propName] = prop.GetValue(data);
             }
             return row;
@@ -615,7 +616,6 @@ namespace Aban360.Common.Extensions
                     {"NetAmount","ناخالص - آب بها (ناخالص)" },
                     {"ReturnedConsumption","برگشت از فروش - مقدار هزار مترمکعب" },
                     {"ReturnedAmount","برگشت از فروش - مبلغ" },
-                    {"DiscountAmount","تخفیفات - مبلغ" },
                     {"RawConsumption","خالص - مقدار هزار مترمکعب" },
                     {"RawAmount","خالص - آب بها (خالص)" },
                     {"RawAmountAverage","خالص - متوسط نرخ آب بها(ریال)" },

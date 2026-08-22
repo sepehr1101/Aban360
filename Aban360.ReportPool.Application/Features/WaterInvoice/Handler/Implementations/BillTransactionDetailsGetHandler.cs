@@ -1,6 +1,11 @@
-﻿using Aban360.Common.BaseEntities;
+﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
+using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
@@ -16,13 +21,19 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         private readonly IBillQueryService _billQueryService;
         private readonly IBedBesQueryService _bedBesQueryService;
         private readonly ILatestWaterMeterInfoQueryService _latestWaterMeterInfoQueryService;
+        private readonly IMeterReadingDetailQueryService _meterReadingDetailQueryService;
+        private readonly IMeterFlowQueryService _meterFlowQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly ICommonZoneService _commonZoneService;
         private int _firstMeterNumber = 1;
         public BillTransactionDetailsGetHandler(
             IBillQueryService billQueryService,
             IBedBesQueryService bedBesQueryService,
             ILatestWaterMeterInfoQueryService latestWaterMeterInfoQueryService,
-            ICommonMemberQueryService commonMemberQueryService)
+            IMeterFlowQueryService meterFlowQueryService,
+            IMeterReadingDetailQueryService meterReadingDetailQueryService,
+            ICommonMemberQueryService commonMemberQueryService,
+            ICommonZoneService commonZoneService)
         {
             _billQueryService = billQueryService;
             _billQueryService.NotNull(nameof(billQueryService));
@@ -33,15 +44,25 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
             _latestWaterMeterInfoQueryService = latestWaterMeterInfoQueryService;
             _latestWaterMeterInfoQueryService.NotNull(nameof(latestWaterMeterInfoQueryService));
 
+            _meterFlowQueryService = meterFlowQueryService;
+            _meterFlowQueryService.NotNull(nameof(meterFlowQueryService));
+
+            _meterReadingDetailQueryService = meterReadingDetailQueryService;
+            _meterReadingDetailQueryService.NotNull(nameof(meterReadingDetailQueryService));
+
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+
+            _commonZoneService = commonZoneService;
+            _commonZoneService.NotNull(nameof(commonZoneService));
         }
 
-        public async Task<ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto>> Handle(string billId, CancellationToken cancellationToken)
+        public async Task<ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto>> Handle(string billId, IAppUser appUser, CancellationToken cancellationToken)
         {
             IEnumerable<BillTransactionDetailGetDto> billDetails = await _billQueryService.GetBillDetails(billId);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(billId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
+            await _commonZoneService.IsUserInZone(appUser, memberInfo.ZoneId);
             string? latestMeterChangeDateJalali = await _latestWaterMeterInfoQueryService.GetLatestChangeDateJalali(zoneIdAndCustomerNumber);
 
             string title = ReportLiterals.WaterInvoice;
@@ -70,6 +91,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
 
             });
             BedBesPreviousNumberAndDateOutputDto? bedBesPreviousNumberAndDate = await _bedBesQueryService.GetPreviousDateAndNumber(zoneIdAndCustomerNumber, billId, true);
+            var (CurrentMeterDeteJalali, CurrentMeterNumber, CurrentCounterStateCode) = await GetMeterReadingData(billId);
 
             BillTransactionDetailHeaderOutputDto header = new()
             {
@@ -85,9 +107,24 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                 FirstName = memberInfo?.FirstName ?? string.Empty,
                 Surname = memberInfo?.Surname ?? string.Empty,
                 FullName = memberInfo?.FullName ?? string.Empty,
+
+                CurrentMeterDeteJalali = CurrentMeterDeteJalali,
+                CurrentMeterNumber = CurrentMeterNumber,
+                CurrentCounterStateCode = CurrentCounterStateCode,
             };
 
             return new ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto>(title, header, data);
+        }
+        private async Task<(string, int, short)> GetMeterReadingData(string billId)
+        {
+            MeterReadingDetailDataOutputDto meterReadingDetail = await _meterReadingDetailQueryService.Get(billId);
+            MeterFlowGetDto meterFlowInfo = await _meterFlowQueryService.GetLatestFlowInfo2(meterReadingDetail.FlowImportedId);
+            if (meterFlowInfo.RemovedDateTime is not null)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidLatestMeterReadingWithExpireMeterFlow);
+            }
+
+            return (meterReadingDetail.CurrentDateJalali, meterReadingDetail.CurrentNumber, meterReadingDetail.CurrentCounterStateCode);
         }
     }
 }
