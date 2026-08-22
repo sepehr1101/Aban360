@@ -117,14 +117,18 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         }
         private async Task<(string, int, short)> GetMeterReadingData(string billId)
         {
-            MeterReadingDetailDataOutputDto meterReadingDetail = await _meterReadingDetailQueryService.Get(billId);
-            MeterFlowGetDto meterFlowInfo = await _meterFlowQueryService.GetLatestFlowInfo2(meterReadingDetail.FlowImportedId);
-            if (meterFlowInfo.RemovedDateTime is not null)
+            MeterReadingDetailDataOutputDto? meterReadingDetail = await _meterReadingDetailQueryService.Get(billId);
+            if (meterReadingDetail is not null)
             {
-                throw new ReadingException(ExceptionLiterals.InvalidLatestMeterReadingWithExpireMeterFlow);
+                MeterFlowGetDto meterFlowInfo = await _meterFlowQueryService.GetLatestFlowInfo2(meterReadingDetail.FlowImportedId);
+                if (meterFlowInfo.RemovedDateTime is not null)
+                {
+                    throw new ReadingException(ExceptionLiterals.InvalidLatestMeterReadingWithExpireMeterFlow);
+                }
+                return (meterReadingDetail.CurrentDateJalali, meterReadingDetail.CurrentNumber, meterReadingDetail.CurrentCounterStateCode);
             }
 
-            return (meterReadingDetail.CurrentDateJalali, meterReadingDetail.CurrentNumber, meterReadingDetail.CurrentCounterStateCode);
+            return (string.Empty, 0, 0);
         }
     }
 }

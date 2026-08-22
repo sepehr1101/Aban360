@@ -54,14 +54,10 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
 
             return details;
         }
-        public async Task<MeterReadingDetailDataOutputDto> Get(string billId)
+        public async Task<MeterReadingDetailDataOutputDto?> Get(string billId)
         {
             string query = GetByBillIdQuery();
-            MeterReadingDetailDataOutputDto detail = await _sqlReportConnection.QueryFirstOrDefaultAsync<MeterReadingDetailDataOutputDto>(query, new { billId });
-            if (detail is null)
-            {
-                throw new ReadingException(ExceptionLiterals.NotFoundData);
-            }
+            MeterReadingDetailDataOutputDto? detail = await _sqlReportConnection.QueryFirstOrDefaultAsync<MeterReadingDetailDataOutputDto>(query, new { billId });
             return detail;
         }
 
