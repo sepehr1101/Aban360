@@ -13,6 +13,5 @@
         public string GetFileDetail { get; set; } = default!;
         public string ConfirmFile { get; set; } = default!;
         public string SubscriptionByBillId { get; set; } = default!;
-        public string GetServiceConfigure { get; set; } = default!;
     }
 }

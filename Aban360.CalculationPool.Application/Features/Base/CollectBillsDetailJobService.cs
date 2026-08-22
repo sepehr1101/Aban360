@@ -6,6 +6,8 @@ using Aban360.CalculationPool.Domain.Features.CollectBills.Outputs;
 using Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
+using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -28,12 +30,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly ICollectBillsQueryService _collectBillsQueryService;
         private readonly ICollectBillsService _collectBillsService;
+        private readonly IT51QueryService _zoneQueryService;
         private string _basePath = @"AppData\CollectBills";
-
+        private string _cityCode = "130000";
         public CollectBillsDetailJobService(
             IBackgroundJobClient backgroundJobClient,
             ICollectBillsQueryService collectBillsQueryService,
             ICollectBillsService collectBillsService,
+            IT51QueryService zoneQueryService,
             IConfiguration configuration)
                 : base(configuration)
         {
@@ -45,6 +49,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             _collectBillsService = collectBillsService;
             _collectBillsService.NotNull(nameof(collectBillsService));
+
+            _zoneQueryService = zoneQueryService;
+            _zoneQueryService.NotNull(nameof(zoneQueryService));
         }
 
         public async Task Initialize()
@@ -60,12 +67,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
             CollectBillsDetailInsertDto createfile = new(groupingId, (int)CollectBillStepEnum.CreateZip, DateTime.Now, null, string.Empty);
             int effectedId = await CollectgBillsDetailInsert(createfile);
 
-            string fromDateJalali = "1405/01/01";
-            string toDateJalali = "1405/02/01";
-            //todo: ZoneIds
-            CollectBillsGetDataToSendInputDto gatData = new(new List<int> { 131301, 131302 }, fromDateJalali, toDateJalali);
-            IEnumerable<CollectBillsDataDto> data = await _collectBillsQueryService.Get(gatData);//todo: remove "Top 1" from query
-            string zipFileName = await CreateZip(data.Select(s => s.Row).ToList(), fromDateJalali, toDateJalali);
+            CollectBillsGetDataToSendInputDto dtoToGenerateTxtFile = await GetInputDataToGenerateTxtFile();
+            IEnumerable<CollectBillsDataDto> data = await _collectBillsQueryService.Get(dtoToGenerateTxtFile);//todo: remove "Top 1" from query
+            string zipFileName = await CreateZip(data.Select(s => s.Row).ToList(), dtoToGenerateTxtFile.FromDateJalali, dtoToGenerateTxtFile.FromDateJalali);
             string description = $"فایل:{zipFileName} با تعداد سطر:{data?.Count() ?? 0} ایجاد شد.";
             CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, description, DateTime.Now);
             await CollectBillsDetailUpdate(finalCreateFile);
@@ -81,11 +85,11 @@ namespace Aban360.CalculationPool.Application.Features.Base
             CollectBillsOutputDto<CollectBillsUploadOutputDto> result = await _collectBillsService.Upload(uploadInputDto);
             //validate on result
 
-            string description =string.Empty;// $"فایل آپلود شد. کد فایل:{result.Parameters.FileID}  کد وضعیت:{result.Status.Code}  توضیحات:{result.Status.Description}";
+            string description = string.Empty;// $"فایل آپلود شد. کد فایل:{result.Parameters.FileID}  کد وضعیت:{result.Status.Code}  توضیحات:{result.Status.Description}";
             CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, description, DateTime.Now);
             await CollectBillsDetailUpdate(finalCreateFile);
 
-            _backgroundJobClient.Enqueue(() => SetFileDetail(groupingId,"" /*result.Parameters.FileID*/));
+            _backgroundJobClient.Enqueue(() => SetFileDetail(groupingId, "" /*result.Parameters.FileID*/));
         }
         public async Task SetFileDetail(Guid groupingId, string fileId)
         {
@@ -118,6 +122,16 @@ namespace Aban360.CalculationPool.Application.Features.Base
             //get State
         }
 
+        private async Task<CollectBillsGetDataToSendInputDto> GetInputDataToGenerateTxtFile()
+        {
+            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
+            IEnumerable<NumericDictionary> zoneIds = await _zoneQueryService.Get();
+            IEnumerable<NumericDictionary> selectedZoneIds = zoneIds.Where(z => z.Id > 130000);
+            IEnumerable<DbNameAndZoneIdDto> zoneInfos = selectedZoneIds.Select(z => new DbNameAndZoneIdDto(GetDbName(z.Id), z.Id)).ToList();
+            CollectBillsGetDataToSendInputDto dtoToGenerateTxtFile = new(zoneInfos.DistinctBy(z => z.DbName), fromDateJalali: currentDateJalali, toDateJalali: currentDateJalali);
+
+            return dtoToGenerateTxtFile;
+        }
         private async Task<string> CreateZip(ICollection<string> data, string fromDateJalali, string toDateJalali)
         {
             var timeNow = DateTime.Now.ToString("HH-mm-ss");
@@ -189,7 +203,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             string fileName = Path.GetFileNameWithoutExtension(filePath);
             string extension = Path.GetExtension(filePath);
 
-            return new CollectBillsUploadInputDto(base64, extension, fileName, "");//todo:CityCode
+            return new CollectBillsUploadInputDto(base64, extension, fileName, _cityCode);//todo:CityCode
         }
     }
 }

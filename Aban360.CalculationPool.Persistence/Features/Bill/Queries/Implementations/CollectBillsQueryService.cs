@@ -17,18 +17,18 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
         public async Task<IEnumerable<CollectBillsDataDto>> Get(CollectBillsGetDataToSendInputDto input)
         {
             List<CollectBillsDataDto> allData = new List<CollectBillsDataDto>();
-            foreach (var zoneId in input.ZoneIds)
+            foreach (var singleZone in input.ZoneInfo)
             {
-                string query = GetQuery();
-                IEnumerable<CollectBillsDataDto> data = await _sqlReportConnection.QueryAsync<CollectBillsDataDto>(query, new { zoneId, input.FromDateJalali, input.ToDateJalali });
+                string query = GetQuery(singleZone.DbName);
+                IEnumerable<CollectBillsDataDto> data = await _sqlReportConnection.QueryAsync<CollectBillsDataDto>(query, new { FromDateJalali = input.FromDateJalali, ToDateJalali = input.ToDateJalali });
                 allData.AddRange(data);
             }
 
             return allData;
         }
-        private string GetQuery()
+        private string GetQuery(string dbName)
         {
-            return @$"use [@ZoneId]
+            return @$"use [{dbName}]
 						select top 10
 						   CONCAT(z.C2, ';', --ZoneTitle,
 							'', ';',--ZoneAddress,

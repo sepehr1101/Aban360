@@ -2,7 +2,10 @@
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
 using Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto;
 
@@ -30,10 +33,22 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
         public async Task<ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto>> Handle(string readingNumber, IAppUser appUser, CancellationToken cancellationToken)
         {
-            NumericDictionary defaultUserZone = await _commonZoneService.GetDefault(appUser);
-            ZoneIdAndCustomerNumberAndBillId customerInfo = await _commonMemberQueryService.Get(new ZoneIdAndReadingNumber(defaultUserZone.Id, readingNumber));
-
-            ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto> result = await _billTransactionDetailsGetHandler.Handle(customerInfo.BillId, appUser, cancellationToken);
+            IEnumerable<int> myZoneIds = await _commonZoneService.GetMyZoneIds(appUser);
+            ICollection<ZoneIdAndCustomerNumberAndBillId> customersInfo = new List<ZoneIdAndCustomerNumberAndBillId>();
+            foreach (var zoneId in myZoneIds)
+            {
+                ZoneIdAndCustomerNumberAndBillId customerInfo = await _commonMemberQueryService.Get(new ZoneIdAndReadingNumber(zoneId, readingNumber), false);
+                customersInfo.Add(customerInfo);
+            }
+            if (!customersInfo.Any())
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidReadingNumber);
+            }
+            if ((customersInfo?.Count() ?? 0) > 0)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidMoreThan1ReadingNumber);
+            }
+            ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto> result = await _billTransactionDetailsGetHandler.Handle(customersInfo.First().BillId, appUser, cancellationToken);
             return result;
         }
     }

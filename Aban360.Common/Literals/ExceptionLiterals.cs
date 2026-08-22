@@ -52,9 +52,11 @@
         public static string BillIdNotFound => "شناسه قبض یافت نشد";
         public static string InvalidBillId => "شناسه قبض معتبر نیست";
         public static string InvalidReadingNumber => "شماره اشتراک معتبر نیست";
+        public static string InvalidMoreThan1ReadingNumber => "بیش از یک مشترک با شماره اشتراک وارد شده یافت شده است.";
         public static string NotFoundBillId(string billId) => $"شناسه قبض:{billId} معتبر نیست";
         public static string InvalidCustomerNumber => "ردیف یافت نشد";
         public static string NotFoundCustomer => "مشترک با اطلاعات وارد شده یافت نشد";
+        public static string NotFoundReadingNumber => "شماره اشتراک یافت نشد";
         public static string NotFoundAnyCustomer => "هیچ مشترکی با اطلاعات وارد شده یافت نشد";
         public static string InvalidTrackNumber => "شماره پیگیری یافت نشد.";
         public static string InvalidDate => "تاریخ ناصحیح";
