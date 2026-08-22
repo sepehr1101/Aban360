@@ -4,6 +4,7 @@ using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class WaterIncomeAndConsumptionDetailQueryService : AbstractBaseConnection, IWaterIncomeAndConsumptionDetailQueryService
+    internal sealed class WaterIncomeAndConsumptionDetailQueryService : WaterIncomeAndConsumptionBase, IWaterIncomeAndConsumptionDetailQueryService
     {
         public WaterIncomeAndConsumptionDetailQueryService(IConfiguration configuration)
             : base(configuration)
@@ -21,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
         public async Task<ReportOutput<WaterIncomeAndConsumptionDetailHeaderOutputDto, WaterIncomeAndConsumptionDetailDataOutputDto>> Get(WaterIncomeAndConsumptionDetailInputDto input)
         {
             string reportTitle = ReportLiterals.WaterIncomeAndConsumptionDetail + GetIsZoneOrVillageTitle(input.ZoneIds);
-            string waterIncomeAndConsumptionDetails = GetWaterIncomeAndConsumptionDetailQuery(input.ZoneIds.HasValue(), input.UsageIds.HasValue(), input.BranchTypeIds.HasValue());
+            string waterIncomeAndConsumptionDetails = GetDetailQuery(input.ZoneIds.HasValue(), input.UsageIds.HasValue(), input.BranchTypeIds.HasValue());
             var @params = new
             {
                 fromDate = input.FromDateJalali,
@@ -104,69 +105,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 return ReportLiterals.WithZone;
 
             return string.Empty;
-        }
-        private string GetWaterIncomeAndConsumptionDetailQuery(bool hasZone, bool hasUsage, bool hasBranchType)
-        {
-            string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
-            string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
-            string branchTypeQuery = hasBranchType ? "AND b.BranchTypeId IN @branchTypeIds" : string.Empty;
-
-            return @$"use CustomerWarehouse
-					Select
-        				t46.C2 RegionTitle,
-						b.ZoneTitle,
-						TRIM(b.BillId) as BillId,
-						b.UsageTitle,
-						b.ReadingNumber,
-						Case When b.UsageId IN (1,3) AND b.BranchTypeId NOT IN (4) Then b.Consumption*0.7 Else b.Consumption End SewageConsumption,
-						b.Consumption,
-						b.ConsumptionAverage,
-						b.WaterDiameterTitle as MeterDiameterTitle,
-						b.BranchType AS BranchType,	
-						b.Duration,
-						--b.SumItems,
-                        (b.Item1+b.Item2+b.Item3+b.Item4+b.Item5+b.Item6+b.Item7+b.Item8+b.Item9+b.Item10+b.Item11+b.Item12+b.Item13+b.Item14+b.Item15+b.Item16+b.Item17+b.Item18) SumItems,
-                        (b.Item1 + b.Item9 + b.Item11 + b.Item12 ) as SumWater,
-						b.Item1,
-						b.Item2,
-						b.Item3,
-						b.Item4,
-						b.Item5,
-						b.Item6,
-						b.Item7,
-						b.Item8,
-						b.Item9,
-						b.Item10,
-						b.Item11,
-						b.Item12,
-						b.Item13,
-						b.Item14,
-						b.Item15,
-						b.Item16,
-						b.Item17,
-						b.Item18,
-                        IIF((OtherCount+CommercialCount+DomesticCount)=0,1,OtherCount+CommercialCount+DomesticCount) - EmptyCount BillUnit,
-                        IIF((OtherCount+CommercialCount+DomesticCount)=0,1,OtherCount+CommercialCount+DomesticCount) TotalUnit
-					From [CustomerWarehouse].dbo.Bills b
-                    Join [Db70].dbo.T51 t51
-                    	On b.ZoneId=t51.C0
-                    Join [Db70].dbo.T46 t46
-                    	On t51.C1=t46.C0
-					Where 
-						(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
-						(@fromConsumption IS NULL OR
-						@toConsumption IS NULL OR
-						b.Consumption BETWEEn @fromConsumption AND @toConsumption) AND
-						(@fromAmount IS NULL OR
-						@toAmount IS NULL OR
-						b.SumItems BETWEEN @fromAmount AND @toAmount) AND
-                        (@fromReadingNumber IS NULL OR
-                        @toReadingNumber IS NULL OR
-                        b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
-						b.TypeCode IN @typeCodes
-						{usageQuery}
-						{zoneQuery}
-                        {branchTypeQuery}";
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Aban360.ReportPool.Persistence.Base
 							AVG(ConsumptionAverage) ConsumptionAverageInMonth 
 						From [CustomerWarehouse].dbo.Bills b 
 						Join [Db70].dbo.UsageGroup2 u2
-							ON u2.Id IN @UsageGroupIds
+							ON u2.Group1Id = @UsageGroupId
 						Join [Db70].dbo.UsageGroup3 u3
 							ON u3.Group2Id=u2.Id
 						Where

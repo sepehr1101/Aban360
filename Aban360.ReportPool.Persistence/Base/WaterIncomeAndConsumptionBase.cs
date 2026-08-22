@@ -10,7 +10,79 @@ namespace Aban360.ReportPool.Persistence.Base
             : base(configuration)
         {
         }
+        internal string GetDetailQuery(bool hasZone, bool hasUsage, bool hasBranchType)
+        {
+            string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
+            string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
+            string branchTypeQuery = hasBranchType ? "AND b.BranchTypeId IN @branchTypeIds" : string.Empty;
 
+            //todo: rename "RegisterDay" to "PhysicalSewageInstallDateJalali"
+            return @$"use CustomerWarehouse
+					Select
+        				t46.C2 RegionTitle,
+						b.ZoneTitle,
+						TRIM(b.BillId) as BillId,
+						b.UsageTitle,
+						b.ReadingNumber,
+						Case When b.UsageId IN (1,3) AND 
+								  b.BranchTypeId NOT IN (4) AND 
+								  b.RegisterDay>'1330/01/01' 
+							 Then b.Consumption 
+							 When b.UsageId NOT IN (1,3) AND 
+								  b.BranchTypeId NOT IN (4) AND 
+								  b.RegisterDay>'1330/01/01' 
+							 Then b.Consumption 
+						     Else 0
+						End SewageConsumption,  --/PhysicalSewageInstallDateJalali	
+						b.Consumption,
+						b.ConsumptionAverage,
+						b.WaterDiameterTitle as MeterDiameterTitle,
+						b.BranchType AS BranchType,	
+						b.Duration,
+						--b.SumItems,
+                        (b.Item1+b.Item2+b.Item3+b.Item4+b.Item5+b.Item6+b.Item7+b.Item8+b.Item9+b.Item10+b.Item11+b.Item12+b.Item13+b.Item14+b.Item15+b.Item16+b.Item17+b.Item18) SumItems,
+                        (b.Item1 + b.Item9 + b.Item11 + b.Item12 ) as SumWater,
+						b.Item1,
+						b.Item2,
+						b.Item3,
+						b.Item4,
+						b.Item5,
+						b.Item6,
+						b.Item7,
+						b.Item8,
+						b.Item9,
+						b.Item10,
+						b.Item11,
+						b.Item12,
+						b.Item13,
+						b.Item14,
+						b.Item15,
+						b.Item16,
+						b.Item17,
+						b.Item18,
+                        IIF((OtherCount+CommercialCount+DomesticCount)=0,1,OtherCount+CommercialCount+DomesticCount) - EmptyCount BillUnit,
+                        IIF((OtherCount+CommercialCount+DomesticCount)=0,1,OtherCount+CommercialCount+DomesticCount) TotalUnit
+					From [CustomerWarehouse].dbo.Bills b
+                    Join [Db70].dbo.T51 t51
+                    	On b.ZoneId=t51.C0
+                    Join [Db70].dbo.T46 t46
+                    	On t51.C1=t46.C0
+					Where 
+						(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
+						(@fromConsumption IS NULL OR
+						@toConsumption IS NULL OR
+						b.Consumption BETWEEn @fromConsumption AND @toConsumption) AND
+						(@fromAmount IS NULL OR
+						@toAmount IS NULL OR
+						b.SumItems BETWEEN @fromAmount AND @toAmount) AND
+                        (@fromReadingNumber IS NULL OR
+                        @toReadingNumber IS NULL OR
+                        b.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber) AND
+						b.TypeCode IN @typeCodes
+						{usageQuery}
+						{zoneQuery}
+                        {branchTypeQuery}";
+        }
         internal string GetSummaryQuery(bool isUsageGroup, bool hasZone, bool hasUsage, bool hasBranchType, WaterIncomeAndConsumptionSummaryEnum enumState)
         {
             string usageGroupJoinQuery = isUsageGroup ? @"	Join [Db70].dbo.UsageGroup2 u2
@@ -24,6 +96,7 @@ namespace Aban360.ReportPool.Persistence.Base
 
             var (groupKey, SelectKey) = GetEnumQuery(enumState, isUsageGroup);
 
+            //todo: rename "RegisterDay" to "PhysicalSewageInstallDateJalali"
             return @$";With cte as(
                     	Select
 							t46.C2 RegionTitle,
@@ -34,7 +107,16 @@ namespace Aban360.ReportPool.Persistence.Base
                             {usageGroup2TitleSelect}
                     		b.ReadingNumber,
                     		(b.CommercialCount+b.DomesticCount+b.OtherCount) as BillUnitCounts,
-                    		Case When b.UsageId IN (1,3) AND b.BranchTypeId NOT IN (4) Then b.Consumption*0.7 Else b.Consumption End SewageConsumption,
+                            Case When b.UsageId IN (1,3) AND 
+							    	  b.BranchTypeId NOT IN (4) AND 
+							    	  b.RegisterDay>'1330/01/01' 
+							     Then b.Consumption 
+							     When b.UsageId NOT IN (1,3) AND 
+							    	  b.BranchTypeId NOT IN (4) AND 
+							    	  b.RegisterDay>'1330/01/01' 
+							     Then b.Consumption 
+						         Else 0
+						    End SewageConsumption,  --/PhysicalSewageInstallDateJalali	
                     		b.Consumption,
                     		b.ConsumptionAverage,
                     		b.WaterDiameterTitle as MeterDiameterTitle,
