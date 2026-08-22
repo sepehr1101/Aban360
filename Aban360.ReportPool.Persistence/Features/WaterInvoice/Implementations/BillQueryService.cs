@@ -397,7 +397,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						PreviousDay >= @PreviousDateJalali AND
 						NextDay <= @CurrentDateJalali AND
 						OldDbDel <> 1 AND
-						TypeCode = 1";
+						TypeCode IN (1,7,8)";
 		}
     }
 }
