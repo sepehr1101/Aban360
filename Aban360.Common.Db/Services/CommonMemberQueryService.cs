@@ -12,7 +12,8 @@ namespace Aban360.Common.Db.Services
     public interface ICommonMemberQueryService
     {
         Task<ZoneIdAndCustomerNumber> Get(string billId);
-		Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> Get(IEnumerable<string> billId, IDbConnection connection, IDbTransaction transction);
+        Task<ZoneIdAndCustomerNumberAndBillId> Get(ZoneIdAndReadingNumber input);
+        Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> Get(IEnumerable<string> billId, IDbConnection connection, IDbTransaction transction);
         Task<MemberInfoGetDto> Get(ZoneIdAndCustomerNumber input);
     }
     public sealed class CommonMemberQueryService : AbstractBaseConnection, ICommonMemberQueryService
@@ -29,6 +30,16 @@ namespace Aban360.Common.Db.Services
             if (result == null || result.ZoneId <= 0)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
+            }
+            return result;
+        }
+        public async Task<ZoneIdAndCustomerNumberAndBillId> Get(ZoneIdAndReadingNumber input)
+        {
+            string query = GetZoneIdAndCustomerNumberByReadingNumberQuery();
+            ZoneIdAndCustomerNumberAndBillId? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberAndBillId>(query, input);
+            if (result == null || result.ZoneId <= 0)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.InvalidReadingNumber);
             }
             return result;
         }
@@ -55,7 +66,7 @@ namespace Aban360.Common.Db.Services
             input.BlockCode = moshtrakInfo?.BlockCode ?? null;
             return input;
         }
-        public async Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> Get(IEnumerable<string> billId,IDbConnection connection,IDbTransaction transction)
+        public async Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> Get(IEnumerable<string> billId, IDbConnection connection, IDbTransaction transction)
         {
             DataTable table = new DataTable();
             table.Columns.Add("ZoneId", typeof(int));
@@ -68,15 +79,15 @@ namespace Aban360.Common.Db.Services
                                                 "(ZoneId int  Null," +
                                                 "CustomerNumber int  Null," +
                                                 "BillId NVARCHAR(14) Not NUll)";
-            await connection.ExecuteAsync(tempTableCreateCommand,null,transction);
-            using (var bulkCopy = new SqlBulkCopy((SqlConnection)connection, SqlBulkCopyOptions.Default,(SqlTransaction)transction))
+            await connection.ExecuteAsync(tempTableCreateCommand, null, transction);
+            using (var bulkCopy = new SqlBulkCopy((SqlConnection)connection, SqlBulkCopyOptions.Default, (SqlTransaction)transction))
             {
                 bulkCopy.DestinationTableName = "#TempCustomerNumbers";
                 bulkCopy.BatchSize = 10000;
                 await bulkCopy.WriteToServerAsync(table);
             }
             await connection.ExecuteAsync(GetUpdateTemplateTableCommand(), null, transction);
-            IEnumerable<ZoneIdAndCustomerNumberAndBillId> result = await connection.QueryAsync<ZoneIdAndCustomerNumberAndBillId>(GetTemplateQuery(),null,transction);
+            IEnumerable<ZoneIdAndCustomerNumberAndBillId> result = await connection.QueryAsync<ZoneIdAndCustomerNumberAndBillId>(GetTemplateQuery(), null, transction);
             return result;
         }
         private string GetZoneIdAndCustomerNumberQuery()
@@ -89,6 +100,18 @@ namespace Aban360.Common.Db.Services
                     From CustomerWarehouse.dbo.Clients	
                     Where 
                     	BillId=@billId AND
+                    	ToDayJalali IS NULL";
+        }
+        private string GetZoneIdAndCustomerNumberByReadingNumberQuery()
+        {
+            return @"Select 
+						ZoneId,
+						ZoneTitle,
+						CustomerNumber,
+						BillId
+                    From CustomerWarehouse.dbo.Clients	
+                    Where 
+                    	ReadingNumber = @ReadingNumber AND
                     	ToDayJalali IS NULL";
         }
         private string GetMemeberInfoQuery(string dbName)
@@ -203,5 +226,7 @@ namespace Aban360.Common.Db.Services
         {
             return $@"Select * From #TempCustomerNumbers t";
         }
+
+
     }
 }

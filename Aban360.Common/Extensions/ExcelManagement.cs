@@ -70,6 +70,7 @@ namespace Aban360.Common.Extensions
             foreach (var prop in props)
             {
                 var propName = persianProp?.ContainsKey(prop.Name) == true ? persianProp[prop.Name] : prop.Name;
+
                 row[propName] = prop.GetValue(data);
             }
             return row;

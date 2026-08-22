@@ -9,6 +9,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Cont
         Task<MeterFlowValidationDto?> GetMeterFlowValidation(int id);
         Task<int> GetFirstFlowId(int latestFlowId);
         Task<MeterFlowGetDto> GetLatestFlowInfo(int firstFlowId);
+        Task<MeterFlowGetDto> GetLatestFlowInfo2(int firstFlowId);
         Task<IEnumerable<MeterFlowCartableGetDto>> GetCartable(IEnumerable<int> zoneIds);
     }
 }
