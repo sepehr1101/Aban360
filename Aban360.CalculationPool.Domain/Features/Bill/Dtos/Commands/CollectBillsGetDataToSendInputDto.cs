@@ -2,12 +2,10 @@
 {
     public record CollectBillsGetDataToSendInputDto
     {
-        public IEnumerable<int> ZoneIds { get; set; }
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
-        public CollectBillsGetDataToSendInputDto(IEnumerable<int> zoneIds, string fromDateJalali, string toDateJalali)
+        public CollectBillsGetDataToSendInputDto( string fromDateJalali, string toDateJalali)
         {
-            ZoneIds = zoneIds;
             FromDateJalali = fromDateJalali;
             ToDateJalali = toDateJalali;
         }

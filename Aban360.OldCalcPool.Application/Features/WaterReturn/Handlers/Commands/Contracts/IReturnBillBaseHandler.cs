@@ -21,7 +21,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         Task FullValidate(ReturnBillFullInputDto input, CancellationToken cancellationToken);
         Task PartialValidate(ReturnBillPartialInputDto input, CancellationToken cancellationToken);
         void AmountValidate(decimal repairSumItems, decimal previousSumItems);
-        Task<CustomerInfoOutputDto> Validate(IAppUser appUser, string billId, string fromDateJalali, string toDateJalali);
+        Task<CustomerInfoOutputDto> RealDateValidate(IAppUser appUser, string billId, string fromDateJalali, string toDateJalali);
         Task<float> GetConsumptionAverage(string fromDateJalali, string toDateJalali, ReturnedBillCalculationTypeEnum calculationType, float? userInput, CustomerInfoOutputDto customerInfo, int returnCauseId);
         bool IsDomestic(int customerNumber);
     }

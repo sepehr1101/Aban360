@@ -18,6 +18,7 @@
         public static string Equal10 => "مقدار وارد شده باید برابر 10 کاراکتر باشد";
         public static string Equal11 => "مقدار وارد شده باید برابر 11 کاراکتر باشد";
         public static string Between3And15 => "مقدار وارد شده باید بین 3-15 کاراکتر باشد";
+        public static string Between3And25 => "مقدار وارد شده باید بین 3-25 کاراکتر باشد";
         public static string Between5And25 => "مقدار وارد شده باید بین 5-25 کاراکتر باشد";
         public static string Between5And100 => "مقدار وارد شده باید بین 5-100 کاراکتر باشد";
         public static string Equal8Or11 => "مقدار وارد شده باید برابر 8 یا 11 کاراکتر باشد";
@@ -52,9 +53,11 @@
         public static string BillIdNotFound => "شناسه قبض یافت نشد";
         public static string InvalidBillId => "شناسه قبض معتبر نیست";
         public static string InvalidReadingNumber => "شماره اشتراک معتبر نیست";
+        public static string InvalidMoreThan1ReadingNumber => "بیش از یک مشترک با شماره اشتراک وارد شده یافت شده است.";
         public static string NotFoundBillId(string billId) => $"شناسه قبض:{billId} معتبر نیست";
         public static string InvalidCustomerNumber => "ردیف یافت نشد";
         public static string NotFoundCustomer => "مشترک با اطلاعات وارد شده یافت نشد";
+        public static string NotFoundReadingNumber => "شماره اشتراک یافت نشد";
         public static string NotFoundAnyCustomer => "هیچ مشترکی با اطلاعات وارد شده یافت نشد";
         public static string InvalidTrackNumber => "شماره پیگیری یافت نشد.";
         public static string InvalidDate => "تاریخ ناصحیح";
@@ -181,6 +184,7 @@
 
 
         //ReturnedBill
+        public static string InvalidReturnLessThan1401 => " برگشتی برای قبوض کوچک تر از 1401 امکان پذیر نیست.";
         public static string InvalidBillIdToReturn => "تعداد قبوض قابل برگشتی در جدول جدید، مغایرت دارد.";
         public static string NotFoundBillsToReturned => "قبضی برای برگشتی یافت نشد.";
         public static string CantReturn => "برگشتی در بازه تاریخی وارد شده امکان پذیر نیست.";

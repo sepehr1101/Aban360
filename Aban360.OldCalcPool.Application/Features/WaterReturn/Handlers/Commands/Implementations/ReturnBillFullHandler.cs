@@ -36,7 +36,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private async Task<CustomerInfoOutputDto> Validate(ReturnBillFullInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             await _returnBillBaseHandler.FullValidate(input, cancellationToken);
-            CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.Validate(appUser, input.BillId, input.FromDateJalali, input.ToDateJalali);
+            CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.RealDateValidate(appUser, input.BillId, input.FromDateJalali, input.ToDateJalali);
             return customerInfo;
         }
     }

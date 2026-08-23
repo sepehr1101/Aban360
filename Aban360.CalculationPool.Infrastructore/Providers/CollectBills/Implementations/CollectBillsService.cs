@@ -17,11 +17,11 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
     {
         private readonly HttpClient _httpClient;
         private readonly CollectBillsOptions _options;
-        private readonly IMemoryCache _catch;
+        private readonly IMemoryCache _cache;
         private const string _accept = "application/json";
-        private const string _contentType = "application/json";
+        private const string _contentType = "application/json"; 
+        const string _formUrlEncodedContentType = "application/x-www-form-urlencoded";
         private const string _tokenCacheKey = "CollectBills_AccessToken";
-        private const string _bearerToken = "Bearer";
         public CollectBillsService(
             IHttpClientFactory httpClientFactory,
             IOptions<CollectBillsOptions> options,
@@ -33,53 +33,74 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
             _options = options.Value;
             _options.NotNull(nameof(_options));
 
-            _catch = cache;
-            _catch.NotNull(nameof(_catch));
+            _cache = cache;
+            _cache.NotNull(nameof(_cache));
         }
-
-        private async Task<AuthenticationHeaderValue> GetAuthenticationValue()
+        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
-            CollectBillsLoginOutputDto tokenResult = await GetToken();
-            return new AuthenticationHeaderValue(_bearerToken, tokenResult.token_access);
-        }
-        private async Task<CollectBillsLoginOutputDto> GetToken()
+            PropertyNameCaseInsensitive = true
+        };
+        private async Task<TokenResponse> GetToken()
         {
-            if (_catch.TryGetValue(_tokenCacheKey, out CollectBillsLoginOutputDto cachedToken))
+            if (_cache.TryGetValue(_tokenCacheKey, out TokenResponse cachedToken))
             {
                 return cachedToken;
             }
-            CollectBillsLoginOutputDto tokenResult = await GetNewToken();
-            var expireSecond = (tokenResult.in_expires - DateTime.Now).TotalSeconds;
+
+            var token = await RequestNewToken();
+
+            // set cache with expiration slightly earlier than real expiry
             var cacheOptions = new MemoryCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(expireSecond - 30)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(token.ExpiresIn - 30)
             };
-            _catch.Set(_tokenCacheKey, tokenResult, cacheOptions);
 
-            return tokenResult;
+            _cache.Set(_tokenCacheKey, token, cacheOptions);
+
+            return token;
         }
-        private async Task<CollectBillsLoginOutputDto> GetNewToken()
+        private async Task<TokenResponse> RequestNewToken()
         {
-            CollectBillsLoginInputDto loginInput = new(_options.UserName, _options.Password);
-            string url = $"{_options.BaseUrl}{_options.Login}";
-            using var request = new HttpRequestMessage(HttpMethod.Post, url);
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
-            request.Content = new StringContent(JsonSerializer.Serialize(loginInput), Encoding.UTF8, _contentType);
+            const string GrantTypeKey = "grant_type";
+            const string ClientCredentialsValue = "client_credentials";
+            const string BasicScheme = "Basic";
+            const string FormUrlEncoded = "application/x-www-form-urlencoded";
 
-            var response = await _httpClient.SendAsync(request);
+            // Prepare form data
+            var formData = new Dictionary<string, string>
+            {
+                { GrantTypeKey, ClientCredentialsValue }
+            };
+
+            var request = new HttpRequestMessage(HttpMethod.Post, _options.TokenEndpoint)
+            {
+                Content = new FormUrlEncodedContent(formData)
+            };
+
+            // Encode username:password for Basic Auth
+            var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_options.UserName}:{_options.Password}"));
+            request.Headers.Authorization = new AuthenticationHeaderValue(BasicScheme, credentials);
+
+            // Explicit content type
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue(FormUrlEncoded);
+
+            // Send request
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
-            CollectBillsLoginOutputDto result = await response.Content.ReadFromJsonAsync<CollectBillsLoginOutputDto>();
-            return result;
+            return await response.Content.ReadFromJsonAsync<TokenResponse>(_jsonOptions);
         }
-  
+        private async Task<AuthenticationHeaderValue> GetAuthenticationHeaderAsync()
+        {
+            TokenResponse token = await GetToken();
+            return new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
+        }
         public async Task<CollectBillsOutputDto<object>> SendCustomerInfo(CollectBillsSubscriptionInfoSendInputDto sampleInputDto)
         {
             string url = $"{_options.BaseUrl}{_options.SubscriptionsInfo}";
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
             request.Content = new StringContent(JsonSerializer.Serialize(sampleInputDto), Encoding.UTF8, _contentType);
-            request.Headers.Authorization = await GetAuthenticationValue();
-            //xAuthorization
+            request.Headers.Authorization = await GetAuthenticationHeaderAsync();
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
@@ -92,6 +113,7 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
             request.Content = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, _contentType);
+            request.Headers.Authorization = await GetAuthenticationHeaderAsync();
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
@@ -104,6 +126,7 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
             request.Content = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, _contentType);
+            request.Headers.Authorization = await GetAuthenticationHeaderAsync();
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
@@ -116,6 +139,7 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
             request.Content = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, _contentType);
+            request.Headers.Authorization = await GetAuthenticationHeaderAsync();
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
@@ -128,6 +152,7 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
             using var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
             request.Content = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, _contentType);
+            request.Headers.Authorization = await GetAuthenticationHeaderAsync();
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
@@ -139,6 +164,7 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
             string url = $"{_options.BaseUrl}{_options.SubscriptionByBillId}?billId={billId}";
             using var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
+            request.Headers.Authorization = await GetAuthenticationHeaderAsync();
 
             var response = await _httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
