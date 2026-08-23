@@ -91,7 +91,6 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
 
             });
             BedBesPreviousNumberAndDateOutputDto? bedBesPreviousNumberAndDate = await _bedBesQueryService.GetPreviousDateAndNumber(zoneIdAndCustomerNumber, billId, true);
-            var (CurrentMeterDeteJalali, CurrentMeterNumber, CurrentCounterStateCode) = await GetMeterReadingData(billId);
 
             BillTransactionDetailHeaderOutputDto header = new()
             {
@@ -108,27 +107,12 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
                 Surname = memberInfo?.Surname ?? string.Empty,
                 FullName = memberInfo?.FullName ?? string.Empty,
 
-                CurrentMeterDeteJalali = CurrentMeterDeteJalali,
-                CurrentMeterNumber = CurrentMeterNumber,
-                CurrentCounterStateCode = CurrentCounterStateCode,
+                CurrentMeterDeteJalali = string.Empty,
+                CurrentMeterNumber = 0,
+                CurrentCounterStateCode = 0,
             };
 
             return new ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto>(title, header, data);
-        }
-        private async Task<(string, int, short)> GetMeterReadingData(string billId)
-        {
-            MeterReadingDetailDataOutputDto? meterReadingDetail = await _meterReadingDetailQueryService.Get(billId);
-            if (meterReadingDetail is not null)
-            {
-                MeterFlowGetDto meterFlowInfo = await _meterFlowQueryService.GetLatestFlowInfo2(meterReadingDetail.FlowImportedId);
-                if (meterFlowInfo.RemovedDateTime is not null)
-                {
-                    throw new ReadingException(ExceptionLiterals.InvalidLatestMeterReadingWithExpireMeterFlow);
-                }
-                return (meterReadingDetail.CurrentDateJalali, meterReadingDetail.CurrentNumber, meterReadingDetail.CurrentCounterStateCode);
-            }
-
-            return (string.Empty, 0, 0);
         }
     }
 }

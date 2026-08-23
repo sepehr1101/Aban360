@@ -100,7 +100,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 	             IIF(SumItems<0, 0, SumItems) DebtAmount,
                  IIF(SumItems<0, SumItems*-1, 0) CreditAmount,
 	             (Case When TypeCode=8 Then v.Title Else TypeId End) + N' ' + ISNULL(ReturnCauseTitle,'') as [Description],
-	             ConsumptionAverage, 
+                 ROUND(ConsumptionAverage , 2) ConsumptionAverage, 
 	             Consumption,
 	             NULL BankTitle,
 	             NULL BankCode,
