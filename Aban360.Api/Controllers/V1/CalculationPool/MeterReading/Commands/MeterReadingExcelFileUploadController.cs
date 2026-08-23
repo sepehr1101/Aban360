@@ -17,17 +17,22 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
     public class MeterReadingExcelFileController : BaseController
     {
         private readonly IMeterReadingExcelFileCreateHandler _meterReadingFileHandle;
+        private readonly IMeterReadingExcelMultiZoneFileCreateHandler _meterReadingMultiZoneFileHandler;
         private readonly IMeterReadingDownloadExcelFileHandler _meterReadingDownloadExcelFile;
         private readonly ICommonZoneService _commonZoneService;
         private readonly IReportGenerator _reportGenerator;
         public MeterReadingExcelFileController(
             IMeterReadingExcelFileCreateHandler meterReadingFileHandle,
+            IMeterReadingExcelMultiZoneFileCreateHandler meterReadingMultiZoneFileHandler,
             IMeterReadingDownloadExcelFileHandler meterReadingDownloadExcelFile,
             ICommonZoneService commonZoneService,
             IReportGenerator reportGenerator)
         {
             _meterReadingFileHandle = meterReadingFileHandle;
             _meterReadingFileHandle.NotNull(nameof(meterReadingFileHandle));
+
+            _meterReadingMultiZoneFileHandler = meterReadingMultiZoneFileHandler;
+            _meterReadingMultiZoneFileHandler.NotNull(nameof(meterReadingMultiZoneFileHandler));
 
             _meterReadingDownloadExcelFile = meterReadingDownloadExcelFile;
             _meterReadingDownloadExcelFile.NotNull(nameof(meterReadingDownloadExcelFile));
@@ -49,8 +54,27 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
         }
 
         [HttpPost]
+        [Route("upload-multi-zone-excel")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UploadMultiZone([FromForm] MeterReadingExcelFileCreateDto input, CancellationToken cancellationToken)
+        {
+            ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> result = await _meterReadingMultiZoneFileHandler.Handle(input, CurrentUser, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost]
         [Route("download-excel/{connectionId}")]
         public async Task<IActionResult> Download(string connectionId, [FromBody] MeterReadingExcelFileDownloadDto input, CancellationToken cancellationToken)
+        {
+            await _commonZoneService.IsUserInZone(CurrentUser, input.ZoneId);
+            ReportOutput<MeterReadingExcelFileDownloadHeaderOutputDto, MeterReadingExcelFileDownloadDateOutputDto> result = await _meterReadingDownloadExcelFile.Handle(input, cancellationToken);
+            await _reportGenerator.FireAndInform(input, cancellationToken, _meterReadingDownloadExcelFile.Handle, CurrentUser, ReportLiterals.MeterReadingExcelFile, connectionId);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("download-multi-zone-excel/{connectionId}")]
+        public async Task<IActionResult> DownloadMultiZone(string connectionId, [FromBody] MeterReadingExcelFileDownloadDto input, CancellationToken cancellationToken)
         {
             await _commonZoneService.IsUserInZone(CurrentUser, input.ZoneId);
             ReportOutput<MeterReadingExcelFileDownloadHeaderOutputDto, MeterReadingExcelFileDownloadDateOutputDto> result = await _meterReadingDownloadExcelFile.Handle(input, cancellationToken);
