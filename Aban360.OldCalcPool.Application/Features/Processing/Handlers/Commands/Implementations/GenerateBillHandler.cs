@@ -384,7 +384,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 TransactionIdGenerator.GeneratePaymentId((long)pard, abBahaCalc.Customer.BillId, paymentIdOption);
             if (paymentId.ToString().Length > _payIdMaxChar)
             {
-                throw new InvalidBillCommandException(ExceptionLiterals.NotSupportPaymentIdCharecters(pard));
+                paymentId = string.Empty;
             }
             decimal barge = await _variabService.GetAndRenew(abBahaCalc.Customer.ZoneId);
 

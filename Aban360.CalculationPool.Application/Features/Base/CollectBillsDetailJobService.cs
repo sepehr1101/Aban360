@@ -7,7 +7,6 @@ using Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
-using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -31,6 +30,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private readonly ICollectBillsQueryService _collectBillsQueryService;
         private readonly ICollectBillsService _collectBillsService;
         private readonly IT51QueryService _zoneQueryService;
+        private string currentDateJalali = DateTime.Now.ToShortPersianDateString();
         private string _basePath = @"AppData\CollectBills";
         private string _cityCode = "130000";
         public CollectBillsDetailJobService(
@@ -67,8 +67,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
             CollectBillsDetailInsertDto createfile = new(groupingId, (int)CollectBillStepEnum.CreateZip, DateTime.Now, null, string.Empty);
             int effectedId = await CollectgBillsDetailInsert(createfile);
 
-            CollectBillsGetDataToSendInputDto dtoToGenerateTxtFile = await GetInputDataToGenerateTxtFile();
-            IEnumerable<CollectBillsDataDto> data = await _collectBillsQueryService.Get(dtoToGenerateTxtFile);//todo: remove "Top 1" from query
+
+            CollectBillsGetDataToSendInputDto dtoToGenerateTxtFile = new(fromDateJalali: currentDateJalali, toDateJalali: currentDateJalali);
+            IEnumerable<CollectBillsDataDto> data = await _collectBillsQueryService.Get(dtoToGenerateTxtFile);
             string zipFileName = await CreateZip(data.Select(s => s.Row).ToList(), dtoToGenerateTxtFile.FromDateJalali, dtoToGenerateTxtFile.FromDateJalali);
             string description = $"فایل:{zipFileName} با تعداد سطر:{data?.Count() ?? 0} ایجاد شد.";
             CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, description, DateTime.Now);
@@ -122,26 +123,15 @@ namespace Aban360.CalculationPool.Application.Features.Base
             //get State
         }
 
-        private async Task<CollectBillsGetDataToSendInputDto> GetInputDataToGenerateTxtFile()
-        {
-            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-            IEnumerable<NumericDictionary> zoneIds = await _zoneQueryService.Get();
-            IEnumerable<NumericDictionary> selectedZoneIds = zoneIds.Where(z => z.Id > 130000);
-            IEnumerable<DbNameAndZoneIdDto> zoneInfos = selectedZoneIds.Select(z => new DbNameAndZoneIdDto(GetDbName(z.Id), z.Id)).ToList();
-            CollectBillsGetDataToSendInputDto dtoToGenerateTxtFile = new(zoneInfos.DistinctBy(z => z.DbName), fromDateJalali: currentDateJalali, toDateJalali: currentDateJalali);
 
-            return dtoToGenerateTxtFile;
-        }
         private async Task<string> CreateZip(ICollection<string> data, string fromDateJalali, string toDateJalali)
         {
             var timeNow = DateTime.Now.ToString("HH-mm-ss");
             var persianDate = DateTime.Now.ToShortPersianDateString().Replace("/", "");
 
-            //string baseFileName = $"{persianDate}-{timeNow}-قبوض تجمیعی";
-            //string txtFileName = $"{baseFileName}.txt";
-            //string zipFileName = $"{baseFileName}.zip";
-            var txtFileName = $"NWW_{persianDate}.txt";
-            var zipFileName = $"NWW_{persianDate}_{fromDateJalali}_{toDateJalali}.zip";
+            string baseFileName = $"{persianDate}-{timeNow}-قبوض تجمیعی";
+            string txtFileName = $"{baseFileName}.txt";
+            string zipFileName = $"{baseFileName}.zip";
 
             string txtPath = Path.Combine(_basePath, txtFileName);
             string zipPath = Path.Combine(_basePath, zipFileName);

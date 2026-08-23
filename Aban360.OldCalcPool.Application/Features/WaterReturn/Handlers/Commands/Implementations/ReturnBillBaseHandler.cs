@@ -43,6 +43,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IAutoBackQueryService _autoBackQueryService;
         private readonly IValidator<ReturnBillFullInputDto> _returnFullValidator;
         private readonly IValidator<ReturnBillPartialInputDto> _returnPartialValidator;
+        private string _invalidReturnLesstThan1401 = "1401/01/01";
         private static string _title = "برگشتی";
         const string _type = "5";
         const int _operator = 666;
@@ -738,8 +739,13 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             _ = repairSumItems > previousSumItems ? throw new ReturnedBillException(ExceptionLiterals.RepairAmountMoreThanBedBesAmount) : 0;
         }
-        public async Task<CustomerInfoOutputDto> Validate(IAppUser appUser, string billId, string fromDateJalali, string toDateJalali)
+        public async Task<CustomerInfoOutputDto> RealDateValidate(IAppUser appUser, string billId, string fromDateJalali, string toDateJalali)
         {
+            if (fromDateJalali.CompareTo(_invalidReturnLesstThan1401) < 0)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidReturnLessThan1401);
+            }
+
             CustomerInfoOutputDto customerInfo = await _customerInfoDetailQueryService.GetInfo(billId);
             await _commonZoneService.IsUserInZone(appUser, customerInfo.ZoneId);
 

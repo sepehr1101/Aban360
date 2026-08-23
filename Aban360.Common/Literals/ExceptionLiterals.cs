@@ -18,6 +18,7 @@
         public static string Equal10 => "مقدار وارد شده باید برابر 10 کاراکتر باشد";
         public static string Equal11 => "مقدار وارد شده باید برابر 11 کاراکتر باشد";
         public static string Between3And15 => "مقدار وارد شده باید بین 3-15 کاراکتر باشد";
+        public static string Between3And25 => "مقدار وارد شده باید بین 3-25 کاراکتر باشد";
         public static string Between5And25 => "مقدار وارد شده باید بین 5-25 کاراکتر باشد";
         public static string Between5And100 => "مقدار وارد شده باید بین 5-100 کاراکتر باشد";
         public static string Equal8Or11 => "مقدار وارد شده باید برابر 8 یا 11 کاراکتر باشد";
@@ -183,6 +184,7 @@
 
 
         //ReturnedBill
+        public static string InvalidReturnLessThan1401 => " برگشتی برای قبوض کوچک تر از 1401 امکان پذیر نیست.";
         public static string InvalidBillIdToReturn => "تعداد قبوض قابل برگشتی در جدول جدید، مغایرت دارد.";
         public static string NotFoundBillsToReturned => "قبضی برای برگشتی یافت نشد.";
         public static string CantReturn => "برگشتی در بازه تاریخی وارد شده امکان پذیر نیست.";
