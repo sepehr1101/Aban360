@@ -91,6 +91,17 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 
             return readingsControl;
         }
+        public MeterReadingDetailCheckedDto GetReadingControl(MeterReadingDetailDataOutputDto meterReading, MeterFlowStepEnum latestFlowStep)
+        {
+            MeterReadingDetailCheckedDto readingControl = new MeterReadingDetailCheckedDto();
+            if (meterReading.ExcludedByUserId is null)
+            {
+                HighLowEnum attentionState = _meterReadingValidateHandler.GetAttentionState(meterReading, latestFlowStep);
+                readingControl = GetMeterReadingDetailControl(meterReading, attentionState);
+            }
+
+            return readingControl;
+        }
         private MeterReadingDetailCheckedDto GetMeterReadingDetailControl(MeterReadingDetailDataOutputDto input, HighLowEnum attentionState)
         {
             return new MeterReadingDetailCheckedDto()
