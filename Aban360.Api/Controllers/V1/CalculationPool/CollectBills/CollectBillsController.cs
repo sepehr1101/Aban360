@@ -21,7 +21,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<CollectBillsDetailGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SendFile(CancellationToken cancellationToken)
         {
-            await _jobService.Initialize();
+            //await _jobService.Initialize();
+            await _jobService.Upload(Guid.Parse("0BEFA11B-0924-4238-B151-AFB7FB7C98BD"), "14050602-15-01-18-CollectBills.zip");
             return Ok();
         }
     }
