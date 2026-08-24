@@ -601,7 +601,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 throw new InvalidDateException(readingDateJalali);
             }
-            if (expireHouseHoldGregorian.Value.AddYears(1) < readingDateGregorian.Value)
+            if (readingDateGregorian.Value < expireHouseHoldGregorian.Value)//تاریخ قرائت قبل از تاریخ ثبت خانوار
+            {
+                return 0;
+            }
+            if (expireHouseHoldGregorian.Value.AddYears(1) < readingDateGregorian.Value)// تاریخ قرائت بعد از تاریخ انقضای خانوار
             {
                 return 0;
             }
