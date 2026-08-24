@@ -68,9 +68,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .Length(3, 15).WithMessage(ExceptionLiterals.Between3And15);
 
-            RuleFor(f => f.FatherName)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull)
-                .Length(3, 15).WithMessage(ExceptionLiterals.Between3And15);
+            //RuleFor(f => f.FatherName)
+            //    .NotNull().WithMessage(ExceptionLiterals.NotNull)
+            //    .Length(3, 15).WithMessage(ExceptionLiterals.Between3And15);
 
             RuleFor(f => f.Surname)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
