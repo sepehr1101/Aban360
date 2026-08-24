@@ -12,7 +12,7 @@ namespace Aban360.Common.Db.Services
     public interface ICommonMemberQueryService
     {
         Task<ZoneIdAndCustomerNumber> Get(string billId);
-        Task<ZoneIdAndCustomerNumberAndBillId> Get(ZoneIdAndReadingNumber input, bool hasException);
+        Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> GetFromClient(ZoneIdsAndReadingNumber input, bool hasException);
         Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> Get(IEnumerable<string> billId, IDbConnection connection, IDbTransaction transction);
         Task<MemberInfoGetDto> Get(ZoneIdAndCustomerNumber input);
     }
@@ -33,11 +33,11 @@ namespace Aban360.Common.Db.Services
             }
             return result;
         }
-        public async Task<ZoneIdAndCustomerNumberAndBillId> Get(ZoneIdAndReadingNumber input, bool hasException)
+        public async Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> GetFromClient(ZoneIdsAndReadingNumber input, bool hasException)
         {
             string query = GetZoneIdAndCustomerNumberByReadingNumberQuery();
-            ZoneIdAndCustomerNumberAndBillId? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumberAndBillId>(query, input);
-            if ((result == null || result.ZoneId <= 0) && hasException)
+            IEnumerable<ZoneIdAndCustomerNumberAndBillId> result = await _sqlReportConnection.QueryAsync<ZoneIdAndCustomerNumberAndBillId>(query, input);
+            if (!result.Any() && hasException)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.InvalidReadingNumber);
             }
@@ -111,6 +111,7 @@ namespace Aban360.Common.Db.Services
 						BillId
                     From CustomerWarehouse.dbo.Clients	
                     Where 
+                        ZoneId IN @ZoneIds AND
                     	ReadingNumber = @ReadingNumber AND
                     	ToDayJalali IS NULL";
         }

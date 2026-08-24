@@ -23,6 +23,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
     public interface ICollectBillsDetailJobService
     {
         Task Initialize();
+        Task<CollectBillsGetZipFileInfo> CreateZip(ICollection<string> data, string fromDateJalali, string toDateJalali);
     }
     public sealed class CollectBillsDetailJobService : AbstractBaseConnection, ICollectBillsDetailJobService
     {
@@ -70,12 +71,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             CollectBillsGetDataToSendInputDto dtoToGenerateTxtFile = new(fromDateJalali: currentDateJalali, toDateJalali: currentDateJalali);
             IEnumerable<CollectBillsDataDto> data = await _collectBillsQueryService.Get(dtoToGenerateTxtFile);
-            string zipFileName = await CreateZip(data.Select(s => s.Row).ToList(), dtoToGenerateTxtFile.FromDateJalali, dtoToGenerateTxtFile.FromDateJalali);
-            string description = $"فایل:{zipFileName} با تعداد سطر:{data?.Count() ?? 0} ایجاد شد.";
+            CollectBillsGetZipFileInfo zipFileInfo = await CreateZip(data.Select(s => s.Row).ToList(), dtoToGenerateTxtFile.FromDateJalali, dtoToGenerateTxtFile.FromDateJalali);
+            string description = $"فایل:{zipFileInfo.FileName} با تعداد سطر:{data?.Count() ?? 0} ایجاد شد.";
             CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, description, DateTime.Now);
             await CollectBillsDetailUpdate(finalCreateFile);
 
-            _backgroundJobClient.Enqueue(() => Upload(groupingId, zipFileName));
+            _backgroundJobClient.Enqueue(() => Upload(groupingId, zipFileInfo.FileName));
         }
         public async Task Upload(Guid groupingId, string zipFileName)
         {
@@ -124,12 +125,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
 
 
-        private async Task<string> CreateZip(ICollection<string> data, string fromDateJalali, string toDateJalali)
+        public async Task<CollectBillsGetZipFileInfo> CreateZip(ICollection<string> data, string fromDateJalali, string toDateJalali)
         {
             var timeNow = DateTime.Now.ToString("HH-mm-ss");
-            var persianDate = DateTime.Now.ToShortPersianDateString().Replace("/", "");
+            var persianDate = fromDateJalali.Replace("/", "");
 
-            string baseFileName = $"{persianDate}-{timeNow}-قبوض تجمیعی";
+            string baseFileName = $"{persianDate}-{timeNow}-تجمیع_قبوض";
             string txtFileName = $"{baseFileName}.txt";
             string zipFileName = $"{baseFileName}.zip";
 
@@ -143,7 +144,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 archive.CreateEntryFromFile(txtPath, txtFileName);
             }
 
-            return zipFileName;
+            return new CollectBillsGetZipFileInfo(zipPath, zipFileName);
         }
         private async Task<int> CollectgBillsDetailInsert(CollectBillsDetailInsertDto insertDto)
         {

@@ -46,17 +46,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         public async Task<ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto>> Handle(string readingNumber, IAppUser appUser, CancellationToken cancellationToken)
         {
             IEnumerable<int> myZoneIds = await _commonZoneService.GetMyZoneIds(appUser);
-            ICollection<ZoneIdAndCustomerNumberAndBillId> customersInfo = new List<ZoneIdAndCustomerNumberAndBillId>();
-            foreach (var zoneId in myZoneIds)
-            {
-                ZoneIdAndCustomerNumberAndBillId customerInfo = await _commonMemberQueryService.Get(new ZoneIdAndReadingNumber(zoneId, readingNumber), false);
-                customersInfo.Add(customerInfo);
-            }
+            IEnumerable<ZoneIdAndCustomerNumberAndBillId> customersInfo = await _commonMemberQueryService.GetFromClient(new ZoneIdsAndReadingNumber(myZoneIds, readingNumber), false);
+
             if (!customersInfo.Any())
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidReadingNumber);
             }
-            if ((customersInfo?.Count() ?? 0) > 0)
+            if ((customersInfo?.Count() ?? 0) > 1)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidMoreThan1ReadingNumber);
             }
