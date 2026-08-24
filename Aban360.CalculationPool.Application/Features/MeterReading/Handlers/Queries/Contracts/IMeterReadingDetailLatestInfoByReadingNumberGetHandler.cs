@@ -6,6 +6,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
 {
     public interface IMeterReadingDetailLatestInfoByReadingNumberGetHandler
     {
-        Task<ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto>> Handle(string readingNumber, IAppUser appUser, CancellationToken cancellationToken);
+        Task<ReportOutput<BillTransactionDetailWithLastReadingDataHeaderOutputDto, BillTransactionDetailDataOutputDto>> Handle(string readingNumber, IAppUser appUser, CancellationToken cancellationToken);
     }
 }
