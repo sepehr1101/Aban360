@@ -68,7 +68,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
             CollectBillsDetailInsertDto createfile = new(groupingId, (int)CollectBillStepEnum.CreateZip, DateTime.Now, null, string.Empty);
             int effectedId = await CollectgBillsDetailInsert(createfile);
 
-
             CollectBillsGetDataToSendInputDto dtoToGenerateTxtFile = new(fromDateJalali: currentDateJalali, toDateJalali: currentDateJalali);
             IEnumerable<CollectBillsDataDto> data = await _collectBillsQueryService.Get(dtoToGenerateTxtFile);
             CollectBillsGetZipFileInfo zipFileInfo = await CreateZip(data.Select(s => s.Row).ToList(), dtoToGenerateTxtFile.FromDateJalali, dtoToGenerateTxtFile.FromDateJalali);

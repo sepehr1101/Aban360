@@ -29,7 +29,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 						    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
 						    *
 						From [CustomerWarehouse].dbo.Clients c
-						Where c.CustomerNumber<>0 And CustomerNumber=11304328
+						Where c.CustomerNumber<>0 
 					)
 					Select 
 						CONCAT(

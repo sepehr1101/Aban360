@@ -35,10 +35,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
 
         [HttpPost, HttpGet]
         [Route("transaction-details-reading-number/{readingNumber}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<BillTransactionDetailWithLastReadingDataHeaderOutputDto, BillTransactionDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetByReadingNumber(string readingNumber, CancellationToken cancellationToken)
         {
-            ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto> result = await _meterReadingDetailLatestInfoGetHandler.Handle(readingNumber, CurrentUser, cancellationToken);
+            ReportOutput<BillTransactionDetailWithLastReadingDataHeaderOutputDto, BillTransactionDetailDataOutputDto> result = await _meterReadingDetailLatestInfoGetHandler.Handle(readingNumber, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }
