@@ -3,7 +3,6 @@ using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Dapper;
-using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 
 namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations
@@ -21,7 +20,8 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 
             return data;
         }
-        private string GetQuery()//todo: remove some Prop
+		//todo: remove CustomerNumberCondition From Cte
+        private string GetQuery()//todo: Add some Prop  :SewageDiameter
         {
             return @$";With Clients As
 					(
@@ -29,7 +29,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 						    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
 						    *
 						From [CustomerWarehouse].dbo.Clients c
-						Where c.CustomerNumber<>0 
+						Where c.CustomerNumber<>0 And CustomerNumber=11304328
 					)
 					Select 
 						CONCAT(
@@ -61,8 +61,8 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 							 b.PreviousDay, ';', --PreviousReadingDate, ';',
 							 b.NextDay, ';', --CurrentReadingDate, ';',
 							 b.Duration, ';', --Days, ';',
-							 b.PreviousDay, ';', --PreviousCounterDigit, ';',
-							 b.CommercialCount, ';', --CurrentCounterDigit, ';', --todo:  b.today_no?
+							 b.PreviousNumber, ';', --PreviousCounterDigit, ';',
+							 b.NextNumber, ';', --CurrentCounterDigit, ';', 
 							 b.Consumption, ';', --Consumption, ';',
 							 b.ConsumptionAverage, ';', --AverageConsumption, ';',
 							 0, ';', --AllowedConsumption, ';', --todo? (b.Consumption- b.masjar)
@@ -116,7 +116,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 							 1,';',--BranchStatusCode 1:daier
 							 IIF(b.CounterStateCode in (4,7,8),2,1),';', --ReadingStatusCode
 							 1,';', --BillStatusCode
-							 0,';',--ReadingTypeCode  --todo IIF(b.operator=5,2,1)?
+							 1,';',--ReadingTypeCode   
 							 IIF(b.CounterStateCode in (1),2,1),';',--CounterStatusCode
 							 IIF(b.CounterStateCode in (8),2,1),';',--BillKindCode
 							 1,';',-- CityCoefficient
@@ -148,6 +148,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 					LEFT JOIN CustomerWarehouse.dbo.TagGroups tg
 						On t.TagGroupId=tg.Id and tg.MainTagGroupId=11
 					Where 
+						c.RN=1 AND
 						b.CounterStateCode NOT IN (4,7,8) AND
 						b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali AND
 						cs.IsActive=1 AND
