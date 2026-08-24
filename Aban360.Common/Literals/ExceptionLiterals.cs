@@ -323,5 +323,8 @@
         //CollectBills
         public static string InvalidInsertCollectBillDetail => "خطا در ذخیره اطلاعات قبوض تجمیعی";
         public static string InvalidUpdateCollectBillDetail => "خطا در ویرایش تاریخ اتمام اطلاعات قبوض تجمیعی";
+        public static string CollectBillsCreateZipFile => "فایل زیپ ایجاد شد . نام فایل : {0}  تعداد سطر : {1}";
+        public static string CollectBillsUploadedFileLog => "فایل آپلود شد. کد فایل:{0}  کد وضعیت:{1}  توضیحات:{2}";
+
     }
 }

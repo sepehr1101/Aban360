@@ -33,12 +33,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .Must(IsValidNationalCode).WithMessage(ExceptionLiterals.NationalCodeFormat);
 
-            RuleFor(f => f.CertificateNumber)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull)
-                .MinimumLength(3).WithMessage(ExceptionLiterals.NotLessThan3)
-                .Must(IsDigit).WithMessage(ExceptionLiterals.MustDigit);
-
             RuleFor(f => f.Address)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .Length(5, 100).WithMessage(ExceptionLiterals.Between5And100);

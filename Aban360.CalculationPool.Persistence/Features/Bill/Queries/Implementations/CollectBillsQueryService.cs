@@ -20,7 +20,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 
             return data;
         }
-		//todo: remove CustomerNumberCondition From Cte
+		//todo: Update Query to Select 1record From Tag
         private string GetQuery()//todo: Add some Prop  :SewageDiameter
         {
             return @$";With Clients As
@@ -155,8 +155,10 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 						TRIM(b.BillId)<>'' AND
 						TRIM(b.PayId)<>'' AND 
 						b.Payable>10000 AND 
-						LEN(TRIM(c.MobileNo))=11 
-						AND b.Deadline>'1400/01/01'";
+						LEN(TRIM(c.MobileNo))=11 AND
+						b.Deadline>'1400/01/01' AND
+						((LEN(TRIM(bt.ExpireDateJalali))=0) OR
+						 LEN(TRIM(bt.ExpireDateJalali))=10 AND AbAndFazelab.dbo.PersianToMiladi(ExpireDateJalali) > AbAndFazelab.dbo.PersianToMiladi(b.RegisterDay))";
         }
     }
 }

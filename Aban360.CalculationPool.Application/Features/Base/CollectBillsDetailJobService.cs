@@ -23,6 +23,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
     public interface ICollectBillsDetailJobService
     {
         Task Initialize();
+        Task Upload(Guid groupingId, string zipFileName);
         Task<CollectBillsGetZipFileInfo> CreateZip(ICollection<string> data, string fromDateJalali, string toDateJalali);
     }
     public sealed class CollectBillsDetailJobService : AbstractBaseConnection, ICollectBillsDetailJobService
@@ -85,8 +86,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
             CollectBillsUploadInputDto uploadInputDto = await GetUploadInputDto(zipFileName);
             CollectBillsOutputDto<CollectBillsUploadOutputDto> result = await _collectBillsService.Upload(uploadInputDto);
             //validate on result
-
-            string description = string.Empty;// $"فایل آپلود شد. کد فایل:{result.Parameters.FileID}  کد وضعیت:{result.Status.Code}  توضیحات:{result.Status.Description}";
+            
+            string description = string.Empty;//ExceptionLiterals.CollectBillsUploadedFileLog 
             CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, description, DateTime.Now);
             await CollectBillsDetailUpdate(finalCreateFile);
 
@@ -129,7 +130,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             var timeNow = DateTime.Now.ToString("HH-mm-ss");
             var persianDate = fromDateJalali.Replace("/", "");
 
-            string baseFileName = $"{persianDate}-{timeNow}-تجمیع_قبوض";
+            string baseFileName = $"{persianDate}-{timeNow}-CollectBills";
             string txtFileName = $"{baseFileName}.txt";
             string zipFileName = $"{baseFileName}.zip";
 
