@@ -7,14 +7,12 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Contracts;
-using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.Tagging;
 using Aban360.ReportPool.Persistence.Features.Tagging.Commands;
 using Aban360.ReportPool.Persistence.Features.Tagging.Queries.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using Excel = MiniExcelLibs;
 
 namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Implementations
@@ -25,7 +23,7 @@ namespace Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Impl
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly ITagQueryService _tagQueryService;
         private readonly ITagQueryService _tagService;
-        private string _filePath = ReportLiterals.ExcelFolderPath;
+        private string _filePath = DirectoryLiterals.ExcelFolderPath;
         public BillIdTagInsertExcelFileHandler(
             IHttpContextAccessor contextAccessor,
             ICommonMemberQueryService commonMemberQueryService,

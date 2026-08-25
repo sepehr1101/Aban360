@@ -2,6 +2,13 @@
 {
     public record CollectBillsUploadOutputDto
     {
-        public long FileID { get; set; }
+        public string FileID { get; set; }
+        public CollectBillsUploadOutputDto(string fileId)
+        {
+            FileID = fileId;
+        }
+        public CollectBillsUploadOutputDto()
+        {
+        }
     }
 }

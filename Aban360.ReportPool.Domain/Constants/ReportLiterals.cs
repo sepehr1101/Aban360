@@ -315,11 +315,9 @@
       
         public static string FinancialStatementTotal { get { return $" {Report} صورت‌های مالی"; } }
 
+        public static string CollectBillsReport { get { return $" {Report} تجمیع قبوض "; } }
 
-        public static string DbfFolderPath { get { return @"AppData\Dbfs"; } }
-        public static string ExcelFolderPath { get { return @"AppData\Excels"; } }
-        public static string CollectBillsFolderPath { get { return @"AppData\CollectBills"; } }
-        public static string MeterApkLogsPath { get { return @"AppData\MeterApkLogs"; } }
 
+    
     }
 }

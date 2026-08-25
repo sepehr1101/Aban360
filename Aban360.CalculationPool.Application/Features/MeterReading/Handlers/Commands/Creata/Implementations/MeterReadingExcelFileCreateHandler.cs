@@ -13,6 +13,7 @@ using static Aban360.Common.Extensions.IoExtensions;
 using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.Common.Literals;
+using Aban360.Common.Db.Constants.Literals;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
 {
@@ -21,7 +22,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IMeterReadingCreateBaseHandler _meterReadingCreateBaseHandler;
         private readonly IValidator<MeterReadingExcelFileCreateDto> _validator;
         private static string _reportTitle = ReportLiterals.MeterReadingCreateFile;
-        private static string _dbfPath = ReportLiterals.DbfFolderPath;
+        private static string _dbfPath = DirectoryLiterals.DbfFolderPath;
         const int _closeMeterStateId = 4;
         public MeterReadingExcelFileCreateHandler(
             IMeterReadingCreateBaseHandler meterReadingCreateBaseHandler,

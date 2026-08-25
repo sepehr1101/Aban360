@@ -20,7 +20,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 
             return data;
         }
-		//todo: Update Query to Select 1record From Tag
+		//Todo: Remove CustomerNumber Condition From Cte
         private string GetQuery()//todo: Add some Prop  :SewageDiameter
         {
             return @$";With Clients As
@@ -29,7 +29,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 						    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
 						    *
 						From [CustomerWarehouse].dbo.Clients c
-						Where c.CustomerNumber<>0 
+						Where c.CustomerNumber<>0  and CustomerNumber=11304328
 					)
 					Select 
 						CONCAT(
@@ -141,8 +141,13 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 						On c.ZoneId=z.C0
 					LEFT JOIN Db70.dbo.Village v
 						On c.ZoneId=v.ZoneId and c.VillageId=v.VillageId
-					LEFT JOIN CustomerWarehouse.dbo.BillIdTags bt
-						On TRIM(b.BillId) COLLATE SQL_Latin1_General_CP1_CI_AS =TRIM(bt.BillId)
+					OUTER APPLY
+						(
+							Select top 1 *
+							From CustomerWarehouse.dbo.BillIdTags bt
+							Where TRIM(bt.BillId)= TRIM(b.BillId) COLLATE SQL_Latin1_General_CP1_CI_AS
+							Order by bt.CreateDateTime Asc
+						)as bt
 					LEFT JOIN  CustomerWarehouse.dbo.Tags t
 						On bt.Id=bt.TagId
 					LEFT JOIN CustomerWarehouse.dbo.TagGroups tg

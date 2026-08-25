@@ -1,12 +1,11 @@
 ﻿using Aban360.ClaimPool.Application.Features.AssessmentApk.Queries.Contracts;
-using Aban360.Common.Exceptions;
-using Aban360.Common.Literals;
+using Aban360.Common.Db.Constants.Literals;
 
 namespace Aban360.ClaimPool.Application.Features.AssessmentApk.Queries.Implementations
 {
     internal sealed class AssessmentApkLatestDownloadHandler : IAssessmentApkLatestDownloadHandler
     {
-        private string _baseFolderPath = @"AppData\AssessmentApk";
+        private string _baseFolderPath = DirectoryLiterals.AssessmentApkLogsPath;
         public (FileStream, string) Handle(CancellationToken cancellationToken)
         {
             string[] versions = Directory.GetDirectories(_baseFolderPath);

@@ -2,6 +2,7 @@
 using Aban360.ClaimPool.Domain.Features.AssessmentApk.Queries;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.AssessmentApk
     {
         private readonly IAssessmentApkValidateVersionHandler _validateVersionHandler;
         private readonly IAssessmentApkLatestDownloadHandler _latestDownloadHandler;
-        private string _apkContentType = "application/vnd.android.package-archive";
+        private string _apkContentType = DirectoryLiterals.ApplicationContentType;
         public AssessmentApkController(
             IAssessmentApkValidateVersionHandler validateVersionHandler,
             IAssessmentApkLatestDownloadHandler latestDownloadHandler)

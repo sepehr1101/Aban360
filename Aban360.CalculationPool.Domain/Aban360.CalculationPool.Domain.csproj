@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="Features\Bill\Dtos\Queries\CollectBillsDetailGetDto.cs~RF4b843355.TMP" />
+    <None Remove="Features\CollectBills\Inputs\CollectBillsAssignUploadedFileInputDto.cs~RFa3c6f68d.TMP" />
   </ItemGroup>
 
   <ItemGroup>

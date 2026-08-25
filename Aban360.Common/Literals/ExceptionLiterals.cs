@@ -324,7 +324,11 @@
         public static string InvalidInsertCollectBillDetail => "خطا در ذخیره اطلاعات قبوض تجمیعی";
         public static string InvalidUpdateCollectBillDetail => "خطا در ویرایش تاریخ اتمام اطلاعات قبوض تجمیعی";
         public static string CollectBillsCreateZipFile => "فایل زیپ ایجاد شد . نام فایل : {0}  تعداد سطر : {1}";
-        public static string CollectBillsUploadedFileLog => "فایل آپلود شد. کد فایل:{0}  کد وضعیت:{1}  توضیحات:{2}";
-
+        public static string CollectBillsSuccessUploadedFileLog => "فایل با موفقیت آپلود شد. کد فایل:{0}  توضیحات:{1}";
+        public static string CollectBillsUnsuccessUploadedFileLog => " آپلود فایل با خطا مواجه شد. نام فایل:{0}  کد وضعیت:{1}  توضیحات:{2}";
+        public static string CollectBillsAssignUploadedFileSeccessLog => "اطلاعات تکمیلی با موفقیت به فایل آپلود شده اضافه شد.کد فایل:{0}  سال:{1}  دوره:{2}  کد وضعیت:{3}  توضیحات:{4}";
+        public static string CollectBillsAssignUploadedFileUnseccessLog => "خطا در انتساب اطلاعات تکمیلی به فایل آپلود شده.کد فایل:{0}  سال:{1}  دوره:{2}  کد وضعیت:{3}   توضیحات:{4}";
+        public static string CollectBillsConfirmSuccessLog => "فایل با موفقیت تایید شد. کد فایل:{0}  کد وضعیت:{1}   توضیحات:{2}";
+        public static string CollectBillsConfirmUnsuccessLog => "تایید فایل با خطا مواجه شد. کد فایل:{0}  کد وضعیت:{1}   توضیحات:{2}";
     }
 }
