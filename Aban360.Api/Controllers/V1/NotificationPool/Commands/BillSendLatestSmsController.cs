@@ -45,12 +45,12 @@ namespace Aban360.Api.Controllers.V1.NotificationPool.Commands
         {
             SearchInput billIdInput= new SearchInput { Input=input.BillId };
             var customerInfo = await _customerInfoHandler.Handle(input.BillId, cancellationToken);
-            string text = await GetPreviousBill(billIdInput, cancellationToken);
+            string text = await GetText(billIdInput, cancellationToken);
             string mobile = string.IsNullOrWhiteSpace(input.Mobile) ? customerInfo.MobileNumber : input.Mobile;
             _jobClient.Enqueue(() => _smsHandler.Send(mobile, text, Guid.NewGuid()));
             return Ok(input);
         }
-        private async Task<string> GetPreviousBill(SearchInput input, CancellationToken cancellationToken)
+        private async Task<string> GetText(SearchInput input, CancellationToken cancellationToken)
         {
             ReportOutput<WaterInvoiceDto, LineItemsDto> result = await _waterInvoiceHandler.Handle_WithLastDb(input.Input, cancellationToken);
             return string.Format(SmsTemplates.SimpleBill,
@@ -64,7 +64,7 @@ namespace Aban360.Api.Controllers.V1.NotificationPool.Commands
                 result.ReportHeader.PayableAmount,
                 result.ReportHeader.BillId,
                 result.ReportHeader.PayId,
-                result.ReportHeader.PaymentDeadline
+                result.ReportHeader.PaymentDeadline//TODO: اگه jam-baha>10000 بود بشه فوری و در غیر اینصورت مهلت فعلی
                 );
         }
     }
