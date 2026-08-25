@@ -18,7 +18,6 @@ using Aban360.Common.BaseEntities;
 using Microsoft.AspNetCore.Http;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.Db.Services;
-using Aban360.OldCalcPool.Application.Constant;
 using Aban360.Common.Db.Constants.Literals;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
@@ -75,10 +74,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = GetZoneIdAndCustomerNumber(removeBill);
             string logText = string.Format(OpLogLiterals.RemoveBillOpLog, input.Id, input.BillId);
 
-            await SqlCommands(removeBill, removeBillDto, controUpdate, zoneIdAndCustomerNumber, appUser, logText);
+            await ExecSql(removeBill, removeBillDto, controUpdate, zoneIdAndCustomerNumber, appUser, logText);
 
         }
-        private async Task SqlCommands(RemoveBillDataInputDto removeBill, RemoveBillDto removeBillDto, ContorUpdateDto controUpdate, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, IAppUser appUser, string logText)
+        private async Task ExecSql(RemoveBillDataInputDto removeBill, RemoveBillDto removeBillDto, ContorUpdateDto controUpdate, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, IAppUser appUser, string logText)
         {
             string dbName = GetDbName(removeBill.ZoneId);
             long amount = removeBill.Baha * -1;

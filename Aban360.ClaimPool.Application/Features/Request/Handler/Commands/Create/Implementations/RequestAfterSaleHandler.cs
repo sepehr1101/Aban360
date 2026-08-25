@@ -9,6 +9,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.Common.Timing;
 using DNTPersianUtils.Core;
 using FluentValidation;
@@ -178,6 +179,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private MoshtrakCreateDto GetMoshtrackCreateDto(RequestAfterSaleInputDto inputDto, MemberInfoGetDto memberInfo, int trackNumber)//todo
         {
             MoshtrakServiceDto serviceSelected = MoshtrakService.GetServicesSelected(inputDto.SelectedServices);
+            SelectedServiceValidate(serviceSelected);
             return new MoshtrakCreateDto()
             {
                 TrackNumber = trackNumber,
@@ -274,6 +276,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 s47 = serviceSelected.s47,
                 s48 = serviceSelected.s48,
             };
+        }
+        private void SelectedServiceValidate(MoshtrakServiceDto serviceSelected)
+        {
+            ICollection<int> selectedItems = MoshtrakService.GetServicesSelected(serviceSelected, _afterSaleRequestServiceId);
+            if (!selectedItems.Any())
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidZeroServiceSelected);
+            }
         }
         private TrackingInsertDto GetTrackingCreateDto(RequestAfterSaleInputDto inputDto, MemberInfoGetDto memberInfo, int userName, int trackNumber)
         {

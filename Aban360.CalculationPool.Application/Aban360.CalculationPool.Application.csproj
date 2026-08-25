@@ -30,7 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\CollectBills\Handlers\Commands\Contracts\" />
     <Folder Include="Features\CollectBills\Handlers\Queries\Contracts\" />
     <Folder Include="Features\CollectBills\Handlers\Queries\Implementations\" />
     <Folder Include="Features\TestTariff\Mappings\" />

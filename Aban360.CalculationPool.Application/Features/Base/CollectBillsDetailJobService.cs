@@ -59,7 +59,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
         public async Task Initialize()
         {
             CollectBillsDetailInsertDto insertDto = new(Guid.NewGuid(), (int)CollectBillStepEnum.Initialize, DateTime.Now, DateTime.Now, string.Empty);
-            //Validate
             int effectedId = await CollectgBillsDetailInsert(insertDto);
             _backgroundJobClient.Enqueue(() => CreateFile(insertDto.GroupingId));
 
