@@ -25,7 +25,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
     public interface ICollectBillsDetailJobService
     {
         Task Initialize();
-        Task Upload(Guid groupingId, string zipFileName);
+        Task Upload(Guid groupingId, string zipFileName);//todo: remove
         Task<CollectBillsGetZipFileInfo> CreateZip(ICollection<string> data, string fromDateJalali, string toDateJalali);
     }
     public sealed class CollectBillsDetailJobService : AbstractBaseConnection, ICollectBillsDetailJobService
