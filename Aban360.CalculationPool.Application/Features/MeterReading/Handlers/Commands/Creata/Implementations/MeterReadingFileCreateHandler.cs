@@ -88,7 +88,16 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 throw new ReadingException(ExceptionLiterals.InvalidReadingFile);
             }
-            return meterReadingFileDetail;
+
+            ICollection<MeterReadingFileDetail> meterReadingDetailWithoutDuplicate = meterReadingFileDetail
+                .GroupBy(s => s.CustomerNumber)
+                .Select(m => m
+                    .OrderByDescending(r => r.CurrentDateJalali)
+                    .ThenByDescending(r => r.CurrentNumber)
+                    .First())
+                .ToList();
+
+            return meterReadingDetailWithoutDuplicate;
         }
         private async Task InputValidate(MeterReadingFileCreateDto input, CancellationToken cancellationToken)
         {

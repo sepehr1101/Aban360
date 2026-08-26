@@ -121,9 +121,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 bulk.ColumnMappings.Add(col.ColumnName, col.ColumnName);
             await bulk.WriteToServerAsync(table);
 
+            int expectedCount = input?.DistinctBy(m => m.CustomerNumber)?.Count() ?? 0;
             string updateCommand = GetUpdateDebtAmountCommand(dbName);
             int recordEffected = await _sqlConnection.ExecuteAsync(updateCommand, null, _dbTransaction);
-            if (recordEffected != (input?.Count() ?? 0))
+            if (recordEffected != expectedCount)
             {
                 throw new ReadingException(CommonLiteral.ExceptionLiterals.InvalidUpdateMembersDebtAmount);
             }
