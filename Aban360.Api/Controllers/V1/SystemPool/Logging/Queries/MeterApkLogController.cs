@@ -1,8 +1,8 @@
 ﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.ReportPool.Domain.Base;
 using Aban360.SystemPool.Application.Features.Logging.Handlers.Commands.Contracts;
 using Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Conracts;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Input;
@@ -17,7 +17,7 @@ namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
         private readonly IMeterApkLogSaveHandler _MeterApkLogSaveHandler;
         private readonly IMeterApkLogGetAllHandler _MeterApkGetAllHandler;
         private readonly IMeterApkLogGetByFileNameHandler _MeterApkLogGetByFileNameHandler;
-        private string _folderPath = ReportLiterals.MeterApkLogsPath;
+        private string _folderPath = DirectoryLiterals.MeterApkLogsPath;
         public MeterApkLogController(
             IMeterApkLogSaveHandler MeterApkLogSaveHandler,
             IMeterApkLogGetAllHandler MeterApkGetAllHandler,

@@ -52,9 +52,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 
             var check = await _connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM #DebtAmountUpdateTemp", null, _transaction);
 
+            int expectedCount = input?.DistinctBy(m => m.CustomerNumber)?.Count() ?? 0;
             string updateCommand = GetUpdateDebtAmountCommand();
             int recordEffected = await _connection.ExecuteAsync(updateCommand, null, _transaction);
-            if (recordEffected != (input?.Count() ?? 0))
+            if (recordEffected != expectedCount)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidUpdateWaterDebt);
             }

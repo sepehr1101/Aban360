@@ -17,8 +17,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.I
         public async Task<IEnumerable<FinancialStatementDataOutputDto>> GetWaterTotal(FinancialStatementInputDto input)
         {
             string query = GetWaterTotalQuery();
-            Console.WriteLine(query);
-            IEnumerable<FinancialStatementDataOutputDto> result = await _sqlReportConnection.QueryAsync<FinancialStatementDataOutputDto>(query, input);
+            IEnumerable<FinancialStatementDataOutputDto> result = await _sqlReportConnection.QueryAsync<FinancialStatementDataOutputDto>(query, input, null, 180);
             return result;
         }
     }

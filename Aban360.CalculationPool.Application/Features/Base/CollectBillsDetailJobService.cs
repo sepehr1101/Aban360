@@ -7,10 +7,12 @@ using Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Contracts;
 using Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using Hangfire;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +25,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
     public interface ICollectBillsDetailJobService
     {
         Task Initialize();
-        Task Upload(Guid groupingId, string zipFileName);
+        Task Upload(Guid groupingId, string zipFileName);//todo: remove
         Task<CollectBillsGetZipFileInfo> CreateZip(ICollection<string> data, string fromDateJalali, string toDateJalali);
     }
     public sealed class CollectBillsDetailJobService : AbstractBaseConnection, ICollectBillsDetailJobService
@@ -32,9 +34,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private readonly ICollectBillsQueryService _collectBillsQueryService;
         private readonly ICollectBillsService _collectBillsService;
         private readonly IT51QueryService _zoneQueryService;
-        private string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-        private string _basePath = @"AppData\CollectBills";
-        private string _cityCode = "130000";
+        private static DateTime _currentDateTime = DateTime.Now;
+        private static string _currentDateJalali = _currentDateTime.ToShortPersianDateString();
+        private int _currentYear = Convert.ToInt16(_currentDateJalali.Substring(0, 4));
+        private int _currentMonth = Convert.ToInt16(_currentDateJalali.Substring(5, 2));
+        private string _basePath = DirectoryLiterals.CollectBillsFolderPath;
+        private string _cityCode = "1002031406";
         public CollectBillsDetailJobService(
             IBackgroundJobClient backgroundJobClient,
             ICollectBillsQueryService collectBillsQueryService,
@@ -58,57 +63,62 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
         public async Task Initialize()
         {
-            CollectBillsDetailInsertDto insertDto = new(Guid.NewGuid(), (int)CollectBillStepEnum.Initialize, DateTime.Now, DateTime.Now, string.Empty);
-            //Validate
-            int effectedId = await CollectgBillsDetailInsert(insertDto);
-            _backgroundJobClient.Enqueue(() => CreateFile(insertDto.GroupingId));
+            CollectBillsDetailInsertDto initializeLogDto = new(Guid.NewGuid(), (int)CollectBillStepEnum.Initialize, DateTime.Now, DateTime.Now, string.Empty);
+            int effectedId = await CollectgBillsDetailInsert(initializeLogDto);
 
+            _backgroundJobClient.Enqueue(() => CreateFile(initializeLogDto.GroupingId));
         }
         public async Task CreateFile(Guid groupingId)
         {
-            CollectBillsDetailInsertDto createfile = new(groupingId, (int)CollectBillStepEnum.CreateZip, DateTime.Now, null, string.Empty);
-            int effectedId = await CollectgBillsDetailInsert(createfile);
+            CollectBillsDetailInsertDto createZipFileLogDto = new(groupingId, (int)CollectBillStepEnum.CreateZip, DateTime.Now, null, string.Empty);
+            int effectedId = await CollectgBillsDetailInsert(createZipFileLogDto);
 
-            CollectBillsGetDataToSendInputDto dtoToGenerateTxtFile = new(fromDateJalali: currentDateJalali, toDateJalali: currentDateJalali);
-            IEnumerable<CollectBillsDataDto> data = await _collectBillsQueryService.Get(dtoToGenerateTxtFile);
-            CollectBillsGetZipFileInfo zipFileInfo = await CreateZip(data.Select(s => s.Row).ToList(), dtoToGenerateTxtFile.FromDateJalali, dtoToGenerateTxtFile.FromDateJalali);
-            string description = $"فایل:{zipFileInfo.FileName} با تعداد سطر:{data?.Count() ?? 0} ایجاد شد.";
-            CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, description, DateTime.Now);
-            await CollectBillsDetailUpdate(finalCreateFile);
+            CollectBillsGetDataToSendInputDto dtoToGenerateTxtFile = new(fromDateJalali: _currentDateJalali, toDateJalali: _currentDateJalali);
+            IEnumerable<CollectBillsDataDto> customersDataToSend = await _collectBillsQueryService.Get(dtoToGenerateTxtFile);
+            CollectBillsGetZipFileInfo zipFileInfo = await CreateZip(customersDataToSend.Select(s => s.Row).ToList(), dtoToGenerateTxtFile.FromDateJalali, dtoToGenerateTxtFile.FromDateJalali);
+            string description = string.Format(ExceptionLiterals.CollectBillsCreateZipFile, zipFileInfo.FileName, customersDataToSend?.Count() ?? 0);
+            CollectBillsDetailUpdateDto createZipFileUpdateLogDto = new(effectedId, zipFileInfo.FileName, description, DateTime.Now);
+            await CollectBillsDetailUpdate(createZipFileUpdateLogDto);
 
             _backgroundJobClient.Enqueue(() => Upload(groupingId, zipFileInfo.FileName));
         }
         public async Task Upload(Guid groupingId, string zipFileName)
         {
-            CollectBillsDetailInsertDto createfile = new(groupingId, (int)CollectBillStepEnum.Upload, DateTime.Now, null, string.Empty);
-            int effectedId = await CollectgBillsDetailInsert(createfile);
+            CollectBillsDetailInsertDto uploadInsertLogDto = new(groupingId, (int)CollectBillStepEnum.Upload, DateTime.Now, null, string.Empty);
+            int effectedId = await CollectgBillsDetailInsert(uploadInsertLogDto);
 
             CollectBillsUploadInputDto uploadInputDto = await GetUploadInputDto(zipFileName);
             CollectBillsOutputDto<CollectBillsUploadOutputDto> result = await _collectBillsService.Upload(uploadInputDto);
-            //validate on result
-            
-            string description = string.Empty;//ExceptionLiterals.CollectBillsUploadedFileLog 
-            CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, description, DateTime.Now);
+
+            string description = result.Code == (int)CollectBillsResponseStatusEnum.Success ? string.Format(ExceptionLiterals.CollectBillsSuccessUploadedFileLog, result.Result.FileID, result.Message) : string.Format(ExceptionLiterals.CollectBillsUnsuccessUploadedFileLog, zipFileName, result.Code, result.Message);
+            CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, zipFileName, description, DateTime.Now);
             await CollectBillsDetailUpdate(finalCreateFile);
 
-            _backgroundJobClient.Enqueue(() => SetFileDetail(groupingId, "" /*result.Parameters.FileID*/));
+            if (result.Code == (int)CollectBillsResponseStatusEnum.Success)
+            {
+                result.Result = new CollectBillsUploadOutputDto("10000");//todo: remove this line
+                _backgroundJobClient.Enqueue(() => SetFileDetail(groupingId, result.Result.FileID, zipFileName));
+            }
         }
-        public async Task SetFileDetail(Guid groupingId, string fileId)
+        public async Task SetFileDetail(Guid groupingId, string fileId, string zipFileName)
         {
             CollectBillsDetailInsertDto createfile = new(groupingId, (int)CollectBillStepEnum.AssingUploadedFile, DateTime.Now, null, string.Empty);
             int effectedId = await CollectgBillsDetailInsert(createfile);
 
-            CollectBillsAssignUploadedFileInputDto assignUploadedFileDto = new(fileId, "", "", string.Empty);//todo: 2params from GetServiceConfig -> how to use?
+            CollectBillsAssignUploadedFileInputDto assignUploadedFileDto = new(fileId, _currentYear.ToString(), _currentMonth.ToString(), string.Empty);
             CollectBillsOutputDto<CollectBillsAssignUploadedFileOutputDto> result = await _collectBillsService.AssignUploadedFile(assignUploadedFileDto);
             //validate 
 
-            string description = $"اطلاعات تکمیلی به فایل آپلود شده اضافه شد.";
-            CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, description, DateTime.Now);
+            string description = result.Code == (int)CollectBillsResponseStatusEnum.Success ? string.Format(ExceptionLiterals.CollectBillsAssignUploadedFileSeccessLog, fileId, assignUploadedFileDto.FileYear, assignUploadedFileDto.FileCycle, result.Code, result.Message) : string.Format(ExceptionLiterals.CollectBillsAssignUploadedFileUnseccessLog, fileId, assignUploadedFileDto.FileYear, assignUploadedFileDto.FileCycle, result.Code, result.Message);
+            CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, zipFileName, description, DateTime.Now);
             await CollectBillsDetailUpdate(finalCreateFile);
 
-            _backgroundJobClient.Enqueue(() => Confirm(groupingId, fileId));
+            if (result.Code == (int)CollectBillsResponseStatusEnum.Success)
+            {
+                _backgroundJobClient.Enqueue(() => Confirm(groupingId, fileId, zipFileName));
+            }
         }
-        public async Task Confirm(Guid groupingId, string fileId)
+        public async Task Confirm(Guid groupingId, string fileId, string zipFileName)
         {
             CollectBillsDetailInsertDto createfile = new(groupingId, (int)CollectBillStepEnum.Confirm, DateTime.Now, null, string.Empty);
             int effectedId = await CollectgBillsDetailInsert(createfile);
@@ -117,10 +127,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
             CollectBillsOutputDto<CollectBillsConfirmFileOutputDto> result = await _collectBillsService.ConfirmFileBills(confirmFileDto);
             //validate 
 
-            string description = $"تایید فایل انجام شد.";
-            CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, description, DateTime.Now);
+            string description = result.Code == (int)CollectBillsResponseStatusEnum.Success ? string.Format(ExceptionLiterals.CollectBillsConfirmSuccessLog, fileId, result.Code, result.Message) : string.Format(ExceptionLiterals.CollectBillsConfirmUnsuccessLog, fileId, result.Code, result.Message);
+            CollectBillsDetailUpdateDto finalCreateFile = new(effectedId, zipFileName, description, DateTime.Now);
             await CollectBillsDetailUpdate(finalCreateFile);
-
             //get State
         }
 

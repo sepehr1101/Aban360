@@ -3,6 +3,7 @@ using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -21,7 +22,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IMeterReadingCreateBaseHandler _meterReadingCreateBaseHandler;
         private readonly IValidator<MeterReadingFileCreateDto> _validator;
         private static string _reportTitle = ReportLiterals.MeterReadingCreateFile;
-        private static string _dbfPath = ReportLiterals.DbfFolderPath;
+        private static string _dbfPath = DirectoryLiterals.DbfFolderPath;
         public MeterReadingFileCreateHandler(
             IMeterReadingCreateBaseHandler meterReadingCreateBaseHandler,
             IValidator<MeterReadingFileCreateDto> validator,
@@ -87,7 +88,16 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 throw new ReadingException(ExceptionLiterals.InvalidReadingFile);
             }
-            return meterReadingFileDetail;
+
+            ICollection<MeterReadingFileDetail> meterReadingDetailWithoutDuplicate = meterReadingFileDetail
+                .GroupBy(s => s.CustomerNumber)
+                .Select(m => m
+                    .OrderByDescending(r => r.CurrentDateJalali)
+                    .ThenByDescending(r => r.CurrentNumber)
+                    .First())
+                .ToList();
+
+            return meterReadingDetailWithoutDuplicate;
         }
         private async Task InputValidate(MeterReadingFileCreateDto input, CancellationToken cancellationToken)
         {

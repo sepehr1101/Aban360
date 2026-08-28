@@ -110,14 +110,14 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
         public async Task<CollectBillsOutputDto<CollectBillsUploadOutputDto>> Upload(CollectBillsUploadInputDto input)
         {
             string url = $"{_options.BaseUrl}{_options.Upload}";
-            using var request = new HttpRequestMessage(HttpMethod.Post, url);
 
-            _httpClient.DefaultRequestHeaders.Accept.Clear();
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
-            _httpClient.DefaultRequestHeaders.Authorization = await GetAuthenticationHeaderAsync();
-            using var content = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, _contentType);
-            HttpResponseMessage response = await _httpClient.PostAsync(url, content);
-            string responseBody = await response.Content.ReadAsStringAsync();
+            using var request = new HttpRequestMessage(HttpMethod.Post, url);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
+            request.Content = new StringContent(JsonSerializer.Serialize(input), Encoding.UTF8, _contentType);
+            request.Headers.Authorization = await GetAuthenticationHeaderAsync();
+
+            var response = await _httpClient.SendAsync(request);
+            //string responseBody = await response.Content.ReadAsStringAsync();
 
             CollectBillsOutputDto<CollectBillsUploadOutputDto> result = await response.Content.ReadFromJsonAsync<CollectBillsOutputDto<CollectBillsUploadOutputDto>>();
             return result;
@@ -131,7 +131,7 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
             request.Headers.Authorization = await GetAuthenticationHeaderAsync();
 
             var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+            //response.EnsureSuccessStatusCode();
             CollectBillsOutputDto<CollectBillsAssignUploadedFileOutputDto> result = await response.Content.ReadFromJsonAsync<CollectBillsOutputDto<CollectBillsAssignUploadedFileOutputDto>>();
             return result;
         }
@@ -157,7 +157,7 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
             request.Headers.Authorization = await GetAuthenticationHeaderAsync();
 
             var response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+            //response.EnsureSuccessStatusCode();
             CollectBillsOutputDto<CollectBillsConfirmFileOutputDto> result = await response.Content.ReadFromJsonAsync<CollectBillsOutputDto<CollectBillsConfirmFileOutputDto>>();
             return result;
         }

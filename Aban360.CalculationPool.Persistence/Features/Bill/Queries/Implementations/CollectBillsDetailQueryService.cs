@@ -1,4 +1,6 @@
 ﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
+using Aban360.CalculationPool.Domain.Features.CollectBills.Inputs;
+using Aban360.CalculationPool.Domain.Features.CollectBills.Outputs;
 using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Dapper;
@@ -26,6 +28,12 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
             IEnumerable<CollectBillsDetailGetDto> data = await _sqlReportConnection.QueryAsync<CollectBillsDetailGetDto>(query);
 
             return data;
+        }
+        public async Task<IEnumerable<CollectBillsDetailWithLastStepDataOutputDto>> Get(CollectBillsDetialReportInputDto input)
+        {
+            string query = GetReportQuery();
+            IEnumerable<CollectBillsDetailWithLastStepDataOutputDto> result = await _sqlReportConnection.QueryAsync<CollectBillsDetailWithLastStepDataOutputDto>(query, input);
+            return result;
         }
 
         private string GetQuery()
@@ -56,6 +64,39 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
                     Join Atlas.dbo.CollectBillsStep cp
                     	ON cd.StepId=cp.Id
                     Where cd.Id = @Id";
+        }
+        private string GetReportQuery()
+        {
+            return $@";With Cte As
+                    (
+                    	Select 
+                    		*,
+                    		Rn=ROW_NUMBER() OVER(Partition By  GroupingId Order By InsertDateTime Asc)
+                    	From [Atlas].dbo.CollectBillsDetail
+                    )
+                    Select 
+                    	firstStep.id FirstId,
+                    	lastStep.id LastId,
+                    	firstStep.GroupingId,
+                    	firstStep.StepId FirstStepId,
+                    	lastStep.stepId LastStepId,
+						lastStep.FileName FileName,
+                    	firstStep.InsertDateTime FirstStepInsertDateTime,
+                    	lastStep.InsertDateTime LastStepInserteDateTime,
+                    	lastStep.FinishDateTime LastStepFinishedDateTime,
+                    	lastStep.Description LastStepDescription
+                    From Cte firstStep
+                    OUTER APPLY
+                    (
+                    	Select TOP 1 * 
+                    	From [Atlas].dbo.CollectBillsDetail lastStep
+                    	Where lastStep.GroupingId=firstStep.GroupingId 
+                    	Order By InsertDateTime Desc
+                    )as lastStep
+                    Where 
+                        Rn=1 AND
+	                    Format(firstStep.InsertDateTime , 'yyyy/MM/dd' , 'fa') BETWEEN @FromDateJalali AND @ToDateJalali
+                    Order By firstStep.InsertDateTime Desc";
         }
     }
 }

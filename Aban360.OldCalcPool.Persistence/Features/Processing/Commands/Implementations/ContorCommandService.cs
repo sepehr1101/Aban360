@@ -60,9 +60,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             await bulk.WriteToServerAsync(updateDataTable);
             IEnumerable<int> check = await _connection.QueryAsync<int>("SELECT CustomerNumber  FROM #ContorTemp", null, _transaction);
 
+            int expectedCount = inputDto?.DistinctBy(m => m.CustomerNumber)?.Count() ?? 0;
             string updateCommand = GetUpdateWithTempTableCommand(dbName, isUpdateTavizField);
             int recordEffected = await _connection.ExecuteAsync(updateCommand, null, _transaction);
-            if(recordEffected != (inputDto?.Count() ?? 0))
+            if(recordEffected != expectedCount)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidUpdateContor);
             }
