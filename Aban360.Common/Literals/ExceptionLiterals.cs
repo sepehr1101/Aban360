@@ -278,6 +278,7 @@
         public static string InvalidConnectDisconnectByCustomerInfo(string deletionStateTitle) => $"وضعیت انشعاب مشترک درحالت:{deletionStateTitle} قرار دارد. امکان درخواست وجود ندارد.";
         public static string InvalidConnectDisconnectDuplicateRequest => " تکراری (درخواست قبلی حذف/ثبت نتیجه نشده).";
         public static string InvalidConnectDisconnectDuplicateResult => "امکان ذخیره نتیجه مجدد برای درخواست قطع/وصل وجود ندارد.";
+        public static string InvalidConnectDisconnectRemovedResult => "درخواست حذف شده است.";
         public static string InvalidEmptyDisconnectWhy => "نتیجه قطع را به درستی وارد کنید.";
         public static string InvalidConnectDisconnectDeleteDuplicate => "درخواست قطع/وصل جاری قبلا حذف شده.";
         public static string InvalidGetSti => "امکان دریافت فایل چاپ وجود ندارد. برای درخواست جاری ثبت نتیجه/حذف صورت گرفته.";

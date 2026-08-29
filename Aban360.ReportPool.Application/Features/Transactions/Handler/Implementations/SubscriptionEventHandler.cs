@@ -40,25 +40,27 @@ namespace Aban360.ReportPool.Application.Features.Transactions.Handler.Implement
             _customerInfoQueryService.NotNull(nameof(customerInfoQueryService));
         }
 
-        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> Handle(CardexInput input,CancellationToken cancellationToken)
+        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> Handle(SubscriptionCardexInput input, CancellationToken cancellationToken)
         {
             bool hasBillId = await _billQueryService.HasBillId(input.Input);
             if (!hasBillId)
+            {
                 throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
+            }
 
-            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> result = await _subscriptionEventQueryService.GetEventsSummaryDtos(input.Input, input.FromDateJalali);
+            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> result = await _subscriptionEventQueryService.GetEventsSummaryDtos(input);
             result.ReportHeader.RowCount = result.ReportData?.Count() ?? 0;
             return string.IsNullOrWhiteSpace(input.FromDateJalali) ? result : SetFromDate(result, input.FromDateJalali);
 
         }
-        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> HandleWithLastDb(CardexInput input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> HandleWithLastDb(SubscriptionCardexInput input, CancellationToken cancellationToken)
         {
             bool hasBillId = await _billQueryService.HasBillId(input.Input);
             if (!hasBillId)
                 throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
 
             ZoneIdAndCustomerNumberOutputDto zoneIdAndCustomerNumber = await _customerInfoQueryService.GetZoneIdAndCustomerNumber(input.Input);
-            CardexInputDto cardexInfo = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber, input.FromDateJalali);
+            SubscriptionCardexInputDto cardexInfo = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber, input.FromDateJalali,input.HasRemovedBills);
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> result = await _subscriptionEventWithLastDbQueryService.GetEventsSummaryDtos(cardexInfo);
             result.ReportHeader.RowCount = result.ReportData?.Count() ?? 0;
 

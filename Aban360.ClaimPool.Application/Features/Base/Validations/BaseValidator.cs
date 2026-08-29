@@ -31,11 +31,14 @@ namespace Aban360.ClaimPool.Application.Features.Base.Validations
             IsDigit(input);
         protected virtual bool IsValidNullableNationalCode(string? input) =>
             string.IsNullOrWhiteSpace(input) ||
-            (input.Length == 10 && IsDigit(input));
+            ((input.Length == 10 || input.Length == 11) && IsDigit(input));
         protected virtual bool IsValidPostalCode(string input) =>
             !string.IsNullOrEmpty(input) &&
             input.Length == 10 &&
             IsDigit(input);
+        protected virtual bool IsValidNullablePostalCode(string? input) =>
+            string.IsNullOrEmpty(input) ||
+            (input.Length == 10 && IsDigit(input));
         protected virtual bool IsValidGuid(string input) => Guid.TryParse(input, out _);
         protected virtual bool IsValidInt(string input) => int.TryParse(input, out _);
         protected virtual bool IsValidDateJalali(string input) =>

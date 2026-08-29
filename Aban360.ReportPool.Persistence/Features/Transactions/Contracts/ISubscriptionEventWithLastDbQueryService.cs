@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Contracts
 {
     public interface ISubscriptionEventWithLastDbQueryService
     {
-        public Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> GetEventsSummaryDtos(CardexInputDto input);
+        public Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> GetEventsSummaryDtos(SubscriptionCardexInputDto input);
     }
 }

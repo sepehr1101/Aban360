@@ -23,13 +23,13 @@ namespace Aban360.ReportPool.Persistence.Base
 							SUM(ISNULL(b.CommercialCount, 0) + ISNULL(b.DomesticCount, 0) + ISNULL(b.OtherCount, 0)) AS ConsumptionTotalUnit,
 							AVG(b.Consumption) DailyAverage,
 							SUM(IIF(b.TypeCode = {NetTypeCode} , b.Consumption , 0)) NetConsumption,
-							SUM(IIF(b.TypeCode = {NetTypeCode} , b.Item1 + b.Item11 , 0)) NetAmount,
+							SUM(IIF(b.TypeCode = {NetTypeCode} , CAST(b.Item1 as bigint) + CAST(b.Item11 as bigint) , 0)) NetAmount,
 							SUM(IIF(b.TypeCode = {ReturnedTypeCode}, b.Consumption , 0)) ReturnedConsumption,
-							SUM(IIF(b.TypeCode = {ReturnedTypeCode}, b.Item1 + b.Item11 , 0)) ReturnedAmount,
-							SUM( b.ItemOff1 + b.ItemOff11 ) DiscountAmount,
+							SUM(IIF(b.TypeCode = {ReturnedTypeCode}, CAST(b.Item1 as bigint) + CAST(b.Item11 as bigint) , 0)) ReturnedAmount,
+							SUM( CAST( b.ItemOff1 as bigint) +  CAST( b.ItemOff11 as bigint)  ) DiscountAmount,
 							SUM(IIF(b.TypeCode IN {rawTypeCode} , b.Consumption , 0)) RawConsumption,
-							SUM(IIF(b.TypeCode IN {rawTypeCode} , b.Item1 + b.Item11 , 0)) RawAmount,
-							SUM(IIF(b.TypeCode IN {rawTypeCode} , b.Item1 + b.Item11 , 0)) /IIF(SUM(IIF(b.TypeCode IN {rawTypeCode} , b.Consumption , 0))=0,1,SUM(IIF(b.TypeCode IN {rawTypeCode} , b.Consumption , 0))) RawAmountAverage,
+							SUM(IIF(b.TypeCode IN {rawTypeCode} , CAST(b.Item1 as bigint) + CAST(b.Item11 as bigint) , 0)) RawAmount,
+							SUM(IIF(b.TypeCode IN {rawTypeCode} , CAST(b.Item1 as bigint) + CAST(b.Item11 as bigint) , 0)) /IIF(SUM(IIF(b.TypeCode IN {rawTypeCode} , b.Consumption , 0))=0,1,SUM(IIF(b.TypeCode IN {rawTypeCode} , b.Consumption , 0))) RawAmountAverage,
 							AVG(ConsumptionAverage) ConsumptionAverageInMonth 
 						From [CustomerWarehouse].dbo.Bills b 
 						Join [Db70].dbo.UsageGroup2 u2
@@ -54,7 +54,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						SUM( RawConsumption ) RawConsumption,
 						SUM( RawAmount  ) RawAmount,
 						AVG( RawAmountAverage ) RawAmountAverage,
-						AVG( ConsumptionAverageInMonth ) ConsumptionAverageInMonth
+						ROUND(AVG( ConsumptionAverageInMonth ),2 )ConsumptionAverageInMonth
 					From PerBillId
 					Group By UsageGroupTitle 
 					Order by UsageGroupTitle";
