@@ -1,15 +1,16 @@
 ﻿namespace Aban360.Common.BaseEntities
 {
-    public record CardexInput
+    public record SubscriptionCardexInput
     {
         public string Input { get; set; } = default!;
         public string? FromDateJalali { get; set; }
-        public CardexInput(string input, string? fromDateJalali)
+        public bool HasRemovedBills { get; set; }
+        public SubscriptionCardexInput(string input, string? fromDateJalali, bool hasRemovedBills)
         {
             Input = input;
             FromDateJalali = fromDateJalali;
         }
-        public CardexInput()
+        public SubscriptionCardexInput()
         {
 
         }

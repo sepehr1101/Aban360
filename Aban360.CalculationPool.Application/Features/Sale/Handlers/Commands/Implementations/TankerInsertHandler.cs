@@ -86,11 +86,11 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 return await GetResult(calcResult, inputDto);
             }
             decimal barge = await _variabService.GetAndRenew(inputDto.ZoneId);
-            await SqlCommands(inputDto, calcResult, barge, appUser);
+            await ExecSql(inputDto, calcResult, barge, appUser);
 
             return await GetResult(calcResult, inputDto);
         }
-        private async Task SqlCommands(TankerInsertInputDto inputDto, TankerWaterCalculationOutputDto calcResult, decimal barge, IAppUser appUser)
+        private async Task ExecSql(TankerInsertInputDto inputDto, TankerWaterCalculationOutputDto calcResult, decimal barge, IAppUser appUser)
         {
             string dbName = GetDbName(inputDto.ZoneId);
 
@@ -151,6 +151,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 Amount = (long)calcResult.Final,
                 IsNotShorb = true,//todo
                 ReadingNumber = string.Empty,//todo
+                CardNumber = inputDto.CardNumber,//todo
             };
         }
         private async Task<BedBesCreateDto> GetBedBesInsertDto(TankerInsertDto tankerInsertDto, TankerWaterCalculationOutputDto calcResult)

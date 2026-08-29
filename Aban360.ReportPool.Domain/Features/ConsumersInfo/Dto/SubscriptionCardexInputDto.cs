@@ -1,15 +1,20 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto
 {
-    public record CardexInputDto
+    public record SubscriptionCardexInputDto
     {
         public int ZoneId { get; set; }
         public int CustomerNumber { get; set; }
         public string? FromDate { get; set; }
-        public CardexInputDto(int zoneId, int customerNumber, string? fromDate)
+        public bool HasRemovedBills { get; set; }
+        public SubscriptionCardexInputDto(int zoneId, int customerNumber, string? fromDate, bool hasRemovedBills)
         {
             ZoneId = zoneId;
             CustomerNumber = customerNumber;
             FromDate = fromDate;
+            HasRemovedBills = hasRemovedBills;
+        }
+        public SubscriptionCardexInputDto()
+        {
         }
     }
 }

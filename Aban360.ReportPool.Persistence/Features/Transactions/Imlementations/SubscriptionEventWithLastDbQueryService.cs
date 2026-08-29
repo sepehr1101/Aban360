@@ -17,10 +17,10 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         {
         }
 
-        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> GetEventsSummaryDtos(CardexInputDto input)
+        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> GetEventsSummaryDtos(SubscriptionCardexInputDto input)
         {
             string dbName = GetDbName(input.ZoneId);
-            string subscriptionDataQuery = GetSubscriptionEventsDataQuery(dbName);
+            string subscriptionDataQuery = GetSubscriptionEventsDataQuery(dbName, input.HasRemovedBills);
             string subscriptionHeaderQuery = GetSubscriptionEventHeaderQuery(dbName);
             string waterReplacementInHeaderQuery = GetWaterReplacementDateInHeaderQuery(dbName);
             long lastRemained = 0;
@@ -58,9 +58,9 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         }
 
 
-        private string GetSubscriptionEventsDataQuery(string dbName)
+        private string GetSubscriptionEventsDataQuery(string dbName, bool hasRemovedBills)
         {
-            return $@"Select 
+            string withoutBillsQuery = $@"Select 
 						b.sh_ghabs1 BillId,
 						b.id,
 						b.pri_no PreviousMeterNumber,
@@ -246,7 +246,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						On v.cod_enshab=t41_consumption.c0 
 					Where 
 						v.town=@zoneId AND
-						v.radif=@customerNumber 
+						v.radif=@customerNumber  ";
+            string removedBillsQuery = @"
 					Union All
 					select
 					    h.Sh_GhABS1 BillId,
@@ -280,7 +281,9 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 					From [{dbName}].dbo.HbedBes h
 					Where 
 						h.town=@zoneId AND
-						h.radif=@customerNumber ";
+						h.radif=@customerNumber";
+
+            return hasRemovedBills ? $"{withoutBillsQuery} {removedBillsQuery}" : withoutBillsQuery;
         }
         private string GetSubscriptionEventHeaderQuery(string dbName)
         {
@@ -349,6 +352,6 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	t.town=@zoneId
                     Order By t.taviz_date Desc";
         }
-    
+
     }
 }

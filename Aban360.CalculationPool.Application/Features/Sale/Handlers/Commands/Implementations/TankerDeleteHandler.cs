@@ -55,9 +55,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             string opLogText = string.Format(OpLogLiterals.TankerDeleteOpLog, appUser.Username, DateTime.Now.ToShortPersianDateString(), inputDto.ZoneId, tankerInfo.BillId, tankerInfo.CustomerNumber, tankerInfo.Amount);
             TankerDeleteDto tankerDeleteDto = new(inputDto.ZoneId, inputDto.CustomerNumber, _operator);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = new(tankerDeleteDto.ZoneId, tankerDeleteDto.CustomerNumber);
-            await SqlCommands(tankerDeleteDto, zoneIdAndCustomerNumber, appUser, opLogText);
+            await ExecSql(tankerDeleteDto, zoneIdAndCustomerNumber, appUser, opLogText);
         }
-        private async Task SqlCommands(TankerDeleteDto tankerDeleteDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, IAppUser appUser, string opLogText)
+        private async Task ExecSql(TankerDeleteDto tankerDeleteDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, IAppUser appUser, string opLogText)
         {
             string dbName = GetDbName(tankerDeleteDto.ZoneId);
 

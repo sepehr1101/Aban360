@@ -66,7 +66,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         }
         private async Task<BillIssueRemainedOutputDto> GetResult(MemberInfoGetDto memberInfo, string billId)
         {
-            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> subscripitonInfo = await _subscriptionEventQueryService.GetEventsSummaryDtos(billId, string.Empty);
+            SubscriptionCardexInput inputDto = new(billId, string.Empty, true);
+            ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> subscripitonInfo = await _subscriptionEventQueryService.GetEventsSummaryDtos(inputDto);
             long amount = subscripitonInfo.ReportHeader.Remained;
             string currentMonth = DateTime.Now.ToShortPersianDateString().Substring(5, 2);
             string paymentIdOption = $"{CommonLiterals.WaterPayIdUniqueCode}{currentMonth}";

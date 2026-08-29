@@ -16,7 +16,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
         public async Task<IEnumerable<CollectBillsDataDto>> Get(CollectBillsGetDataToSendInputDto input)
         {
             string query = GetQuery();
-            IEnumerable<CollectBillsDataDto> data = await _sqlReportConnection.QueryAsync<CollectBillsDataDto>(query, new { FromDateJalali = input.FromDateJalali, ToDateJalali = input.ToDateJalali });
+            IEnumerable<CollectBillsDataDto> data = await _sqlReportConnection.QueryAsync<CollectBillsDataDto>(query, new { FromDateJalali = input.FromDateJalali, ToDateJalali = input.ToDateJalali }, null, 180);
 
             return data;
         }

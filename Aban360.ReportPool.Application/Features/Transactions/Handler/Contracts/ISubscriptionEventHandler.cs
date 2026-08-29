@@ -5,7 +5,7 @@ namespace Aban360.ReportPool.Application.Features.Transactions.Handler.Contracts
 {
     public interface ISubscriptionEventHandler
     {
-        Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> Handle(CardexInput input, CancellationToken cancellationToken);
-        Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> HandleWithLastDb(CardexInput input,CancellationToken cancellationToken);
+        Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> Handle(SubscriptionCardexInput input, CancellationToken cancellationToken);
+        Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> HandleWithLastDb(SubscriptionCardexInput input,CancellationToken cancellationToken);
     }
 }

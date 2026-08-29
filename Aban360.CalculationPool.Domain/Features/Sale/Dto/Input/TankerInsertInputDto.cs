@@ -11,6 +11,7 @@ namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Input
         public string? MobileNumber { get; set; }
         public int Consumption { get; set; }
         public int Distance { get; set; }
+        public string CardNumber { get; set; }
         public TankerWaterSaleStateEnum SaleState { get; set; }
 
         public bool IsConfirm { get; set; }

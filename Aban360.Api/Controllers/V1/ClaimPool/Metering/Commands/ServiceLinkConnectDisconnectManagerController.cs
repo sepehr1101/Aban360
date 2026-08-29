@@ -122,10 +122,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 
         [HttpGet]
         [Route("disconnect-result")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<NumericDictionary>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ServiceLinkDisconnectResultDto>>), StatusCodes.Status200OK)]
         public IActionResult GetDisconnectResultDictionary(CancellationToken cancellationToken)
         {
-            ICollection<NumericDictionary> dictionary = _connectDisconnectSetResultHandler.GetDisconnectResults();
+            ICollection<ServiceLinkDisconnectResultDto> dictionary = _connectDisconnectSetResultHandler.GetDisconnectResults();
             return Ok(dictionary);
         }
 

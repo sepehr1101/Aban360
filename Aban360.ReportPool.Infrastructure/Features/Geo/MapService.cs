@@ -3,6 +3,8 @@ using System.Drawing;
 using MapOptions = Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.Common.Extensions;
 using Microsoft.Extensions.Options;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 
 namespace Aban360.ReportPool.Infrastructure.Features.Geo
 {
@@ -90,14 +92,34 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
             float pointY = (float)(tileSize + offsetY);
 
             string pinPath = Path.Combine(AppContext.BaseDirectory, "AppData", "Images", "location_icon.png");
-            using Image pinImage = Image.FromFile(pinPath);
+            if (!File.Exists(pinPath))
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.NotFoundFile);
+            }
+            //using (FileStream fs = new FileStream(pinPath, FileMode.Open, FileAccess.Read))
+            //{
+            //    using (Image pinImage = Image.FromStream(fs))
+            //    {
+            //        int pinWidth = 100;
+            //        int pinHeight = 100;
+
+            //        float drawX = pointX - pinWidth / 2f;
+            //        float drawY = pointY - pinHeight;
+
+            //        graphics.DrawImage(pinImage, drawX, drawY, pinWidth, pinHeight);
+            //    }
+            //}
+
+            using var fs = new FileStream(pinPath, FileMode.Open, FileAccess.Read);
+            Image _pinImage = new Bitmap(fs);
+
             int pinWidth = 100;
             int pinHeight = 100;
 
             float drawX = pointX - pinWidth / 2f;
             float drawY = pointY - pinHeight;
 
-            graphics.DrawImage(pinImage, drawX, drawY, pinWidth, pinHeight);
+            graphics.DrawImage(_pinImage, drawX, drawY, pinWidth, pinHeight);
 
         }
         private static (int X, int Y) LatLonToTile(double latitude, double longitude, int zoom)

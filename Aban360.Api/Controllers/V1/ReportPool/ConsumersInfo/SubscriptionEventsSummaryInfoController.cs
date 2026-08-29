@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("events-summary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetEventsSummaryInfo([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetEventsSummaryInfo([FromBody] SubscriptionCardexInput searchInput, CancellationToken cancellationToken)
         {
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> items = await _subscriptionEventHandler.Handle(searchInput, cancellationToken);
             return Ok(items);
@@ -33,7 +33,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> GetStiReport([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetStiReport([FromBody] SubscriptionCardexInput searchInput, CancellationToken cancellationToken)
         {
             int reportCode = 230;
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> calculationDetails = await _subscriptionEventHandler.Handle(searchInput, cancellationToken);
@@ -47,7 +47,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("events-summary-lastdb")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetEventsSummaryInfo_LastDb([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetEventsSummaryInfo_LastDb([FromBody] SubscriptionCardexInput searchInput, CancellationToken cancellationToken)
         {
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> items = await _subscriptionEventHandler.HandleWithLastDb(searchInput, cancellationToken);
             return Ok(items);
@@ -57,7 +57,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         [Route("sti-lastdb")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> GetStiReport_LastDb([FromBody] CardexInput searchInput, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetStiReport_LastDb([FromBody] SubscriptionCardexInput searchInput, CancellationToken cancellationToken)
         {
             int reportCode = 230;
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> calculationDetails = await _subscriptionEventHandler.HandleWithLastDb(searchInput, cancellationToken);
