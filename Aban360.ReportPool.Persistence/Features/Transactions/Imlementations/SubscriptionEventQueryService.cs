@@ -17,14 +17,14 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             : base(configuration)
         {
         }
-        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> GetEventsSummaryDtos(string billId, string fromDate)
+        public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> GetEventsSummaryDtos(SubscriptionCardexInput input)
         {
-            string subscriptionDataQuery = GetSubscriptionEventsDataQuery();
+            string subscriptionDataQuery = GetSubscriptionEventsDataQuery(input.HasRemovedBills);
             string subscriptionHeaderQuery = GetSubscriptionEventHeaderQuery();
             string waterReplacementInHeaderQuery = GetWaterReplacementDateInHeaderQuery();
 
             long lastRemained = 0;
-            IEnumerable<WaterEventsSummaryOutputDataDto> data = await _sqlReportConnection.QueryAsync<WaterEventsSummaryOutputDataDto>(subscriptionDataQuery, new { billId = billId, fromDate = fromDate });
+            IEnumerable<WaterEventsSummaryOutputDataDto> data = await _sqlReportConnection.QueryAsync<WaterEventsSummaryOutputDataDto>(subscriptionDataQuery, new { billId = input.Input, fromDate = input.FromDateJalali });
             if (data is not null && data.Any())
             {
                 data = data.OrderBy(i => i.RegisterDate);
@@ -42,8 +42,8 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     row.Remained = lastRemained;
                 }
             }
-            WaterEventsSummaryOutputHeaderDto? header = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterEventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = billId });
-            WaterReplacementInfoOutputDto? replacementInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterReplacementInfoOutputDto>(waterReplacementInHeaderQuery, new { billId = billId, customerNumber = header.CustomerNumber, zoneId = header.ZoneId });
+            WaterEventsSummaryOutputHeaderDto? header = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterEventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, new { billId = input.Input });
+            WaterReplacementInfoOutputDto? replacementInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterReplacementInfoOutputDto>(waterReplacementInHeaderQuery, new { billId = input.Input, customerNumber = header.CustomerNumber, zoneId = header.ZoneId });
             header.WaterReplacementDate = replacementInfo is not null ? replacementInfo.WaterReplacementDate : string.Empty;
             header.WaterReplacementNumber = replacementInfo is not null ? replacementInfo.WaterReplacementNumber : string.Empty;
             header.Remained = lastRemained;
@@ -56,7 +56,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
         }
         public async Task<IEnumerable<WaterEventsSummaryOutputDataDto>> GetBillDto(string billId)
         {
-            string query = GetSubscriptionEventsDataQuery();
+            string query = GetSubscriptionEventsDataQuery(true);
             IEnumerable<WaterEventsSummaryOutputDataDto> result = await _sqlReportConnection.QueryAsync<WaterEventsSummaryOutputDataDto>(query, new { billId = billId });
             if (result.Any())
             {
@@ -84,9 +84,9 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             }
             return result;
         }
-        private string GetSubscriptionEventsDataQuery()
+        private string GetSubscriptionEventsDataQuery(bool hasRemovedBills)
         {
-            string query = @"
+            string withoutRemovedBillsQuery = @"
             use CustomerWarehouse
              select
                  TRIM(BillId) BillId ,
@@ -127,44 +127,6 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             	CounterStateCode=v.MoshtarakinId
              where 
                 (BillId)=@billId 
-             union all
-             select
-	             TRIM(BillId) BillId ,
-                 Id,
-                 PreviousNumber PreviousMeterNumber,
-                 NextNumber NextMeterNumber, 
-                 PreviousDay PreviousMeterDate,
-                 NextDay CurrentMeterDate,
-                 0 Duration,
-                 RegisterDay RegisterDate,
-                 SumItems DebtAmount,
-                 0 CreditAmount,
-                 N'ابطال قبض' [Description],
-                 0 ConsumptionAverage, 
-                 Consumption,
-                 NULL BankTitle,
-                 NULL BankCode,
-                 0 CommercialUnit,
-                 0 DomesticUnit,
-                 0 OtherUnit,
-                 0 EmptyUnit,
-                 0 HouseholderNumber,
-                 0 ContractualCapacity,
-                 0 UsageSellId,
-                 0 UsageConsumptionId,
-                 '' UsageSellTitle,
-                 '' UsageConsumptionTitle,
-                 NULL AS PayDateJalali,
-                 17 TypeCode,
-                 0 BranchTypeId,
-                 '-' BranchTypeTitle,
-           	     0 CounterStateCode,
-           	     '-' CounterStateTitle,
-                 '-' ReadingStateTitle,
-                 0 IsReturned
-             from [CustomerWarehouse].dbo.RemovedBills
-             where 
-                (BillId=@billId )
              union
              select all
                  TRIM(BillId) BillId,
@@ -203,7 +165,47 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
              from [CustomerWarehouse].dbo.Payments
              where 
                 (BillId)=@billId  ";
-            return query;
+            string removedBillsQuery = @" 
+             union all
+             select
+	             TRIM(BillId) BillId ,
+                 Id,
+                 PreviousNumber PreviousMeterNumber,
+                 NextNumber NextMeterNumber, 
+                 PreviousDay PreviousMeterDate,
+                 NextDay CurrentMeterDate,
+                 0 Duration,
+                 RegisterDay RegisterDate,
+                 SumItems DebtAmount,
+                 0 CreditAmount,
+                 N'ابطال قبض' [Description],
+                 0 ConsumptionAverage, 
+                 Consumption,
+                 NULL BankTitle,
+                 NULL BankCode,
+                 0 CommercialUnit,
+                 0 DomesticUnit,
+                 0 OtherUnit,
+                 0 EmptyUnit,
+                 0 HouseholderNumber,
+                 0 ContractualCapacity,
+                 0 UsageSellId,
+                 0 UsageConsumptionId,
+                 '' UsageSellTitle,
+                 '' UsageConsumptionTitle,
+                 NULL AS PayDateJalali,
+                 17 TypeCode,
+                 0 BranchTypeId,
+                 '-' BranchTypeTitle,
+           	     0 CounterStateCode,
+           	     '-' CounterStateTitle,
+                 '-' ReadingStateTitle,
+                 0 IsReturned
+             from [CustomerWarehouse].dbo.RemovedBills
+             where 
+                (BillId=@billId )";
+
+            return hasRemovedBills ? $"{withoutRemovedBillsQuery} {removedBillsQuery}" : withoutRemovedBillsQuery;
         }
         private string GetSubscriptionEventHeaderQuery()
         {

@@ -26,19 +26,13 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.MobileNumber)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull)
-                .Must(IsValidMobileNumber).WithMessage(ExceptionLiterals.MobileNumberFormat);
+                .Must(IsValidMobileNumberOrNull).WithMessage(ExceptionLiterals.MobileNumberFormat);
 
             RuleFor(f => f.NationalCode)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull)
-                .Must(IsValidNationalCode).WithMessage(ExceptionLiterals.NationalCodeFormat);
+                .Must(IsValidNullableNationalCode).WithMessage(ExceptionLiterals.NationalCodeFormat);
 
             RuleFor(f => f.PostalCode)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull)
-                .Must(IsValidPostalCode).WithMessage(ExceptionLiterals.PostalCodeFormat);
+                .Must(IsValidNullablePostalCode).WithMessage(ExceptionLiterals.PostalCodeFormat);
         }
     }
 }

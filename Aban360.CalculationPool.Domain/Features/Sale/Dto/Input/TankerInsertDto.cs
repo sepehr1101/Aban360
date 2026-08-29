@@ -15,5 +15,6 @@ namespace Aban360.CalculationPool.Domain.Features.Sale.Dto.Input
         public string CurrentDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
         public bool IsNotShorb { get; set; }
         public string? ReadingNumber { get; set; }
+        public string? CardNumber { get; set; }
     }
 }

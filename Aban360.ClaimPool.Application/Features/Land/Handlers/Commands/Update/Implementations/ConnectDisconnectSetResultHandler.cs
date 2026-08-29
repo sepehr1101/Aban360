@@ -69,16 +69,16 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
 
             Validate(memberInfo, connectDisconnectInfo, deletionStateId, inputDto, isConnect);
-            var (resultId, resultTitle, opLogText, message, isSendMessage) = GetConnectOrDisconnectValue(connectDisconnectInfo, memberInfo, inputDto, isConnect);
+            var (resultId, resultTitle, opLogText, message, isSendMessage, hasMembersUpdate) = GetConnectOrDisconnectValue(connectDisconnectInfo, memberInfo, inputDto, isConnect);
 
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, deletionStateId, memberInfo);
             ConnectDisconnectUpdateDto connectDiscnnectUpdateDto = new(inputDto.Id, appUser.UserId, resultId, resultTitle, null, string.Join("_", new string[] { connectDisconnectInfo.Description ?? string.Empty, inputDto.Description ?? string.Empty }));
 
-            await SqlCommands(customerUpdate, connectDiscnnectUpdateDto, appUser, opLogText);
+            await ExecSql(customerUpdate, connectDiscnnectUpdateDto, appUser, opLogText, hasMembersUpdate);
 
             return new ConnectDisconnectSetResultOutputDto(memberInfo.BillId, memberInfo.MobileNumber, message, isSendMessage);
         }
-        private async Task SqlCommands(CustomerUpdateDto updateDto, ConnectDisconnectUpdateDto connectDiscnnectUpdateDto, IAppUser appUser, string opLogText)
+        private async Task ExecSql(CustomerUpdateDto updateDto, ConnectDisconnectUpdateDto connectDiscnnectUpdateDto, IAppUser appUser, string opLogText, bool hasMembersUpdate)
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
             using (IDbConnection connection = _sqlReportConnection)
@@ -97,10 +97,13 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     string dbName = GetDbName(updateDto.ZoneId);
                     //string dbName = "Atlas";
 
-                    int rowId = await _archMemCommandService.Insert(updateDto, dbName, dbName);
-                    await _membersCommandService.Update(updateDto, dbName);
-                    await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
-                    await _clientCommandService.InsertByArchMemId(rowId, dbName);
+                    if (hasMembersUpdate)
+                    {
+                        int rowId = await _archMemCommandService.Insert(updateDto, dbName, dbName);
+                        await _membersCommandService.Update(updateDto, dbName);
+                        await _clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
+                        await _clientCommandService.InsertByArchMemId(rowId, dbName);
+                    }
                     await _connectDisconnectCommandService.Update(connectDiscnnectUpdateDto);
                     await _opLogCommandService.Insert(opLogText, appUser);
 
@@ -189,12 +192,14 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             }
             return string.IsNullOrWhiteSpace(inputDate) || inputDate.Trim().Length != 10 ? string.Empty : inputDate.Trim();
         }
-        private (int, string, string, string, bool) GetConnectOrDisconnectValue(ConnectDisconnectGetDto connectDisconnectInfo, MemberInfoGetDto memberInfo, ServiceLinkConnectionInput inputDto,  bool isConnect)
+        private (int, string, string, string, bool, bool) GetConnectOrDisconnectValue(ConnectDisconnectGetDto connectDisconnectInfo, MemberInfoGetDto memberInfo, ServiceLinkConnectionInput inputDto, bool isConnect)
         {
-            ICollection<NumericDictionary> disconnectResults = GetDisconnectResults();
-            NumericDictionary? result = isConnect ? new NumericDictionary(0, string.Empty) : disconnectResults.Where(d => d.Id == (inputDto.Why)).FirstOrDefault();
+            ICollection<ServiceLinkDisconnectResultDto> disconnectResults = GetDisconnectResults();
+            ServiceLinkDisconnectResultDto? result = isConnect ? new ServiceLinkDisconnectResultDto(0, string.Empty, false) : disconnectResults.Where(d => d.Id == (inputDto.Why)).FirstOrDefault();
             if (result is null)
+            {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidEmptyDisconnectWhy);
+            }
 
             string connectLogText = string.Format(OpLogLiterals.ServiceLinkConnectSetResultOpLog, connectDisconnectInfo.BillId);
             string disconnectLogText = string.Format(OpLogLiterals.ServiceLinkDisconnectSetResultOpLog, connectDisconnectInfo.BillId, result.Title);
@@ -206,7 +211,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
             bool isSendMessage = isConnect ? true : _allowedSendMessageDisconnectResult.Contains(result.Id);
 
-            return (result.Id, result.Title, opLogText, message, isSendMessage);
+
+            return (result.Id, result.Title, opLogText, message, isSendMessage, hasMembersUpdate: result.IsValid);
         }
         private void Validate(MemberInfoGetDto memberInfo, ConnectDisconnectGetDto connectDisconnectResult, int deletionStateId, ServiceLinkConnectionInput inputDto, bool isConnect)
         {
@@ -218,6 +224,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidConnectDisconnectDuplicateResult);
             }
+            if (connectDisconnectResult.RemovedBy is not null)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidConnectDisconnectRemovedResult);
+            }
             if (memberInfo.DeletionStateId == deletionStateId)
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateDeletionState);
@@ -227,16 +237,16 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidLessThanCommandDate);
             }
         }
-        public ICollection<NumericDictionary> GetDisconnectResults()
+        public ICollection<ServiceLinkDisconnectResultDto> GetDisconnectResults()
         {
-            ICollection<NumericDictionary> results = new List<NumericDictionary>()
+            ICollection<ServiceLinkDisconnectResultDto> results = new List<ServiceLinkDisconnectResultDto>()
             {
-                new NumericDictionary(1,"انشعاب از طریق قطع و وصل، قطع گردید."),
-                new NumericDictionary(2,"انشعاب از طریق حفاری قطع گردید."),
-                new NumericDictionary(3,"محل انشعاب پیدا نشد."),
-                new NumericDictionary(4,"مشترک از قطع جلوگیری نمود."),
-                new NumericDictionary(5,"مشترک تسویه حساب نمود."),
-                new NumericDictionary(6,"قرائت میسر شد."),
+                new ServiceLinkDisconnectResultDto(1,"انشعاب از طریق قطع و وصل، قطع گردید.",true),
+                new ServiceLinkDisconnectResultDto(2,"انشعاب از طریق حفاری قطع گردید.",true),
+                new ServiceLinkDisconnectResultDto(3,"محل انشعاب پیدا نشد.", false),
+                new ServiceLinkDisconnectResultDto(4,"مشترک از قطع جلوگیری نمود.", false),
+                new ServiceLinkDisconnectResultDto(5,"مشترک تسویه حساب نمود.", false),
+                new ServiceLinkDisconnectResultDto(6,"قرائت میسر شد.",false),
             };
             return results;
         }
