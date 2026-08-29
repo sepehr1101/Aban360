@@ -36,7 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 fromAmount = input.FromAmount,
                 toAmount = input.ToAmount,
 
-                typeCodes = input.IsNet ? new[] { 1, 3, 4, 5 } : new[] { 1 },
+                typeCodes = GetTypeCodes(input.type),
 
                 usageIds = input.UsageIds,
                 zoneIds = input.ZoneIds,
