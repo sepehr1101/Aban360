@@ -195,7 +195,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         private (int, string, string, string, bool, bool) GetConnectOrDisconnectValue(ConnectDisconnectGetDto connectDisconnectInfo, MemberInfoGetDto memberInfo, ServiceLinkConnectionInput inputDto, bool isConnect)
         {
             ICollection<ServiceLinkDisconnectResultDto> disconnectResults = GetDisconnectResults();
-            ServiceLinkDisconnectResultDto? result = isConnect ? new ServiceLinkDisconnectResultDto(0, string.Empty, false) : disconnectResults.Where(d => d.Id == (inputDto.Why)).FirstOrDefault();
+            ServiceLinkDisconnectResultDto? result = isConnect ? new ServiceLinkDisconnectResultDto(0, string.Empty, true) : disconnectResults.Where(d => d.Id == (inputDto.Why)).FirstOrDefault();
             if (result is null)
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidEmptyDisconnectWhy);

@@ -13,7 +13,7 @@ namespace Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs
         public double? FromAmount { get; set; }
         public double? ToAmount { get; set; }
 
-        public bool IsNet { get; set; }
+        public WaterIncomeAndConsumptionTypeEnum type { get; set; }
 
         public int UsageGroupId { get; set; }
         public ICollection<int> ZoneIds { get; set; }

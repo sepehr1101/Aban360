@@ -5,6 +5,7 @@ using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
+using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
@@ -13,17 +14,17 @@ using System.Data;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
-    internal sealed class ContractualAndOlgooLevelQueryService : AbstractBaseConnection, IContractualAndOlgooLevelQueryService
+    internal sealed class ContractualAndOlgooLevelQueryService : WaterIncomeAndConsumptionBase, IContractualAndOlgooLevelQueryService
     {
         public ContractualAndOlgooLevelQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
         public async Task<ReportOutput<ContractualAndOlgooLevelHeaderOutputDto, ContractualAndOlgooLevelDataOutputDto>> Get(ContractualAndOlgooLevelInputDto input)
         {
             string rangeValues = string.Join(",", input.Values.Select(v => $"({v.FromValue},{v.ToValue})"));
-			string query = GetQuery(input.Inputs.ZoneIds.HasValue(), input.Inputs.UsageIds.HasValue(), input.Inputs.BranchTypeIds.HasValue(), rangeValues, input.TypeLevel);
+            string query = GetQuery(input.Inputs.ZoneIds.HasValue(), input.Inputs.UsageIds.HasValue(), input.Inputs.BranchTypeIds.HasValue(), rangeValues, input.TypeLevel);
 
             var @params = new
             {
@@ -36,7 +37,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 fromAmount = input.Inputs.FromAmount,
                 toAmount = input.Inputs.ToAmount,
 
-                typeCodes = input.Inputs.IsNet ? [ 1, 3, 4, 5 ] : new[] { 1 },
+                typeCodes = GetTypeCodes(input.Inputs.type),
 
                 usageIds = input.Inputs.UsageIds,
                 zoneIds = input.Inputs.ZoneIds,
@@ -54,7 +55,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToAmount = input.Inputs.ToAmount,
                 FromConsumption = input.Inputs.FromConsumption,
                 ToConsumption = input.Inputs.ToConsumption,
-				Title= ReportLiterals.ContractualAndOlgooLevel,
+                Title = ReportLiterals.ContractualAndOlgooLevel,
 
                 CustomerCount = levelData?.Sum(w => w.BillCount) ?? 0,
                 SumBillCount = levelData?.Sum(w => w.BillCount) ?? 0,
@@ -86,13 +87,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             return result;
         }
 
-        private string GetQuery(bool hasZone, bool hasUsage, bool hasBranchType, string rangeValues,ContractualAndOlgooLevelInputEnum inputState)
+        private string GetQuery(bool hasZone, bool hasUsage, bool hasBranchType, string rangeValues, ContractualAndOlgooLevelInputEnum inputState)
         {
-			string typeLevelQuery= GetTypeLevelQuery(inputState,rangeValues);
+            string typeLevelQuery = GetTypeLevelQuery(inputState, rangeValues);
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
             string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
             string branchTypeQuery = hasBranchType ? "AND b.BranchTypeId IN @branchTypeIds" : string.Empty;
-           
+
             return $@"Select
                         b.ZoneTitle,
 				    	g.FromValue,
@@ -141,7 +142,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
 				    	b.ZoneTitle";
         }
 
-		private string GetTypeLevelQuery(ContractualAndOlgooLevelInputEnum inputState, string rangeValues)
+        private string GetTypeLevelQuery(ContractualAndOlgooLevelInputEnum inputState, string rangeValues)
         {
             string olgooLevelSegmentQuery = @$"Join [OldCalc].dbo.table1 t
 				                             	on t.town=b.ZoneId
@@ -158,14 +159,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                                                    ) AS g(FromValue, ToValue)
                                                        ON b.Consumption>g.FromValue AND Consumption<=g.ToValue";
 
-            if (inputState==ContractualAndOlgooLevelInputEnum.Olgoo)
-				return olgooLevelSegmentQuery;
-			if(inputState == ContractualAndOlgooLevelInputEnum.Contractual)
-				return contractualLevelSegmentQuery;
-			if(inputState == ContractualAndOlgooLevelInputEnum.Consumption)
-				return consumptionLevelSegmentQuery;
+            if (inputState == ContractualAndOlgooLevelInputEnum.Olgoo)
+                return olgooLevelSegmentQuery;
+            if (inputState == ContractualAndOlgooLevelInputEnum.Contractual)
+                return contractualLevelSegmentQuery;
+            if (inputState == ContractualAndOlgooLevelInputEnum.Consumption)
+                return consumptionLevelSegmentQuery;
 
-			return string.Empty;
-		}
+            return string.Empty;
+        }
     }
 }
