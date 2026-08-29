@@ -8,11 +8,11 @@ namespace Aban360.MeterPool.Domain.Features.Reading
         public int BranchTypeId { get; set; }
         public string BranchTypeTitle { get; set; } = null!;
         public int PreviousNumber { get; set; }
-        public string PreviousDateJalalai { get; set; } = null!;
+        public string PreviousDateJalali { get; set; } = null!;
         public short PreviousCounterStateId { get; set; }
         public string PreviousCounterStateTitle { get; set; } = null!;
         public string Firstname { get; set; } = null!;
-        public string Surename { get; set; } = null!;
+        public string Surname { get; set; } = null!;
         public string Address { get; set; } = null!;
         public string BillId { get; set; } = null!;
         public int CustomerNumber { get; set; }
