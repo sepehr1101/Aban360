@@ -21,7 +21,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         [HttpPost]
         [Route("events-summary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetEventsSummaryInfo([FromBody] CardexInput searchInput,CancellationToken cancellationToken)
+        public async Task<IActionResult> GetEventsSummaryInfo([FromBody] SubscriptionCardexInput searchInput,CancellationToken cancellationToken)
         {
             ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto> items = await _subscriptionEventHandler.Handle(searchInput, cancellationToken);
             return Ok(items);

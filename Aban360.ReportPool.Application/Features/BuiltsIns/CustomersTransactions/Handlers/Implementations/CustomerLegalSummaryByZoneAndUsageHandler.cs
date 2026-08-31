@@ -24,9 +24,11 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             string finalTitle = $"{_title} - {ReportLiterals.ByUsageAndZone}";
             CustomerLegalSummaryHeaderOutputDto header = new()
             {
-                CustomerCount = data?.Sum(d => d.LegalCount + d.NaturalCount + d.InvalidCount) ?? 0,
-                LegalCount = data?.Sum(d => d.LegalCount) ?? 0,
-                NaturalCount = data?.Sum(d => d.LegalCount) ?? 0,
+                CustomerCount = data?.Sum(d => d.InValidLegalCount+d.ValidLegalCount+d.InValidNaturalCount + d.ValidNaturalCount + d.InvalidCount) ?? 0,
+                ValidLegalCount = data?.Sum(d => d.ValidLegalCount) ?? 0,
+                InValidLegalCount = data?.Sum(d => d.InValidLegalCount) ?? 0,
+                ValidNaturalCount = data?.Sum(d => d.ValidLegalCount) ?? 0,
+                InValidNaturalCount = data?.Sum(d => d.InValidLegalCount) ?? 0,
                 InvalidCount = data?.Sum(d => d.InvalidCount) ?? 0,
                 RecordCount = data?.Count() ?? 0,
                 Title = _title,

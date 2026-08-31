@@ -100,12 +100,22 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 							 Trim(c.MobileNo),';', --MobileNumber,
 						     IIF(LEN(TRIM(c.NationalId)) in (10,11),TRIM(c.NationalId),''),';', --cod meli,
 						   	 SUBSTRING(k.StringCode,1,4),';',--tarefe 4 char, karbari
-							 IIF(z.StringCode is NULL, '00',SUBSTRING(z.StringCode,1,2)),';',--ostan provinceCode
-							 IIF(z.StringCode is NULL, '00',SUBSTRING(z.StringCode,3,2)),';',-- shahrestan
-							 IIF(z.StringCode is NULL, '00',SUBSTRING(z.StringCode,5,2)),';',-- baxsh
-							 IIF(z.StringCode is NULL, '0000',SUBSTRING(z.StringCode,7,4)),';',-- shahr - dehestan
-							 IIF(v.StringCode is NULL, '000000', SUBSTRING(v.StringCode,5,6)),';',-- abadi roosta
-							
+							  IIF(c.ZoneId<140000, 
+								IIF(z.StringCode is NULL, '00',SUBSTRING(z.StringCode,1,2)),
+								IIF(v.StringCode is NULL, '00',SUBSTRING(v.StringCode,1,2))),';',--ostan provinceCode
+							 IIF(c.ZoneId<140000, 
+								IIF(z.StringCode is NULL, '00',SUBSTRING(z.StringCode,3,2)),
+								IIF(v.StringCode is NULL, '00',SUBSTRING(v.StringCode,3,2))),';',-- shahrestan
+							 IIF(c.ZoneId<140000, 
+								IIF(z.StringCode is NULL, '00',SUBSTRING(z.StringCode,5,2)),
+								IIF(v.StringCode is NULL, '00',SUBSTRING(v.StringCode,5,2))),';',-- baxsh
+							 IIF(c.ZoneId<140000, 
+								 IIF(z.StringCode is NULL, '0000',SUBSTRING(z.StringCode,7,4)),
+								 IIF(v.StringCode is NULL, '0000',SUBSTRING(v.StringCode,7,4))),';',-- shahr - dehestan
+							 IIF(c.ZoneId<140000, 
+								  '000000',
+								  IIF(v.StringCode is NULL, '000000', SUBSTRING(v.StringCode,11,6))),';',-- abadi roosta
+
 							 --IIF(tg.StringCode is null,'000',tg.StringCode),';', -- new: 3 char coding dastgah ejraii parent
 							 --IIF(t.StringCode is null,'0000',t.StringCode),';',	 -- new: 4 char coding dastah ejraii child
 						
@@ -129,11 +139,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 							 0,';',--Reserve4
 							 0,';',--Reserve5
 							 0,';',--Reserve6 
-							   IIF(z.StringCode is NULL, '00',SUBSTRING(z.StringCode,1,2))+--ostan provinceCode
-							   IIF(z.StringCode is NULL, '00',SUBSTRING(z.StringCode,3,2))+-- shahrestan
-							   IIF(z.StringCode is NULL, '00',SUBSTRING(z.StringCode,5,2))+-- baxsh
-							   IIF(z.StringCode is NULL, '0000',SUBSTRING(z.StringCode,7,4))+-- shahr - dehestan
-							   IIF(v.StringCode is NULL, '000000', SUBSTRING(v.StringCode,5,6))+-- abadi roosta
+							   IIF(c.ZoneId<140000,z.StringCode,v.StringCode)+
 							   SUBSTRING(k.StringCode,1,4)+--tarefe 4 char, karbari
 							   IIF(tg.StringCode is null,'000',tg.StringCode)+ -- new: 3 char coding dastgah ejraii parent
 							   IIF(t.StringCode is null,'0000',t.StringCode)	 -- new: 4 char coding dastah ejraii child
