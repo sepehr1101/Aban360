@@ -102,10 +102,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
             string nationalCondition = type switch
             {
-                CustomerLegalDetailEnum.ValidLegal => $@" c.NationalId IS NOT NULL AND
-						                                  LEN(c.NationalId) = {_legalNationalCodeCharecter} AND
-						                                  c.NationalId NOT LIKE '%[^0-9]%' AND
-						                                  c.NationalId NOT IN 
+                CustomerLegalDetailEnum.ValidLegal => $@" TRIM(c.NationalId) IS NOT NULL AND
+						                                  LEN(TRIM(c.NationalId)) = {_legalNationalCodeCharecter} AND
+						                                  TRIM(c.NationalId) NOT LIKE '%[^0-9]%' AND
+						                                  TRIM(c.NationalId) NOT IN 
 						                                  (
 						                                      '00000000000',
 						                                      '11111111111',
@@ -118,12 +118,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						                                      '88888888888',
 						                                      '99999999999'
 						                                  )AND
-						                                  (CASE WHEN Legal.SumValue % 11 < 2 THEN Legal.SumValue % 11 ELSE 11 - (Legal.SumValue % 11) END)  =  TRY_CAST(SUBSTRING(c.NationalId, 11, 1) AS INT)  ",
-                CustomerLegalDetailEnum.InValidLegal => $@" c.NationalId IS NOT NULL AND
-						                                    LEN(c.NationalId) = {_legalNationalCodeCharecter} AND
+						                                  (CASE WHEN Legal.SumValue % 11 < 2 THEN Legal.SumValue % 11 ELSE 11 - (Legal.SumValue % 11) END)  =  TRY_CAST(SUBSTRING(TRIM(c.NationalId), 11, 1) AS INT)  ",
+                CustomerLegalDetailEnum.InValidLegal => $@" TRIM(c.NationalId) IS NOT NULL AND
+						                                    LEN(TRIM(c.NationalId)) = {_legalNationalCodeCharecter} AND
 						                                    (
-						                                    	c.NationalId LIKE '%[^0-9]%' OR
-						                                    	c.NationalId IN 
+						                                    	TRIM(c.NationalId) LIKE '%[^0-9]%' OR
+						                                    	TRIM(c.NationalId) IN 
 						                                    	(
 						                                    	    '00000000000',
 						                                    	    '11111111111',
@@ -136,12 +136,12 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						                                    	    '88888888888',
 						                                    	    '99999999999'
 						                                    	) OR
-						                                    	  (CASE WHEN Legal.SumValue % 11 < 2 THEN Legal.SumValue % 11 ELSE 11 - (Legal.SumValue % 11) END)   <> TRY_CAST(SUBSTRING(c.NationalId, 11, 1) AS INT) 
+						                                    	  (CASE WHEN Legal.SumValue % 11 < 2 THEN Legal.SumValue % 11 ELSE 11 - (Legal.SumValue % 11) END)   <> TRY_CAST(SUBSTRING(TRIM(c.NationalId), 11, 1) AS INT) 
 						                                    ) ",
-                CustomerLegalDetailEnum.ValidNatural => $@" c.NationalId IS NOT NULL AND
-						                                    LEN(c.NationalId)={_naturalNationalCodeCharecter} AND
-						                                    c.NationalId NOT LIKE '%[^0-9]%' AND
-						                                    c.NationalId NOT IN
+                CustomerLegalDetailEnum.ValidNatural => $@" TRIM(c.NationalId) IS NOT NULL AND
+						                                    LEN(TRIM(c.NationalId))={_naturalNationalCodeCharecter} AND
+						                                    TRIM(c.NationalId) NOT LIKE '%[^0-9]%' AND
+						                                    TRIM(c.NationalId) NOT IN
 						                                    (
 						                                        '0000000000',
 						                                        '1111111111',
@@ -161,11 +161,11 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						                                           ELSE
 						                                               11 - (Natural.SumValue % 11)
 						                                       END   ",
-                CustomerLegalDetailEnum.InValidNatural => $@" c.NationalId IS NOT NULL AND
-						                                      LEN(c.NationalId)={_naturalNationalCodeCharecter} AND
+                CustomerLegalDetailEnum.InValidNatural => $@" TRIM(c.NationalId) IS NOT NULL AND
+						                                      LEN(TRIM(c.NationalId))={_naturalNationalCodeCharecter} AND
 						                                      (
-						                                      	c.NationalId LIKE '%[^0-9]%' OR
-						                                      	c.NationalId IN
+						                                      	TRIM(c.NationalId) LIKE '%[^0-9]%' OR
+						                                      	TRIM(c.NationalId) IN
 						                                      	(
 						                                      	    '0000000000',
 						                                      	    '1111111111',
@@ -186,15 +186,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						                                      	           11 - (Natural.SumValue % 11)
 						                                      	   END          
 						                                      )",
-                CustomerLegalDetailEnum.Invalid => $@" c.NationalId IS NOT NULL AND 
+                CustomerLegalDetailEnum.Invalid => $@" TRIM(c.NationalId) IS NOT NULL AND 
                                                        (
-                                                            LEN(c.NationalId)>{_invalidNationalCodeCharecter} AND 
-                                                            LEN(c.NationalId)<{_naturalNationalCodeCharecter}
+                                                            LEN(TRIM(c.NationalId))>{_invalidNationalCodeCharecter} AND 
+                                                            LEN(TRIM(c.NationalId))<{_naturalNationalCodeCharecter}
                                                        ) OR
-                                                       LEN(c.NationalId)>{_legalNationalCodeCharecter} ",
-                CustomerLegalDetailEnum.Empty => $@" c.NationalId IS NULL AND
-                                                     LEN(c.NationalId)={_invalidNationalCodeCharecter} ",
-                _ => $@" c.NationalId IS NOT NULL ",
+                                                       LEN(TRIM(c.NationalId))>{_legalNationalCodeCharecter} ",
+                CustomerLegalDetailEnum.Empty => $@" TRIM(c.NationalId) IS NULL AND
+                                                     LEN(TRIM(c.NationalId))={_invalidNationalCodeCharecter} ",
+                _ => $@" TRIM(c.NationalId) IS NOT NULL ",
             };
             return @$"Select 
                     	t51.C0 ZoneId,
@@ -207,7 +207,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	c.UsageTitle,
                     	c.MobileNo MobileNumber,
                     	c.PhoneNo PhoneNumber,
-                    	c.NationalId NationalCode
+                    	TRIM(c.NationalId) NationalCode
                     From CustomerWarehouse.dbo.Clients c
                     Join [Db70].dbo.T51 t51
                     	ON t51.C0=c.ZoneId
@@ -216,32 +216,31 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     CROSS APPLY
 					(
 					    SELECT
-					        CheckDigit = ASCII(SUBSTRING(c.NationalId, 10, 1)) - 48,
+					        CheckDigit = ASCII(SUBSTRING(TRIM(c.NationalId), 10, 1)) - 48,
 					        SumValue =
-					              (ASCII(SUBSTRING(c.NationalId, 1, 1)) - 48) * 10
-					            + (ASCII(SUBSTRING(c.NationalId, 2, 1)) - 48) * 9
-					            + (ASCII(SUBSTRING(c.NationalId, 3, 1)) - 48) * 8
-					            + (ASCII(SUBSTRING(c.NationalId, 4, 1)) - 48) * 7
-					            + (ASCII(SUBSTRING(c.NationalId, 5, 1)) - 48) * 6
-					            + (ASCII(SUBSTRING(c.NationalId, 6, 1)) - 48) * 5
-					            + (ASCII(SUBSTRING(c.NationalId, 7, 1)) - 48) * 4
-					            + (ASCII(SUBSTRING(c.NationalId, 8, 1)) - 48) * 3
-					            + (ASCII(SUBSTRING(c.NationalId, 9, 1)) - 48) * 2
+					              (ASCII(SUBSTRING(TRIM(c.NationalId), 1, 1)) - 48) * 10
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 2, 1)) - 48) * 9
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 3, 1)) - 48) * 8
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 4, 1)) - 48) * 7
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 5, 1)) - 48) * 6
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 6, 1)) - 48) * 5
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 7, 1)) - 48) * 4
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 8, 1)) - 48) * 3
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 9, 1)) - 48) * 2
 					) Natural
 					CROSS APPLY
 					(
 					    SELECT
-					        CheckDigit = ASCII(SUBSTRING(c.NationalId, 11, 1)) - 48,
-					        SumValue = TRY_CAST(SUBSTRING(t.Id,1,1)  AS INT) * 29
-                             + TRY_CAST(SUBSTRING(t.Id,2,1)  AS INT) * 27
-                             + TRY_CAST(SUBSTRING(t.Id,3,1)  AS INT) * 23
-                             + TRY_CAST(SUBSTRING(t.Id,4,1)  AS INT) * 19
-                             + TRY_CAST(SUBSTRING(t.Id,5,1)  AS INT) * 17
-                             + TRY_CAST(SUBSTRING(t.Id,6,1)  AS INT) * 29
-                             + TRY_CAST(SUBSTRING(t.Id,7,1)  AS INT) * 27
-                             + TRY_CAST(SUBSTRING(t.Id,8,1)  AS INT) * 23
-                             + TRY_CAST(SUBSTRING(t.Id,9,1)  AS INT) * 19
-                             + TRY_CAST(SUBSTRING(t.Id,10,1) AS INT) * 17
+					        SumValue = TRY_CAST(SUBSTRING(TRIM(c.NationalId),1,1)  AS INT) * 29
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),2,1)  AS INT) * 27
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),3,1)  AS INT) * 23
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),4,1)  AS INT) * 19
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),5,1)  AS INT) * 17
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),6,1)  AS INT) * 29
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),7,1)  AS INT) * 27
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),8,1)  AS INT) * 23
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),9,1)  AS INT) * 19
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),10,1) AS INT) * 17
 					) Legal
                     Where 
                     	c.ToDayJalali IS NULL AND
@@ -253,10 +252,72 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
             return @$"Select 
                     	MAX({groupId}) ItemId,
                     	{groupTitle} ItemTitle,
-                    	COUNT(CASE WHEN c.NationalId IS NOT NULL AND LEN(c.NationalId)={_naturalNationalCodeCharecter} THEN 1 ELSE null END ) NaturalCount,
-                    	COUNT(CASE WHEN c.NationalId IS NOT NULL AND LEN(c.NationalId)={_legalNationalCodeCharecter} THEN 1 ELSE null END ) LegalCount,
-                    	COUNT(CASE WHEN c.NationalId IS NULL OR LEN(c.NationalId) NOT IN ({_naturalNationalCodeCharecter},{_legalNationalCodeCharecter}) THEN 1 ELSE null END ) InvalidCount
+                    	COUNT(CASE WHEN 
+                                    TRIM(c.NationalId) IS NOT NULL AND
+                                     LEN(TRIM(c.NationalId)) = {_naturalNationalCodeCharecter} AND
+                                     TRIM(c.NationalId) NOT LIKE '%[^0-9]%' AND
+                                     TRIM(c.NationalId) NOT IN ('0000000000','1111111111','2222222222','3333333333','4444444444','5555555555','6666666666','7777777777','8888888888','9999999999') AND
+                                     Natural.CheckDigit = CASE WHEN Natural.SumValue % 11 < 2 THEN Natural.SumValue % 11 ELSE 11 - (Natural.SumValue % 11) END
+                                THEN 1 END) AS ValidNaturalCount,
+
+                        COUNT(CASE WHEN 
+                                     TRIM(c.NationalId) IS NOT NULL AND
+                                       LEN(TRIM(c.NationalId)) = {_naturalNationalCodeCharecter} AND
+                                       (
+                                          TRIM(c.NationalId) LIKE '%[^0-9]%' OR
+                                          TRIM(c.NationalId) IN ('0000000000','1111111111','2222222222','3333333333','4444444444','5555555555','6666666666','7777777777','8888888888','9999999999') OR
+                                          Natural.CheckDigit <> CASE WHEN Natural.SumValue % 11 < 2 THEN Natural.SumValue % 11 ELSE 11 - (Natural.SumValue % 11) END
+                                      )
+                             THEN 1 END) AS InvalidNaturalCount,
+
+                        COUNT(CASE WHEN 
+                                    TRIM(c.NationalId) IS NOT NULL AND
+                                    LEN(TRIM(c.NationalId)) = {_legalNationalCodeCharecter} AND
+                                    TRIM(c.NationalId) NOT LIKE '%[^0-9]%' AND
+                                    TRIM(c.NationalId) NOT IN ('00000000000','11111111111','22222222222','33333333333','44444444444','55555555555','66666666666','77777777777','88888888888','99999999999') AND
+                                    (CASE WHEN Legal.SumValue % 11 < 2 THEN Legal.SumValue % 11 ELSE 11 - (Legal.SumValue % 11) END) = TRY_CAST(SUBSTRING(TRIM(c.NationalId), 11, 1) AS INT)
+                             THEN 1 END) AS ValidLegalCount,
+
+                        COUNT(CASE WHEN 
+                                   TRIM(c.NationalId) IS NOT NULL AND
+                                    LEN(TRIM(c.NationalId)) = {_legalNationalCodeCharecter} AND
+                                    (
+                                     TRIM(c.NationalId) LIKE '%[^0-9]%' OR 
+                                     TRIM(c.NationalId) IN ('00000000000','11111111111','22222222222','33333333333','44444444444','55555555555','66666666666','77777777777','88888888888','99999999999') OR
+                                     (CASE WHEN Legal.SumValue % 11 < 2 THEN Legal.SumValue % 11 ELSE 11 - (Legal.SumValue % 11) END) <> TRY_CAST(SUBSTRING(TRIM(c.NationalId), 11, 1) AS INT)
+                                    )
+                             THEN 1 END) AS InvalidLegalCount,
+                        COUNT(CASE WHEN c.NationalId IS NULL OR LEN(c.NationalId) NOT IN ({_naturalNationalCodeCharecter},{_legalNationalCodeCharecter}) THEN 1 ELSE null END ) InvalidCount
                     From CustomerWarehouse.dbo.Clients c
+                    CROSS APPLY
+					(
+					    SELECT
+					        CheckDigit = ASCII(SUBSTRING(TRIM(c.NationalId), 10, 1)) - 48,
+					        SumValue =
+					              (ASCII(SUBSTRING(TRIM(c.NationalId), 1, 1)) - 48) * 10
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 2, 1)) - 48) * 9
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 3, 1)) - 48) * 8
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 4, 1)) - 48) * 7
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 5, 1)) - 48) * 6
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 6, 1)) - 48) * 5
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 7, 1)) - 48) * 4
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 8, 1)) - 48) * 3
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 9, 1)) - 48) * 2
+					) Natural
+					CROSS APPLY
+					(
+					    SELECT
+					        SumValue = TRY_CAST(SUBSTRING(TRIM(c.NationalId),1,1)  AS INT) * 29
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),2,1)  AS INT) * 27
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),3,1)  AS INT) * 23
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),4,1)  AS INT) * 19
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),5,1)  AS INT) * 17
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),6,1)  AS INT) * 29
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),7,1)  AS INT) * 27
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),8,1)  AS INT) * 23
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),9,1)  AS INT) * 19
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),10,1) AS INT) * 17
+					) Legal
                     Where 
                     	c.ToDayJalali IS NULL AND
                     	{groupId} IN @ItemIds AND
@@ -270,10 +331,72 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     	c.ZoneTitle ZoneTitle,
                         MAX(c.UsageId) UsageId,
                     	c.UsageTitle UsageTitle,
-                    	COUNT(CASE WHEN c.NationalId IS NOT NULL AND LEN(c.NationalId)={_naturalNationalCodeCharecter} THEN 1 ELSE null END ) NaturalCount,
-                    	COUNT(CASE WHEN c.NationalId IS NOT NULL AND LEN(c.NationalId)={_legalNationalCodeCharecter} THEN 1 ELSE null END ) LegalCount,
+                    	COUNT(CASE WHEN 
+                                    TRIM(c.NationalId) IS NOT NULL AND
+                                     LEN(TRIM(c.NationalId)) = {_naturalNationalCodeCharecter} AND
+                                     TRIM(c.NationalId) NOT LIKE '%[^0-9]%' AND
+                                     TRIM(c.NationalId) NOT IN ('0000000000','1111111111','2222222222','3333333333','4444444444','5555555555','6666666666','7777777777','8888888888','9999999999') AND
+                                     Natural.CheckDigit = CASE WHEN Natural.SumValue % 11 < 2 THEN Natural.SumValue % 11 ELSE 11 - (Natural.SumValue % 11) END
+                                THEN 1 END) AS ValidNaturalCount,
+
+                        COUNT(CASE WHEN 
+                                     TRIM(c.NationalId) IS NOT NULL AND
+                                       LEN(TRIM(c.NationalId)) = {_naturalNationalCodeCharecter} AND
+                                       (
+                                          TRIM(c.NationalId) LIKE '%[^0-9]%' OR
+                                          TRIM(c.NationalId) IN ('0000000000','1111111111','2222222222','3333333333','4444444444','5555555555','6666666666','7777777777','8888888888','9999999999') OR
+                                          Natural.CheckDigit <> CASE WHEN Natural.SumValue % 11 < 2 THEN Natural.SumValue % 11 ELSE 11 - (Natural.SumValue % 11) END
+                                      )
+                             THEN 1 END) AS InvalidNaturalCount,
+
+                        COUNT(CASE WHEN 
+                                    TRIM(c.NationalId) IS NOT NULL AND
+                                    LEN(TRIM(c.NationalId)) = {_legalNationalCodeCharecter} AND
+                                    TRIM(c.NationalId) NOT LIKE '%[^0-9]%' AND
+                                    TRIM(c.NationalId) NOT IN ('00000000000','11111111111','22222222222','33333333333','44444444444','55555555555','66666666666','77777777777','88888888888','99999999999') AND
+                                    (CASE WHEN Legal.SumValue % 11 < 2 THEN Legal.SumValue % 11 ELSE 11 - (Legal.SumValue % 11) END) = TRY_CAST(SUBSTRING(TRIM(c.NationalId), 11, 1) AS INT)
+                             THEN 1 END) AS ValidLegalCount,
+
+                        COUNT(CASE WHEN 
+                                   TRIM(c.NationalId) IS NOT NULL AND
+                                    LEN(TRIM(c.NationalId)) = {_legalNationalCodeCharecter} AND
+                                    (
+                                     TRIM(c.NationalId) LIKE '%[^0-9]%' OR 
+                                     TRIM(c.NationalId) IN ('00000000000','11111111111','22222222222','33333333333','44444444444','55555555555','66666666666','77777777777','88888888888','99999999999') OR
+                                     (CASE WHEN Legal.SumValue % 11 < 2 THEN Legal.SumValue % 11 ELSE 11 - (Legal.SumValue % 11) END) <> TRY_CAST(SUBSTRING(TRIM(c.NationalId), 11, 1) AS INT)
+                                    )
+                             THEN 1 END) AS InvalidLegalCount,
                     	COUNT(CASE WHEN c.NationalId IS NULL OR LEN(c.NationalId) NOT IN ({_naturalNationalCodeCharecter},{_legalNationalCodeCharecter}) THEN 1 ELSE null END ) InvalidCount
                     From CustomerWarehouse.dbo.Clients c
+                    CROSS APPLY
+					(
+					    SELECT
+					        CheckDigit = ASCII(SUBSTRING(TRIM(c.NationalId), 10, 1)) - 48,
+					        SumValue =
+					              (ASCII(SUBSTRING(TRIM(c.NationalId), 1, 1)) - 48) * 10
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 2, 1)) - 48) * 9
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 3, 1)) - 48) * 8
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 4, 1)) - 48) * 7
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 5, 1)) - 48) * 6
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 6, 1)) - 48) * 5
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 7, 1)) - 48) * 4
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 8, 1)) - 48) * 3
+					            + (ASCII(SUBSTRING(TRIM(c.NationalId), 9, 1)) - 48) * 2
+					) Natural
+					CROSS APPLY
+					(
+					    SELECT
+					        SumValue = TRY_CAST(SUBSTRING(TRIM(c.NationalId),1,1)  AS INT) * 29
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),2,1)  AS INT) * 27
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),3,1)  AS INT) * 23
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),4,1)  AS INT) * 19
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),5,1)  AS INT) * 17
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),6,1)  AS INT) * 29
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),7,1)  AS INT) * 27
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),8,1)  AS INT) * 23
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),9,1)  AS INT) * 19
+                             + TRY_CAST(SUBSTRING(TRIM(c.NationalId),10,1) AS INT) * 17
+					) Legal
                     Where 
                     	c.ToDayJalali IS NULL AND
                     	c.ZoneId IN @ZoneIds AND
