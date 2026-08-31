@@ -9,7 +9,9 @@
         public string? CustomerMessage { get; set; }
         public bool HasAssessmentSms { get; set; }
         public string? AssessmentMessage { get; set; }
-        public NewRequestOutputDto(int trackNumber, bool hasTrackNumberSms, string? trackNumberMessage, bool hasCustomerSms, string? customerMessage, bool hasAssessmentSms, string? assessmentMessage)
+        public string? AssessmentDateJalali { get; set; }
+        public string? AssessmentName { get; set; }
+        public NewRequestOutputDto(int trackNumber, bool hasTrackNumberSms, string? trackNumberMessage, bool hasCustomerSms, string? customerMessage, bool hasAssessmentSms, string? assessmentMessage, string? assessmentDateJalali, string? assessmentName)
         {
             TrackNumber = trackNumber;
             HasTrackNumberSms = hasTrackNumberSms;
@@ -18,6 +20,8 @@
             CustomerMessage = customerMessage;
             HasAssessmentSms = hasAssessmentSms;
             AssessmentMessage = assessmentMessage;
+            AssessmentDateJalali = assessmentDateJalali;
+            AssessmentName = assessmentName;
         }
         public NewRequestOutputDto()
         {

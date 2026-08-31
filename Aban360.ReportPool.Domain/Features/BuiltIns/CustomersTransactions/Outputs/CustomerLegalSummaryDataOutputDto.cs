@@ -4,8 +4,10 @@
     {
         public int ItemId { get; set; }
         public string ItemTitle { get; set; }
-        public int LegalCount { get; set; }
-        public int NaturalCount { get; set; }
+        public int ValidLegalCount { get; set; }
+        public int InValidLegalCount { get; set; }
+        public int ValidNaturalCount { get; set; }
+        public int InValidNaturalCount { get; set; }
         public int InvalidCount { get; set; }
     }
 }

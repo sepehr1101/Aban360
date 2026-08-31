@@ -158,13 +158,13 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     MembersCommandService membersCommandService = new(connection, transaction);
                     ClientsCommandService clientCommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
-                    string fromDbName = GetDbName(updateDto.ZoneId);
-                    string insertToDbName = "Atlas";
+                    string dbName = GetDbName(updateDto.ZoneId);
+                    //string insertToDbName = "Atlas";
 
-                    int rowId = await archMemCommandService.Insert(updateDto, fromDbName, insertToDbName);
-                    await membersCommandService.Update(updateDto, insertToDbName);
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
                     await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
-                    await clientCommandService.InsertByArchMemId(rowId, insertToDbName);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
                     await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
@@ -286,7 +286,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 Id = inputDto.Id,
                 CustomerNumber = previousSubscription.CustomerNumber,
                 ZoneId = previousSubscription.ZoneId,
-                BillId = inputDto.BillId,
+                BillId = previousSubscription.BillId,
                 X = inputDto.X,
                 Y = inputDto.Y,
                 ReadingNumber = inputDto.ReadingNumber,
@@ -316,10 +316,10 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 ImprovementOverall = inputDto.ImprovementOverall,
                 Premises = inputDto.Premises,
                 Operator = _operator,
-                SewageInstallationDateJalali = DateValidation(inputDto.SewageInstallationDateJalali, false),
-                SewageRequestDateJalali = DateValidation(inputDto.SewageRequestDateJalali, false),
-                MeterInstallationDateJalali = DateValidation(inputDto.MeterInstallationDateJalali, false),
-                MeterRequestDateJalali = DateValidation(inputDto.MeterRequestDateJalali, false),
+                SewageInstallationDateJalali = previousSubscription.SiphonInstallationDateJalali,// DateValidation(inputDto.SewageInstallationDateJalali, false),
+                SewageRequestDateJalali = previousSubscription.SiphonRequestDateJalali,// DateValidation(inputDto.SewageRequestDateJalali, false),
+                MeterInstallationDateJalali = previousSubscription.MeterInstallationDateJalali,//DateValidation(inputDto.MeterInstallationDateJalali, false),
+                MeterRequestDateJalali = previousSubscription.MeterRequestDateJalali,//DateValidation(inputDto.MeterRequestDateJalali, false),
                 Siphon100 = inputDto.Siphon100,
                 Siphon125 = inputDto.Siphon125,
                 Siphon150 = inputDto.Siphon150,
@@ -332,8 +332,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 DeletionStateId = inputDto.DeletionStateId,
                 BodySerial = inputDto.BodySerial ?? string.Empty,
                 CommonSiphon = inputDto.CommonSiphon,
-                MeterRegisterDateJalali = DateValidation(inputDto.MeterRegisterDateJalali, false),
-                SewageRegisterDateJalali = DateValidation(inputDto.SewageRegisterDateJalali, false),
+                MeterRegisterDateJalali = previousSubscription.MeterInstalltionRegisterDateJalali,//DateValidation(inputDto.MeterRegisterDateJalali, false),
+                SewageRegisterDateJalali = previousSubscription.SiphonInstalltionRegisterDateJalali,//DateValidation(inputDto.SewageRegisterDateJalali, false),
                 GuildId = inputDto.GuildId
             };
         }
