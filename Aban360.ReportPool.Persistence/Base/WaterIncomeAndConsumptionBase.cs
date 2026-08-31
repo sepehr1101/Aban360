@@ -6,9 +6,22 @@ namespace Aban360.ReportPool.Persistence.Base
 {
     internal abstract class WaterIncomeAndConsumptionBase : AbstractBaseConnection
     {
+        private static int[] _netItems = { 1, 3, 4, 5 };
+        private static int[] _rawItems = { 1 };
+        private static int[] _returnedItems = { 3, 4, 5 };
         public WaterIncomeAndConsumptionBase(IConfiguration configuration)
             : base(configuration)
         {
+        }
+        internal int[] GetTypeCodes(WaterIncomeAndConsumptionTypeEnum input)
+        {
+            return input switch
+            {
+                WaterIncomeAndConsumptionTypeEnum.Net => _netItems,
+                WaterIncomeAndConsumptionTypeEnum.Raw => _rawItems,
+                WaterIncomeAndConsumptionTypeEnum.Returned => _returnedItems,
+                _ => _netItems
+            };
         }
         internal string GetDetailQuery(bool hasZone, bool hasUsage, bool hasBranchType)
         {

@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<TagGroupDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
-            var groups = await _getHandler.HandleAll();
+            IEnumerable<TagGroupDto> groups = await _getHandler.HandleAll();
             return Ok(groups);
         }
 
