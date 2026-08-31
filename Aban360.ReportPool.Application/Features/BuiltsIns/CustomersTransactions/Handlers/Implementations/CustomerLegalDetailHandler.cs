@@ -24,8 +24,10 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             IEnumerable<CustomerLegalDetailDataOutputDto> data = await _customerInfoQueryService.GetDetail(input);
             string TypeTitle = input.Type switch
             {
-                CustomerLegalDetailEnum.Legal => ReportLiterals.Legal,
-                CustomerLegalDetailEnum.Natural => ReportLiterals.Natural,
+                CustomerLegalDetailEnum.ValidLegal => ReportLiterals.ValidLegal,
+                CustomerLegalDetailEnum.InValidLegal => ReportLiterals.InValidLegal,
+                CustomerLegalDetailEnum.ValidNatural => ReportLiterals.ValidNatural,
+                CustomerLegalDetailEnum.InValidNatural => ReportLiterals.InValidNatural,
                 CustomerLegalDetailEnum.Empty => ReportLiterals.Empty,
                 CustomerLegalDetailEnum.Invalid => ReportLiterals.Invalid,
                 _ => string.Empty,

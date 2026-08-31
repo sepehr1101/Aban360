@@ -2,9 +2,11 @@
 {
     public enum CustomerLegalDetailEnum
     {
-        Legal = 1,
-        Natural = 2,
-        Invalid = 3,
-        Empty = 4
+        ValidLegal = 1,
+        InValidLegal = 2,
+        ValidNatural = 3,
+        InValidNatural = 4,
+        Invalid = 5,
+        Empty = 6
     }
 }
