@@ -118,13 +118,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						                                      '88888888888',
 						                                      '99999999999'
 						                                  )AND
-						                                  Legal.CheckDigit =
-						                                      CASE
-						                                          WHEN Legal.SumValue % 11 = 10
-						                                              THEN 0
-						                                          ELSE
-						                                              Legal.SumValue % 11
-						                                      END ",
+						                                  (CASE WHEN Legal.SumValue % 11 < 2 THEN Legal.SumValue % 11 ELSE 11 - (Legal.SumValue % 11) END)  =  TRY_CAST(SUBSTRING(c.NationalId, 11, 1) AS INT)  ",
                 CustomerLegalDetailEnum.InValidLegal => $@" c.NationalId IS NOT NULL AND
 						                                    LEN(c.NationalId) = {_legalNationalCodeCharecter} AND
 						                                    (
@@ -142,13 +136,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 						                                    	    '88888888888',
 						                                    	    '99999999999'
 						                                    	) OR
-						                                    	Legal.CheckDigit <>
-						                                    	    CASE
-						                                    	        WHEN Legal.SumValue % 11 = 10
-						                                    	            THEN 0
-						                                    	        ELSE
-						                                    	            Legal.SumValue % 11
-						                                    	    END
+						                                    	  (CASE WHEN Legal.SumValue % 11 < 2 THEN Legal.SumValue % 11 ELSE 11 - (Legal.SumValue % 11) END)   <> TRY_CAST(SUBSTRING(c.NationalId, 11, 1) AS INT) 
 						                                    ) ",
                 CustomerLegalDetailEnum.ValidNatural => $@" c.NationalId IS NOT NULL AND
 						                                    LEN(c.NationalId)={_naturalNationalCodeCharecter} AND
@@ -244,41 +232,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 					(
 					    SELECT
 					        CheckDigit = ASCII(SUBSTRING(c.NationalId, 11, 1)) - 48,
-					        SumValue =
-					              (
-					                  (ASCII(SUBSTRING(c.NationalId, 1, 1)) - 48) + (ASCII(SUBSTRING(c.NationalId, 10, 1)) - 48) + 2
-					              ) * 29
-					            + (
-					                  (ASCII(SUBSTRING(c.NationalId, 2, 1)) - 48) + (ASCII(SUBSTRING(c.NationalId, 10, 1)) - 48) + 2
-					              ) * 27
-					
-					            + (
-					                  (ASCII(SUBSTRING(c.NationalId, 3, 1)) - 48) + (ASCII(SUBSTRING(c.NationalId, 10, 1)) - 48) + 2
-					              ) * 23
-					
-					            + (
-					                  (ASCII(SUBSTRING(c.NationalId, 4, 1)) - 48) + (ASCII(SUBSTRING(c.NationalId, 10, 1)) - 48) + 2
-					              ) * 19
-					
-					            + (
-					                  (ASCII(SUBSTRING(c.NationalId, 5, 1)) - 48) + (ASCII(SUBSTRING(c.NationalId, 10, 1)) - 48) + 2
-					              ) * 17
-					
-					            + (
-					                  (ASCII(SUBSTRING(c.NationalId, 6, 1)) - 48) + (ASCII(SUBSTRING(c.NationalId, 10, 1)) - 48) + 2
-					              ) * 29
-					
-					            + (
-					                  (ASCII(SUBSTRING(c.NationalId, 7, 1)) - 48) + (ASCII(SUBSTRING(c.NationalId, 10, 1)) - 48) + 2
-					              ) * 27
-					
-					            + (
-					                  (ASCII(SUBSTRING(c.NationalId, 8, 1)) - 48) + (ASCII(SUBSTRING(c.NationalId, 10, 1)) - 48) + 2
-					              ) * 23
-					
-					            + (
-					                  (ASCII(SUBSTRING(c.NationalId, 9, 1)) - 48) + (ASCII(SUBSTRING(c.NationalId, 10, 1)) - 48) + 2
-					              ) * 19
+					        SumValue = TRY_CAST(SUBSTRING(t.Id,1,1)  AS INT) * 29
+                             + TRY_CAST(SUBSTRING(t.Id,2,1)  AS INT) * 27
+                             + TRY_CAST(SUBSTRING(t.Id,3,1)  AS INT) * 23
+                             + TRY_CAST(SUBSTRING(t.Id,4,1)  AS INT) * 19
+                             + TRY_CAST(SUBSTRING(t.Id,5,1)  AS INT) * 17
+                             + TRY_CAST(SUBSTRING(t.Id,6,1)  AS INT) * 29
+                             + TRY_CAST(SUBSTRING(t.Id,7,1)  AS INT) * 27
+                             + TRY_CAST(SUBSTRING(t.Id,8,1)  AS INT) * 23
+                             + TRY_CAST(SUBSTRING(t.Id,9,1)  AS INT) * 19
+                             + TRY_CAST(SUBSTRING(t.Id,10,1) AS INT) * 17
 					) Legal
                     Where 
                     	c.ToDayJalali IS NULL AND
