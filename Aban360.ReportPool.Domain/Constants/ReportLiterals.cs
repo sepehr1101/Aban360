@@ -305,8 +305,10 @@
 
         public static string CustomerLegalSummary { get { return "خلاصه مشترکین حقیقی/حقوقی"; } }
         public static string CustomerLegalDetail { get { return "جزئیات مشترکین حقیقی/حقوقی"; } }
-        public static string Legal { get { return "حقوقی"; } }
-        public static string Natural { get { return "حقیقی"; } }
+        public static string ValidLegal { get { return "حقوقی معتبر"; } }
+        public static string InValidLegal { get { return "حقوقی نامعتبر"; } }
+        public static string ValidNatural { get { return "حقیقی معتبر"; } }
+        public static string InValidNatural { get { return "حقیقی نامعتبر"; } }
         public static string Empty { get { return "مقدار ندارد"; } }
         public static string Invalid { get { return " اشتباه"; } }
 
