@@ -30,6 +30,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
 
             return result;
         }
+        public async Task<IEnumerable<BillReturnCauseGetDto>> GetLastMeterValid()
+        {
+            string query = GetLastMeterValidQuery();
+            IEnumerable<BillReturnCauseGetDto> result = await _sqlReportConnection.QueryAsync<BillReturnCauseGetDto>(query, null);
+
+            return result;
+        }
         public async Task<IEnumerable<NumericDictionary>> GetByDictionary()
         {
             string query = GetAllQueryByDictionary();
@@ -53,6 +60,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
                     Where 
                         RemoveDateTime IS NULL /*AND
                         IsInList=1*/";
+        }
+        private string GetLastMeterValidQuery()
+        {
+            return @"Select Id,Title
+                    From [Db70].dbo.BillReturnCause
+                    Where 
+                        RemoveDateTime IS NULL 
+                        IsLastMeterValid = 1";
         }
         private string GetAllQueryByDictionary()
         {
