@@ -5,5 +5,6 @@
         public short Id { get; set; }
         public int Code { get; set; }
         public string Title { get; set; } = default!;
+        public bool IsLastMeterValid { get; set; }
     }
 }

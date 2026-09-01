@@ -8,6 +8,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts
     {
         Task<BillReturnCauseGetDto> Get(SearchShortInputDto input);
         Task<IEnumerable<BillReturnCauseGetDto>> Get();
+        Task<IEnumerable<BillReturnCauseGetDto>> GetLastMeterValid();
         Task<IEnumerable<NumericDictionary>> GetByDictionary();
     }
 }

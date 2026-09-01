@@ -2,6 +2,7 @@
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -296,8 +297,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         public async Task<BedBesPreviousNumberAndDateOutputDto?> GetPreviousDateAndNumber(ZoneIdAndCustomerNumber input, string billId, bool hasException)
         {
             string dbName = GetDbName(input.ZoneId);
+            IEnumerable<int> validReturnCause = await GetLastMeterValid();
+       
             string query = GetPreviousMeterDateAndNumberQuery(dbName);
-            BedBesPreviousNumberAndDateOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesPreviousNumberAndDateOutputDto>(query, input);
+            BedBesPreviousNumberAndDateOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesPreviousNumberAndDateOutputDto>(query, new { input.ZoneId,input.CustomerNumber, validReturnCause });
             //if (result is null && hasException)
             //{
             //    throw new InvalidBillCommandException(ExceptionLiterals.InvalidBedBesPreviousNumberAndDate(billId));
@@ -322,6 +325,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             string query = GetInvalidPreviousBedBesBySqlBulkCopyQuery(GetDbName(zoneId));
             IEnumerable<ZoneIdAndCustomerNumber> customersByInvalidPreviousBedBes = await connection.QueryAsync<ZoneIdAndCustomerNumber>(query, null, transaction);
             return customersByInvalidPreviousBedBes;
+        }
+        private async Task<IEnumerable<int>> GetLastMeterValid()
+        {
+            string query = GetLastMeterValidQuery();
+            IEnumerable<int> result = await _sqlReportConnection.QueryAsync<int>(query, null);
+
+            return result;
         }
 
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
@@ -712,15 +722,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                             Case 
                                 When b.del = 0 And b.cod_vas In (4,7,8) Then NULL
                                 When b.del = 0 And b.cod_vas Not In (4,7,8) Then b.today_no
-                                When b.del = 1 And r.elat Not In (5,6,10) And b.cod_vas Not In (4,7,8) Then b.today_no
-                                When b.del = 1 And r.elat Not In (5,6,10) And b.cod_vas In (4,7,8) Then NULL
+                                When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas Not In (4,7,8) Then b.today_no
+                                When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas In (4,7,8) Then NULL
                                 Else NULL
                             End As PreviousNumber,
                     		Case 
                                 When b.del = 0 And b.cod_vas In (4,7,8) Then NULL
                                 When b.del = 0 And b.cod_vas Not In(4,7,8) Then b.today_date
-                                When b.del = 1 And r.elat Not In(5,6,10) And b.cod_vas Not In (4,7,8) Then b.today_date
-                                When b.del = 1 And r.elat Not In(5,6,10) And b.cod_vas In (4,7,8) Then NULL
+                                When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas Not In (4,7,8) Then b.today_date
+                                When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas In (4,7,8) Then NULL
                                 Else NULL
                             End As PreviousDateJalali
                          From  [{dbName}].dbo.bed_bes b
@@ -766,6 +776,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 					Where 
                         c.RN=1 AND 
                         c.del=1 ;";
+        }
+        private string GetLastMeterValidQuery()
+        {
+            return @"Select Id
+                    From [Db70].dbo.BillReturnCause
+                    Where 
+                        RemoveDateTime IS NULL AND
+                        IsLastMeterValid = 1";
         }
     }
 }
