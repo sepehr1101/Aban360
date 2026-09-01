@@ -1,5 +1,7 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Transactions;
@@ -45,6 +47,10 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 }
             }
             WaterEventsSummaryOutputHeaderDto? header = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterEventsSummaryOutputHeaderDto>(subscriptionHeaderQuery, input);
+            if (header is null)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.BillIdNotFound);
+            }
             WaterReplacementInfoOutputDto? replacementInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<WaterReplacementInfoOutputDto>(waterReplacementInHeaderQuery, input);
             header.WaterReplacementDate = replacementInfo is not null ? replacementInfo.WaterReplacementDate : string.Empty;
             header.WaterReplacementNumber = replacementInfo is not null ? replacementInfo.WaterReplacementNumber : string.Empty;
@@ -247,7 +253,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 					Where 
 						v.town=@zoneId AND
 						v.radif=@customerNumber  ";
-            string removedBillsQuery = @"
+            string removedBillsQuery = $@"
 					Union All
 					select
 					    h.Sh_GhABS1 BillId,
@@ -331,11 +337,11 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
 						On m.cod_enshab=t41_sell.c0 
 					Left Join [Db70].dbo.T41 t41_consumption
 						On m.cod_enshab=t41_consumption.c0 
-					Join [Db70].dbo.T5 t5
+					Left Join [Db70].dbo.T5 t5
 						ON m.enshab=t5.C0
-					Join [Db70].dbo.T7 t7
+					Left Join [Db70].dbo.T7 t7
 						ON m.noe_va=t7.C0
-					Join [Db70].dbo.DeletionState d
+					Left Join [Db70].dbo.DeletionState d
 						ON m.hasf=d.id
 					Where
 						m.town=@zoneId AND
