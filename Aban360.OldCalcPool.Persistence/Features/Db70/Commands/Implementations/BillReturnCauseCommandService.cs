@@ -1,31 +1,38 @@
-﻿using Aban360.Common.Db.Dapper;
+﻿using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Commands;
-using Aban360.OldCalcPool.Persistence.Features.Db70.Commands.Contracts;
 using Dapper;
-using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Db70.Commands.Implementations
 {
-    internal sealed class BillReturnCauseCommandService : AbstractBaseConnection, IBillReturnCauseCommandService
+    public sealed class BillReturnCauseCommandService //: IBillReturnCauseCommandService
     {
-        public BillReturnCauseCommandService(IConfiguration configuration)
-            : base(configuration)
+        private readonly IDbConnection _connection;
+        private readonly IDbTransaction _transaction;
+        public BillReturnCauseCommandService(
+            IDbConnection connection,
+            IDbTransaction transaction)
         {
+            _connection = connection;
+            _connection.NotNull(nameof(connection));
+
+            _transaction = transaction;
+            _transaction.NotNull(nameof(transaction));
         }
         public async Task Create(BillReturnCauseCreateDto input)
         {
             string query = GetCreateQuery();
-            await _sqlReportConnection.ExecuteAsync(query, input);
+            await _connection.ExecuteAsync(query, input, _transaction);
         }
         public async Task Update(BillReturnCauseUpdateDto input)
         {
             string query = GetUpdateQuery();
-            await _sqlReportConnection.ExecuteAsync(query, input);
+            await _connection.ExecuteAsync(query, input, _transaction);
         }
         public async Task Delete(BillReturnCauseDeleteDto input)
         {
             string query = GetDeleteQuery();
-            await _sqlReportConnection.ExecuteAsync(query, input);
+            await _connection.ExecuteAsync(query, input, _transaction);
         }
 
 
