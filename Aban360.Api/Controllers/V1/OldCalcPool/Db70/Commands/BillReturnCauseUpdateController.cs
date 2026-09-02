@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Db70.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<BillReturnCauseUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update(BillReturnCauseUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _billReturnCauseHandler.Handle(updateDto, cancellationToken);
+            await _billReturnCauseHandler.Handle(updateDto, CurrentUser, cancellationToken);
             return Ok(updateDto);
         }
     }

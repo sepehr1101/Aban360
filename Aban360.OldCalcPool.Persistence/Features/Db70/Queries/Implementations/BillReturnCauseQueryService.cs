@@ -47,7 +47,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
 
         private string GetSingleQuery()
         {
-            return @"Select *
+            return @"Select 
+                        Id,
+                        Code,
+                        Title,
+                        IsInList,
+                        IsLastMeterValid,
+                        IsPartial
                     From [Db70].dbo.BillReturnCause
                     Where 
                         RemoveDateTime IS NULL AND    
@@ -55,7 +61,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
         }
         private string GetAllQuery()
         {
-            return @"Select Id,Title
+            return @"Select 
+                        Id,
+                        Code,
+                        Title,
+                        IsInList,
+                        IsLastMeterValid,
+                        IsPartial
                     From [Db70].dbo.BillReturnCause
                     Where 
                         RemoveDateTime IS NULL /*AND
@@ -63,7 +75,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
         }
         private string GetLastMeterValidQuery()
         {
-            return @"Select Id,Title
+            return @"Select 
+                        Id,
+                        Code,
+                        Title,
+                        IsInList,
+                        IsLastMeterValid,
+                        IsPartial
                     From [Db70].dbo.BillReturnCause
                     Where 
                         RemoveDateTime IS NULL 
@@ -73,7 +91,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
         {
             return @"Select 
                         Code Id,
-                         Title
+                        Title,
                     From [Db70].dbo.BillReturnCause
                     Where
                         RemoveDateTime IS NULL /*AND
