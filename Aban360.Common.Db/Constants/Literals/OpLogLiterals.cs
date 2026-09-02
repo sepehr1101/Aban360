@@ -91,6 +91,10 @@
 
         public static string CollectBillsDetailInsertOpLog => @"اطلاعات فایل قبوض تجمیعی ذخیره شد.شناسه گروه:{0}   مرحله:{1} ";
         public static string CollectBillsDetailUpdateOpLog => @"اطلاعات فایل قبوض تجمیعی ویرایش شد.شناسه گروه:{0}   مرحله:{1} ";
+      
+        public static string BillReturnCauseInsertOpLog => @"علت برگشتی آب‌بها ایجاد شد. کد:{0}  عنوان:{1}  نمایش در لیست:{2}  اعتبار رقم قبلی:{3}  برگشتی محاسبه مجدد:{4}";
+        public static string BillReturnCauseUpdateOpLog => @"علت برگشتی آب‌بها ویرایش شد.شناسه:{0}  کد:از{1}به{2}  عنوان:از-{3}-به-{4}-  نمایش در لیست:از{5}به{6}  اعتبار رقم قبلی:از{7}به{8}  برگشتی محاسبه مجدد:از{9}به{10}";
+        public static string BillReturnCauseDeleteOpLog => @"علت برگشتی آب‌بها حذف شد. شناسه:{0}";
 
 
     }
