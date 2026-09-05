@@ -186,7 +186,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
         }
         private string GetCartablQuery()
         {
-            return @"Select  
+            string stepCondition = $"({(int)MeterFlowStepEnum.Imported} , {(int)MeterFlowStepEnum.Calculated} , {(int)MeterFlowStepEnum.ConsumptionChecked})";
+            return @$"Select  
                     	f.Id,
                     	f.MeterFlowStepId,
                     	fs.Title as StepTitle,
@@ -208,7 +209,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                     Where
                     	f.ZoneId IN @zoneIds AND
                     	f.RemovedByUserId IS NULL AND 
-                    	f.RemovedDateTime IS NULL";
+                    	f.RemovedDateTime IS NULL AND
+						f.MeterFlowStepId IN {stepCondition}";
         }
         private string GetCartablByZoneIdQuery()
         {
