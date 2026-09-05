@@ -70,6 +70,7 @@
 
         public double? Consumption { get; set; }
         public double? MonthlyConsumption { get; set; }
+        public double? MonthlyPerUnit { get; set; }
 
 
 
