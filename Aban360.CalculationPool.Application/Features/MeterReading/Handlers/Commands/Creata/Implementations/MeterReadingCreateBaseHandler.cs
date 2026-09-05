@@ -264,28 +264,28 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 //if (item.IsReturned || _invalidLatestCounterStateCode.Contains(item.LastCounterStateCode ?? 0))
                 //{
-                    BedBesPreviousNumberAndDateOutputDto? previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId, false);
-                    if (previousInfo is null)
+                BedBesPreviousNumberAndDateOutputDto? previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId, false);
+                if (previousInfo is null)
+                {
+                    string? waterInstallationDateJalali = customersInfo?.MembersInfo?.Where(c => c.CustomerNumber == item.CustomerNumber)?.FirstOrDefault()?.WaterInstallationDateJalali ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(waterInstallationDateJalali))
                     {
-                        string? waterInstallationDateJalali = customersInfo?.MembersInfo?.Where(c => c.CustomerNumber == item.CustomerNumber)?.FirstOrDefault()?.WaterInstallationDateJalali ?? string.Empty;
-                        if (string.IsNullOrWhiteSpace(waterInstallationDateJalali))
-                        {
-                            throw new InvalidBillCommandException(ExceptionLiterals.InvalidBedBesPreviousNumberAndDateAndInstallationDate(item.BillId));
-                        }
-                        item.LastMeterNumber = 0;
-                        item.LastMeterDateJalali = waterInstallationDateJalali;
-                        item.LastCounterStateCode = 0;
-                        item.LastConsumption = 0;
-                        item.LastMonthlyConsumption = 0;
+                        throw new InvalidBillCommandException(ExceptionLiterals.InvalidBedBesPreviousNumberAndDateAndInstallationDate(item.BillId));
                     }
-                    else
-                    {
-                        item.LastMeterNumber = previousInfo.PreviousNumber;
-                        item.LastMeterDateJalali = previousInfo.PreviousDateJalali;
-                        item.LastCounterStateCode = previousInfo.CounterStateCode;
-                        item.LastConsumption = previousInfo.Consumption;
-                        item.LastMonthlyConsumption = previousInfo.ConsumptionAverage;
-                    }
+                    item.LastMeterNumber = 0;
+                    item.LastMeterDateJalali = waterInstallationDateJalali;
+                    item.LastCounterStateCode = 0;
+                    item.LastConsumption = 0;
+                    item.LastMonthlyConsumption = 0;
+                }
+                else
+                {
+                    item.LastMeterNumber = previousInfo.PreviousNumber;
+                    item.LastMeterDateJalali = previousInfo.PreviousDateJalali;
+                    item.LastCounterStateCode = previousInfo.CounterStateCode;
+                    item.LastConsumption = previousInfo.Consumption;
+                    item.LastMonthlyConsumption = previousInfo.ConsumptionAverage;
+                }
                 //}
             }
 
@@ -640,14 +640,20 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 r.DiscountSum = 0;
                 r.Consumption = 0;
                 r.MonthlyConsumption = 0;
+                r.MonthlyPerUnit = 0;
             }
             else
             {
+                double monthlyConsumption = abBahaCalc?.MonthlyConsumption ?? 0;
+                int totalUnit = abBahaCalc?.Customer?.UnitAll ?? 0 ;
+                int finalTotalUnit = totalUnit == 0 ? 1 : totalUnit;
+
                 r.SumItemsBeforeDiscount = abBahaCalc?.SumItemsBeforeDiscount ?? 0;
                 r.SumItems = abBahaCalc?.SumItems ?? 0;
                 r.DiscountSum = abBahaCalc?.DiscountSum ?? 0;
-                r.Consumption = abBahaCalc?.Consumption ?? 0;
-                r.MonthlyConsumption = abBahaCalc?.MonthlyConsumption ?? 0;
+                r.Consumption = Math.Round((abBahaCalc?.Consumption ?? 0), 2);
+                r.MonthlyConsumption = Math.Round(monthlyConsumption, 2);
+                r.MonthlyPerUnit = Math.Round((monthlyConsumption / finalTotalUnit), 2);
             }
             return r;
         }
