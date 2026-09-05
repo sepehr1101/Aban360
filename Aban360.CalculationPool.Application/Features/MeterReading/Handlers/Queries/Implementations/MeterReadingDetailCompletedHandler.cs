@@ -132,6 +132,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 DiscountSum = data.DiscountSum,
                 Consumption = data.Consumption,
                 MonthlyConsumption = data.MonthlyConsumption,
+                MonthlyPerUnit = data.MonthlyPerUnit,
 
                 AttentionState = HighLowEnum.Zero,
                 HasAttentionCounterState = false

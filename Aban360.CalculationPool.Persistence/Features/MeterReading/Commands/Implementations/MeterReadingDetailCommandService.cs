@@ -193,6 +193,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
             table.Columns.Add("DiscountSum", typeof(double));
             table.Columns.Add("Consumption", typeof(double));
             table.Columns.Add("MonthlyConsumption", typeof(double));
+            table.Columns.Add("MonthlyPerUnit", typeof(double));
 
             //BedBesProps
             table.Columns.Add("barge", typeof(decimal));
@@ -344,6 +345,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                 row["DiscountSum"] = x.DiscountSum ?? (object)DBNull.Value;
                 row["Consumption"] = x.Consumption ?? (object)DBNull.Value;
                 row["MonthlyConsumption"] = x.MonthlyConsumption ?? (object)DBNull.Value;
+                row["MonthlyPerUnit"] = x.MonthlyPerUnit ?? (object)DBNull.Value;
 
                 //BedBesProps
                 row["barge"] = x.Barge;
@@ -472,7 +474,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                         ContractualCapacity, HouseholdNumber, HouseholdDate, VillageId, IsSpecial, MeterDiameterId,
                         VirtualCategoryId, BodySerial, TavizDateJalali, TavizCause, TavizRegisterDateJalali, TavizNumber,
                         LastMeterDateJalali, LastMeterNumber, LastMonthlyConsumption, LastConsumption, LastCounterStateCode, LastSumItems,
-                        SumItems, SumItemsBeforeDiscount, DiscountSum, Consumption, MonthlyConsumption,
+                        SumItems, SumItemsBeforeDiscount, DiscountSum, Consumption, MonthlyConsumption, MonthlyPerUnit,
                         
                         barge, pri_no, today_no, pri_date, today_date, abon_fas,
                         fas_baha, ab_baha, ztadil, masraf, shahrdari, modat,
@@ -500,7 +502,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                         @ContractualCapacity, @HouseholdNumber, @HouseholdDate, @VillageId, @IsSpecial, @MeterDiameterId,
                         @VirtualCategoryId, @BodySerial, @TavizDateJalali, @TavizCause, @TavizRegisterDateJalali, @TavizNumber,
                         @LastMeterDateJalali, @LastMeterNumber, @LastMonthlyConsumption, @LastConsumption, @LastCounterStateCode, @LastSumItems,
-                        @SumItems, @SumItemsBeforeDiscount, @DiscountSum, @Consumption, @MonthlyConsumption,
+                        @SumItems, @SumItemsBeforeDiscount, @DiscountSum, @Consumption, @MonthlyConsumption, @MonthlyPerUnit,
                         
                         @Barge, @PriNo, @TodayNo, @PriDate, @TodayDate, @AbonFas,
                         @FasBaha, @AbBaha, @Ztadil, @Masraf, @Shahrdari, @Modat,
