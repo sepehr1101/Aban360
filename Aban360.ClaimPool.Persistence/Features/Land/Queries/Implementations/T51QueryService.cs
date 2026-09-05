@@ -20,7 +20,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             IEnumerable<NumericDictionary> result = await _sqlReportConnection.QueryAsync<NumericDictionary>(query);
             return result;
         }
-
+        public async Task<IEnumerable<NumericDictionary>> Get(int regionId)
+        {
+            string query = GetByRegionIdQuery();
+            IEnumerable<NumericDictionary> result = await _sqlReportConnection.QueryAsync<NumericDictionary>(query, new { regionId });
+            return result;
+        }
         public async Task<NumericDictionary> Get(int id, bool hasException)
         {
             string query = GetByIdQuery();
@@ -44,6 +49,14 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                     	C0 Id,
                     	C2 Title
                     From [Db70].dbo.T51";
+        }
+        private string GetByRegionIdQuery()
+        {
+            return @"Select 
+                    	C0 Id,
+                    	C2 Title
+                    From [Db70].dbo.T51
+                    Where C1=@RegionId";
         }
         private string GetByIdQuery()
         {
