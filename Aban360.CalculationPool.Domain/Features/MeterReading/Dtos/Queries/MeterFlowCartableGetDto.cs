@@ -7,6 +7,7 @@ namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
         public short Id { get; set; }
         public MeterFlowStepEnum MeterFlowStepId { get; set; }
         public string StepTitle { get; set; }
+        public short FirstFlowId { get; set; }
         public string FileName { get; set; }
         public int ZoneId { get; set; }
         public string FromReadingNumber { get; set; }

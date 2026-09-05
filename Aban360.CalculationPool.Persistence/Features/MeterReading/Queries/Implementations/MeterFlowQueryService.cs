@@ -1,4 +1,6 @@
-﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
+﻿using Aban360.CalculationPool.Domain.Constants;
+using Aban360.CalculationPool.Domain.Features.CollectBills.Inputs;
+using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
@@ -43,6 +45,13 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
         {
             string query = GetCartablQuery();
             IEnumerable<MeterFlowCartableGetDto> cartable = await _sqlReportConnection.QueryAsync<MeterFlowCartableGetDto>(query, new { zoneIds });
+
+            return cartable;
+        }
+        public async Task<IEnumerable<MeterFlowCartableGetDto>> GetCartable(MeterFlowByZoneInputDto inputDto, MeterFlowStepEnum stemp)
+        {
+            string query = GetCartablByZoneIdQuery();
+            IEnumerable<MeterFlowCartableGetDto> cartable = await _sqlReportConnection.QueryAsync<MeterFlowCartableGetDto>(query, new { inputDto.ZoneId, inputDto.FromDateJalali, inputDto.ToDateJalali, stemp });
 
             return cartable;
         }
@@ -173,7 +182,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                     	On m.ZoneId=t51.C0
                     Where m.FirstFlowId = @firstFlowId
                     Order By m.InsertDateTime Desc";
-                    
+
         }
         private string GetCartablQuery()
         {
@@ -181,6 +190,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                     	f.Id,
                     	f.MeterFlowStepId,
                     	fs.Title as StepTitle,
+                        f.FirstFlowId,
                     	f.FileName,
                     	f.ZoneId,
                         f.FromReadingNumber,
@@ -199,6 +209,32 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                     	f.ZoneId IN @zoneIds AND
                     	f.RemovedByUserId IS NULL AND 
                     	f.RemovedDateTime IS NULL";
+        }
+        private string GetCartablByZoneIdQuery()
+        {
+            return @"Select  
+                    	f.Id,
+                    	f.MeterFlowStepId,
+                    	fs.Title as StepTitle,
+                        f.FirstFlowId,
+                    	f.FileName,
+                    	f.ZoneId,
+                        f.FromReadingNumber,
+                        f.ToReadingNumber,
+                        f.PrimaryCount,
+						t51.C2 as ZoneTitle,
+                    	f.InsertByUserId,
+                    	f.InsertDateTime,
+                        f.Description
+                    From Atlas.dbo.MeterFlow f
+                    Join Atlas.dbo.MeterFlowStep fs
+                    	On f.MeterFlowStepId=fs.Id
+					Left Join Db70.dbo.T51 t51 
+						On f.ZoneId=t51.C0
+                    Where
+                    	f.ZoneId = @zoneId AND
+                        f.MeterFlowStepId = @stemp AND
+                        Format(f.InsertDateTime,'yyyy/MM/dd','fa') Between @FromDateJalali AND @ToDateJalali";
         }
     }
 }
