@@ -35,6 +35,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IValidator<MeterReadingDetailUpdateDto> _validator;
         static MeterFlowStepEnum[] _allowedUpdateFileStep = { MeterFlowStepEnum.Imported, MeterFlowStepEnum.Calculated, MeterFlowStepEnum.ConsumptionChecked };
         const double _maxAmount = 999_999_999_999;
+        const int _conditionConsumption = 99_999_999;
         const int _conditionPayableAmount = 10000;
         const int _paymentDeadline = 7;
         const int _malfunctionMeterStateId = 1;
@@ -237,8 +238,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             meterDetailCreateDto.SumItems = sumItems;//abBahaCalc.sumItems?
             meterDetailCreateDto.SumItemsBeforeDiscount = abBahaCalc?.SumItemsBeforeDiscount ?? 0;
             meterDetailCreateDto.DiscountSum = abBahaCalc?.DiscountSum ?? 0;
-            meterDetailCreateDto.Consumption = abBahaCalc?.Consumption ?? 0;
-            meterDetailCreateDto.MonthlyConsumption = abBahaCalc?.MonthlyConsumption ?? 0;
+            meterDetailCreateDto.Consumption = Math.Round((abBahaCalc?.Consumption ?? 0), 2);
+
+            double monthlyConsumption = abBahaCalc?.MonthlyConsumption ?? 0;
+            int totalUnit = abBahaCalc?.Customer?.UnitAll ?? 0;
+            int finalTotalUnit = totalUnit == 0 ? 1 : totalUnit;
+            meterDetailCreateDto.MonthlyConsumption = Math.Round(monthlyConsumption);
+            meterDetailCreateDto.MonthlyPerUnit = Math.Round((monthlyConsumption / finalTotalUnit), 2);
 
             meterDetailCreateDto.Barge = 0;
             meterDetailCreateDto.PriNo = meterDetailCreateDto.PreviousNumber;
