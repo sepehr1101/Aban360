@@ -60,6 +60,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
         public async Task<ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto>> Handle(InstallmentRequestInputDto inputDto, CancellationToken cancellationToken)
         {
+            await InputValidate(inputDto, cancellationToken);
             TrackingOutputDto trackingInfo = await GetTrackingWithValidation(inputDto, cancellationToken);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             IEnumerable<CalculationRequestDisplayDataOutputDto> kartInfo = await _kartQueryService.Get(trackingInfo.StringTrackNumber, trackingInfo.ZoneId);
@@ -110,7 +111,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private async Task<TrackingOutputDto> GetTrackingWithValidation(InstallmentRequestInputDto inputDto, CancellationToken cancellationToken)
         {
-            await Validate(inputDto, cancellationToken);
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             if (!_enableStatus.Contains(trackingInfo.StatusId))
             {
@@ -122,7 +122,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             }
             if (inputDto.InstallmentCount > _maxInstallmentCount)
             {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidInstallmentCount(_maxInstallmentCount));
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidFewInstallmentCount(_maxInstallmentCount));
+            }
+            if (inputDto.InstallmentCount == 0 && inputDto.PrepaymentPercent != 100 )
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidInstallmentCount);
             }
 
             return trackingInfo;
@@ -131,7 +135,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             long firstInstallmentWithZero = (long)(payable * (inputDto.PrepaymentPercent / 100.0));
             long firstInstallmentWithoutZero = (firstInstallmentWithZero / 1000) * 1000;
-            if (inputDto.InstallmentCount == 1 || inputDto.PrepaymentPercent == 100)
+            if (inputDto.InstallmentCount == 0 && inputDto.PrepaymentPercent == 100)
             {
                 return (firstInstallmentWithoutZero, 0, 0);
             }
@@ -150,7 +154,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             long discount = kartInfo?.Sum(x => x.Discount) ?? 0;
             long payable = amount - discount;//todo: true or not?
 
-            if (inputDto.PrepaymentPercent == 100 || inputDto.InstallmentCount == 1)
+            if (inputDto.PrepaymentPercent == 100)
             {
                 return GetCashInstallments(billId, dueDatesJalali[0], payable);
             }
@@ -204,7 +208,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             return data;
         }
-        private async Task Validate(InstallmentRequestInputDto inputDto, CancellationToken cancellationToken)
+        private async Task InputValidate(InstallmentRequestInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
