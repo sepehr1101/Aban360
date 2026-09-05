@@ -15,7 +15,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
              .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.InstallmentCount)
-               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.PrepaymentPercent)

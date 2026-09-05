@@ -2,6 +2,7 @@
 using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
@@ -11,18 +12,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
     internal sealed class CheckedListGetHandler : ICheckedListGetHandler
     {
         const string _reportTitle = " مشاهده لیست کنترل ";
-        const int _malfunctionMeterStateId = 1;
-        const int _changeCounterStateId = 2;
-        const int _closeMeterStateId = 4;
-        const int _nextRoundCounterSatateId = 5;
-        const int _withoutConsumptionMeterStateId = 6;
-        const int _blockMeterStateId = 7;
-        const int _noReadMeterStateId = 8;
-
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IMeterFlowQueryService _meterFlowService;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
         private readonly IMeterReadingValidateHandler _meterReadingValidateHandler;
+        private static int[] closedAndObstacleCounterState = { (int)CounterStateCodeEnum.Close, (int)CounterStateCodeEnum.Block, (int)CounterStateCodeEnum.NonRead };
         public CheckedListGetHandler(
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IMeterFlowQueryService meterFlowService,
@@ -55,7 +49,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         }
         private ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCheckedDto> GetResult(IEnumerable<MeterReadingDetailCheckedDto> data, IEnumerable<MeterReadingDetailDataOutputDto> meterReadingsPrevioudControl, MeterFlowStepEnum latestFlowStep)
         {
-            int[] closedAndObstacleCounterState = { 4, 7, 8 };
             MeterReadingDetailHeaderOutputDto header = new MeterReadingDetailHeaderOutputDto()
             {
                 Amount = data?.Sum(m => m.SumItems) ?? 0,
@@ -64,14 +57,14 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 FromReadingNumber = data?.Min(m => m.ReadingNumber) ?? string.Empty,
                 ToReadingNumber = data?.Max(m => m.ReadingNumber) ?? string.Empty,
 
-                Closed = data?.Count(r => r.CurrentCounterStateCode == _closeMeterStateId) ?? 0,
-                Obstacle = data?.Count(r => r.CurrentCounterStateCode == _blockMeterStateId) ?? 0,
-                Temporarily = data?.Count(r => r.CurrentCounterStateCode == _noReadMeterStateId) ?? 0,
+                Closed = data?.Count(r => r.CurrentCounterStateCode == (int)CounterStateCodeEnum.Close) ?? 0,
+                Obstacle = data?.Count(r => r.CurrentCounterStateCode == (int)CounterStateCodeEnum.Block) ?? 0,
+                Temporarily = data?.Count(r => r.CurrentCounterStateCode == (int)CounterStateCodeEnum.NonRead) ?? 0,
                 PureReading = data?.Count(r => !closedAndObstacleCounterState.Contains(r.CurrentCounterStateCode)) ?? 0,
-                Malfunction = data?.Count(r => r.CurrentCounterStateCode == _malfunctionMeterStateId) ?? 0,
-                Changed = data?.Count(r => r.CurrentCounterStateCode == _changeCounterStateId) ?? 0,
-                NextRound = data?.Count(r => r.CurrentCounterStateCode == _nextRoundCounterSatateId) ?? 0,
-                WithoutConsumption = data?.Count(r => r.CurrentCounterStateCode == _withoutConsumptionMeterStateId) ?? 0,
+                Malfunction = data?.Count(r => r.CurrentCounterStateCode == (int)CounterStateCodeEnum.Malfunction) ?? 0,
+                Changed = data?.Count(r => r.CurrentCounterStateCode == (int)CounterStateCodeEnum.Change) ?? 0,
+                NextRound = data?.Count(r => r.CurrentCounterStateCode == (int)CounterStateCodeEnum.NextRound) ?? 0,
+                WithoutConsumption = data?.Count(r => r.CurrentCounterStateCode == (int)CounterStateCodeEnum.WithoutConsumption) ?? 0,
                 Excluded = meterReadingsPrevioudControl?.Count(mr => mr.ExcludedByUserId is not null) ?? 0,
             };
             ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCheckedDto> result = new(_reportTitle, header, data.OrderByDescending(meter => meter.AttentionState));

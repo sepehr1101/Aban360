@@ -294,6 +294,7 @@
         public static string MeterReadingExcluded { get { return "قرائت‌های خارج شده از لیست"; } }
         public static string MeterReadingUpdated { get { return "قرائت‌های ویرایش شده"; } }
         public static string MeterReadingExcelFile { get { return "قرائت"; } }
+        public static string MeterReadingCompleted { get { return "تایید مبلغ شده"; } }
 
         public static string JudicalNoticeCommand { get { return "تقاضانامه صدور اجرائیه اسناد ذمه"; } }
 

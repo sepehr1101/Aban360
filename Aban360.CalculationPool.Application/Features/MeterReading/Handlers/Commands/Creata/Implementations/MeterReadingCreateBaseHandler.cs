@@ -43,6 +43,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private int[] _domesticUnits = { 1, 3 };
         private int[] _invalidLatestCounterStateCode = { 4, 7, 8 };
         const int _conditionPayableAmount = 10000;
+        const int _conditionByConsumption = 99_999_999;
         const int _paymentDeadline = 7;
         const double _maxAmount = 999_999_999_999;
         const int _commonMeterStateId = 0;
@@ -490,7 +491,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 return (false, true);
             }
-
+            if (readingDetail.CurrentNumber > _conditionByConsumption)
+            {
+                return (false, true);
+            }
             return (true, false);//(IsValid,HasExclude)
         }
         private MeterImaginaryInputDto GetMeterImaginary(MeterReadingDetailCreateDto readingDetail)
