@@ -131,6 +131,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                         m.DiscountSum,
                         m.Consumption,
                         m.MonthlyConsumption,
+                        m.MonthlyPerUnit,
                         --BedBesProps
                         m.barge,
                         m.pri_no as PriNo,
@@ -278,6 +279,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                         m.DiscountSum,
                         m.Consumption,
                         m.MonthlyConsumption,
+                        m.MonthlyPerUnit,
                         --BedBesProps
                         m.barge,
                         m.pri_no as PriNo,
@@ -569,6 +571,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                         m.DiscountSum,
                         m.Consumption,
                         m.MonthlyConsumption,
+                        m.MonthlyPerUnit,
                         --BedBesProps
                         m.barge,
                         m.pri_no as PriNo,
@@ -720,6 +723,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                     	m.DiscountSum,
                     	m.Consumption,
                     	m.MonthlyConsumption,
+                        m.MonthlyPerUnit,
                     	--BedBesProps
                     	m.barge,
                     	m.pri_no as PriNo,

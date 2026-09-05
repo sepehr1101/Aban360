@@ -160,6 +160,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 DiscountSum = input.DiscountSum,
                 Consumption = input.Consumption,
                 MonthlyConsumption = input.MonthlyConsumption,
+                MonthlyPerUnit = input.MonthlyPerUnit,
 
                 AttentionState = attentionState,
                 HasAttentionCounterState = _meterReadingValidateHandler.IsAttentionCounterState(input.CurrentCounterStateCode)

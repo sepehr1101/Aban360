@@ -186,7 +186,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
         }
         private string GetCartablQuery()
         {
-            string stepCondition = $"({(int)MeterFlowStepEnum.Imported} , {(int)MeterFlowStepEnum.Calculated} , {(int)MeterFlowStepEnum.ConsumptionChecked})";
+            string stepCondition = $"( {(int)MeterFlowStepEnum.Calculated} , {(int)MeterFlowStepEnum.ConsumptionChecked})";
             return @$"Select  
                     	f.Id,
                     	f.MeterFlowStepId,
