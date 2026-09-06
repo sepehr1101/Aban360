@@ -1,4 +1,5 @@
-﻿using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts;
+﻿using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts;
+using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
@@ -26,7 +27,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
-namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations
+namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
 {
     internal sealed class CalculationConfirmationHandler : AbstractBaseConnection, ICalculationConfirmationHandler
     {
@@ -244,7 +245,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 Mohlat = mohlatDateJalali,
                 AbonAb = (decimal)meterReading.AbonAb,
                 Baha = (decimal)meterReading.SumItems,
-                Pard = ((long)(meterReading.SumItems.Value + memberInfo.DebtAmount) / 1000) * 1000,//bedehi gahbli+currentSumItems   => check
+                Pard = (long)(meterReading.SumItems.Value + memberInfo.DebtAmount) / 1000 * 1000,//bedehi gahbli+currentSumItems   => check
                 Jam = (decimal)(meterReading.SumItems.Value + memberInfo.DebtAmount),//bedehi gahbli+currentSumItems  => check
                 CodVas = meterReading.CurrentCounterStateCode,
                 Ghabs = "1",
@@ -403,27 +404,27 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                     Duration = (int)b.Modat,
                     ConsumptionAverage = (float)b.Rate,
                     Deadline = b.Mohlat,
-                    Item1 = (long)(b.AbBaha),
-                    Item2 = (long)(b.FasBaha),
-                    Item3 = (long)(b.AbonAb),
-                    Item4 = (long)(b.AbonFas),
-                    Item5 = (long)(b.Shahrdari),
+                    Item1 = (long)b.AbBaha,
+                    Item2 = (long)b.FasBaha,
+                    Item3 = (long)b.AbonAb,
+                    Item4 = (long)b.AbonFas,
+                    Item5 = (long)b.Shahrdari,
                     Item6 = 0,
                     Item7 = 0,
-                    Item8 = (long)(b.Jarime),
-                    Item9 = (long)(b.Zabresani),
-                    Item10 = (long)(b.ZaribD),
-                    Item11 = (long)(b.ZaribFasl),
-                    Item12 = (long)(b.Ztadil),
+                    Item8 = (long)b.Jarime,
+                    Item9 = (long)b.Zabresani,
+                    Item10 = (long)b.ZaribD,
+                    Item11 = (long)b.ZaribFasl,
+                    Item12 = (long)b.Ztadil,
                     Item13 = 0,
                     Item14 = 0,
                     Item15 = 0,
-                    Item16 = (long)(b.Bodjeh),
+                    Item16 = (long)b.Bodjeh,
                     Item17 = 0,
-                    Item18 = (long)(b.Avarez),
-                    SumItems = (long)(b.Baha),
-                    Payable = (long)(b.Pard),
-                    PreDebt = (long)(memberInfo.DebtAmount ?? 0),
+                    Item18 = (long)b.Avarez,
+                    SumItems = (long)b.Baha,
+                    Payable = (long)b.Pard,
+                    PreDebt = memberInfo.DebtAmount ?? 0,
                     TypeId = _typeTitle,
                     ItemOff1 = (long)(discountInfo?.AbBaha ?? 0),
                     ItemOff2 = (long)(discountInfo?.FasBaha ?? 0),
