@@ -19,6 +19,7 @@ using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
+using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
@@ -103,7 +104,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
         public async Task<MeterReadingCheckedOutputDto> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
+            //await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
 
             int firstFlowId = await _meterFlowQueryService.GetFirstFlowId(latestFlowId);
             IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId, false);
@@ -113,6 +114,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 throw new ReadingException(ExceptionLiterals.NotFoundMeterReadingDetail);
             }
             int zoneId = meterReadings.FirstOrDefault().ZoneId;
+            await DuplicateBillsValidate(meterReadings, zoneId);
             var (bedBesBatch, kasrHaBatch) = await GetBedBesAndKasrHaDto(meterReadings, cancellationToken);
 
             var (warningMessageForDuplicateBills, duplicateBillIds) = await CheckDuplicateBill(bedBesBatch);
@@ -214,7 +216,33 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 }
             }
         }
-
+        private async Task DuplicateBillsValidate(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, int zoneId)
+        {
+            IEnumerable<BedBesPreviousNumberAndDateOutputDto> previousBillsInfo;
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    previousBillsInfo = await _bedBesQueryService.GetPreviousDateAndNumber(connection, transaction, zoneId, meterReadings.Select(m => m.CustomerNumber).ToList());
+                }
+            }
+            foreach (var item in meterReadings)
+            {
+                BedBesPreviousNumberAndDateOutputDto? previousBills = previousBillsInfo.Where(m => m.CustomerNumber == item.CustomerNumber).FirstOrDefault();
+                if (previousBills is null)
+                {
+                    throw new ReadingException(ExceptionLiterals.BillIdNotFound);
+                }
+                if (item.PreviousDateJalali.CompareTo(previousBills.PreviousDateJalali) < 0)
+                {
+                    throw new ReadingException(ExceptionLiterals.InvalidMeterReadingDate(item.BillId));
+                }
+            }
+        }
         private async Task<BedBesCreateDto> GetBedBes(MeterReadingDetailDataOutputDto meterReading, string paymentIdOption)
         {
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(meterReading.ZoneId, meterReading.CustomerNumber));

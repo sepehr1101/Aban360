@@ -2,7 +2,6 @@
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -11,7 +10,6 @@ using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
@@ -298,9 +296,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
             string dbName = GetDbName(input.ZoneId);
             IEnumerable<int> validReturnCause = await GetLastMeterValid();
-       
+
             string query = GetPreviousMeterDateAndNumberQuery(dbName);
-            BedBesPreviousNumberAndDateOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesPreviousNumberAndDateOutputDto>(query, new { input.ZoneId,input.CustomerNumber, validReturnCause });
+            BedBesPreviousNumberAndDateOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<BedBesPreviousNumberAndDateOutputDto>(query, new { input.ZoneId, input.CustomerNumber, validReturnCause });
             //if (result is null && hasException)
             //{
             //    throw new InvalidBillCommandException(ExceptionLiterals.InvalidBedBesPreviousNumberAndDate(billId));
@@ -308,23 +306,22 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 
             return result;
         }
-        public async Task<IEnumerable<ZoneIdAndCustomerNumber>> GetPreviousDateAndNumberWithSqlBulk(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers)
+        public async Task<IEnumerable<BedBesPreviousNumberAndDateOutputDto>> GetPreviousDateAndNumber(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers)
         {
-            var table = new DataTable();
-            table.Columns.Add("ZoneId", typeof(int));
-            table.Columns.Add("CustomerNumbers", typeof(int));
-            foreach (var item in customerNumbers)
-                table.Rows.Add(zoneId, item);
+            await CreateCustomerNumbersBulkCopy(connection, transaction, customerNumbers, zoneId, batchSize: 10000, tableName: "#TempCustomerNumbersForGetPreviousBills");
 
-            using (var bulkCopy = new SqlBulkCopy((SqlConnection)connection, SqlBulkCopyOptions.Default, (SqlTransaction)transaction))
-            {
-                bulkCopy.DestinationTableName = "#TempCustomerNumbers";
-                bulkCopy.BatchSize = 10000;
-                await bulkCopy.WriteToServerAsync(table);
-            }
+            IEnumerable<int> validReturnCause = await GetLastMeterValid();
+            string query = GetPreviousMeterDateAndNumberByBulkCopyQuery(GetDbName(zoneId));
+            IEnumerable<BedBesPreviousNumberAndDateOutputDto> result = await connection.QueryAsync<BedBesPreviousNumberAndDateOutputDto>(query, new { validReturnCause }, transaction);
+            return result;
+        }
+        public async Task<IEnumerable<ZoneIdAndCustomerNumber>> GetInvalidLastBillByWithSqlBulk(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers)
+        {
+            await CreateCustomerNumbersBulkCopy(connection, transaction, customerNumbers, zoneId, batchSize: 10000, tableName: "#TempCustomerNumbersForGetInvalid");
+
             string query = GetInvalidPreviousBedBesBySqlBulkCopyQuery(GetDbName(zoneId));
-            IEnumerable<ZoneIdAndCustomerNumber> customersByInvalidPreviousBedBes = await connection.QueryAsync<ZoneIdAndCustomerNumber>(query, null, transaction);
-            return customersByInvalidPreviousBedBes;
+            IEnumerable<ZoneIdAndCustomerNumber> result = await connection.QueryAsync<ZoneIdAndCustomerNumber>(query, null, transaction);
+            return result;
         }
         private async Task<IEnumerable<int>> GetLastMeterValid()
         {
@@ -333,7 +330,25 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 
             return result;
         }
+        private async Task CreateCustomerNumbersBulkCopy(IDbConnection connection, IDbTransaction transaction, ICollection<int> customerNumbers, int zoneId, int batchSize, string tableName)
+        {
+            await connection.ExecuteAsync(@$"Create Table {tableName} (ZoneId int Not Null , CustomerNumber int Not Null)", null, transaction);
 
+            var table = new DataTable();
+            table.Columns.Add("ZoneId", typeof(int));
+            table.Columns.Add("CustomerNumber", typeof(int));
+            foreach (var item in customerNumbers)
+            {
+                table.Rows.Add(zoneId, item);
+            }
+
+            using (var bulkCopy = new SqlBulkCopy((SqlConnection)connection, SqlBulkCopyOptions.Default, (SqlTransaction)transaction))
+            {
+                bulkCopy.DestinationTableName = tableName;
+                bulkCopy.BatchSize = batchSize;
+                await bulkCopy.WriteToServerAsync(table);
+            }
+        }
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
             return @$"Select Top 1 
@@ -709,6 +724,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             return $@"With Cte As(
                         Select 
 							b.id,
+                            b.radif,
                     		b.date_bed,
                     		b.pri_date,
                     		b.today_date,
@@ -739,6 +755,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	 Where b.radif=@CustomerNumber And b.town=@ZoneId
                     )
                     Select Top 1 
+                            c.radif CustomerNumber,
                     		c.PreviousDateJalali,
                     		c.PreviousNumber,
 							c.CounterStateCode,
@@ -750,6 +767,95 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 						ON c.CounterStateCode=cv.MoshtarakinId
                     Where PreviousNumber Is Not Null 
                     Order By c.date_bed Desc ,c.Id Desc";
+        }
+        private string GetPreviousMeterDateAndNumberByBulkCopyQuery(string dbName)
+        {
+            return $@";With Cte As(
+                        Select 
+                            b.id,
+                    		b.town,
+                    		b.radif,
+                    		b.date_bed,
+                    		b.pri_date,
+                    		b.today_date,
+                    		b.pri_no,
+                    		b.today_no,
+                    		r.elat,
+                    		b.del,
+                    		b.cod_vas CounterStateCode,
+                    		b.rate ConsumptionAverage,
+                    		b.masraf Consumption,
+                    		Case 
+                    		    When b.del = 0 And b.cod_vas In (4,7,8) Then NULL
+                    		    When b.del = 0 And b.cod_vas Not In (4,7,8) Then b.today_no
+                    		    When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas Not In (4,7,8) Then b.today_no
+                    		    When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas In (4,7,8) Then NULL
+                    		    Else NULL
+                    		End As PreviousNumber,
+                    		Case 
+                    		    When b.del = 0 And b.cod_vas In (4,7,8) Then NULL
+                    		    When b.del = 0 And b.cod_vas Not In(4,7,8) Then b.today_date
+                    		    When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas Not In (4,7,8) Then b.today_date
+                    		    When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas In (4,7,8) Then NULL
+                    		    Else NULL
+                    		End As PreviousDateJalali
+                    	From  [{dbName}].dbo.bed_bes b
+                    	Left Join [{dbName}].dbo.REPAIR r
+                    		On b.town=r.town And b.radif=r.radif And b.pri_date>=r.pri_date And b.today_date<=r.today_date
+                    	Join #TempCustomerNumbersForGetPreviousBills t 
+					       ON 	b.town = t.ZoneId AND b.radif = t.CustomerNumber 
+                    ),
+                    LastBills As (
+                        Select 
+                            c.town,
+                            c.radif,
+                            c.PreviousDateJalali,
+                            c.PreviousNumber,
+                            c.CounterStateCode,
+                            cv.Title CounterStateTitle,
+                            c.ConsumptionAverage,
+                            c.Consumption,
+                            ROW_NUMBER() OVER (PARTITION BY c.town, c.radif ORDER BY c.date_bed Desc, c.Id Desc) As rn
+                        From Cte c
+                        Join [Db70].dbo.CounterVaziat cv
+                            ON c.CounterStateCode = cv.MoshtarakinId
+                        Where c.PreviousNumber Is Not Null
+                    ),
+                    ValidData As(
+                    	Select 
+                    	    town As ZoneId,
+                    	    radif As CustomerNumber,
+                    	    PreviousDateJalali,
+                    	    PreviousNumber,
+                    	    CounterStateCode,
+                    	    CounterStateTitle,
+                    	    ConsumptionAverage,
+                    	    Consumption
+                    	From LastBills
+                    	Where rn = 1
+                    ),
+                    InvlaidData As(
+                    	Select 
+                    		m.town As ZoneId,
+                    	    m.radif As CustomerNumber,
+                    	    m.inst_ab PreviousDateJalali,
+                    	    0 PreviousNumber,
+                    	    0 CounterStateCode,
+                    	    N'عادی' CounterStateTitle,
+                    	    0 ConsumptionAverage,
+                    	    0 Consumption
+                        From #TempCustomerNumbersForGetPreviousBills t 
+                        Left Join ValidData vd
+					        ON 	t.ZoneId = vd.ZoneId AND t.CustomerNumber = vd.CustomerNumber 
+                        Join [{dbName}].dbo.members m
+		                    On m.radif = t.CustomerNumber AND m.Town = t.ZoneId
+                    	Where vd.CustomerNumber is null
+                    )
+                    Select *
+                    From ValidData
+                    Union All
+                    Select *
+                    From InvlaidData";
         }
         private string GetInvalidPreviousBedBesBySqlBulkCopyQuery(string dbName)
         {
@@ -766,7 +872,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                             b.del,
 							RN= ROW_NUMBER() OVER(Partition By b.radif Order By b.today_date DESC)
 						From [{dbName}].dbo.bed_bes b
-						Join #TempCustomerNumbers t 
+						Join #TempCustomerNumbersForGetInvalid t 
 					        ON 	b.town = t.ZoneId AND b.radif = t.CustomerNumber 
 					)
 					Select

@@ -178,6 +178,7 @@
         public static string InvalidMeterSmsStateId => "خطا در شناسه نوع پیامک";
         public static string InvalidMeterSmsFlowId => "خطا در مراحل پیامک";
         public static string InvalidLatestMeterReadingWithExpireMeterFlow => "آخرین سطر اطلاعات قرائت برای شناسه وارد شده، قابل دسترسی نیست - فایل بسته شده.";
+        public static string InvalidMeterReadingDate(string billId) => $"تاریخ ناصحیح است - برای شناسه قبض :{billId} ، قبضی در حین تایید فایل ایجاد شده.";
 
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";

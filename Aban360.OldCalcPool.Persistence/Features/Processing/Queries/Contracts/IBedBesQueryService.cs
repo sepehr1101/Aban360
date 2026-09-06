@@ -29,6 +29,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
         Task<BedBesItemsOutputDto> GetLatestByCustomerNumber(ZoneIdAndCustomerNumber input);
         Task<IEnumerable<BedBesWithDelOutputDto>> GetByDateInterval(ZoneCustomerFromToDateDto input, string dbName);
         Task<BedBesPreviousNumberAndDateOutputDto?> GetPreviousDateAndNumber(ZoneIdAndCustomerNumber input, string billId, bool hasException);
-        Task<IEnumerable<ZoneIdAndCustomerNumber>> GetPreviousDateAndNumberWithSqlBulk(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers);
+        Task<IEnumerable<BedBesPreviousNumberAndDateOutputDto>> GetPreviousDateAndNumber(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers);
+        Task<IEnumerable<ZoneIdAndCustomerNumber>> GetInvalidLastBillByWithSqlBulk(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers);
     }
 }
