@@ -5,6 +5,7 @@ using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Implementations;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Constants.Literals;
@@ -14,6 +15,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
+using Aban360.NotificationPool.Application.Features.Sms;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Implementations;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
@@ -23,6 +25,7 @@ using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
+using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -32,6 +35,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
     internal sealed class MeterReadingCreateBaseHandler : AbstractBaseConnection, IMeterReadingCreateBaseHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly ISmsOldHandler _smsOldHandler;
         private readonly IMeterFlowQueryService _meterFlowService;
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
@@ -47,18 +52,20 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         const int _paymentDeadline = 7;
         const double _maxAmount = 999_999_999_999;
         const int _commonMeterStateId = 0;
-        const int _malfunctionMeterStateId = 1;
-        const int _changeCounterStateId = 2;
-        const int _reverseCounterState = 3;
-        const int _closeMeterStateId = 4;
-        const int _nextRoundCounterSatateId = 5;
-        const int _withoutConsumptionMeterStateId = 6;
-        const int _blockMeterStateId = 7;
-        const int _noReadMeterStateId = 8;
+        const int _malfunctionMeterStateId = (int)CounterStateCodeEnum.Malfunction;
+        const int _changeCounterStateId = (int)CounterStateCodeEnum.Change;
+        const int _reverseCounterState = (int)CounterStateCodeEnum.Reverse;
+        const int _closeMeterStateId = (int)CounterStateCodeEnum.Close;
+        const int _nextRoundCounterSatateId = (int)CounterStateCodeEnum.NextRound;
+        const int _withoutConsumptionMeterStateId = (int)CounterStateCodeEnum.WithoutConsumption;
+        const int _blockMeterStateId = (int)CounterStateCodeEnum.Block;
+        const int _noReadMeterStateId = (int)CounterStateCodeEnum.NonRead;
         const int _desolateUnitMeterStateId = 9;//todo: rename
         const int _disconnectionMeterStateId = 10;
         public MeterReadingCreateBaseHandler(
             IHttpContextAccessor contextAccessor,
+            IBackgroundJobClient backgroundJobClient,
+            ISmsOldHandler smsOldHandler,
             IMeterFlowQueryService meterFlowService,
             ICustomerInfoService customerInfoService,
             IMeterReadingDetailQueryService meterReadingDetailService,
@@ -72,6 +79,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         {
             _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
+
+            _backgroundJobClient = backgroundJobClient;
+            _backgroundJobClient.NotNull(nameof(backgroundJobClient));
+
+            _smsOldHandler = smsOldHandler;
+            _smsOldHandler.NotNull(nameof(smsOldHandler));
 
             _meterFlowService = meterFlowService;
             _meterFlowService.NotNull(nameof(_meterFlowService));
@@ -323,6 +336,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        InsertDateTime = meterReading.InsertDateTime,
                        WaterDebt = members.LatestDebtAmount,
 
+                       MobileNumber = members.MobileNumber ?? string.Empty,
                        BranchTypeId = members.BranchTypeId,
                        UsageId = members.UsageId,
                        ConsumptionUsageId = members.ConsumptionUsageId,
@@ -645,7 +659,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             else
             {
                 double monthlyConsumption = abBahaCalc?.MonthlyConsumption ?? 0;
-                int totalUnit = abBahaCalc?.Customer?.UnitAll ?? 0 ;
+                int totalUnit = abBahaCalc?.Customer?.UnitAll ?? 0;
                 int finalTotalUnit = totalUnit == 0 ? 1 : totalUnit;
 
                 r.SumItemsBeforeDiscount = abBahaCalc?.SumItemsBeforeDiscount ?? 0;
