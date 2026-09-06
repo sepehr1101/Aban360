@@ -1,5 +1,6 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
@@ -23,7 +24,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Diagnostics;
-using System.Reflection;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -37,17 +37,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IValidator<FreeGenerateBillInputDto> _validator;
         private readonly IVariabService _variabService;
         static int[] _domesticUsage = { 1, 3 };//todo: IsTrue?
-        static int[] _allowedZeroMeterNumberCounterState = { 4, 7 };
+        static int[] _allowedZeroMeterNumberCounterState = { (int)CounterStateCodeEnum.Close, (int)CounterStateCodeEnum.Block };
         private int _paymentDeadline = 7;
         private int _conditionPayableAmount = 10000;
         private float _domesticMaltiplier = 0.7f;
         private int _collectedDeletionStateId = 1;
         private int _temporaryDeletionStateId = 5;
-        private int _malfunctionCounterState = 1;
-        private int _changeCounterState = 2;
-        private int _reverseCounterState = 3;
-        private int _nextRoundCounterSatate = 5;
-        private int _withoutConsumptionMeterState = 6;
+        private int _malfunctionCounterState = (int)CounterStateCodeEnum.Malfunction;
+        private int _changeCounterState = (int)CounterStateCodeEnum.Change;
+        private int _reverseCounterState = (int)CounterStateCodeEnum.Reverse;
+        private int _nextRoundCounterSatate = (int)CounterStateCodeEnum.NextRound;
+        private int _withoutConsumptionMeterState = (int)CounterStateCodeEnum.WithoutConsumption;
         private int _payIdMaxChar = 13;
         private int _firstMeterNumber = 1;
         public FreeGenerateBillHandler(
