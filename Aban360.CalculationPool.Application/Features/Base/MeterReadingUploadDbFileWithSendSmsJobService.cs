@@ -13,18 +13,18 @@ using Hangfire;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
-    public interface IMeterReadingUploadDbFileWithSendSmdJobService
+    public interface IMeterReadingUploadDbFileWithSendSmsJobService
     {
         Task Upload(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken);
     }
-    internal sealed class MeterReadingUploadDbFileWithSendSmdJobService : IMeterReadingUploadDbFileWithSendSmdJobService
+    internal sealed class MeterReadingUploadDbFileWithSendSmsJobService : IMeterReadingUploadDbFileWithSendSmsJobService
     {
         private readonly IBackgroundJobClient _jobClient;
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IMeterReadingFileCreateHandler _meterReadingFileCreateHandler;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailQueryService;
         private readonly IT46QueryService _regionQueryService;
-        public MeterReadingUploadDbFileWithSendSmdJobService(
+        public MeterReadingUploadDbFileWithSendSmsJobService(
             IMeterReadingFileCreateHandler meterReadingFileCreateHandler,
             IBackgroundJobClient jobClient,
             ISmsOldHandler smsOldHandler,
