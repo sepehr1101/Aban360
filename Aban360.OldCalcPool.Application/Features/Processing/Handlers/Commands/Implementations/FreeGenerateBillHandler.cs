@@ -18,6 +18,7 @@ using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -430,8 +431,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Masjar = 0,
                 Sabt = 1,//todo
                 Rate = (decimal)abBahaCalc.MonthlyConsumption,
-                Operator = (decimal)generateBillInfo.OperatorCode,
-                Mamor = 0,
+                Operator = ReportLiterals.RayabOperator,
+                Mamor = (decimal)generateBillInfo.OperatorCode,
                 TavizDate = customerInfo?.TavizInfo?.TavizDateJalali ?? string.Empty,
                 ZaribCntr = 0,
                 Zabresani = 0,

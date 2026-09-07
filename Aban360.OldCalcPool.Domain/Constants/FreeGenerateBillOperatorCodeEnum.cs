@@ -2,8 +2,8 @@
 {
     public enum FreeGenerateBillOperatorCodeEnum
     {
-        Customer = 5,
-        Office = 666,
-        Evaluate = 999,
+        Evaluate = 666,
+        Office = 999,
+        Customer = 0,
     }
 }
