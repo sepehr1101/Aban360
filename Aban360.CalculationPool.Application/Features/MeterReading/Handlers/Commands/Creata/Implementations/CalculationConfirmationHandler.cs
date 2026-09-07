@@ -104,7 +104,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
         public async Task<MeterReadingCheckedOutputDto> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
-            //await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
+            await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
 
             int firstFlowId = await _meterFlowQueryService.GetFirstFlowId(latestFlowId);
             IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId, false);
@@ -153,7 +153,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
                 if (mr.DiscountSum > 0)
                 {
-                    KasrHaDto kasrHa = GerKasrHa(mr, bedBes.ShPard1);
+                    KasrHaDto kasrHa = GerKasrHa(mr, bedBes);
                     kasrHaBatch.Add(kasrHa);
                 }
             }
@@ -337,44 +337,42 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 TrackNumber = long.Parse(paymentId)//Todo
             };
         }
-        private KasrHaDto GerKasrHa(MeterReadingDetailDataOutputDto meterReading, string paymentId)
+        private KasrHaDto GerKasrHa(MeterReadingDetailDataOutputDto meterReading, BedBesCreateDto bedBes)
         {
-            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-
             return new KasrHaDto()
             {
                 Town = meterReading.ZoneId,
                 IdBedbes = 0,
                 Radif = meterReading.CustomerNumber,
                 CodEnshab = meterReading.UsageId,
-                Barge = 0,
+                Barge = bedBes.Barge,
                 PriDate = meterReading.PreviousDateJalali,
                 TodayDate = meterReading.CurrentDateJalali,
                 PriNo = meterReading.PreviousNumber,
                 TodayNo = meterReading.CurrentNumber,
                 Masraf = (decimal)meterReading.Consumption,
-                AbBaha = (decimal)meterReading.AbBahaDiscount,
-                FasBaha = (decimal)meterReading.FazelabDiscount + (decimal)meterReading.HotSeasonFazelabDiscount,
-                AbonAb = (decimal)meterReading.AbonmanAbDiscount,
-                AbonFas = (decimal)meterReading.AbonmanFazelabDiscount,
+                AbBaha = (decimal)(meterReading?.AbBahaDiscount ?? 0),
+                FasBaha = (decimal)(meterReading?.FazelabDiscount ?? 0) + (decimal)(meterReading?.HotSeasonFazelabDiscount ?? 0),
+                AbonAb = (decimal)(meterReading?.AbonmanAbDiscount ?? 0),
+                AbonFas = (decimal)(meterReading?.AbonmanFazelabDiscount ?? 0),
                 TabAbnA = 0,
                 TabAbnF = 0,
                 Ab10 = 0,
-                Shahrdari = (decimal)meterReading.MaliatDiscount,
-                Rate = (decimal)meterReading.MonthlyConsumption,
-                Baha = (decimal)meterReading.DiscountSum,
+                Shahrdari = (decimal)(meterReading?.MaliatDiscount ?? 0),
+                Rate = (decimal)(meterReading?.MonthlyConsumption ?? 0),
+                Baha = (decimal)(meterReading?.DiscountSum ?? 0),
                 ShGhabs = meterReading.BillId,
-                ShPard = paymentId,//todo
-                DateBed = currentDateJalali,
+                ShPard = bedBes.ShPard1,
+                DateBed = bedBes.DateBed,
                 TmpDateBed = "",
                 TmpTodayDate = "",
-                TedVahd = meterReading.OtherUnit,
-                TedKhane = meterReading.HouseholdNumber,
-                TedadMas = meterReading.DomesticUnit,
-                TedadTej = meterReading.CommercialUnit,
+                TedVahd = meterReading?.OtherUnit ?? 0,
+                TedKhane = meterReading?.HouseholdNumber ?? 0,
+                TedadMas = meterReading?.DomesticUnit ?? 0,
+                TedadTej = meterReading?.CommercialUnit ?? 0,
                 ZaribFasl = 0,
-                NoeVa = meterReading.BranchTypeId,
-                Bodjeh = (decimal)meterReading.BoodjeDiscount,
+                NoeVa = meterReading?.BranchTypeId ?? 0,
+                Bodjeh = (decimal)(meterReading?.BoodjeDiscount ?? 0),
             };
         }
         private async Task<ICollection<BillInsertDto>> GetBillsInsertDto(ICollection<BedBesCreateDto> bedBes, ICollection<KasrHaDto> kasrHa)

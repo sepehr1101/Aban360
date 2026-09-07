@@ -56,7 +56,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             await _meterReadingCreateBaseHandler.ExecSql(readingDetailsCreate, fileCreateInfo, appUser);
             ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> result = _meterReadingCreateBaseHandler.GetReturnData(readingDetailsCreate, _reportTitle);
             //sendSms
-            
+
 
             return result;
         }
@@ -92,7 +92,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     int zoneId = (int)(decimal)rowObjects[13];
 
                     MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
-                    meterReadingFileDetail.Add(meterDetail);
+                    if (meterDetail.CustomerNumber == 10167869)
+                    {
+                        meterReadingFileDetail.Add(meterDetail);
+
+                    }
                 }
             }
             catch

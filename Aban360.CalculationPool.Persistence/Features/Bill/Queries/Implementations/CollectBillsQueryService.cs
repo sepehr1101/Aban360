@@ -22,15 +22,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
         }
         private string GetQuery()
         {
-            return @$";With Clients As
-					(
-						SELECT 
-						    RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
-						    *
-						From [CustomerWarehouse].dbo.Clients c
-						Where c.CustomerNumber <> 0 
-					)
-					Select 
+            return @$"Select 
 						CONCAT(
 							 c.ZoneTitle, ';', --ZoneTitle,
 							 '', ';',--ZoneAddress,
@@ -144,7 +136,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 							   IIF(tg.StringCode is null,'000',tg.StringCode)+ -- new: 3 char coding dastgah ejraii parent
 							   IIF(t.StringCode is null,'0000',t.StringCode)	 -- new: 4 char coding dastah ejraii child
 							 )AS 'Row'
-					From Clients c
+					From CustomerWarehouse.dbo.Clients c
 					Join CustomerWarehouse.dbo.Bills b
 						On c.ZoneId=b.ZoneId AND c.CustomerNumber=b.CustomerNumber
 					Join CounterReadingTest01.dbo.CounterState cs--?
@@ -167,7 +159,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 					LEFT JOIN CustomerWarehouse.dbo.TagGroups tg
 						On t.TagGroupId=tg.Id and tg.MainTagGroupId=11
 					Where 
-						c.RN=1 AND
+						c.ToDayJalali IS NULL AND
 						b.CounterStateCode NOT IN (4,7,8) AND
 						b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali AND
 						cs.IsActive=1 AND

@@ -107,7 +107,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 return result;
             }
             BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber, inputDto.CounterStateCode);
-            KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
+            KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto, bedBes);
             ContorUpdateDto contorUpdate = GetControUpdateDto(customerInfo, bedBes, inputDto.CounterStateCode ?? 0);
             string logtext = string.Format(OpLogLiterals.GenerateFreeBillOpLog, bedBes.ShGhabs1, bedBes.ShPard1, bedBes.Pard);
 
@@ -487,18 +487,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 return (sumItems, jam, 0);
             }
         }
-        private KasrHaDto GerKasrHa(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, FreeGenerateBillInputDto generateBillInfo)
+        private KasrHaDto GerKasrHa(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, FreeGenerateBillInputDto generateBillInfo, BedBesCreateDto bedBes)
         {
-            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-            string paymentId = string.Empty;//TransactionIdGenerator.GeneratePaymentId((long)abBahaCalc.SumItems, abBahaCalc.Customer.BillId);
-
             return new KasrHaDto()
             {
                 Town = customerInfo.MembersInfo.ZoneId,
                 IdBedbes = 0,
                 Radif = customerInfo.MembersInfo.CustomerNumber,
                 CodEnshab = customerInfo.MembersInfo.UsageId,
-                Barge = 0,
+                Barge = bedBes.Barge,
                 PriDate = generateBillInfo.PreviousDateJalali,
                 TodayDate = generateBillInfo.CurrentDateJalali,
                 PriNo = generateBillInfo.PreviousMeterNumber,
@@ -515,8 +512,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Rate = (decimal)abBahaCalc.MonthlyConsumption,
                 Baha = (decimal)abBahaCalc.SumItems,
                 ShGhabs = customerInfo.MembersInfo.BillId,
-                ShPard = paymentId,
-                DateBed = currentDateJalali,
+                ShPard = bedBes.ShPard1,
+                DateBed = bedBes.DateBed,
                 TmpDateBed = "",
                 TmpTodayDate = "",
                 TedVahd = customerInfo.MembersInfo.OtherUnit,
