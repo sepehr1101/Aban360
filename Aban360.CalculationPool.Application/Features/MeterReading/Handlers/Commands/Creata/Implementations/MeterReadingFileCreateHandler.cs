@@ -9,7 +9,6 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using DotNetDBF;
 using FluentValidation;
@@ -53,10 +52,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             FileCreateDto fileCreateInfo = new(input.ReadingFile.FileName, filePath, input.Description);
             ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = await _meterReadingCreateBaseHandler.GetReadingDetailCreateFinal(readingDetails, appUser, cancellationToken);
 
+            //create smsManagerInsertDto
+
             await _meterReadingCreateBaseHandler.ExecSql(readingDetailsCreate, fileCreateInfo, appUser);
             ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> result = _meterReadingCreateBaseHandler.GetReturnData(readingDetailsCreate, _reportTitle);
-            //sendSms
-
 
             return result;
         }
@@ -92,11 +91,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     int zoneId = (int)(decimal)rowObjects[13];
 
                     MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
-                    if (meterDetail.CustomerNumber == 10167869)
-                    {
-                        meterReadingFileDetail.Add(meterDetail);
-
-                    }
                 }
             }
             catch

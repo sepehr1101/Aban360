@@ -23,13 +23,13 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IMeterReadingFileCreateHandler _meterReadingFileCreateHandler;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailQueryService;
-        private readonly IT46QueryService _regionQueryService;
+        private readonly IT51QueryService _zoneQueryService;
         public MeterReadingUploadDbFileWithSendSmsJobService(
             IMeterReadingFileCreateHandler meterReadingFileCreateHandler,
             IBackgroundJobClient jobClient,
             ISmsOldHandler smsOldHandler,
             IMeterReadingDetailQueryService meterReadingDetailQueryService,
-            IT46QueryService regionQueryService)
+            IT51QueryService zoneQueryService)
         {
             _meterReadingFileCreateHandler = meterReadingFileCreateHandler;
             _meterReadingFileCreateHandler.NotNull(nameof(meterReadingFileCreateHandler));
@@ -43,15 +43,15 @@ namespace Aban360.CalculationPool.Application.Features.Base
             _meterReadingDetailQueryService = meterReadingDetailQueryService;
             _meterReadingDetailQueryService.NotNull(nameof(meterReadingDetailQueryService));
 
-            _regionQueryService = regionQueryService;
-            _regionQueryService.NotNull(nameof(regionQueryService));
+            _zoneQueryService = zoneQueryService;
+            _zoneQueryService.NotNull(nameof(zoneQueryService));
         }
 
         public async Task Upload(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> result = await _meterReadingFileCreateHandler.Handle(input, appUser, cancellationToken);
             int flowImportedId = result?.ReportData?.FirstOrDefault()?.FlowImportedId ?? 0;
-            if (flowImportedId >= 0)
+            if (flowImportedId > 0)
             {
                 _jobClient.Enqueue(() => SendSms(flowImportedId));
             }
@@ -60,12 +60,13 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             IEnumerable<MeterReadingDetailDataOutputDto> meterReadingDetailDto = await _meterReadingDetailQueryService.Get(flowStepId, false);
             IEnumerable<MeterReadingDetailDataOutputDto> meterReadingToSendSms = meterReadingDetailDto?.Where(m => m.CurrentCounterStateCode == (int)CounterStateCodeEnum.Close) ?? new List<MeterReadingDetailDataOutputDto>();
-            NumericDictionary regionInfo = await _regionQueryService.GetByZone(meterReadingDetailDto?.FirstOrDefault()?.ZoneId ?? 0, false);
+            NumericDictionary zoneInfo = await _zoneQueryService.Get(meterReadingDetailDto?.FirstOrDefault()?.ZoneId ?? 0, false);
 
             foreach (var item in meterReadingToSendSms)
             {
-                string smsText = string.Format(SmsTemplates.ClosedBill, regionInfo?.Title ?? string.Empty, item.BillId, Environment.NewLine);
+                string smsText = string.Format(SmsTemplates.ClosedBill, zoneInfo?.Title ?? string.Empty, item.BillId, Environment.NewLine);
                 _jobClient.Enqueue(() => _smsOldHandler.Send(item.MobileNumber ?? string.Empty, smsText, Guid.NewGuid()));//todo:Guid
+                //OutBox pattern
             }
         }
     }

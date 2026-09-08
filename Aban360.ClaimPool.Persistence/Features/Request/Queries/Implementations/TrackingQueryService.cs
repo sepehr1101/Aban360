@@ -353,6 +353,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.BillID,
                     	k.Total Amount,
                     	m.radif CustomerNumber,
+                        ReadingNumber,
                     	TRIM(m.name) FirstName,
                     	TRIM(m.family) Surname,
                     	TRIM(m.name)+' '+TRIM(m.family) FullName,

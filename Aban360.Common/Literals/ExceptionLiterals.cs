@@ -178,7 +178,7 @@
         public static string InvalidMeterSmsStateId => "خطا در شناسه نوع پیامک";
         public static string InvalidMeterSmsFlowId => "خطا در مراحل پیامک";
         public static string InvalidLatestMeterReadingWithExpireMeterFlow => "آخرین سطر اطلاعات قرائت برای شناسه وارد شده، قابل دسترسی نیست - فایل بسته شده.";
-        public static string InvalidMeterReadingDate(string billId) => $"تاریخ ناصحیح است - برای شناسه قبض :{billId} ، قبضی در حین تایید فایل ایجاد شده.";
+        public static string InvalidMeterReadingDate(string billId) => $"نیاز به خروج از لیست - برای شناسه قبض :{billId} ،  در مدت محاسبه تا تایید، تراکنشی انجام شده.";
 
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";
@@ -333,5 +333,9 @@
         public static string CollectBillsAssignUploadedFileUnseccessLog => "خطا در انتساب اطلاعات تکمیلی به فایل آپلود شده.کد فایل:{0}  سال:{1}  دوره:{2}  کد وضعیت:{3}   توضیحات:{4}";
         public static string CollectBillsConfirmSuccessLog => "فایل با موفقیت تایید شد. کد فایل:{0}  کد وضعیت:{1}   توضیحات:{2}";
         public static string CollectBillsConfirmUnsuccessLog => "تایید فایل با خطا مواجه شد. کد فایل:{0}  کد وضعیت:{1}   توضیحات:{2}";
+
+
+        //SmsManager
+        public static string InvalidSmsManagerInsert => "خطا در ذخیره بایگانی پیامک ها";
     }
 }

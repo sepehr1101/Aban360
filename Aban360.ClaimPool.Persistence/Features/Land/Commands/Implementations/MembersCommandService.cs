@@ -161,7 +161,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             return $@"Update m
                     Set 
                         m.bed_bes = m.bed_bes + t.Amount ,
-                        m.n_ab = IIF(m.n_ab=0, 1, m.n_ab),
+                        m.n_ab = IIF(m.n_ab = 0, 1, m.n_ab),
 	                    m.n_faz = IIF(t.ToDateJalali COLLATE Persian_100_CI_AI>= m.G_inst_fas COLLATE Persian_100_CI_AI AND m.G_inst_fas>'1330/01/01' , 2 ,m.n_faz )
                     From [{dbName}].dbo.members m
                     Join #DebtAmountUpdateTemp t

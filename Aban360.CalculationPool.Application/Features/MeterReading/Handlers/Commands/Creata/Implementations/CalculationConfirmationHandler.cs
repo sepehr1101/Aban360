@@ -104,7 +104,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
         public async Task<MeterReadingCheckedOutputDto> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
+            //await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
 
             int firstFlowId = await _meterFlowQueryService.GetFirstFlowId(latestFlowId);
             IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId, false);
@@ -203,7 +203,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                         await kasrHaCommandService.InsertByBulk(kasrHaBatch, dbName);
                     }
                     await billCommandService.InsertByBulk(billsBatch);
-                    await membersCommandService.UpdateBedbes(memberDebtAmountBatch, dbName);//todo:not found any record in atlas.members
+                    await membersCommandService.UpdateBedbes(memberDebtAmountBatch, dbName);
                     await contorCommandService.Update(contorsUpdateBatch, dbName, false);
                     await waterDebtCommandService.UpdateAmount(memberDebtAmountBatch);
                     await opLogCommandService.Insert(opLogText, appUser);
