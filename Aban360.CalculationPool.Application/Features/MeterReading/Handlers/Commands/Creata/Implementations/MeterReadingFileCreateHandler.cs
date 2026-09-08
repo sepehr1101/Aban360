@@ -1,6 +1,7 @@
 ﻿using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
+using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Constants.Literals;
@@ -20,17 +21,22 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
     internal sealed class MeterReadingFileCreateHandler : AbstractBaseConnection, IMeterReadingFileCreateHandler
     {
         private readonly IMeterReadingCreateBaseHandler _meterReadingCreateBaseHandler;
+        private readonly IT46QueryService _regionQueryService;
         private readonly IValidator<MeterReadingFileCreateDto> _validator;
         private static string _reportTitle = ReportLiterals.MeterReadingCreateFile;
         private static string _dbfPath = DirectoryLiterals.DbfFolderPath;
         public MeterReadingFileCreateHandler(
             IMeterReadingCreateBaseHandler meterReadingCreateBaseHandler,
+            IT46QueryService regionQueryService,
             IValidator<MeterReadingFileCreateDto> validator,
             IConfiguration configuration)
             : base(configuration)
         {
             _meterReadingCreateBaseHandler = meterReadingCreateBaseHandler;
             _meterReadingCreateBaseHandler.NotNull(nameof(meterReadingCreateBaseHandler));
+
+            _regionQueryService = regionQueryService;
+            _regionQueryService.NotNull(nameof(regionQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(_validator));
@@ -46,8 +52,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             FileCreateDto fileCreateInfo = new(input.ReadingFile.FileName, filePath, input.Description);
             ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = await _meterReadingCreateBaseHandler.GetReadingDetailCreateFinal(readingDetails, appUser, cancellationToken);
 
+            //create smsManagerInsertDto
+
             await _meterReadingCreateBaseHandler.ExecSql(readingDetailsCreate, fileCreateInfo, appUser);
-            return _meterReadingCreateBaseHandler.GetReturnData(readingDetailsCreate, _reportTitle);
+            ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> result = _meterReadingCreateBaseHandler.GetReturnData(readingDetailsCreate, _reportTitle);
+
+            return result;
         }
         private async Task<IEnumerable<MeterReadingDetailCreateDto>> GetMeterReadingDetails(MeterReadingFileCreateDto meterFile, string filePath, Guid userId)
         {
@@ -81,7 +91,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     int zoneId = (int)(decimal)rowObjects[13];
 
                     MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
-                    meterReadingFileDetail.Add(meterDetail);
+                    int[] radifs = { 702, 2605 };
+                    if (radifs.Contains(meterDetail.CustomerNumber))
+                    {
+                        meterReadingFileDetail.Add(meterDetail);
+                    }
+
                 }
             }
             catch

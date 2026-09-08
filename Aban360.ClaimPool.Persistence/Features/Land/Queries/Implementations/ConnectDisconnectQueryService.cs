@@ -136,7 +136,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 						TRIM(c.FirstName) FirstName ,
 						TRIM(c.SureName) SurName,
 						TRIM(c.FirstName) + ' '+ TRIM(c.SureName) FullName,
-						TRIM(c.MobileNo) MobileNumber
+						TRIM(c.MobileNo) MobileNumber,
+                        TRIM(c.ReadingNumber) ReadingNumber 
                     From [CustomerWarehouse].dbo.connectdisconnect d
 					Join [CustomerWarehouse].dbo.Clients c
 						ON d.BillId Collate Arabic_CI_AS=c.BillId

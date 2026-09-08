@@ -5,6 +5,7 @@ using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Implementations;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Constants.Literals;
@@ -14,6 +15,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
+using Aban360.NotificationPool.Application.Features.Sms;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Implementations;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
@@ -23,6 +25,7 @@ using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
+using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -32,6 +35,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
     internal sealed class MeterReadingCreateBaseHandler : AbstractBaseConnection, IMeterReadingCreateBaseHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly ISmsOldHandler _smsOldHandler;
         private readonly IMeterFlowQueryService _meterFlowService;
         private readonly ICustomerInfoService _customerInfoService;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
@@ -47,18 +52,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         const int _paymentDeadline = 7;
         const double _maxAmount = 999_999_999_999;
         const int _commonMeterStateId = 0;
-        const int _malfunctionMeterStateId = 1;
-        const int _changeCounterStateId = 2;
-        const int _reverseCounterState = 3;
-        const int _closeMeterStateId = 4;
-        const int _nextRoundCounterSatateId = 5;
-        const int _withoutConsumptionMeterStateId = 6;
-        const int _blockMeterStateId = 7;
-        const int _noReadMeterStateId = 8;
         const int _desolateUnitMeterStateId = 9;//todo: rename
         const int _disconnectionMeterStateId = 10;
         public MeterReadingCreateBaseHandler(
             IHttpContextAccessor contextAccessor,
+            IBackgroundJobClient backgroundJobClient,
+            ISmsOldHandler smsOldHandler,
             IMeterFlowQueryService meterFlowService,
             ICustomerInfoService customerInfoService,
             IMeterReadingDetailQueryService meterReadingDetailService,
@@ -72,6 +71,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         {
             _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
+
+            _backgroundJobClient = backgroundJobClient;
+            _backgroundJobClient.NotNull(nameof(backgroundJobClient));
+
+            _smsOldHandler = smsOldHandler;
+            _smsOldHandler.NotNull(nameof(smsOldHandler));
 
             _meterFlowService = meterFlowService;
             _meterFlowService.NotNull(nameof(_meterFlowService));
@@ -106,7 +111,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 var (isValid, hasExclude) = DataValidate(readingDetail);
                 if (isValid)
                 {
-                    if (readingDetail.CurrentCounterStateCode == _malfunctionMeterStateId)//xarab
+                    if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Malfunction)//xarab
                     {
                         float previousAverage = await _previousAverageHandler.HandleByPreviousYear(readingDetail.ZoneId, readingDetail.CustomerNumber, readingDetail.PreviousDateJalali, readingDetail.CurrentDateJalali) ??
                         await _previousAverageHandler.HandleByLatestReading(readingDetail.ZoneId, readingDetail.CustomerNumber, readingDetail.PreviousDateJalali, readingDetail.CurrentDateJalali);
@@ -131,19 +136,19 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                             readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                         }
                     }
-                    else if (readingDetail.CurrentCounterStateCode == _changeCounterStateId && string.IsNullOrWhiteSpace(readingDetail.TavizDateJalali))
+                    else if (readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.Change && string.IsNullOrWhiteSpace(readingDetail.TavizDateJalali))
                     {
                         readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                     }
-                    else if (readingDetail.CurrentCounterStateCode == _changeCounterStateId && readingDetail.TavizDateJalali.CompareTo(readingDetail.CurrentDateJalali) > 0)
+                    else if (readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.Change && readingDetail.TavizDateJalali.CompareTo(readingDetail.CurrentDateJalali) > 0)
                     {
                         readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                     }
-                    else if (readingDetail.CurrentCounterStateCode == _changeCounterStateId && readingDetail.TavizDateJalali.CompareTo(readingDetail.PreviousDateJalali) < 0)
+                    else if (readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.Change && readingDetail.TavizDateJalali.CompareTo(readingDetail.PreviousDateJalali) < 0)
                     {
                         readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
                     }
-                    else if (readingDetail.CurrentCounterStateCode == _changeCounterStateId) //taviz
+                    else if (readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.Change) //taviz
                     {
                         int previousNumber = readingDetail.PreviousNumber;
                         string previousDateJalali = readingDetail.PreviousDateJalali;
@@ -323,6 +328,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        InsertDateTime = meterReading.InsertDateTime,
                        WaterDebt = members.LatestDebtAmount,
 
+                       MobileNumber = members.MobileNumber ?? string.Empty,
                        BranchTypeId = members.BranchTypeId,
                        UsageId = members.UsageId,
                        ConsumptionUsageId = members.ConsumptionUsageId,
@@ -469,13 +475,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         }
         private (bool, bool) DataValidate(MeterReadingDetailCreateDto readingDetail)
         {
-            int[] invalidCounterStateCode = [_closeMeterStateId, /*_withoutConsumptionMeterTypeId,*/ _blockMeterStateId, _noReadMeterStateId, _desolateUnitMeterStateId, _disconnectionMeterStateId];
+            int[] invalidCounterStateCode = [(int)CounterStateCodeEnum.Close, /*_withoutConsumptionMeterTypeId,*/ (int)CounterStateCodeEnum.Block, (int)CounterStateCodeEnum.NonRead, _desolateUnitMeterStateId, _disconnectionMeterStateId];
 
             if (readingDetail.CurrentCounterStateCode == _commonMeterStateId && readingDetail.PreviousNumber > readingDetail.CurrentNumber)
             {
                 return (false, true);
             }
-            if (readingDetail.CurrentCounterStateCode == _withoutConsumptionMeterStateId && readingDetail.PreviousNumber != readingDetail.CurrentNumber)
+            if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.WithoutConsumption && readingDetail.PreviousNumber != readingDetail.CurrentNumber)
             {
                 return (false, true);
             }
@@ -483,7 +489,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 return (false, false);
             }
-            else if ((readingDetail.CurrentCounterStateCode == _changeCounterStateId || readingDetail.CurrentCounterStateCode == _reverseCounterState || readingDetail.CurrentCounterStateCode == _nextRoundCounterSatateId) && readingDetail.CurrentNumber > readingDetail.PreviousNumber)
+            else if ((readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.Change || readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.Reverse || readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.NextRound) && readingDetail.CurrentNumber > readingDetail.PreviousNumber)
             {
                 return (false, true);
             }
@@ -645,7 +651,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             else
             {
                 double monthlyConsumption = abBahaCalc?.MonthlyConsumption ?? 0;
-                int totalUnit = abBahaCalc?.Customer?.UnitAll ?? 0 ;
+                int totalUnit = abBahaCalc?.Customer?.UnitAll ?? 0;
                 int finalTotalUnit = totalUnit == 0 ? 1 : totalUnit;
 
                 r.SumItemsBeforeDiscount = abBahaCalc?.SumItemsBeforeDiscount ?? 0;

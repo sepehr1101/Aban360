@@ -14,6 +14,7 @@ using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Command
 using Aban360.ReportPool.Domain.Base;
 using Aban360.Common.Literals;
 using Aban360.Common.Db.Constants.Literals;
+using Aban360.ClaimPool.Domain.Constants;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
 {
@@ -23,7 +24,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IValidator<MeterReadingExcelFileCreateDto> _validator;
         private static string _reportTitle = ReportLiterals.MeterReadingCreateFile;
         private static string _dbfPath = DirectoryLiterals.DbfFolderPath;
-        const int _closeMeterStateId = 4;
         public MeterReadingExcelFileCreateHandler(
             IMeterReadingCreateBaseHandler meterReadingCreateBaseHandler,
             IValidator<MeterReadingExcelFileCreateDto> validator,
@@ -87,7 +87,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
                         errorMessage = ExceptionLiterals.InvalidRecord(count);
 
-                        if (currentNumber is null || currentNumber == 0 && counterStateCode != _closeMeterStateId)
+                        if (currentNumber is null || currentNumber == 0 && counterStateCode != (int)CounterStateCodeEnum.Close)
                         {
                             errorMessage = string.Join(" - ", errorMessage, ExceptionLiterals.InvalidZeroMeterNumber);
                             throw new ReadingException(errorMessage);

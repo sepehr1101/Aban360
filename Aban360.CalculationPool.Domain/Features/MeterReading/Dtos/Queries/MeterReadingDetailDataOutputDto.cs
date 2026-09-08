@@ -24,6 +24,7 @@
         public DateTime? RemovedDateTime { get; set; }
         public short? RemovedType { get; set; }
 
+        public string? MobileNumber { get; set; }
         public int BranchTypeId { get; set; }
         public string BranchTypeTitle { get; set; }
         public int UsageId { get; set; }

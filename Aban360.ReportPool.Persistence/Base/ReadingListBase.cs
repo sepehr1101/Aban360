@@ -45,6 +45,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						On t51.C1=t46.C0
                     Where
 						c.ToDayJalali IS NULL AND
+                        c.DeletionStateId NOT IN (5) AND
                         (@FromReadingNumber IS NULL or
                     	@ToReadingNumber IS NULL or 
                     	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
@@ -68,11 +69,15 @@ namespace Aban360.ReportPool.Persistence.Base
                     	COUNT(Case When b.CounterStateCode=8 Then 1 End) AS AdvancePaymentCount,
 						COUNT(Case When b.IsSettlement=1 Then 1 End) as SelfClaimedCount
                     From [CustomerWarehouse].dbo.Bills b
+					Join [CustomerWarehouse].dbo.Clients c
+						ON b.ZoneId=c.ZoneId AND b.CustomerNumber=c.CustomerNumber
 					Join [Db70].dbo.T51 t51
 						On t51.C0=b.ZoneId
 					Join [Db70].dbo.T46 t46
 						On t51.C1=t46.C0
                     Where
+                        c.ToDayJalali IS NULL AND
+						c.DeletionStateId NOT IN (5) AND
                         (@FromReadingNumber IS NULL or
                     	@ToReadingNumber IS NULL or 
                     	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND

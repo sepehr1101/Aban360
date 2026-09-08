@@ -33,7 +33,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
     internal sealed class MeterReadingExcelMultiZoneFileCreateHandler : AbstractBaseConnection, IMeterReadingExcelMultiZoneFileCreateHandler
     {
         private const string _atlasDatabaseName = "Atlas";
-        private const int _closeMeterStateId = 4;
         private const int _paymentDeadline = 7;
         private const int _maxPaymentIdLength = 13;
 

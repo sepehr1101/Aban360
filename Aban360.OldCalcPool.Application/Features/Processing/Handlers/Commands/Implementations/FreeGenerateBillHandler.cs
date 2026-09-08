@@ -1,5 +1,6 @@
 ﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
@@ -17,13 +18,13 @@ using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Diagnostics;
-using System.Reflection;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -37,17 +38,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IValidator<FreeGenerateBillInputDto> _validator;
         private readonly IVariabService _variabService;
         static int[] _domesticUsage = { 1, 3 };//todo: IsTrue?
-        static int[] _allowedZeroMeterNumberCounterState = { 4, 7 };
+        static int[] _allowedZeroMeterNumberCounterState = { (int)CounterStateCodeEnum.Close, (int)CounterStateCodeEnum.Block };
         private int _paymentDeadline = 7;
         private int _conditionPayableAmount = 10000;
         private float _domesticMaltiplier = 0.7f;
         private int _collectedDeletionStateId = 1;
         private int _temporaryDeletionStateId = 5;
-        private int _malfunctionCounterState = 1;
-        private int _changeCounterState = 2;
-        private int _reverseCounterState = 3;
-        private int _nextRoundCounterSatate = 5;
-        private int _withoutConsumptionMeterState = 6;
+        private int _malfunctionCounterState = (int)CounterStateCodeEnum.Malfunction;
+        private int _changeCounterState = (int)CounterStateCodeEnum.Change;
+        private int _reverseCounterState = (int)CounterStateCodeEnum.Reverse;
+        private int _nextRoundCounterSatate = (int)CounterStateCodeEnum.NextRound;
+        private int _withoutConsumptionMeterState = (int)CounterStateCodeEnum.WithoutConsumption;
         private int _payIdMaxChar = 13;
         private int _firstMeterNumber = 1;
         public FreeGenerateBillHandler(
@@ -107,7 +108,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 return result;
             }
             BedBesCreateDto bedBes = await GetBedBes(customerInfo, abBahaCalcResult, inputDto, zoneIdAndCustomerNumber, inputDto.CounterStateCode);
-            KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto);
+            KasrHaDto kasrHa = GerKasrHa(customerInfo, abBahaCalcResult, inputDto, bedBes);
             ContorUpdateDto contorUpdate = GetControUpdateDto(customerInfo, bedBes, inputDto.CounterStateCode ?? 0);
             string logtext = string.Format(OpLogLiterals.GenerateFreeBillOpLog, bedBes.ShGhabs1, bedBes.ShPard1, bedBes.Pard);
 
@@ -430,8 +431,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Masjar = 0,
                 Sabt = 1,//todo
                 Rate = (decimal)abBahaCalc.MonthlyConsumption,
-                Operator = (decimal)generateBillInfo.OperatorCode,
-                Mamor = 0,
+                Operator = ReportLiterals.RayabOperator,
+                Mamor = (decimal)generateBillInfo.OperatorCode,
                 TavizDate = customerInfo?.TavizInfo?.TavizDateJalali ?? string.Empty,
                 ZaribCntr = 0,
                 Zabresani = 0,
@@ -487,18 +488,15 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 return (sumItems, jam, 0);
             }
         }
-        private KasrHaDto GerKasrHa(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, FreeGenerateBillInputDto generateBillInfo)
+        private KasrHaDto GerKasrHa(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, FreeGenerateBillInputDto generateBillInfo, BedBesCreateDto bedBes)
         {
-            string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-            string paymentId = string.Empty;//TransactionIdGenerator.GeneratePaymentId((long)abBahaCalc.SumItems, abBahaCalc.Customer.BillId);
-
             return new KasrHaDto()
             {
                 Town = customerInfo.MembersInfo.ZoneId,
                 IdBedbes = 0,
                 Radif = customerInfo.MembersInfo.CustomerNumber,
                 CodEnshab = customerInfo.MembersInfo.UsageId,
-                Barge = 0,
+                Barge = bedBes.Barge,
                 PriDate = generateBillInfo.PreviousDateJalali,
                 TodayDate = generateBillInfo.CurrentDateJalali,
                 PriNo = generateBillInfo.PreviousMeterNumber,
@@ -515,8 +513,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Rate = (decimal)abBahaCalc.MonthlyConsumption,
                 Baha = (decimal)abBahaCalc.SumItems,
                 ShGhabs = customerInfo.MembersInfo.BillId,
-                ShPard = paymentId,
-                DateBed = currentDateJalali,
+                ShPard = bedBes.ShPard1,
+                DateBed = bedBes.DateBed,
                 TmpDateBed = "",
                 TmpTodayDate = "",
                 TedVahd = customerInfo.MembersInfo.OtherUnit,
