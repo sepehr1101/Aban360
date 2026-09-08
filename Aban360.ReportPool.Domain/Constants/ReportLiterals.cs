@@ -2,9 +2,10 @@
 {
     public static class ReportLiterals
     {
+        public static int RayabOperator { get { return 666; } }
         public static string HandleFlat { get { return "HandleFlat"; } }
         public static string Handle { get { return "Handle"; } }
-        
+
         public static string Atlas { get { return "Atlas"; } }
         public static string AbAndFazelab { get { return "AbAndFazelab"; } }
         public static string Db70 { get { return "Db70"; } }
@@ -315,12 +316,12 @@
 
         public static string ServiceLinkOtherExpenses { get { return "هزینه های متفرقه حق انشعاب"; } }
         public static string ReadingSequenceDetail { get { return $" {Report} توالی قرائت"; } }
-      
+
         public static string FinancialStatementTotal { get { return $" {Report} صورت‌های مالی"; } }
 
         public static string CollectBillsReport { get { return $" {Report} تجمیع قبوض "; } }
 
 
-    
+
     }
 }

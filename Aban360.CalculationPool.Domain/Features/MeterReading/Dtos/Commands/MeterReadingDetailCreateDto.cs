@@ -24,6 +24,7 @@
         public Guid? RemovedByUserId { get; set; }
         public DateTime? RemovedDateTime { get; set; }
 
+        public string MobileNumber { get; set; }
         public int BranchTypeId { get; set; }
         public int UsageId { get; set; }
         public int ConsumptionUsageId { get; set; }

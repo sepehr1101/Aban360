@@ -204,6 +204,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             meterDetailCreateDto.InsertDateTime = DateTime.Now;
             meterDetailCreateDto.RemovedByUserId = null;
             meterDetailCreateDto.RemovedDateTime = null;
+            meterDetailCreateDto.MobileNumber = customerInfo?.MembersInfo?.MobileNumber ?? string.Empty;
             meterDetailCreateDto.BranchTypeId = previousMeterDetailDto.BranchTypeId;
             meterDetailCreateDto.UsageId = previousMeterDetailDto.UsageId;
             meterDetailCreateDto.ConsumptionUsageId = previousMeterDetailDto.ConsumptionUsageId;

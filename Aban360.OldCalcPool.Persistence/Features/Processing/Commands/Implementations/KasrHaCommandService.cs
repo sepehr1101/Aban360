@@ -195,17 +195,17 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         {
             return $"Delete From [{dbName}].dbo.kasr_ha " +
                     @"Where 
-                    	TOWN=@ZoneId AND
-                    	radif=@CustomerNumber AND
-                    	barge=@Barge AND
-                    	Pri_date=@PreviousDateJalali AND
-                    	today_date=@CurrentDateJalali AND
-                    	pri_no=@PreviousNumber AND
-                    	today_no=@CurrentNumber AND
-                    	rate=@Consumption AND
-                    	SH_GHABS=@BillId AND
-                    	SH_PARD=@PaymentId AND
-                    	date_bed=@RegisterDateJalali ";
+                    	TOWN = @ZoneId AND
+                    	radif = @CustomerNumber AND
+                    	barge = @Barge AND
+                    	Pri_date = @PreviousDateJalali AND
+                    	today_date = @CurrentDateJalali AND
+                    	pri_no = @PreviousNumber AND
+                    	today_no = @CurrentNumber AND
+                    	masraf = @Consumption AND
+                    	SH_GHABS = @BillId AND
+                    	SH_PARD = @PaymentId AND
+                    	date_bed = @RegisterDateJalali ";
         }
 
         private string GetDbName(int zoneId)

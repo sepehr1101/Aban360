@@ -154,6 +154,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
             table.Columns.Add("ExcludedCauseId", typeof(int));
             table.Columns.Add("ExcludedCauseTitle", typeof(string));
 
+            table.Columns.Add("MobileNumber", typeof(string));
             table.Columns.Add("BranchTypeId", typeof(int));
             table.Columns.Add("UsageId", typeof(int));
             table.Columns.Add("ConsumptionUsageId", typeof(int));
@@ -307,6 +308,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                 row["ExcludedCauseId"] = x.ExcludedCauseId ?? (object)DBNull.Value;
                 row["ExcludedCauseTitle"] = x.ExcludedCauseTitle ?? (object)DBNull.Value;
 
+                row["MobileNumber"] = x.MobileNumber;
                 row["BranchTypeId"] = x.BranchTypeId;
                 row["UsageId"] = x.UsageId;
                 row["ConsumptionUsageId"] = x.ConsumptionUsageId;
@@ -468,7 +470,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
             return $@"INSERT INTO [Atlas].dbo.MeterReadingDetail (
                         FlowImportedId, ZoneId, CustomerNumber, ReadingNumber, BillId, AgentCode,
                         CurrentCounterStateCode, PreviousDateJalali, CurrentDateJalali, PreviousNumber, CurrentNumber, ExcludedByUserId,
-                        ExcludedDateTime, InsertByUserId, InsertDateTime, RemovedByUserId, RemovedDateTime, BranchTypeId,
+                        ExcludedDateTime, InsertByUserId, InsertDateTime, RemovedByUserId, RemovedDateTime, BranchTypeId, MobileNumber,
                         UsageId, ConsumptionUsageId, DomesticUnit, CommercialUnit, OtherUnit, EmptyUnit,
                         WaterInstallationDateJalali, SewageInstallationDateJalali, WaterRegisterDate, SewageRegisterDate, WaterCount, SewageCalcState,
                         ContractualCapacity, HouseholdNumber, HouseholdDate, VillageId, IsSpecial, MeterDiameterId,
@@ -496,7 +498,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                     ) VALUES (
                         @FlowImportedId, @ZoneId, @CustomerNumber, @ReadingNumber, @BillId, @AgentCode,
                         @CurrentCounterStateCode, @PreviousDateJalali, @CurrentDateJalali, @PreviousNumber, @CurrentNumber, @ExcludedByUserId,
-                        @ExcludedDateTime, @InsertByUserId, @InsertDateTime, @RemovedByUserId, @RemovedDateTime, @BranchTypeId,
+                        @ExcludedDateTime, @InsertByUserId, @InsertDateTime, @RemovedByUserId, @RemovedDateTime, @BranchTypeId, @MobileNumber,
                         @UsageId, @ConsumptionUsageId, @DomesticUnit, @CommercialUnit, @OtherUnit, @EmptyUnit,
                         @WaterInstallationDateJalali, @SewageInstallationDateJalali, @WaterRegisterDate, @SewageRegisterDate, @WaterCount, @SewageCalcState,
                         @ContractualCapacity, @HouseholdNumber, @HouseholdDate, @VillageId, @IsSpecial, @MeterDiameterId,

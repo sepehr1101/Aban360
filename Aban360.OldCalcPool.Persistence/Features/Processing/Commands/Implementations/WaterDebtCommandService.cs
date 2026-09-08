@@ -35,23 +35,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         }
         public async Task UpdateAmount(ICollection<MembersFazelabCountAndDebtAmountUpdateDto> input)
         {
-            //DataTable table = UpdateDebtAmountDataTable(input);
-            //string tempTableCommand = GetUpdateDebtAmountCreateTmpTableCommand();
-            //await _connection.ExecuteAsync(tempTableCommand, null, _transaction);
-
-            //using var bulk = new SqlBulkCopy((SqlConnection)_connection, SqlBulkCopyOptions.Default, (SqlTransaction)_transaction)
-            //{
-            //    DestinationTableName = $"#temp",
-            //    BatchSize = 5000,
-            //    BulkCopyTimeout = 0
-            //};
-
-            //foreach (DataColumn col in table.Columns)
-            //    bulk.ColumnMappings.Add(col.ColumnName, col.ColumnName);
-            //await bulk.WriteToServerAsync(table);
-
-            var check = await _connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM #DebtAmountUpdateTemp", null, _transaction);
-
             int expectedCount = input?.DistinctBy(m => m.CustomerNumber)?.Count() ?? 0;
             string updateCommand = GetUpdateDebtAmountCommand();
             int recordEffected = await _connection.ExecuteAsync(updateCommand, null, _transaction);

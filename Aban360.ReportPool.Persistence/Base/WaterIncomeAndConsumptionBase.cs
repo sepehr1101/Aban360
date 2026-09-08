@@ -39,14 +39,14 @@ namespace Aban360.ReportPool.Persistence.Base
 						b.ReadingNumber,
 						Case When b.UsageId IN (1,3) AND 
 								  b.BranchTypeId NOT IN (4) AND 
-								  b.RegisterDay>'1330/01/01' 
+								  c.PhysicalSewageInstallDateJalali>'1330/01/01' 
 							 Then b.Consumption 
 							 When b.UsageId NOT IN (1,3) AND 
 								  b.BranchTypeId NOT IN (4) AND 
-								  b.RegisterDay>'1330/01/01' 
+								  c.PhysicalSewageInstallDateJalali>'1330/01/01' 
 							 Then b.Consumption 
 						     Else 0
-						End SewageConsumption,  --/PhysicalSewageInstallDateJalali	
+						End SewageConsumption,  	
 						b.Consumption,
 						b.ConsumptionAverage,
 						b.WaterDiameterTitle as MeterDiameterTitle,
@@ -73,14 +73,17 @@ namespace Aban360.ReportPool.Persistence.Base
 						b.Item16,
 						b.Item17,
 						b.Item18,
-                        IIF((OtherCount+CommercialCount+DomesticCount)=0,1,OtherCount+CommercialCount+DomesticCount) - EmptyCount BillUnit,
-                        IIF((OtherCount+CommercialCount+DomesticCount)=0,1,OtherCount+CommercialCount+DomesticCount) TotalUnit
+                        IIF((b.OtherCount+b.CommercialCount+b.DomesticCount)=0,1,b.OtherCount+b.CommercialCount+b.DomesticCount) - b.EmptyCount BillUnit,
+                        IIF((b.OtherCount+b.CommercialCount+b.DomesticCount)=0,1,b.OtherCount+b.CommercialCount+b.DomesticCount) TotalUnit
 					From [CustomerWarehouse].dbo.Bills b
+					Join [CustomerWarehouse].dbo.Clients c
+						ON b.ZoneId=c.ZoneId and b.CustomerNumber=c.CustomerNumber
                     Join [Db70].dbo.T51 t51
                     	On b.ZoneId=t51.C0
                     Join [Db70].dbo.T46 t46
                     	On t51.C1=t46.C0
 					Where 
+						c.ToDayJalali is null AND
 						(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
 						(@fromConsumption IS NULL OR
 						@toConsumption IS NULL OR
@@ -122,16 +125,14 @@ namespace Aban360.ReportPool.Persistence.Base
                     		(b.CommercialCount+b.DomesticCount+b.OtherCount) as BillUnitCounts,
                             Case When b.UsageId IN (1,3) AND 
 							    	  b.BranchTypeId NOT IN (4) AND 
-							    	  b.RegisterDay>'1330/01/01' AND
-                                      (b.Item2 + Item4 + Item15) > 0
+							    	  c.PhysicalSewageInstallDateJalali>'1330/01/01' 
 							     Then b.Consumption 
 							     When b.UsageId NOT IN (1,3) AND 
 							    	  b.BranchTypeId NOT IN (4) AND 
-							    	  b.RegisterDay>'1330/01/01' AND
-                                      (b.Item2 + Item4 + Item15) > 0
+							    	  b.RegisterDay>'1330/01/01' 
 							     Then b.Consumption 
 						         Else 0
-						    End SewageConsumption,  --/PhysicalSewageInstallDateJalali	
+						    End SewageConsumption,  	
                     		b.Consumption,
                     		b.ConsumptionAverage,
                     		b.WaterDiameterTitle as MeterDiameterTitle,
@@ -159,9 +160,11 @@ namespace Aban360.ReportPool.Persistence.Base
                     		b.Item16,
                     		b.Item17,
                     		b.Item18,
-                            IIF((OtherCount+CommercialCount+DomesticCount)=0,1,OtherCount+CommercialCount+DomesticCount) - EmptyCount BillUnit,
-                            IIF((OtherCount+CommercialCount+DomesticCount)=0,1,OtherCount+CommercialCount+DomesticCount) TotalUnit
+                            IIF((b.OtherCount+b.CommercialCount+b.DomesticCount)=0,1,b.OtherCount+b.CommercialCount+b.DomesticCount) - b.EmptyCount BillUnit,
+                            IIF((b.OtherCount+b.CommercialCount+b.DomesticCount)=0,1,b.OtherCount+b.CommercialCount+b.DomesticCount) TotalUnit
                     From [CustomerWarehouse].dbo.Bills b
+					Join [CustomerWarehouse].dbo.Clients c
+						ON b.ZoneId=c.ZoneId and b.CustomerNumber=c.CustomerNumber
                     Join [Db70].dbo.T41 t41
                     	ON b.UsageId=t41.C0
                     Join [Db70].dbo.T51 t51
@@ -170,6 +173,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	ON t51.C1=t46.C0
                     {usageGroupJoinQuery}
                     Where 
+                            c.ToDayJalali is null AND
                     		(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
                     		(@fromConsumption IS NULL OR
                     		@toConsumption IS NULL OR

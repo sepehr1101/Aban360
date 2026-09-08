@@ -188,7 +188,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
         private (string, string, string) GetStringsValue(ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto> customerInfo, ConnectDisconnectPrintInputDto inputDto, ConCompanyPersonnelPersonalGetDto personnelInfo, bool isConnect, string? causeTitle)
         {
             string disconnectText = string.Format(SmsTemplates.ServiceLinkDisconnectAlert, customerInfo.ReportData.FirstOrDefault().ZoneTitle, customerInfo.ReportHeader.FullName, customerInfo.ReportHeader.BillId, causeTitle ?? string.Empty, inputDto.When, personnelInfo.FullName, personnelInfo.MobileNumber, Environment.NewLine);
-            string connectText = string.Format(SmsTemplates.ServiceLinkConnectAlert, customerInfo.ReportData.FirstOrDefault().ZoneTitle, customerInfo.ReportHeader.FullName, customerInfo.ReportHeader.BillId, inputDto.When, inputDto.When, personnelInfo.FullName, Environment.NewLine);
+            string connectText = string.Format(SmsTemplates.ServiceLinkConnectAlert, customerInfo.ReportData.FirstOrDefault().ZoneTitle, customerInfo.ReportHeader.FullName, customerInfo.ReportHeader.BillId, inputDto.When, personnelInfo.FullName, personnelInfo.MobileNumber, Environment.NewLine);
             string messageText = isConnect ? connectText : disconnectText;
 
             string connectLog = string.Format(OpLogLiterals.ServiceLinkConnectInsertOpLog, inputDto.BillId);

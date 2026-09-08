@@ -220,7 +220,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
 						m.enshab as MeterDiameterId,
 						m.Khali_s as EmptyUnit,
 						Trim(m.serial_co) as BodySerial,
-						m.bed_bes LatestDebtAmount
+						m.bed_bes LatestDebtAmount,
+						TRIM(m.MOBILE) MobileNumber
 					From [{dbName}].dbo.members m
 					{conditionQuery};";
         }
