@@ -2,9 +2,9 @@
 {
     public record CollectBillsAssignUploadedFileOutputDto
     {
-        public string Description { get; set; }
-        public long TraceNumber { get; set; }
-        public string CompressedFileName { get; set; }
-        public string CompressedFileExtension { get; set; }
+        public string? Description { get; set; }
+        public string? TraceNumber { get; set; }
+        public string? CompressedFileName { get; set; }
+        public string? CompressedFileExtension { get; set; }
     }
 }

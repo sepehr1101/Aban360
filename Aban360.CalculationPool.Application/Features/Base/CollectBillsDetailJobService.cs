@@ -18,14 +18,14 @@ using Hangfire;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.IO.Compression;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
     public interface ICollectBillsDetailJobService
     {
-        Task Initialize();
-        Task Upload(Guid groupingId, string zipFileName);//todo: remove
+        Task Initialize([Optional] DateTime? inputDateTime);
         Task<CollectBillsGetZipFileInfo> CreateZip(ICollection<string> data, string fromDateJalali, string toDateJalali);
     }
     public sealed class CollectBillsDetailJobService : AbstractBaseConnection, ICollectBillsDetailJobService
@@ -34,12 +34,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private readonly ICollectBillsQueryService _collectBillsQueryService;
         private readonly ICollectBillsService _collectBillsService;
         private readonly IT51QueryService _zoneQueryService;
-        private static DateTime _currentDateTime = DateTime.Now;
-        private static string _currentDateJalali = _currentDateTime.ToShortPersianDateString();
-        private int _currentYear = Convert.ToInt16(_currentDateJalali.Substring(0, 4));
-        private int _currentMonth = Convert.ToInt16(_currentDateJalali.Substring(5, 2));
         private string _basePath = DirectoryLiterals.CollectBillsFolderPath;
-        private string _cityCode = "1002031406";
+        private string _cityCode = "";
         public CollectBillsDetailJobService(
             IBackgroundJobClient backgroundJobClient,
             ICollectBillsQueryService collectBillsQueryService,
@@ -61,28 +57,31 @@ namespace Aban360.CalculationPool.Application.Features.Base
             _zoneQueryService.NotNull(nameof(zoneQueryService));
         }
 
-        public async Task Initialize()
+        public async Task Initialize(DateTime? inputDateTime)
         {
+            DateTime currentDateTime = inputDateTime ?? DateTime.Now.AddDays(-1);
+            string currentDateJalali = currentDateTime.ToShortPersianDateString();
+
             CollectBillsDetailInsertDto initializeLogDto = new(Guid.NewGuid(), (int)CollectBillStepEnum.Initialize, DateTime.Now, DateTime.Now, string.Empty);
             int effectedId = await CollectgBillsDetailInsert(initializeLogDto);
 
-            _backgroundJobClient.Enqueue(() => CreateFile(initializeLogDto.GroupingId));
+            _backgroundJobClient.Enqueue(() => CreateFile(initializeLogDto.GroupingId, currentDateJalali));
         }
-        public async Task CreateFile(Guid groupingId)
+        public async Task CreateFile(Guid groupingId, string inputDateJalali)
         {
             CollectBillsDetailInsertDto createZipFileLogDto = new(groupingId, (int)CollectBillStepEnum.CreateZip, DateTime.Now, null, string.Empty);
             int effectedId = await CollectgBillsDetailInsert(createZipFileLogDto);
 
-            CollectBillsGetDataToSendInputDto dtoToGenerateTxtFile = new(fromDateJalali: _currentDateJalali, toDateJalali: _currentDateJalali);
+            CollectBillsGetDataToSendInputDto dtoToGenerateTxtFile = new(fromDateJalali: inputDateJalali, toDateJalali: inputDateJalali);
             IEnumerable<CollectBillsDataDto> customersDataToSend = await _collectBillsQueryService.Get(dtoToGenerateTxtFile);
             CollectBillsGetZipFileInfo zipFileInfo = await CreateZip(customersDataToSend.Select(s => s.Row).ToList(), dtoToGenerateTxtFile.FromDateJalali, dtoToGenerateTxtFile.FromDateJalali);
             string description = string.Format(ExceptionLiterals.CollectBillsCreateZipFile, zipFileInfo.FileName, customersDataToSend?.Count() ?? 0);
             CollectBillsDetailUpdateDto createZipFileUpdateLogDto = new(effectedId, zipFileInfo.FileName, description, DateTime.Now);
             await CollectBillsDetailUpdate(createZipFileUpdateLogDto);
 
-            _backgroundJobClient.Enqueue(() => Upload(groupingId, zipFileInfo.FileName));
+            _backgroundJobClient.Enqueue(() => Upload(groupingId, zipFileInfo.FileName, inputDateJalali));
         }
-        public async Task Upload(Guid groupingId, string zipFileName)
+        public async Task Upload(Guid groupingId, string zipFileName, string inputDateJalali)
         {
             CollectBillsDetailInsertDto uploadInsertLogDto = new(groupingId, (int)CollectBillStepEnum.Upload, DateTime.Now, null, string.Empty);
             int effectedId = await CollectgBillsDetailInsert(uploadInsertLogDto);
@@ -96,16 +95,20 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             if (result.Code == (int)CollectBillsResponseStatusEnum.Success)
             {
-                result.Result = new CollectBillsUploadOutputDto("10000");//todo: remove this line
-                _backgroundJobClient.Enqueue(() => SetFileDetail(groupingId, result.Result.FileID, zipFileName));
+                result.Result = new CollectBillsUploadOutputDto(result.Result.FileID);//todo: remove this line
+                _backgroundJobClient.Enqueue(() => SetFileDetail(groupingId, result.Result.FileID, zipFileName, inputDateJalali));
             }
         }
-        public async Task SetFileDetail(Guid groupingId, string fileId, string zipFileName)
+        public async Task SetFileDetail(Guid groupingId, string fileId, string zipFileName, string inputDateJalali)
         {
+            int currentYear = Convert.ToInt16(inputDateJalali.Substring(0, 4));
+            int currentMonth = Convert.ToInt16(inputDateJalali.Substring(5, 2));
+
             CollectBillsDetailInsertDto createfile = new(groupingId, (int)CollectBillStepEnum.AssingUploadedFile, DateTime.Now, null, string.Empty);
             int effectedId = await CollectgBillsDetailInsert(createfile);
 
-            CollectBillsAssignUploadedFileInputDto assignUploadedFileDto = new(fileId, _currentYear.ToString(), _currentMonth.ToString(), string.Empty);
+            string detailDescription = $"فایل:{fileId} -> {DateTime.Now.ToLongPersianDateString()} ";
+            CollectBillsAssignUploadedFileInputDto assignUploadedFileDto = new(fileId, currentYear.ToString(), currentMonth.ToString(), detailDescription);
             CollectBillsOutputDto<CollectBillsAssignUploadedFileOutputDto> result = await _collectBillsService.AssignUploadedFile(assignUploadedFileDto);
             //validate 
 
