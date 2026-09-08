@@ -122,11 +122,13 @@ namespace Aban360.ReportPool.Persistence.Base
                     		(b.CommercialCount+b.DomesticCount+b.OtherCount) as BillUnitCounts,
                             Case When b.UsageId IN (1,3) AND 
 							    	  b.BranchTypeId NOT IN (4) AND 
-							    	  b.RegisterDay>'1330/01/01' 
+							    	  b.RegisterDay>'1330/01/01' AND
+                                      (b.Item2 + Item4 + Item15) > 0
 							     Then b.Consumption 
 							     When b.UsageId NOT IN (1,3) AND 
 							    	  b.BranchTypeId NOT IN (4) AND 
-							    	  b.RegisterDay>'1330/01/01' 
+							    	  b.RegisterDay>'1330/01/01' AND
+                                      (b.Item2 + Item4 + Item15) > 0
 							     Then b.Consumption 
 						         Else 0
 						    End SewageConsumption,  --/PhysicalSewageInstallDateJalali	
