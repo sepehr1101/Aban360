@@ -1,5 +1,4 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
-using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.Common.ApplicationUser;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts
@@ -11,5 +10,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.C
         Task Handle(CustomerTechnicalUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
         Task Handle(CustomerMobileUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
         Task Handle(CustomerBranchTypeUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellation);
+        Task Handle(CustomerHouseholdUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
     }
 }
