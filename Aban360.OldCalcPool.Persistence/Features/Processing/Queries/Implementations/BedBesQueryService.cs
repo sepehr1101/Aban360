@@ -1,4 +1,5 @@
-﻿using Aban360.Common.BaseEntities;
+﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
@@ -349,6 +350,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                 await bulkCopy.WriteToServerAsync(table);
             }
         }
+        public async Task<IEnumerable<BillReadingListDataOutputDto>> Get(BillReadingListInputDto input)
+        {
+            string dbName=GetDbName(input.ZoneId);
+            string query = GetBillReadingListQuery(dbName);
+            IEnumerable<BillReadingListDataOutputDto> data = await _sqlReportConnection.QueryAsync<BillReadingListDataOutputDto>(query, input);
+            return data;
+        }
+        
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
             return @$"Select Top 1 
@@ -878,6 +887,51 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     Where 
                         RemoveDateTime IS NULL AND
                         IsLastMeterValid = 1";
+        }
+        private string GetBillReadingListQuery(string dbName)
+        {
+            return $@";With Bills As
+                    (
+                    	Select 
+                    		b.town ZoneId,
+                    		t46.C2 ZoneTitle,
+                    		TRIM(m.name) FirstName,
+                    		TRIM(m.family) Surname,
+                    		TRIM(m.name) + ' ' +TRIM(m.family) FullName,
+                    		TRIM(b.eshtrak) ReadingNumber,
+                    		b.cod_enshab UsageId,
+                    		t41.C1 UsageTitle,
+                    		b.tedad_tej CommercialUnit,
+                    		b.tedad_mas DomesticUnit,
+                    		b.tedad_vahd OtherUnit,
+                    		b.date_bed RegisterDayJalali,
+                    		b.today_date CurrentDateJalali,
+                    		b.today_no CurrentNumber,
+		                    b.cod_vas CounterStateCode,
+		                    cv.Title CounterStateTitle,
+		                    m.hasf DeletionStateId,
+		                    d.Title DeletionStateTitle,
+                    		Rn=ROW_NUMBER() OVER(Partition By b.radif,b.town Order By b.Date_bed Desc)
+                    	From [{dbName}].dbo.bed_bes b
+                    	Join [{dbName}].dbo.members m
+                    		ON m.town=b.town AND m.radif=b.radif
+                    	Join [Db70].dbo.T51 t51
+                    		ON b.town=t51.C0
+                    	Join [Db70].dbo.T46 t46
+                    		ON t51.C1=t46.C0
+                    	Join [Db70].dbo.T41 t41
+                    		ON b.cod_enshab=t41.C0
+	                    Join [Db70].dbo.CounterVaziat cv
+	                    	ON b.cod_vas=cv.MoshtarakinId
+	                    Join [Db70].dbo.DeletionState d
+	                    	ON m.hasf=d.Id
+                    	Where 
+                            (TRIM(b.eshtrak) BETWEEN @FromReadingNumber AND @ToReadingNumber ) AND
+		                    m.hasf IN (0,5)
+                    )
+                    Select Top 500 * 
+                    From Bills
+                    Where Rn=1";
         }
     }
 }
