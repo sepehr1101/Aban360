@@ -25,7 +25,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 {
     public interface ICollectBillsDetailJobService
     {
-        Task Initialize([Optional] DateTime? inputDateTime);
+        Task Initialize([Optional] DateTime? inputDateTime, CancellationToken cancellationToken);
         Task<CollectBillsGetZipFileInfo> CreateZip(ICollection<string> data, string fromDateJalali, string toDateJalali);
     }
     public sealed class CollectBillsDetailJobService : AbstractBaseConnection, ICollectBillsDetailJobService
@@ -57,7 +57,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             _zoneQueryService.NotNull(nameof(zoneQueryService));
         }
 
-        public async Task Initialize(DateTime? inputDateTime)
+        public async Task Initialize(DateTime? inputDateTime,CancellationToken cancellationToken)
         {
             DateTime currentDateTime = inputDateTime ?? DateTime.Now.AddDays(-1);
             string currentDateJalali = currentDateTime.ToShortPersianDateString();

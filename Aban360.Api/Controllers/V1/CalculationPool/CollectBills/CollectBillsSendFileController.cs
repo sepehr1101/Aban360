@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<CollectBillsDetailGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SendFile(CancellationToken cancellationToken)
         {
-            await _jobService.Initialize(DateTime.Now.AddDays(-1));
+            await _jobService.Initialize(DateTime.Now.AddDays(-1), cancellationToken);
             return Ok();
         }
     }
