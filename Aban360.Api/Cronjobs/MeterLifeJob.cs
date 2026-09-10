@@ -23,7 +23,7 @@ namespace Aban360.Api.Cronjobs
 
         public async Task RunAsync()
         {
-            if (!_webHostEnvironment.IsDevelopment())//todo: check
+            if (!_webHostEnvironment.IsDevelopment())
             {
                 _logger.LogInformation("MeterLife job started.");
                 using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(cancelAfterMin));

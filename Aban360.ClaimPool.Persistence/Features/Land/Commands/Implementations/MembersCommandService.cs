@@ -86,6 +86,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
+        public async Task Update(CustomerHouseholdUpdateDto updateDto, string dbName)
+        {
+            string command = GetUpdateHouseholdCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
         public async Task UpdateBedbes(ZoneIdAndCustomerNumber inputDto, long amount, string dbName)
         {
             string command = GetUpdateBedBesCommand(dbName);
@@ -332,6 +341,19 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             return @$"UPDATE [{dbName}].dbo.members
                      SET 
 	                    hasf=@deletionStateId,
+	                    date_sabt=@ToDayDateJalali
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+        private string GetUpdateHouseholdCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+	                    ted_khane=@HouseholdNumber,
+	                    date_KHANE=@HouseholdDateJalali,
 	                    date_sabt=@ToDayDateJalali
                      WHERE 
                         id=@id AND

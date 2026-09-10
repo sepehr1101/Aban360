@@ -1,4 +1,5 @@
-﻿using Aban360.Common.BaseEntities;
+﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
+using Aban360.Common.BaseEntities;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -31,5 +32,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
         Task<BedBesPreviousNumberAndDateOutputDto?> GetPreviousDateAndNumber(ZoneIdAndCustomerNumber input, string billId, bool hasException);
         Task<IEnumerable<BedBesPreviousNumberAndDateOutputDto>> GetPreviousDateAndNumber(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers);
         Task<IEnumerable<ZoneIdAndCustomerNumber>> GetInvalidLastBillByWithSqlBulk(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers);
+        Task<IEnumerable<BillReadingListDataOutputDto>> Get(BillReadingListInputDto input);
     }
 }
