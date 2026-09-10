@@ -39,7 +39,6 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
             {
                 await GetUserLogin(InvalidLoginReasonEnum.InvalidUsername, false, false, input, user);
                 return (user, false);
-
             }
             else
             {
@@ -47,6 +46,10 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
                 if (hashedPassword != user.Password)
                 {
                     await GetUserLogin(InvalidLoginReasonEnum.InvalidPassword, true, true, input, user);
+                    return (user, false);
+                }
+                if(user.RemoveLogInfo!=null && string.IsNullOrWhiteSpace(user.RemoveLogInfo))
+                {
                     return (user, false);
                 }
                 else

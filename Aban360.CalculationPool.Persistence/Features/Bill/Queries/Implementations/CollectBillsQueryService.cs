@@ -42,8 +42,8 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 							 c.MeterSerialBody, ';', --CounterSerialNumber, ';',
 							 b.CounterStateTitle, ';', --CounterStatus, ';',
 							 c.DomesticCount, ';', --ResidentialPurchased, ';',
-							 (c.DomesticCount- c.EmptyCount), ';', --ResidentialOccupied, ';',
-							 (c.CommercialCount + c.OtherCount), ';', --NonResidentialPurchased, ';',
+							 IIF(c.DomesticCount- c.EmptyCount>0, c.DomesticCount- c.EmptyCount, 0), ';', --ResidentialOccupied, ';',
+							 IIF(c.CommercialCount + c.OtherCount>0,c.CommercialCount + c.OtherCount,0), ';', --NonResidentialPurchased, ';',
 							 c.FamilyCount, ';', --FamilyCount, ';',
 							 c.UsageTitle, ';', --Tariff, ';',
 							 c.WaterDiameterTitle	, ';', --WaterDiameter, ';',
@@ -92,21 +92,21 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 							 Trim(c.MobileNo),';', --MobileNumber,
 						     IIF(LEN(TRIM(c.NationalId)) in (10,11),TRIM(c.NationalId),''),';', --cod meli,
 						   	 SUBSTRING(k.StringCode,1,4),';',--tarefe 4 char, karbari
-							  IIF(c.ZoneId<140000, 
+							 IIF(c.ZoneId<140000, 
 								IIF(z.StringCode is NULL, '00',SUBSTRING(z.StringCode,1,2)),
 								IIF(v.StringCode is NULL, '00',SUBSTRING(v.StringCode,1,2))),';',--ostan provinceCode
-							 IIF(c.ZoneId<140000, 
+							 ''/*IIF(c.ZoneId<140000, 
 								IIF(z.StringCode is NULL, '00',SUBSTRING(z.StringCode,3,2)),
-								IIF(v.StringCode is NULL, '00',SUBSTRING(v.StringCode,3,2))),';',-- shahrestan
-							 IIF(c.ZoneId<140000, 
+								IIF(v.StringCode is NULL, '00',SUBSTRING(v.StringCode,3,2)))*/,';',-- shahrestan
+							 ''/*IIF(c.ZoneId<140000, 
 								IIF(z.StringCode is NULL, '00',SUBSTRING(z.StringCode,5,2)),
-								IIF(v.StringCode is NULL, '00',SUBSTRING(v.StringCode,5,2))),';',-- baxsh
-							 IIF(c.ZoneId<140000, 
+								IIF(v.StringCode is NULL, '00',SUBSTRING(v.StringCode,5,2)))*/,';',-- baxsh
+							 ''/*IIF(c.ZoneId<140000, 
 								 IIF(z.StringCode is NULL, '0000',SUBSTRING(z.StringCode,7,4)),
-								 IIF(v.StringCode is NULL, '0000',SUBSTRING(v.StringCode,7,4))),';',-- shahr - dehestan
-							 IIF(c.ZoneId<140000, 
+								 IIF(v.StringCode is NULL, '0000',SUBSTRING(v.StringCode,7,4)))*/,';',-- shahr - dehestan
+							 ''/*IIF(c.ZoneId<140000, 
 								  '000000',
-								  IIF(v.StringCode is NULL, '000000', SUBSTRING(v.StringCode,11,6))),';',-- abadi roosta
+								  IIF(v.StringCode is NULL, '000000', SUBSTRING(v.StringCode,11,6)))*/,';',-- abadi roosta
 
 							 --IIF(tg.StringCode is null,'000',tg.StringCode),';', -- new: 3 char coding dastgah ejraii parent
 							 --IIF(t.StringCode is null,'0000',t.StringCode),';',	 -- new: 4 char coding dastah ejraii child
@@ -159,6 +159,12 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
 					LEFT JOIN CustomerWarehouse.dbo.TagGroups tg
 						On t.TagGroupId=tg.Id and tg.MainTagGroupId=11
 					Where 
+						b.NextNumber>=b.PreviousNumber AND --tmp
+						SUBSTRING(z.StringCode,1,2)='10' AND --tmp
+						LEN(   IIF(c.ZoneId<140000,z.StringCode,v.StringCode)+ --tmp
+							   SUBSTRING(k.StringCode,1,4)+--tarefe 4 char, karbari
+							   IIF(tg.StringCode is null,'000',tg.StringCode)+ -- new: 3 char coding dastgah ejraii parent
+							   IIF(t.StringCode is null,'0000',t.StringCode))=27 AND
 						c.ToDayJalali IS NULL AND
 						b.CounterStateCode NOT IN (4,7,8) AND
 						b.RegisterDay BETWEEN @FromDateJalali AND @ToDateJalali AND
