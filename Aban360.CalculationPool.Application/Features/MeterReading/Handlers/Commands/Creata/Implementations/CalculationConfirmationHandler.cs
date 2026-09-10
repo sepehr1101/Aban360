@@ -114,6 +114,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 throw new ReadingException(ExceptionLiterals.NotFoundMeterReadingDetail);
             }
             int zoneId = meterReadings.FirstOrDefault().ZoneId;
+            int[] validZoneIds = [131411, 131412, 131420, 131305];
+            if (!validZoneIds.Contains(zoneId) )
+            {
+                throw new ReadingException("بابت برخی از تست ها این بخش از رایاب تا ساعاتی دیگر در دسترس قرار خواهد گرفت");
+            }
             await DuplicateBillsValidate(meterReadings, zoneId);
             var (bedBesBatch, kasrHaBatch) = await GetBedBesAndKasrHaDto(meterReadings, cancellationToken);
 

@@ -78,7 +78,11 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             {
                 HouseholdNumber = tmpHouseholdNumber;
             }
-            HouseholdNumber = input.CustomerInfo.HouseholdNumber ?? 0;
+            else
+            {
+                tmpHouseholdNumber = 0;
+            }
+            HouseholdNumber = tmpHouseholdNumber;
             ReadingNumber = input.CustomerInfo.ReadingNumber ?? string.Empty;
             VillageId = input.CustomerInfo.VillageId;
             IsSpecial = input.CustomerInfo.IsSpecial;
