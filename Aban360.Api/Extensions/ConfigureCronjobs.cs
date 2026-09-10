@@ -6,11 +6,14 @@ namespace Aban360.Api.Extensions
     internal static class ConfigureCronjobs
     {
         const int _fillMeterLifeHour = 4;
-        const int _removeOldReportHour = 2; const int _removeOldReportMin=45;
+        const int _removeOldReportHour = 2;
+        const int _removeOldReportMin = 45;
+        const int _collectBillsHour = 17;
         internal static void AddCronjobs(this IConfiguration configuration)
         {
             RemoveOldReports(configuration);
             FillMeterLife();
+            CollectBills();
         }
         private static void RemoveOldReports(IConfiguration configuration)
         {
@@ -30,6 +33,14 @@ namespace Aban360.Api.Extensions
                 $"_{nameof(MeterLifeJob)}",
                 job => job.RunAsync(),
                 Cron.Daily(_fillMeterLifeHour),
+                GetOptions());
+        }
+        private static void CollectBills()
+        {
+            RecurringJob.AddOrUpdate<CollectBillsJob>(
+                $"_{nameof(CollectBillsJob)}",
+                job => job.RunAsync(),
+                Cron.Daily(_collectBillsHour),
                 GetOptions());
         }
         private static RecurringJobOptions GetOptions()

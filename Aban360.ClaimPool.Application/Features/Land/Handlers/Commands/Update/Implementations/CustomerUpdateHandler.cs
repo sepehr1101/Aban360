@@ -28,11 +28,12 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IMembersQueryService _membersQueryService;
         private readonly ICommonZoneService _commonZoneService;
-        private readonly IValidator<CustomerUpdateInputDto> _updateAllDataValidator;
-        private readonly IValidator<CustomerEstateUpdateDto> _updateEstateValidator;
-        private readonly IValidator<CustomerTechnicalUpdateDto> _updateTechnicalUpdateValidator;
-        private readonly IValidator<CustomerMobileUpdateInputDto> _updateMobilevalidator;
-        private readonly IValidator<CustomerBranchTypeUpdateInputDto> _updateBranchTypeUpdateValidator;
+        private readonly IValidator<CustomerUpdateInputDto> _allDataValidator;
+        private readonly IValidator<CustomerEstateUpdateDto> _estateValidator;
+        private readonly IValidator<CustomerTechnicalUpdateDto> _technicalUpdateValidator;
+        private readonly IValidator<CustomerMobileUpdateInputDto> _mobilevalidator;
+        private readonly IValidator<CustomerBranchTypeUpdateInputDto> _branchTypeUpdateValidator;
+        private readonly IValidator<CustomerHouseholdUpdateInputDto> _householdUpdateValidator;
         static int[] _allowedToSetConstructionType = { 0, 1 };
         private string _currentDateJalali = DateTime.Now.ToShortPersianDateString();
         private int _constructionId = 4;
@@ -43,11 +44,12 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             ICommonMemberQueryService commonMemberQueryService,
             IMembersQueryService membersQueryService,
             ICommonZoneService commonZoneService,
-            IValidator<CustomerMobileUpdateInputDto> updateMobilevalidator,
-            IValidator<CustomerUpdateInputDto> updateAllDataValidator,
-            IValidator<CustomerEstateUpdateDto> updateEstateValidator,
-            IValidator<CustomerTechnicalUpdateDto> updateTechnicalUpdateValidator,
-            IValidator<CustomerBranchTypeUpdateInputDto> updateBranchTypeUpdateValidator,
+            IValidator<CustomerMobileUpdateInputDto> mobileUpdatevalidator,
+            IValidator<CustomerUpdateInputDto> allDataValidator,
+            IValidator<CustomerEstateUpdateDto> estateValidator,
+            IValidator<CustomerTechnicalUpdateDto> technicalUpdateValidator,
+            IValidator<CustomerBranchTypeUpdateInputDto> branchTypeUpdateValidator,
+            IValidator<CustomerHouseholdUpdateInputDto> householdUpdateValidator,
             IConfiguration configuration)
             : base(configuration)
         {
@@ -69,20 +71,23 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             _membersQueryService = membersQueryService;
             _membersQueryService.NotNull(nameof(membersQueryService));
 
-            _updateAllDataValidator = updateAllDataValidator;
-            _updateAllDataValidator.NotNull(nameof(updateAllDataValidator));
+            _allDataValidator = allDataValidator;
+            _allDataValidator.NotNull(nameof(allDataValidator));
 
-            _updateEstateValidator = updateEstateValidator;
-            _updateEstateValidator.NotNull(nameof(updateEstateValidator));
+            _estateValidator = estateValidator;
+            _estateValidator.NotNull(nameof(estateValidator));
 
-            _updateTechnicalUpdateValidator = updateTechnicalUpdateValidator;
-            _updateTechnicalUpdateValidator.NotNull(nameof(updateTechnicalUpdateValidator));
+            _technicalUpdateValidator = technicalUpdateValidator;
+            _technicalUpdateValidator.NotNull(nameof(technicalUpdateValidator));
 
-            _updateMobilevalidator = updateMobilevalidator;
-            _updateMobilevalidator.NotNull(nameof(updateMobilevalidator));
+            _mobilevalidator = mobileUpdatevalidator;
+            _mobilevalidator.NotNull(nameof(mobileUpdatevalidator));
 
-            _updateBranchTypeUpdateValidator = updateBranchTypeUpdateValidator;
-            _updateBranchTypeUpdateValidator.NotNull(nameof(updateBranchTypeUpdateValidator));
+            _branchTypeUpdateValidator = branchTypeUpdateValidator;
+            _branchTypeUpdateValidator.NotNull(nameof(branchTypeUpdateValidator));
+
+            _householdUpdateValidator = householdUpdateValidator;
+            _householdUpdateValidator.NotNull(nameof(householdUpdateValidator));
         }
 
         public async Task Handle(CustomerUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
@@ -140,6 +145,15 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidBranchTypeId);
             }
+        }
+        public async Task Handle(CustomerHouseholdUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId);
+            CustomerHouseholdUpdateDto updateDto = new(memberInfo.Id, memberInfo.ZoneId, memberInfo.CustomerNumber, memberInfo.BillId, inputDto.HouseholdNumber, inputDto.HouseholdDateJalali);
+            string opLogText = string.Format(OpLogLiterals.CustomerHouseholdUpdateOpLog, inputDto.BillId);
+            await ExecSql(updateDto, appUser, opLogText);
         }
 
 
@@ -279,6 +293,34 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 }
             }
         }
+        private async Task ExecSql(CustomerHouseholdUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    string dbName = GetDbName(updateDto.ZoneId);
+
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
+        }
+     
         private CustomerUpdateDto GetCustomerUpdate(CustomerUpdateInputDto inputDto, MemberInfoGetDto previousSubscription)
         {
             return new CustomerUpdateDto()
@@ -306,8 +348,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 CommertialUnit = inputDto.CommertialUnit,
                 DomesticUnit = inputDto.DomesticUnit,
                 OtherUnit = inputDto.OtherUnit,
-                HouseholdDateJalali = DateValidation(inputDto.HouseholdDateJalali, false),
-                HouseholdNumber = inputDto.HouseholdNumber,
+                HouseholdDateJalali = DateValidation(previousSubscription.HouseholdDateJalali, false),
+                HouseholdNumber = previousSubscription.HouseholdNumber,
                 MeterDiameterId = inputDto.MeterDiameterId,
                 IsSpecial = inputDto.IsSpecial,
                 ContractualCapacity = inputDto.ContractualCapacity,
@@ -357,7 +399,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         }
         private async Task InputValidate(CustomerMobileUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            var validationResult = await _updateMobilevalidator.ValidateAsync(inputDto, cancellationToken);
+            var validationResult = await _mobilevalidator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
@@ -366,7 +408,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         }
         private async Task InputValidate(CustomerUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            var validationResult = await _updateAllDataValidator.ValidateAsync(inputDto, cancellationToken);
+            var validationResult = await _allDataValidator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
@@ -375,7 +417,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         }
         private async Task InputValidate(CustomerBranchTypeUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            var validationResult = await _updateBranchTypeUpdateValidator.ValidateAsync(inputDto, cancellationToken);
+            var validationResult = await _branchTypeUpdateValidator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
@@ -384,7 +426,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         }
         private async Task InputValidate(CustomerEstateUpdateDto inputDto, CancellationToken cancellationToken)
         {
-            var validationResult = await _updateEstateValidator.ValidateAsync(inputDto, cancellationToken);
+            var validationResult = await _estateValidator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
@@ -393,7 +435,16 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         }
         private async Task InputValidate(CustomerTechnicalUpdateDto inputDto, CancellationToken cancellationToken)
         {
-            var validationResult = await _updateTechnicalUpdateValidator.ValidateAsync(inputDto, cancellationToken);
+            var validationResult = await _technicalUpdateValidator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
+            }
+        }
+        private async Task InputValidate(CustomerHouseholdUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _householdUpdateValidator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
