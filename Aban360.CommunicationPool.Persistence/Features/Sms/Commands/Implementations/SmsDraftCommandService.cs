@@ -4,6 +4,7 @@ using Aban360.Common.Literals;
 using Aban360.CommunicationPool.Domain.Features.Sms.Commands;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 
 namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementations
@@ -12,6 +13,7 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementa
     {
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
+        private string _tempIdTable = "#SmsDraftUpdateDateTemp";
         public SmsDraftCommandService(
             IDbConnection sqlRonnection,
             IDbTransaction transaction)
@@ -47,6 +49,38 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementa
                 bulk.ColumnMappings.Add(column.ColumnName, column.ColumnName);
             }
             await bulk.WriteToServerAsync(table);
+        }
+        public async Task Update(IEnumerable<Guid> ids, DateTime dateTime, string referenceId, bool isUpdateFetchDate)
+        {
+            DataTable table = GetUpdateDataTable(ids);
+            string createTempTable = @$"Create Table {_tempIdTable} ( Id uniqueidentifier NOT NULL )";
+            await _connection.ExecuteAsync(createTempTable, null, _transaction);
+            using var bulk = new SqlBulkCopy((SqlConnection)_connection, SqlBulkCopyOptions.Default, (SqlTransaction)_transaction)
+            {
+                DestinationTableName = _tempIdTable,
+                BatchSize = 5000,
+                BulkCopyTimeout = 0
+            };
+            await bulk.WriteToServerAsync(table);
+            
+            string updateCommand = GetUpdateQuery(isUpdateFetchDate);
+            int rowEffect = await _connection.ExecuteAsync(updateCommand, new { dateTime, referenceId }, _transaction);
+            if (rowEffect != (ids?.Count() ?? 0))
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidSmsDraftUpdate);
+            }
+        }
+
+        private DataTable GetUpdateDataTable(IEnumerable<Guid> ids)
+        {
+            var table = new DataTable();
+
+            table.Columns.Add("Id", typeof(Guid));
+            foreach (var id in ids)
+            {
+                table.Rows.Add(id);
+            }
+            return table;
         }
         private DataTable GetInsertDataTable(IEnumerable<SmsDraftInsertDto> inputDtos)
         {
@@ -101,6 +135,19 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementa
                         @Message, @MobileNumber,
                     	@InsertDateTime, @FetchDateTime, @SendDateTime
                     )";
+        }
+        private string GetUpdateQuery(bool isFetchDate)
+        {
+            string dateProperty = isFetchDate ? "s.FetchDateTime" : "s.SendDateTime";
+            return $@"Update s
+                    Set
+                    	{dateProperty} = @dateTime
+                    From CustomerWarehouse.dbo.SmsDraft s
+                    Join {_tempIdTable} tempS
+                    	On s.Id = tempS.Id 
+                    Where
+                    	s.ReferenceId = @referenceId AND
+                    	{dateProperty} IS NULL";
         }
     }
 }
