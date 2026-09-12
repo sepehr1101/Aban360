@@ -340,5 +340,6 @@
 
         //SmsDraft
         public static string InvalidSmsDraftInsert => "خطا در ذخیره بایگانی پیامک ها";
+        public static string InvalidSmsDraftUpdate => "خطا در ویرایش تاریخ بایگانی پیامک ها";
     }
 }

@@ -24,7 +24,7 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Queries.Implementat
             string fetchCondition = hasFetchDate ? "  FetchDateTime IS NOT NULL " : "  FetchDateTime IS NULL ";
             string sendCondition = hasSendDate ? "  SendDateTime IS NOT NULL " : "  SendDateTime IS NULL ";
 
-            return @$"Select 
+            return @$"Select Top 4000 
                         Id,
 	                    TrackNumber,
 	                    BillId,
@@ -38,7 +38,7 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Queries.Implementat
 	                    SendDateTime
                     From CustomerWarehouse.dbo.SmsDraft
                     Where 
-                        ReferenceId=1158 AND
+                        ReferenceId = @referenceId AND
                         {fetchCondition} AND
                         {sendCondition}";
         }

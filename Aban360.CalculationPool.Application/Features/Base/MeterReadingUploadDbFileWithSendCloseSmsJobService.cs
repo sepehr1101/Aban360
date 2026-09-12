@@ -2,37 +2,40 @@
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
-using Aban360.ClaimPool.Domain.Constants;
-using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
-using Aban360.Common.Literals;
+using Aban360.CommunicationPool.Domain.Features.Sms.Queries;
+using Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementations;
 using Aban360.CommunicationPool.Persistence.Features.Sms.Queries.Implementations;
 using Aban360.NotificationPool.Application.Features.Sms;
 using Hangfire;
+using Microsoft.Extensions.Configuration;
+using System.Data;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
     public interface IMeterReadingUploadDbFileWithSendCloseSmsJobService
     {
         Task Upload(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken);
+        Task SendSms(int flowStepId);
     }
-    internal sealed class MeterReadingUploadDbFileWithSendCloseSmsJobService : IMeterReadingUploadDbFileWithSendCloseSmsJobService
+    internal sealed class MeterReadingUploadDbFileWithSendCloseSmsJobService : AbstractBaseConnection, IMeterReadingUploadDbFileWithSendCloseSmsJobService
     {
         private readonly IBackgroundJobClient _jobClient;
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IMeterReadingFileCreateHandler _meterReadingFileCreateHandler;
-        private readonly IMeterReadingDetailQueryService _meterReadingDetailQueryService;
-        private readonly IT51QueryService _zoneQueryService;
+        private readonly IMeterFlowQueryService _meterFlowQueryService;
         private readonly ISmsDraftQueryService _draftQueryService;
         public MeterReadingUploadDbFileWithSendCloseSmsJobService(
             IMeterReadingFileCreateHandler meterReadingFileCreateHandler,
             IBackgroundJobClient jobClient,
             ISmsOldHandler smsOldHandler,
-            IMeterReadingDetailQueryService meterReadingDetailQueryService,
-            IT51QueryService zoneQueryService,
-            ISmsDraftQueryService draftQueryService)
+            IMeterFlowQueryService meterFlowQueryService,
+            ISmsDraftQueryService draftQueryService,
+            IConfiguration configuration)
+                : base(configuration)
         {
             _meterReadingFileCreateHandler = meterReadingFileCreateHandler;
             _meterReadingFileCreateHandler.NotNull(nameof(meterReadingFileCreateHandler));
@@ -43,11 +46,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
             _smsOldHandler = smsOldHandler;
             _smsOldHandler.NotNull(nameof(smsOldHandler));
 
-            _meterReadingDetailQueryService = meterReadingDetailQueryService;
-            _meterReadingDetailQueryService.NotNull(nameof(meterReadingDetailQueryService));
-
-            _zoneQueryService = zoneQueryService;
-            _zoneQueryService.NotNull(nameof(zoneQueryService));
+            _meterFlowQueryService = meterFlowQueryService;
+            _meterFlowQueryService.NotNull(nameof(meterFlowQueryService));
 
             _draftQueryService = draftQueryService;
             _draftQueryService.NotNull(nameof(draftQueryService));
@@ -57,22 +57,36 @@ namespace Aban360.CalculationPool.Application.Features.Base
         {
             ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> result = await _meterReadingFileCreateHandler.Handle(input, appUser, cancellationToken);
             int flowImportedId = result?.ReportData?.FirstOrDefault()?.FlowImportedId ?? 0;
-            if (flowImportedId > 0)
-            {
-                _jobClient.Enqueue(() => SendSms(flowImportedId));
-            }
+            _jobClient.Enqueue(() => SendSms(flowImportedId));
         }
         public async Task SendSms(int flowStepId)
         {
-            IEnumerable<MeterReadingDetailDataOutputDto> meterReadingDetailDto = await _meterReadingDetailQueryService.Get(flowStepId, false);
-            IEnumerable<MeterReadingDetailDataOutputDto> meterReadingToSendSms = meterReadingDetailDto?.Where(m => m.CurrentCounterStateCode == (int)CounterStateCodeEnum.Close) ?? new List<MeterReadingDetailDataOutputDto>();
-            NumericDictionary zoneInfo = await _zoneQueryService.Get(meterReadingDetailDto?.FirstOrDefault()?.ZoneId ?? 0, false);
-            /////TODO: Use SmsDraft
-            foreach (var item in meterReadingToSendSms)
+            IEnumerable<SmsDraftGetDto> smsDraftInfo = await _draftQueryService.GetByReferenceId(flowStepId.ToString(), hasFetchDate: false, hasSendDate: false);
+            if (smsDraftInfo.Any())
             {
-                string smsText = string.Format(SmsTemplates.ClosedBill, zoneInfo?.Title ?? string.Empty, item.BillId, Environment.NewLine);
-                _jobClient.Enqueue(() => _smsOldHandler.Send(item.MobileNumber ?? string.Empty, smsText, Guid.NewGuid()));//todo:Guid
-                //OutBox pattern
+                await UpdateDateExecSql(smsDraftInfo.Select(s => s.Id).ToList(), flowStepId.ToString(),true);
+
+                //SendSms
+                //if SmsResult==200 -> UpdateSendDateTime
+                await UpdateDateExecSql(smsDraftInfo.Select(s => s.Id).ToList(), flowStepId.ToString(), false);
+            }
+            await SendSms(flowStepId);
+        }
+        public async Task UpdateDateExecSql(IEnumerable<Guid> smsIds, string referenceId,bool isFetch)
+        {
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    SmsDraftCommandService smsDraftCommandService = new(connection, transaction);
+                    await smsDraftCommandService.Update(smsIds, DateTime.Now, referenceId, isFetch);
+
+                    transaction.Commit();
+                }
             }
         }
     }
