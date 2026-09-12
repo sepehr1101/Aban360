@@ -179,6 +179,10 @@
         public static string InvalidMeterSmsFlowId => "خطا در مراحل پیامک";
         public static string InvalidLatestMeterReadingWithExpireMeterFlow => "آخرین سطر اطلاعات قرائت برای شناسه وارد شده، قابل دسترسی نیست - فایل بسته شده.";
         public static string InvalidMeterReadingDate(string billId) => $"نیاز به خروج از لیست - برای شناسه قبض :{billId} ،  در مدت محاسبه تا تایید، تراکنشی انجام شده.";
+        public static string InlvalidUpdateMeterReadingDetailToExclude => "خطا در اعمال خروج از لیست قبوض تکرای.";
+        public static string InvalidToleranceGenerateBill(string billIds) => @$"طی 5 روز جاری برای مشترکین با شناسه قبض: {billIds} قبض صادر گردیده است. ";
+        public static string InvalidDuplicateGenerateBill(string billIds) => @$"در مدت محاسبه تا تایید برای شناسه قبض: {billIds} تراکنش انجام شده. ";
+
 
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";
@@ -265,8 +269,7 @@
 
 
         public static string InvalidDuplicateInstallment(string insertedBy, int installmentCount, string registerDateJalali) => @$"تعداد {installmentCount} قسط، توسط کاربر{insertedBy} در تاریخ{registerDateJalali} ایجاد شده.";
-        public static string InvalidDuplicateGenerateBill(string billIds) => @$"طی 5 روز جاری برای مشترکین با شناسه قبض: {billIds} قبض صادر گردیده است. ";
-
+      
         public static string InvalidInsertClientDiscount => "خطا در ثبت درخواست تخفیف";
         public static string InvalidUpdateClientDiscount => "خطا در ویرایش درخواست تخفیف";
         public static string InvalidRemoveClientDiscount => "خطا در حذف درخواست تخفیف";

@@ -16,6 +16,7 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
@@ -23,6 +24,7 @@ using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -114,35 +116,33 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 throw new ReadingException(ExceptionLiterals.NotFoundMeterReadingDetail);
             }
             int zoneId = meterReadings.FirstOrDefault().ZoneId;
-            int[] validZoneIds = [131411, 131412, 131420, 131305];
-            if (!validZoneIds.Contains(zoneId) )
-            {
-                throw new ReadingException("بابت برخی از تست ها این بخش از رایاب تا ساعاتی دیگر در دسترس قرار خواهد گرفت");
-            }
-            await DuplicateBillsValidate(meterReadings, zoneId);
-            var (bedBesBatch, kasrHaBatch) = await GetBedBesAndKasrHaDto(meterReadings, cancellationToken);
+            var (warningMessageForDuplicateBills,invalidDuplicateMeterReading) = await GetDuplicateBills(meterReadings, zoneId, appUser);
+            IEnumerable<MeterReadingDetailDataOutputDto> allMeterReadingWithoutDuplicates = meterReadings.Where(r => !invalidDuplicateMeterReading.Contains(r)).ToList();
 
-            var (warningMessageForDuplicateBills, duplicateBillIds) = await CheckDuplicateBill(bedBesBatch);
-            ICollection<BedBesCreateDto> bedBesBatchWithoutDuplicate = bedBesBatch.Where(s => !duplicateBillIds.Contains(s.ShGhabs1)).ToList();
+            //
+            var (bedBesBatch, kasrHaBatch) = await GetBedBesAndKasrHaDto(allMeterReadingWithoutDuplicates, cancellationToken);
+
+            var (warningMessageForToleranceBills, toleranceBillIds) = await CheckToleranceBill(bedBesBatch);
+            ICollection<BedBesCreateDto> bedBesBatchWithoutDuplicate = bedBesBatch.Where(s => !toleranceBillIds.Contains(s.ShGhabs1)).ToList();
             if ((bedBesBatchWithoutDuplicate?.Count() ?? 0) <= 0)
             {
                 throw new ReadingException(ExceptionLiterals.NotFoundBillsToConfirm);
             }
-            ICollection<KasrHaDto> kasrhasBatchWithoutDuplicate = kasrHaBatch.Where(s => !duplicateBillIds.Contains(s.ShGhabs)).ToList();
+            ICollection<KasrHaDto> kasrhasBatchWithoutDuplicate = kasrHaBatch.Where(s => !toleranceBillIds.Contains(s.ShGhabs)).ToList();
             ICollection<BillInsertDto> billsBatch = await GetBillsInsertDto(bedBesBatchWithoutDuplicate, kasrHaBatch);
             ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch = bedBesBatchWithoutDuplicate.Select(b => new MembersFazelabCountAndDebtAmountUpdateDto((int)b.Town, (int)b.Radif, b.ShGhabs1, (long)b.Baha, b.TodayDate)).ToList();
             ICollection<ContorUpdateDto> contorsUpcateBatch = GetContorsUpdateDto(bedBesBatchWithoutDuplicate);
             string opLogText = string.Format(OpLogLiterals.GenerateBatchBillOpLog, billsBatch?.FirstOrDefault()?.ZoneTitle, bedBesBatchWithoutDuplicate?.Count() ?? 0);
             int newMeterFlowId = await ExceSql(bedBesBatchWithoutDuplicate, kasrhasBatchWithoutDuplicate, billsBatch, memberDebtAmountBatch, contorsUpcateBatch, zoneId, firstFlowId, latestFlowId, appUser, opLogText);
 
-            return GetResult(newMeterFlowId, warningMessageForDuplicateBills);
+            return GetResult(newMeterFlowId, warningMessageForToleranceBills, warningMessageForDuplicateBills);
         }
-        private async Task<(string?, IEnumerable<string>)> CheckDuplicateBill(ICollection<BedBesCreateDto> input)
+        private async Task<(string?, IEnumerable<string>)> CheckToleranceBill(ICollection<BedBesCreateDto> input)
         {
-            IEnumerable<string> duplicateBillIds = await _bedBesQueryService.GetDuplicateBill(input);
-            string? billIds = string.Join(",", duplicateBillIds);
-            string warningMessage = string.IsNullOrWhiteSpace(billIds) ? string.Empty : ExceptionLiterals.InvalidDuplicateGenerateBill(billIds);
-            return (warningMessage, duplicateBillIds);
+            IEnumerable<string> toleranceBillIds = await _bedBesQueryService.GetMoreThanToleranceBill(input);
+            string? billIds = string.Join(",", toleranceBillIds);
+            string warningMessage = string.IsNullOrWhiteSpace(billIds) ? string.Empty : ExceptionLiterals.InvalidToleranceGenerateBill(billIds);
+            return (warningMessage, toleranceBillIds);
         }
         private async Task<(ICollection<BedBesCreateDto>, ICollection<KasrHaDto>)> GetBedBesAndKasrHaDto(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, CancellationToken cancellationToken)
         {
@@ -221,7 +221,36 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 }
             }
         }
-        private async Task DuplicateBillsValidate(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, int zoneId)
+        private async Task<(string, ICollection<MeterReadingDetailDataOutputDto>)> GetDuplicateBills(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, int zoneId, IAppUser appUser)
+        {
+            int firstFlowId = meterReadings?.FirstOrDefault()?.FlowImportedId ?? 0;
+            IEnumerable<BedBesPreviousNumberAndDateOutputDto> previousBillsInfo = await GetPreviousBills(meterReadings, zoneId);
+            var (invalidDuplicateReadingToExcludeList, invalidDuplicateReadingList) = await GetInvlaidDuplicateReading(meterReadings, previousBillsInfo, appUser);
+            await ExcludeExecSql(invalidDuplicateReadingToExcludeList, firstFlowId);
+            string? billIds = string.Join(", ", invalidDuplicateReadingList?.Select(r => r.BillId)?.ToList() ?? new List<string>());
+            string warningInvalidDuplicateMessage = string.IsNullOrWhiteSpace(billIds) ? string.Empty : ExceptionLiterals.InvalidDuplicateGenerateBill(billIds);
+
+            return (warningInvalidDuplicateMessage, invalidDuplicateReadingList);
+        }
+        private async Task<(ICollection<MeterReadingDetailExcludedDto>, ICollection<MeterReadingDetailDataOutputDto>)> GetInvlaidDuplicateReading(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, IEnumerable<BedBesPreviousNumberAndDateOutputDto> previousBillsInfo, IAppUser appUser)
+        {
+            ICollection<MeterReadingDetailExcludedDto> invalidDuplicateMeterReadingToExcludeList = new List<MeterReadingDetailExcludedDto>();
+            ICollection<MeterReadingDetailDataOutputDto> invalidDuplicateMeterReadingList = new List<MeterReadingDetailDataOutputDto>();
+            DateTime currentDateTime = DateTime.Now;
+            foreach (var item in meterReadings)
+            {
+                BedBesPreviousNumberAndDateOutputDto? previousBills = previousBillsInfo.Where(m => m.CustomerNumber == item.CustomerNumber).FirstOrDefault();
+                if (previousBills is not null && (item.PreviousDateJalali.CompareTo(previousBills.PreviousDateJalali) < 0))//Todo: check 
+                {
+                    MeterReadingDetailExcludedDto excludeDto = new(item.Id, appUser.UserId, currentDateTime, ExcludedCauseEnum.DuplicateBill, ReportLiterals.DuplicateBill);
+                    invalidDuplicateMeterReadingToExcludeList.Add(excludeDto);
+                    invalidDuplicateMeterReadingList.Add(item);
+                }
+            }
+
+            return (invalidDuplicateMeterReadingToExcludeList, invalidDuplicateMeterReadingList);
+        }
+        private async Task<IEnumerable<BedBesPreviousNumberAndDateOutputDto>> GetPreviousBills(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, int zoneId)
         {
             IEnumerable<BedBesPreviousNumberAndDateOutputDto> previousBillsInfo;
             using (IDbConnection connection = _sqlReportConnection)
@@ -235,16 +264,22 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     previousBillsInfo = await _bedBesQueryService.GetPreviousDateAndNumber(connection, transaction, zoneId, meterReadings.Select(m => m.CustomerNumber).ToList());
                 }
             }
-            foreach (var item in meterReadings)
+            return previousBillsInfo;
+        }
+        private async Task ExcludeExecSql(ICollection<MeterReadingDetailExcludedDto> invalidDupliateReading, int firstFlowId)
+        {
+            using (IDbConnection connection = _sqlReportConnection)
             {
-                BedBesPreviousNumberAndDateOutputDto? previousBills = previousBillsInfo.Where(m => m.CustomerNumber == item.CustomerNumber).FirstOrDefault();
-                if (previousBills is null)
+                if (connection.State != ConnectionState.Open)
                 {
-                    throw new ReadingException(ExceptionLiterals.BillIdNotFound);
+                    connection.Open();
                 }
-                if (item.PreviousDateJalali.CompareTo(previousBills.PreviousDateJalali) < 0)
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    throw new ReadingException(ExceptionLiterals.InvalidMeterReadingDate(item.BillId));
+                    MeterReadingDetailCommandService meterReadingDetailCommandService = new(connection, transaction);
+                    await meterReadingDetailCommandService.Exclude(invalidDupliateReading, firstFlowId);
+
+                    transaction.Commit();
                 }
             }
         }
@@ -573,9 +608,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 MeterPreviousData = meterInfo,
             };
         }
-        private MeterReadingCheckedOutputDto GetResult(int flowId, string? warningDuplicateBills)
+        private MeterReadingCheckedOutputDto GetResult(int flowId, string? warningToleranceBills,string? warningToDuplicateBills)
         {
-            return new MeterReadingCheckedOutputDto(flowId, MeterFlowStepEnum.ClientNotification, string.Join(" . ", MessageLiterals.SuccessfullOperation, warningDuplicateBills));
+            return new MeterReadingCheckedOutputDto(flowId, MeterFlowStepEnum.ClientNotification, string.Join(" . ", MessageLiterals.SuccessfullOperation, warningToleranceBills, warningToDuplicateBills));
         }
         private bool CounterStateValidation(int counterStateCode, int currentNumber, int previousNumber)
         {
