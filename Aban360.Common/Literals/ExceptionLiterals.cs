@@ -335,7 +335,7 @@
         public static string CollectBillsConfirmUnsuccessLog => "تایید فایل با خطا مواجه شد. کد فایل:{0}  کد وضعیت:{1}   توضیحات:{2}";
 
 
-        //SmsManager
-        public static string InvalidSmsManagerInsert => "خطا در ذخیره بایگانی پیامک ها";
+        //SmsDraft
+        public static string InvalidSmsDraftInsert => "خطا در ذخیره بایگانی پیامک ها";
     }
 }

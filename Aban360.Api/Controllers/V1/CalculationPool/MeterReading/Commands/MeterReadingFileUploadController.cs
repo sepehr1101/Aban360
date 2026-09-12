@@ -14,11 +14,11 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
     public class MeterReadingFileUploadController : BaseController
     {
         private readonly IMeterReadingFileCreateHandler _meterReadingFileHandle;
-        private readonly IMeterReadingUploadDbFileWithSendSmsJobService _meterReadingUploadDbFileWithSendSmsJobService;
+        private readonly IMeterReadingUploadDbFileWithSendCloseSmsJobService _meterReadingUploadDbFileWithSendSmsJobService;
 
         public MeterReadingFileUploadController(
             IMeterReadingFileCreateHandler meterReadingFileHandle,
-            IMeterReadingUploadDbFileWithSendSmsJobService meterReadingUploadDbFileWithSendSmsJobService)
+            IMeterReadingUploadDbFileWithSendCloseSmsJobService meterReadingUploadDbFileWithSendSmsJobService)
         {
             _meterReadingFileHandle = meterReadingFileHandle;
             _meterReadingFileHandle.NotNull(nameof(meterReadingFileHandle));
