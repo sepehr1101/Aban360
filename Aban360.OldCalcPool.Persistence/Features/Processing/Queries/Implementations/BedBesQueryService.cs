@@ -224,7 +224,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             IEnumerable<PreviousBillsInfoDto> datas = await _sqlReportConnection.QueryAsync<PreviousBillsInfoDto>(query, input);
             return datas;
         }
-        public async Task<IEnumerable<string>> GetDuplicateBill(ICollection<BedBesCreateDto> inputDto)
+        public async Task<IEnumerable<string>> GetMoreThanToleranceBill(ICollection<BedBesCreateDto> inputDto)
         {
             int zoneId = (int)(inputDto?.FirstOrDefault()?.Town ?? 0);
             string dbName = GetDbName(zoneId);
@@ -794,8 +794,20 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     		b.cod_vas CounterStateCode,
                     		b.rate ConsumptionAverage,
                     		b.masraf Consumption,
-							IIF(b.del = 1 And r.elat In (5,6,10) ,null, b.today_no) PreviousNumber,
-							IIF(b.del = 1 And r.elat In (5,6,10) ,null, b.today_date) PreviousDateJalali
+							Case 
+                                When b.del = 0 And b.cod_vas In (4,7,8) Then NULL
+                                When b.del = 0 And b.cod_vas Not In (4,7,8) Then b.today_no
+                                When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas Not In (4,7,8) Then b.today_no
+                                When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas In (4,7,8) Then NULL
+                                Else NULL
+                            End As PreviousNumber,
+                    		Case 
+                                When b.del = 0 And b.cod_vas In (4,7,8) Then NULL
+                                When b.del = 0 And b.cod_vas Not In(4,7,8) Then b.today_date
+                                When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas Not In (4,7,8) Then b.today_date
+                                When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas In (4,7,8) Then NULL
+                                Else NULL
+                            End As PreviousDateJalali
                     	From  [{dbName}].dbo.bed_bes b
                     	Left Join [{dbName}].dbo.REPAIR r
                     		On b.town=r.town And b.radif=r.radif And b.pri_date>=r.pri_date And b.today_date<=r.today_date

@@ -302,6 +302,7 @@
         public static string PriGTCurrent { get { return "در انتظار تغیرات/برگشتی"; } }
         public static string NeedEvaluate { get { return "نیاز به بررسی مجدد"; } }
         public static string Error { get { return "خطا سیستم"; } }
+        public static string DuplicateBill { get { return "قبض تکراری"; } }
 
         public static string NonRead { get { return "NonRead"; } }
 

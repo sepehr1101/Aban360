@@ -12,6 +12,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
     {
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
+        private string _meterReadingTableNameWithDbName = "[Atlas].dbo.MeterReadingDetail";
+        private string _meterReadingToExclude = "#TempMeterReadingDetailToExclude";
         public MeterReadingDetailCommandService(
             IDbConnection connection,
             IDbTransaction transaction)
@@ -39,7 +41,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
 
             using (var bulkCopy = new SqlBulkCopy((SqlConnection)_connection, SqlBulkCopyOptions.Default, (SqlTransaction)_transaction))
             {
-                bulkCopy.DestinationTableName = "[Atlas].dbo.MeterReadingDetail";
+                bulkCopy.DestinationTableName = _meterReadingTableNameWithDbName;
 
                 foreach (DataColumn col in dataTable.Columns)
                 {
@@ -128,6 +130,38 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
             if (affectedRecords <= 0)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidSetExclude);
+            }
+        }
+        public async Task Exclude(IEnumerable<MeterReadingDetailExcludedDto> input, int flowImportedId)
+        {
+            var table = ToDataTable(input);
+            string createTempTableCommand = @$"  
+                    CREATE TABLE {_meterReadingToExclude}
+                    (
+                        Id INT PRIMARY KEY,
+                        ExcludedCauseId INT NOT NULL,
+                        ExcludedCauseTitle nvarchar(100) NOT NULL,
+                        ExcludedByUserId uniqueidentifier NOT NULL,
+                        ExcludedDateTime datetime NOT NULL
+                    );";
+            await _connection.ExecuteAsync(createTempTableCommand, null, _transaction);
+            using var bulk = new SqlBulkCopy((SqlConnection)_connection, SqlBulkCopyOptions.Default, (SqlTransaction)_transaction)
+            {
+                DestinationTableName = _meterReadingToExclude,
+                BatchSize = 1000,
+                BulkCopyTimeout = 0
+            };
+            foreach (DataColumn column in table.Columns)
+            {
+                bulk.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+            }
+            await bulk.WriteToServerAsync(table);
+
+            string command = GetExcludeByTempTableCommand();
+            int rowEffected = await _connection.ExecuteAsync(command, new { flowImportedId }, _transaction);
+            if (rowEffected != (input?.Count() ?? 0))
+            {
+                throw new ReadingException(ExceptionLiterals.InlvalidUpdateMeterReadingDetailToExclude);
             }
         }
         private DataTable ToDataTable(IEnumerable<MeterReadingDetailCreateDto> input)
@@ -464,6 +498,29 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
 
             return dt;
         }
+        public DataTable ToDataTable(IEnumerable<MeterReadingDetailExcludedDto> input)
+        {
+            var table = new DataTable();
+
+            table.Columns.Add("Id", typeof(int));
+            table.Columns.Add("ExcludedCauseId", typeof(int));
+            table.Columns.Add("ExcludedCauseTitle", typeof(string));
+            table.Columns.Add("ExcludedByUserId", typeof(Guid));
+            table.Columns.Add("ExcludedDateTime", typeof(DateTime));
+            foreach (var item in input)
+            {
+                var row = table.NewRow();
+
+                row["Id"] = item.Id;
+                row["ExcludedCauseId"] = item.ExcludedCauseId;
+                row["ExcludedCauseTitle"] = item.ExcludedCauseTitle;
+                row["ExcludedByUserId"] = item.ExcludedByUserId;
+                row["ExcludedDateTime"] = item.ExcludedDateTime;
+
+                table.Rows.Add(row);
+            }
+            return table;
+        }
 
         private string GetInsertCommand()
         {
@@ -680,6 +737,19 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                         ExcludedCauseId = @ExcludedCauseId , 
                         ExcludedCauseTitle = @ExcludedCauseTitle
                     Where Id=@Id";
+        }
+        private string GetExcludeByTempTableCommand()
+        {
+            return @$"Update m	
+                    Set 
+                    	m.ExcludedByUserId = tempM.ExcludedByUserId ,
+                    	m.ExcludedDateTime = tempM.ExcludedDateTime ,
+                        m.ExcludedCauseId = tempM.ExcludedCauseId , 
+                        m.ExcludedCauseTitle = tempM.ExcludedCauseTitle
+                    From Atlas.dbo.MeterReadingDetail m
+                        Join {_meterReadingToExclude} tempM
+                            On m.Id=tempM.Id
+                    Where m.FlowImportedId=@FlowImportedId";
         }
         private string GetDeleteByFromToReadingNumberCommand()
         {

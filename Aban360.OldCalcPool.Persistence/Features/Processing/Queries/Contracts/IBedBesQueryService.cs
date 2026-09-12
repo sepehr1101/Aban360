@@ -26,7 +26,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
         Task<BedBesSmsDto> GetSmsDto(string billId, int zoneId, int customerNumber);
         Task<BedBesWithConsumptionOutputDto> GetPrevious(ZoneIdAndCustomerNumberOutputDto input, string dateJalali);
         Task<IEnumerable<PreviousBillsInfoDto>> GetPreviousBillsInfo(ZoneIdAndCustomerNumber input);
-        Task<IEnumerable<string>> GetDuplicateBill(ICollection<BedBesCreateDto> inputDto);
+        Task<IEnumerable<string>> GetMoreThanToleranceBill(ICollection<BedBesCreateDto> inputDto);
         Task<BedBesItemsOutputDto> GetLatestByCustomerNumber(ZoneIdAndCustomerNumber input);
         Task<IEnumerable<BedBesWithDelOutputDto>> GetByDateInterval(ZoneCustomerFromToDateDto input, string dbName);
         Task<BedBesPreviousNumberAndDateOutputDto?> GetPreviousDateAndNumber(ZoneIdAndCustomerNumber input, string billId, bool hasException);

@@ -505,7 +505,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             if (!string.IsNullOrWhiteSpace(duplicatesInInput))
             {
-                throw new ReadingException(ExceptionLiterals.InvalidDuplicateGenerateBill(duplicatesInInput));
+                throw new ReadingException(ExceptionLiterals.InvalidToleranceGenerateBill(duplicatesInInput));
             }
 
             const string createTempTable = @"
@@ -557,7 +557,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             string duplicateBillIdsText = string.Join(", ", duplicateBillIds.Distinct());
             if (!string.IsNullOrWhiteSpace(duplicateBillIdsText))
             {
-                throw new ReadingException(ExceptionLiterals.InvalidDuplicateGenerateBill(duplicateBillIdsText));
+                throw new ReadingException(ExceptionLiterals.InvalidToleranceGenerateBill(duplicateBillIdsText));
             }
         }
 
