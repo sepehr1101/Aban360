@@ -4,7 +4,6 @@ using Aban360.Common.Literals;
 using Aban360.CommunicationPool.Domain.Features.Sms.Commands;
 using Dapper;
 using Microsoft.Data.SqlClient;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
 
 namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementations
@@ -39,7 +38,7 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementa
             DataTable table = GetInsertDataTable(inputDtos);
             using var bulk = new SqlBulkCopy((SqlConnection)_connection, SqlBulkCopyOptions.Default, (SqlTransaction)_transaction)
             {
-                DestinationTableName = "[CustomerWarehouse].dbo.SmsDraft",
+                DestinationTableName = "[Atlas].dbo.SmsDraft",
                 BatchSize = 1000,
                 BulkCopyTimeout = 0,
             };
@@ -50,9 +49,9 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementa
             }
             await bulk.WriteToServerAsync(table);
         }
-        public async Task Update(IEnumerable<Guid> ids, DateTime dateTime, string referenceId, bool isUpdateFetchDate)
+        public async Task Update(SmsDraftUpdateDto input, bool isUpdateFetchDate)
         {
-            DataTable table = GetUpdateDataTable(ids);
+            DataTable table = GetUpdateDataTable(input.Ids);
             string createTempTable = @$"Create Table {_tempIdTable} ( Id uniqueidentifier NOT NULL )";
             await _connection.ExecuteAsync(createTempTable, null, _transaction);
             using var bulk = new SqlBulkCopy((SqlConnection)_connection, SqlBulkCopyOptions.Default, (SqlTransaction)_transaction)
@@ -62,10 +61,10 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementa
                 BulkCopyTimeout = 0
             };
             await bulk.WriteToServerAsync(table);
-            
+
             string updateCommand = GetUpdateQuery(isUpdateFetchDate);
-            int rowEffect = await _connection.ExecuteAsync(updateCommand, new { dateTime, referenceId }, _transaction);
-            if (rowEffect != (ids?.Count() ?? 0))
+            int rowEffect = await _connection.ExecuteAsync(updateCommand, input, _transaction);
+            if (rowEffect != (input.Ids?.Count() ?? 0))
             {
                 throw new ReadingException(ExceptionLiterals.InvalidSmsDraftUpdate);
             }
@@ -89,9 +88,9 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementa
             table.Columns.Add("Id", typeof(Guid));
             table.Columns.Add("TrackNumber", typeof(int));
             table.Columns.Add("BillId", typeof(string));
+            table.Columns.Add("GroupId", typeof(string));
             table.Columns.Add("ReferenceId", typeof(string));
-            table.Columns.Add("TypeId", typeof(int));
-            table.Columns.Add("TypeTitle", typeof(string));
+            table.Columns.Add("SmsFlowId", typeof(int));
             table.Columns.Add("Message", typeof(string));
             table.Columns.Add("MobileNumber", typeof(string));
             table.Columns.Add("InsertDateTime", typeof(DateTime));
@@ -105,9 +104,9 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementa
                 row["Id"] = item.Id;
                 row["TrackNumber"] = item.TrackNumber ?? (object)DBNull.Value;
                 row["BillId"] = item.BillId ?? (object)DBNull.Value;
+                row["GroupId"] = item.GroupId;
                 row["ReferenceId"] = item.ReferenceId;
-                row["TypeId"] = item.TypeId;
-                row["TypeTitle"] = item.TypeTitle;
+                row["SmsFlowId"] = item.SmsFlowId;
                 row["Message"] = item.Message;
                 row["MobileNumber"] = item.MobileNumber;
                 row["InsertDateTime"] = item.InsertDateTime;
@@ -121,17 +120,17 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementa
         }
         private string GetInsertQuery()
         {
-            return @"Insert Into CustomerWarehouse.dbo.SmsDraft
+            return @"Insert Into [Atlas].dbo.SmsDraft
                     (
                     	Id,TrackNumber, BillId,
-                    	ReferenceId, TypeId, TypeTitle,
+                    	GroupId, ReferenceId, SmsFlowId, 
                         Message, MobileNumber,
                     	InsertDateTime, FetchDateTime, SendDateTime
                     )
                     Values
                     (
                     	@Id, @TrackNumber, @BillId,
-                    	@ReferenceId, @TypeId, @TypeTitle,
+                    	@GroupId, @ReferenceId, @SmsFlowId, 
                         @Message, @MobileNumber,
                     	@InsertDateTime, @FetchDateTime, @SendDateTime
                     )";
@@ -141,12 +140,13 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementa
             string dateProperty = isFetchDate ? "s.FetchDateTime" : "s.SendDateTime";
             return $@"Update s
                     Set
-                    	{dateProperty} = @dateTime
-                    From CustomerWarehouse.dbo.SmsDraft s
+                    	{dateProperty} = @EffectDateTime
+                    From [Atlas].dbo.SmsDraft s
                     Join {_tempIdTable} tempS
                     	On s.Id = tempS.Id 
                     Where
-                    	s.ReferenceId = @referenceId AND
+                        s.GroupId = @groupId AND
+                        s.SmsFlowId = @smsFlowId AND
                     	{dateProperty} IS NULL";
         }
     }

@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <Folder Include="DbSeeder\DataScript\" />
-    <Folder Include="Features\Sms\Queries\Contracts\" />
   </ItemGroup>
 
 </Project>

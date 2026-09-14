@@ -29,10 +29,10 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
 
         [HttpPost]
         [Route("upload")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingFileCreateOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Upload([FromForm] MeterReadingFileCreateDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> result = await _meterReadingFileHandle.Handle(input, CurrentUser, cancellationToken);
+            MeterReadingFileCreateOutputDto result = await _meterReadingFileHandle.Handle(input, CurrentUser, cancellationToken);
             return Ok(result);
             //await _meterReadingUploadDbFileWithSendSmsJobService.Upload(input, CurrentUser, cancellationToken);
             //return Ok(input);

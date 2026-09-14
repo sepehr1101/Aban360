@@ -1,5 +1,4 @@
-﻿using Aban360.CalculationPool.Domain.Features.CollectBills.Inputs;
-using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
+﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
@@ -61,7 +60,13 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
             MeterReadingDetailDataOutputDto? detail = await _sqlReportConnection.QueryFirstOrDefaultAsync<MeterReadingDetailDataOutputDto>(query, new { billId });
             return detail;
         }
-
+        public async Task<IEnumerable<MeterReadingDetailToSendMessageDto>> GetToSend(int flowImportedId, int zoneId, long minAmount, int abanOperator)
+        {
+            string dbName = GetDbName(zoneId);
+            string query = GetDataToSendSms(dbName);
+            IEnumerable<MeterReadingDetailToSendMessageDto> result = await _sqlReportConnection.QueryAsync<MeterReadingDetailToSendMessageDto>(query, new { flowImportedId, minAmount, abanOperator });
+            return result;
+        }
 
         private string GetWithFlowImportedIdQuery(bool? hasExcluded)
         {
@@ -816,6 +821,48 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                     Order By 
                     	m.InsertDateTime Desc , 
                     	m.Id desc";
+        }
+        private string GetDataToSendSms(string dbName)
+        {
+            return $@"Select 
+                    	md.Id MeterReadingDetailId,
+                    	md.FlowImportedId ,
+	                    m.town ZoneId,
+	                    t51.C2 ZoneTitle,
+                    	b.pri_no PreviousNumber,
+                    	b.today_no CurrentNumber,
+                    	b.pri_date PreviousDateJalali,
+                    	b.today_date CurrentDateJalali,
+                    	b.pard Payable,
+                    	b.sh_ghabs1 BillId,
+                    	b.sh_pard1 PaymentId,
+                    	b.cod_vas CounterSatetCode,
+                    	b.date_bed RegisterDateJalali,
+	                    b.mohlat DueDateJalali,
+                    	TRIM(m.name) FirstName,
+                    	TRIM(m.family) Surname,
+                    	TRIM(m.name)+' '+TRIM(m.family) FullName,
+                    	TRIM(m.MOBILE) MobileNumber,
+                    	m.bed_bes DebtAmount
+                    From Atlas.dbo.MeterReadingDetail md
+                    Join [{dbName}].dbo.members m
+                    	ON md.ZoneId=m.town AND md.CustomerNumber=m.radif
+                    Join [{dbName}].dbo.bed_bes b
+                    	ON md.ZoneId=b.town AND md.CustomerNumber=b.radif
+                    Join [Db70].dbo.T51 t51
+                    	ON m.town=t51.C0
+                    Where 
+                    	b.pri_no = md.PreviousNumber AND
+                    	b.today_no = md.CurrentNumber AND
+                    	b.pri_date Collate Persian_100_CI_AI = md.PreviousDateJalali  Collate Persian_100_CI_AI AND
+                    	b.today_date Collate Persian_100_CI_AI = md.CurrentDateJalali Collate Persian_100_CI_AI AND
+                    	b.ab_baha = md.ab_baha AND
+                    	b.operator = @abanOperator AND
+                    	b.baha = md.baha AND
+                    	b.rate = md.MonthlyConsumption AND
+                    	b.date_bed Collate Persian_100_CI_AI >= md.date_bed Collate Persian_100_CI_AI AND
+                        md.FlowImportedId = @flowImportedId AND
+                    	m.bed_bes > @minAmount and m.id=1";
         }
     }
 }

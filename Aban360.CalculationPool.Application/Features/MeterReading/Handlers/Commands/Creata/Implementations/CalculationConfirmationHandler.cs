@@ -17,7 +17,6 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
@@ -134,9 +133,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             ICollection<KasrHaDto> kasrhasBatchWithoutDuplicate = kasrHaBatch.Where(s => !toleranceBillIds.Contains(s.ShGhabs)).ToList();
             ICollection<BillInsertDto> billsBatch = await GetBillsInsertDto(bedBesBatchWithoutDuplicate, kasrHaBatch);
             ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch = bedBesBatchWithoutDuplicate.Select(b => new MembersFazelabCountAndDebtAmountUpdateDto((int)b.Town, (int)b.Radif, b.ShGhabs1, (long)b.Baha, b.TodayDate)).ToList();
-            ICollection<ContorUpdateDto> contorsUpcateBatch = GetContorsUpdateDto(bedBesBatchWithoutDuplicate, previousBillsInfo);
+            ICollection<ContorUpdateDto> contorsUpdateBatch = GetContorsUpdateDto(bedBesBatchWithoutDuplicate, previousBillsInfo);
             string opLogText = string.Format(OpLogLiterals.GenerateBatchBillOpLog, billsBatch?.FirstOrDefault()?.ZoneTitle, bedBesBatchWithoutDuplicate?.Count() ?? 0);
-            int newMeterFlowId = await ExceSql(bedBesBatchWithoutDuplicate, kasrhasBatchWithoutDuplicate, billsBatch, memberDebtAmountBatch, contorsUpcateBatch, zoneId, firstFlowId, latestFlowId, appUser, opLogText);
+            int newMeterFlowId = await ExceSql(bedBesBatchWithoutDuplicate, kasrhasBatchWithoutDuplicate, billsBatch, memberDebtAmountBatch, contorsUpdateBatch, zoneId, firstFlowId, latestFlowId, appUser, opLogText);
 
             return GetResult(newMeterFlowId, warningMessageForToleranceBills, warningMessageForDuplicateBills);
         }
@@ -536,17 +535,25 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             return bedBesInfo.Select(b =>
             {
                 BedBesPreviousNumberAndDateOutputDto? priInfo = previousBillsInfo.Where(p => p.CustomerNumber == b.Radif).FirstOrDefault();
-                ContorUpdateDto contorDto = new()
+                ContorUpdateDto contorDto;
+                if (priInfo is null)
                 {
-                    ZoneId = (int)b.Town,
-                    CustomerNumber = (int)b.Radif,
-                    CurrentDateJalali = IsInvalidCounterStateCode((int)b.CodVas) && priInfo is not null ? priInfo.PreviousDateJalali : b.DateBed,
-                    CurrentNumber = IsInvalidCounterStateCode((int)b.CodVas) && priInfo is not null ? priInfo.PreviousNumber : (int)b.TodayNo,
-                    Consumption = IsInvalidCounterStateCode((int)b.CodVas) && priInfo is not null ? priInfo.Consumption : (int)b.Masraf,
-                    ConsumptionAverage = IsInvalidCounterStateCode((int)b.CodVas) && priInfo is not null ? priInfo.ConsumptionAverage : (float)b.Rate,
-                    PreviousCounterState = (int)b.CodVas,
-                };
-                return contorDto;
+                    throw new InvalidBillCommandException(ExceptionLiterals.InvalidPreviousBillsDataToGenerateContro(b.ShGhabs1));
+                }
+                else
+                {
+                    contorDto = new()
+                    {
+                        ZoneId = (int)b.Town,
+                        CustomerNumber = (int)b.Radif,
+                        CurrentDateJalali = IsInvalidCounterStateCode((int)b.CodVas) ? priInfo.PreviousDateJalali : b.TodayDate,
+                        CurrentNumber = IsInvalidCounterStateCode((int)b.CodVas) ? priInfo.PreviousNumber : (int)b.TodayNo,
+                        Consumption = IsInvalidCounterStateCode((int)b.CodVas) ? priInfo.Consumption : (int)b.Masraf,
+                        ConsumptionAverage = IsInvalidCounterStateCode((int)b.CodVas) ? priInfo.ConsumptionAverage : (float)b.Rate,
+                        PreviousCounterState = (int)b.CodVas,
+                    };
+                    return contorDto;
+                }
             })
             .ToList();
 
