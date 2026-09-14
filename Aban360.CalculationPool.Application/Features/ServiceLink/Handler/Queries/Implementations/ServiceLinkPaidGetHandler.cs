@@ -93,7 +93,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
                 }
                 if (item.BankDateJalali.CompareTo(_30DayAgoDateJalali) < 0)
                 {
-                    throw new InvalidBillCommandException(ExceptionLiterals.InvalidBankDateBefor30DaysAgo);
+                    throw new InvalidBillCommandException(ExceptionLiterals.InvalidBankDateBefor60DaysAgo);
                 }
             }
         }

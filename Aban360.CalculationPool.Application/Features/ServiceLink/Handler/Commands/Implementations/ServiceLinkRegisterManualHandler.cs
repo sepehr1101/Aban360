@@ -26,7 +26,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         private readonly ICommonZoneService _commonZoneService;
         private readonly IVariabService _variabService;
         string _todayJalali = DateTime.Now.ToShortPersianDateString();
-        string _30DayAgoDateJalali = DateTime.Now.AddDays(-30).ToShortPersianDateString();
+        string _60DayAgoDateJalali = DateTime.Now.AddDays(-60).ToShortPersianDateString();
         short _ser = 1;
         short _operator = 666;
         short _type = 2;
@@ -111,13 +111,13 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidMoreThanCurrentDate);
             }
-            if (input.BankDateJalali.CompareTo(checkDateJalali) <= 0)
+            //if (input.BankDateJalali.CompareTo(checkDateJalali) <= 0)
+            //{
+            //    throw new InvalidBillCommandException(ExceptionLiterals.InvalidPaymentInsertAfterDateCheck);
+            //}
+            if (input.BankDateJalali.CompareTo(_60DayAgoDateJalali) < 0)
             {
-                throw new InvalidBillCommandException(ExceptionLiterals.InvalidPaymentInsertAfterDateCheck);
-            }
-            if (input.BankDateJalali.CompareTo(_30DayAgoDateJalali) < 0)
-            {
-                throw new InvalidBillCommandException(ExceptionLiterals.InvalidBankDateBefor30DaysAgo);
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidBankDateBefor60DaysAgo);
             }
         }
         private VosoEnInsertDto GetVosolEnInsertDto(ServiceLinkRegisterManualInputDto input, MemberInfoGetDto memberInfo)
