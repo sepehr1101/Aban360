@@ -13,11 +13,16 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
     internal sealed class AvarezCalculator : IAvarezCalculator
     {
+        const string date1404_12_29 = "1404/12/29";
         const int _25000 = 25000;
         const int _20000 = 20000;
         const int _2000 = 2000;
         public TariffItemResult Calculate(ConsumptionPartialInfo consumptionPartialInfo, CustomerInfoOutputDto customerInfo, double monthlyConsumption)
         {
+            if (consumptionPartialInfo.StartDateJalali.More(date1404_12_29))
+            {
+                return new TariffItemResult();
+            }
             if (IsIndustrialAfter1404(consumptionPartialInfo.EndDateJalali, customerInfo.UsageId, customerInfo.BranchType))
             {
                 return monthlyConsumption <= _25000 ? 

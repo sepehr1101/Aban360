@@ -7,6 +7,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
     internal static class VirtualCapacityCalculator
     {
         const string date1403_12_30 = "1403/12/30";
+        const string date1404_12_29 = "1404/12/29";
         const int monthDays = 30;
         internal static double CalculateDiscountByVirtualCapacity(CustomerInfoOutputDto customerInfo, double partialConsumption, int duration, double amount, ConsumptionPartialInfo consumptionPartialInfo)
         {
@@ -15,6 +16,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
                 return 0;
             }
             if(!IsSpecialEducation(customerInfo.UsageId, customerInfo.IsSpecial))
+            {
+                return 0;
+            }
+            if (consumptionPartialInfo.StartDateJalali.More(date1404_12_29))
             {
                 return 0;
             }
