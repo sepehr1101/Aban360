@@ -37,7 +37,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						TRIM(b.BillId) as BillId,
 						b.UsageTitle,
 						b.ReadingNumber,
-						Case When b.UsageId IN (1,3) AND 
+						/*Case When b.UsageId IN (1,3) AND 
 								  b.BranchTypeId NOT IN (4) AND 
 								  c.PhysicalSewageInstallDateJalali>'1330/01/01' 
 							 Then b.Consumption 
@@ -46,7 +46,8 @@ namespace Aban360.ReportPool.Persistence.Base
 								  c.PhysicalSewageInstallDateJalali>'1330/01/01' 
 							 Then b.Consumption 
 						     Else 0
-						End SewageConsumption,  	
+						End SewageConsumption, */ 	
+                        0 SewageConsumption,
 						b.Consumption,
 						b.ConsumptionAverage,
 						b.WaterDiameterTitle as MeterDiameterTitle,
@@ -76,14 +77,14 @@ namespace Aban360.ReportPool.Persistence.Base
                         IIF((b.OtherCount+b.CommercialCount+b.DomesticCount)=0,1,b.OtherCount+b.CommercialCount+b.DomesticCount) - b.EmptyCount BillUnit,
                         IIF((b.OtherCount+b.CommercialCount+b.DomesticCount)=0,1,b.OtherCount+b.CommercialCount+b.DomesticCount) TotalUnit
 					From [CustomerWarehouse].dbo.Bills b
-					Join [CustomerWarehouse].dbo.Clients c
-						ON b.ZoneId=c.ZoneId and b.CustomerNumber=c.CustomerNumber
+					--LEFT OUTER Join [CustomerWarehouse].dbo.Clients c
+						--ON b.ZoneId=c.ZoneId and b.CustomerNumber=c.CustomerNumber
                     Join [Db70].dbo.T51 t51
                     	On b.ZoneId=t51.C0
                     Join [Db70].dbo.T46 t46
                     	On t51.C1=t46.C0
 					Where 
-						c.ToDayJalali is null AND
+						--c.ToDayJalali is null AND
 						(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
 						(@fromConsumption IS NULL OR
 						@toConsumption IS NULL OR
@@ -101,10 +102,10 @@ namespace Aban360.ReportPool.Persistence.Base
         }
         internal string GetSummaryQuery(bool isUsageGroup, bool hasZone, bool hasUsage, bool hasBranchType, WaterIncomeAndConsumptionSummaryEnum enumState)
         {
-            string usageGroupJoinQuery = isUsageGroup ? @"	Join [Db70].dbo.UsageGroup2 u2
+            string usageGroupJoinQuery = isUsageGroup ? @" Join [Db70].dbo.UsageGroup2 u2
 				                                    	 	ON u2.Group1Id = @UsageGroupId 
 				                                    	Join [Db70].dbo.UsageGroup3 u3 
-				                                    		ON u2.Id=u3.Group2Id AND b.UsageId=u3.UsageId	" : string.Empty;
+				                                    		ON u2.Id=u3.Group2Id AND b.UsageId=u3.UsageId " : string.Empty;
             string usageGroup2TitleSelect = isUsageGroup ? " u2.Title UsageGroup2Title, " : string.Empty;
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
             string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
@@ -123,7 +124,7 @@ namespace Aban360.ReportPool.Persistence.Base
                             {usageGroup2TitleSelect}
                     		b.ReadingNumber,
                     		(b.CommercialCount+b.DomesticCount+b.OtherCount) as BillUnitCounts,
-                            Case When b.UsageId IN (1,3) AND 
+                            /*Case When b.UsageId IN (1,3) AND 
 							    	  b.BranchTypeId NOT IN (4) AND 
 							    	  c.PhysicalSewageInstallDateJalali>'1330/01/01' 
 							     Then b.Consumption 
@@ -132,7 +133,8 @@ namespace Aban360.ReportPool.Persistence.Base
 							    	  b.RegisterDay>'1330/01/01' 
 							     Then b.Consumption 
 						         Else 0
-						    End SewageConsumption,  	
+						    End SewageConsumption,*/
+                            0 SewageConsumption,
                     		b.Consumption,
                     		b.ConsumptionAverage,
                     		b.WaterDiameterTitle as MeterDiameterTitle,
@@ -161,10 +163,20 @@ namespace Aban360.ReportPool.Persistence.Base
                     		b.Item17,
                     		b.Item18,
                             IIF((b.OtherCount+b.CommercialCount+b.DomesticCount)=0,1,b.OtherCount+b.CommercialCount+b.DomesticCount) - b.EmptyCount BillUnit,
-                            IIF((b.OtherCount+b.CommercialCount+b.DomesticCount)=0,1,b.OtherCount+b.CommercialCount+b.DomesticCount) TotalUnit
+                            IIF((b.OtherCount+b.CommercialCount+b.DomesticCount)=0,1,b.OtherCount+b.CommercialCount+b.DomesticCount) TotalUnit,
+                            Case
+							    When b.TypeCode IN (1) THEN 1
+							    When b.TypeCode NOT IN (1) Then 0
+							    Else 0 
+						    END BillC,
+						    Case
+							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)<=0 THEN 1
+							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)>0 THEN (b.OtherCount+b.CommercialCount+b.DomesticCount)
+							    Else 0 
+						    END UnitC
                     From [CustomerWarehouse].dbo.Bills b
-					Join [CustomerWarehouse].dbo.Clients c
-						ON b.ZoneId=c.ZoneId and b.CustomerNumber=c.CustomerNumber
+					--Join [CustomerWarehouse].dbo.Clients c
+						--ON b.ZoneId=c.ZoneId and b.CustomerNumber=c.CustomerNumber
                     Join [Db70].dbo.T41 t41
                     	ON b.UsageId=t41.C0
                     Join [Db70].dbo.T51 t51
@@ -173,7 +185,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	ON t51.C1=t46.C0
                     {usageGroupJoinQuery}
                     Where 
-                            c.ToDayJalali is null AND
+                            --c.ToDayJalali is null AND
                     		(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
                     		(@fromConsumption IS NULL OR
                     		@toConsumption IS NULL OR
@@ -190,7 +202,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						MAX(RegionId) RegionId,
 						MAX(RegionTitle) RegionTitle,
                     	{SelectKey} as GroupKey,
-                    	Count(1) as BillCount,
+                        SUM(BillC) as BillCount,
                     	SUM(SewageConsumption) as SewageConsumption,
                     	SUM(Consumption) as Consumption,
                     	AVG(ConsumptionAverage) as ConsumptionAverage,
@@ -216,7 +228,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	SUM(Item16) as Item16,
                     	SUM(Item17) as Item17,
                     	SUM(Item18) as Item18,
-                        SUM(BillUnit) as BillUnit,
+                        SUM(UnitC) as BillUnit,
                         SUM(TotalUnit) as TotalUnit
                     From cte
                     Group By {groupKey}

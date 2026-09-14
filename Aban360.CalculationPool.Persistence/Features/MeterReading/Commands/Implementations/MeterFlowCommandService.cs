@@ -25,7 +25,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
         public async Task<int> Insert(MeterFlowCreateDto input)
         {
             string command = GetInsertCommand();
-            int id = await _connection.ExecuteScalarAsync<int>(command, input, _transaction);
+            int id = await _connection.ExecuteScalarAsync<int>(command, input, _transaction, 60000);
             if (id <= 0)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidMeterFlow);
@@ -42,7 +42,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
         public async Task Update(MeterFlowUpdateDto input)
         {
             string query = GetUpdateCommand();
-            int rowEffected = await _connection.ExecuteAsync(query, input, _transaction);
+            int rowEffected = await _connection.ExecuteAsync(query, input, _transaction, 60000);
             // int rowEffected = 0;
             if (rowEffected <= 0)
             {
