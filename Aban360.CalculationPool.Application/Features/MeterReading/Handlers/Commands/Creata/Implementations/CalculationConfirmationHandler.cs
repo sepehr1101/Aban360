@@ -546,11 +546,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     {
                         ZoneId = (int)b.Town,
                         CustomerNumber = (int)b.Radif,
+                        //منظور از CurrentDateJalali, CurrentNumber تاریخ و رقم آخرین قرائت است.
+                        //بهتر است درآینده این 2 فیلد به PreviousDateJalali,PreviousNumber تغیر کنند.
                         CurrentDateJalali = IsInvalidCounterStateCode((int)b.CodVas) ? priInfo.PreviousDateJalali : b.TodayDate,
                         CurrentNumber = IsInvalidCounterStateCode((int)b.CodVas) ? priInfo.PreviousNumber : (int)b.TodayNo,
                         Consumption = IsInvalidCounterStateCode((int)b.CodVas) ? priInfo.Consumption : (int)b.Masraf,
                         ConsumptionAverage = IsInvalidCounterStateCode((int)b.CodVas) ? priInfo.ConsumptionAverage : (float)b.Rate,
-                        PreviousCounterState = (int)b.CodVas,
+                        PreviousCounterState = (int)b.CodVas,//این فیلد به OldVas نگاشت خواهد شد.
                     };
                     return contorDto;
                 }
