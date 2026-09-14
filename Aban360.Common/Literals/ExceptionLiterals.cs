@@ -37,6 +37,7 @@
         public static string InvalidFridayDate => "روز انتخابی، جمعه است";
         public static string InvalidOfficialHolidayDate => "روز انتخابی، تعطیل است";
         public static string InvalidOffDate => "ارزیاب در روز انتخابی مرخصی است";
+        public static string InvalidPreviousBillsDataToGenerateContro(string billId) => $"اطلاعات قرائت قبلی برای مشترک:{billId} یافت نشد. خطا در ویرایش جدول کنتور";
         public static string InvalidPreviousDate => "تاریخ ارزیابی باید از امروز بزرگتر باشد.";
         public static string PreviousDateIsInvalid => "تاریخ قبلی قرائت ناصحیح است";
         public static string CurrentDateIsInvalid => "تاریخ فعلی قرائت ناصحیح است";
@@ -151,6 +152,7 @@
         public static string InvalidRecord(int i) => $" خط {i}ام از فایل آپلود شده دارای مقدار نامعتبر است. ";
         public static string InvalidReadingFile => "خطا در پیمایش فایل";
         public static string InvalidZeroMeterNumber => "رقم کنتور با وضعیت ارسالی مطابقت ندارد.";
+        public static string InvalidDataInReadingFile => "اطلاعاتی در فایل بارگذاری شده یافت نشد.";
         public static string InvalidDuplicateFileName(string date) => $"نام فایل تکراری است. این فایل در تاریخ {date} ارسال شده";
         public static string InvalidDuplicateStepFlow(string date) => $"این مرحله در تاریخ {date} سپری شده است وامکان انجام مجدد آن وجود ندارد. ";
         public static string NonAccessStepFlow => "به این مرحله دسترسی ندارید.";
@@ -175,8 +177,9 @@
         public static string InvalidRemoveFile => "خطا در حذف فایل";
         public static string InvalidRemoveFinishedFile => "امکان حذف فایل تایید نهایی شده وجود ندارد.";
         public static string NotFoundBillsToConfirm => "قبضی برای تایید یافت نشد.";
-        public static string InvalidMeterSmsStateId => "خطا در شناسه نوع پیامک";
-        public static string InvalidMeterSmsFlowId => "خطا در مراحل پیامک";
+        public static string InvalidSmsStateId => "خطا در شناسه نوع پیامک";
+        public static string NotFoundNextStepForSms => "قالب پیامک بعدی یافت نشد";
+        public static string InvalidSmsFlowId => "خطا در مراحل پیامک";
         public static string InvalidLatestMeterReadingWithExpireMeterFlow => "آخرین سطر اطلاعات قرائت برای شناسه وارد شده، قابل دسترسی نیست - فایل بسته شده.";
         public static string InvalidMeterReadingDate(string billId) => $"نیاز به خروج از لیست - برای شناسه قبض :{billId} ،  در مدت محاسبه تا تایید، تراکنشی انجام شده.";
         public static string InlvalidUpdateMeterReadingDetailToExclude => "خطا در اعمال خروج از لیست قبوض تکرای.";

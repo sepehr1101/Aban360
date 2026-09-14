@@ -3,6 +3,7 @@ using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Persistence.Constants;
+using Aban360.ReportPool.Domain.Base;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -118,7 +119,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	c.cod_vas=0,
                     	c.average=t.ConsumptionAverage,
                     	c.mohasbat=2,
-                    	c.operator=5,
+                    	c.operator={ReportLiterals.RayabOperator},
                     	c.mamor=0,
                     	c.cod_report=0,
                     	c.old_vas=t.PreviousCounterState,
@@ -145,7 +146,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	cod_vas=0,
                     	average=@ConsumptionAverage,
                     	mohasbat=2,
-                    	operator=5,
+                    	operator={ReportLiterals.RayabOperator},
                     	mamor=0,
                     	cod_report=0,
                     	old_vas=@PreviousCounterState,

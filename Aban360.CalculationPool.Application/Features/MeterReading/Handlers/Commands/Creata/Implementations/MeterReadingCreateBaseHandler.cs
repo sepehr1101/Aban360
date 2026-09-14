@@ -241,7 +241,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         }
         public async Task<(CustomersInfoGetDto, int)> GetCustomerInfoAndFirstFlowId(ICollection<MeterReadingFileDetail> meterReadings, string fileName, string filePath, string? description, Guid userId)
         {
-            MeterReadingFileDetail firstMeterDetail = meterReadings.FirstOrDefault();
+            MeterReadingFileDetail? firstMeterDetail = meterReadings.FirstOrDefault();
+            if (firstMeterDetail == null)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidDataInReadingFile);
+            }
             string fromReadingNumber = meterReadings?.Min(m => m.ReadingNumber) ?? string.Empty;
             string toReadingNumber = meterReadings?.Max(m => m.ReadingNumber) ?? string.Empty;
             MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, 0, fileName, firstMeterDetail.ZoneId, fromReadingNumber, toReadingNumber, meterReadings?.Count() ?? 0, userId, description);

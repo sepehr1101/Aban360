@@ -3,8 +3,8 @@ using Aban360.Common.ApplicationUser;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts
 {
-    public interface IMeterReadingFileCreateHandler
+    public interface ISmsFlowCreateHandler
     {
-        Task<MeterReadingFileCreateOutputDto> Handle(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken);
+        Task Handle(SmsFlowInsertInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

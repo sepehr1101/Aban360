@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.Db.Dapper;
 using Aban360.CommunicationPool.Domain.Features.Sms.Queries;
+using Aban360.CommunicationPool.Persistence.Features.Sms.Queries.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
@@ -12,14 +13,14 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Queries.Implementat
         {
         }
 
-        public async Task<IEnumerable<SmsDraftGetDto>> GetByReferenceId(string referenceId, bool hasFetchDate, bool hasSendDate)
+        public async Task<IEnumerable<SmsDraftGetDto>> Get(string groupId,int smsFlowId, bool hasFetchDate, bool hasSendDate)
         {
-            string query = GetByReferenceId(hasFetchDate, hasSendDate);
-            IEnumerable<SmsDraftGetDto> result = await _sqlReportConnection.QueryAsync<SmsDraftGetDto>(query, new { referenceId });
+            string query = GetByGroupId(hasFetchDate, hasSendDate);
+            IEnumerable<SmsDraftGetDto> result = await _sqlReportConnection.QueryAsync<SmsDraftGetDto>(query, new { groupId , smsFlowId });
             return result;
         }
 
-        private string GetByReferenceId(bool hasFetchDate, bool hasSendDate)
+        private string GetByGroupId(bool hasFetchDate, bool hasSendDate)
         {
             string fetchCondition = hasFetchDate ? "  FetchDateTime IS NOT NULL " : "  FetchDateTime IS NULL ";
             string sendCondition = hasSendDate ? "  SendDateTime IS NOT NULL " : "  SendDateTime IS NULL ";
@@ -28,17 +29,18 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Queries.Implementat
                         Id,
 	                    TrackNumber,
 	                    BillId,
+                        GroupId,
 	                    ReferenceId,
-	                    TypeId,
-	                    TypeTitle,
+	                    SmsFlowId,
 	                    Message,
 	                    MobileNumber,
 	                    InsertDateTime,
 	                    FetchDateTime,
 	                    SendDateTime
-                    From CustomerWarehouse.dbo.SmsDraft
+                    From [Atlas].dbo.SmsDraft
                     Where 
-                        ReferenceId = @referenceId AND
+                        GroupId = @groupId AND
+                        SmsFlowId = @smsFlowId AND
                         {fetchCondition} AND
                         {sendCondition}";
         }

@@ -43,7 +43,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
         {
             return @"Select 
                     	C0 Id,
-                    	C1S Title
+                    	C1 Title
                     From [Db70].dbo.T41
                     Where C0=@id";
         }
