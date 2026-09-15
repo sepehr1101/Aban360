@@ -108,7 +108,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = new List<MeterReadingDetailCreateDto>();
             foreach (var readingDetail in readingDetails)
             {
-                var (isValid, hasExclude) = DataValidate(readingDetail);
+                var (isValid, hasExclude, excludeCauseEnum) = DataValidate(readingDetail);
                 if (isValid)
                 {
                     if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Malfunction)//xarab
@@ -129,26 +129,26 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                             {
                                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
                             }
-                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null, null));
                         }
                         catch (Exception ex) when (IsInException(ex))
                         {
-                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
                         }
                     }
-                    else if (readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.Change && string.IsNullOrWhiteSpace(readingDetail.TavizDateJalali))
+                    else if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Change && string.IsNullOrWhiteSpace(readingDetail.TavizDateJalali))
                     {
-                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
                     }
-                    else if (readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.Change && readingDetail.TavizDateJalali.CompareTo(readingDetail.CurrentDateJalali) > 0)
+                    else if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Change && readingDetail.TavizDateJalali.CompareTo(readingDetail.CurrentDateJalali) > 0)
                     {
-                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
                     }
-                    else if (readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.Change && readingDetail.TavizDateJalali.CompareTo(readingDetail.PreviousDateJalali) < 0)
+                    else if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Change && readingDetail.TavizDateJalali.CompareTo(readingDetail.PreviousDateJalali) < 0)
                     {
-                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
                     }
-                    else if (readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.Change) //taviz
+                    else if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Change) //taviz
                     {
                         int previousNumber = readingDetail.PreviousNumber;
                         string previousDateJalali = readingDetail.PreviousDateJalali;
@@ -176,11 +176,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                             {
                                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
                             }
-                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null, null));
                         }
                         catch (Exception ex) when (IsInException(ex))
                         {
-                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
                         }
                     }
                     else //not xarab, nor taviz
@@ -193,18 +193,18 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                             {
                                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
                             }
-                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null, null));
                         }
                         catch (Exception ex) when (IsInException(ex))
                         {
-                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
                         }
                     }
                 }
                 else
                 {
                     Guid? excludedUserId = hasExclude ? appUser.UserId : null;
-                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, excludedUserId));
+                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, excludedUserId, excludeCauseEnum));
                 }
             }
 
@@ -230,11 +230,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     {
                         throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
                     }
-                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null));
+                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null, null));
                 }
                 catch (Exception ex) when (IsInException(ex))
                 {
-                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId));
+                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
                 }
             }
             return readingDetailsCreate;
@@ -332,6 +332,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                        InsertDateTime = meterReading.InsertDateTime,
                        WaterDebt = members.LatestDebtAmount,
 
+                       DeletionStateId = members.DeletionStateId,
                        MobileNumber = members.MobileNumber ?? string.Empty,
                        BranchTypeId = members.BranchTypeId,
                        UsageId = members.UsageId,
@@ -477,35 +478,39 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 throw new ReadingException(ExceptionLiterals.InvalidDuplicateFileName(insertDateJalali));
             }
         }
-        private (bool, bool) DataValidate(MeterReadingDetailCreateDto readingDetail)
+        private (bool, bool, ExcludedCauseEnum?) DataValidate(MeterReadingDetailCreateDto readingDetail)
         {
-            int[] invalidCounterStateCode = [(int)CounterStateCodeEnum.Close, /*_withoutConsumptionMeterTypeId,*/ (int)CounterStateCodeEnum.Block, (int)CounterStateCodeEnum.NonRead, _desolateUnitMeterStateId, _disconnectionMeterStateId];
+            int[] invalidCounterStateCode = [(int)CounterStateCodeEnum.Close, /*_withoutConsumptionMeterTypeId,*/ (int)CounterStateCodeEnum.Block, (int)CounterStateCodeEnum.NonRead, (int)CounterStateCodeEnum.DesolateUnit, (int)CounterStateCodeEnum.Disconnection];
 
-            if (readingDetail.CurrentCounterStateCode == _commonMeterStateId && readingDetail.PreviousNumber > readingDetail.CurrentNumber)
+            if (readingDetail.DeletionStateId == (int)DeletionStateEnum.HazfMovaghat && readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Close)
             {
-                return (false, true);
+                return (false, true, ExcludedCauseEnum.Deleted_Close);
+            }
+            if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Common && readingDetail.PreviousNumber > readingDetail.CurrentNumber)
+            {
+                return (false, true, ExcludedCauseEnum.Error);
             }
             if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.WithoutConsumption && readingDetail.PreviousNumber != readingDetail.CurrentNumber)
             {
-                return (false, true);
+                return (false, true, ExcludedCauseEnum.Error);
             }
             if (invalidCounterStateCode.Contains(readingDetail.CurrentCounterStateCode))
             {
-                return (false, false);
+                return (false, false, null);
             }
-            else if ((readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.Change || readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.Reverse || readingDetail.CurrentCounterStateCode ==  (int)CounterStateCodeEnum.NextRound) && readingDetail.CurrentNumber > readingDetail.PreviousNumber)
+            else if ((readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Change || readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Reverse || readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.NextRound) && readingDetail.CurrentNumber > readingDetail.PreviousNumber)
             {
-                return (false, true);
+                return (false, true, ExcludedCauseEnum.Error);
             }
             if (!_domesticUnits.Contains(readingDetail.UsageId) && (readingDetail.ContractualCapacity <= 0))
             {
-                return (false, true);
+                return (false, true, ExcludedCauseEnum.Error);
             }
             if (readingDetail.CurrentNumber > _conditionByConsumption)
             {
-                return (false, true);
+                return (false, true, ExcludedCauseEnum.Error);
             }
-            return (true, false);//(IsValid,HasExclude)
+            return (true, false, null);//(IsValid,HasExclude,ExcludedCause)
         }
         private MeterImaginaryInputDto GetMeterImaginary(MeterReadingDetailCreateDto readingDetail)
         {
@@ -548,7 +553,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 MeterPreviousData = meterInfo,
             };
         }
-        private MeterReadingDetailCreateDto GetMeterReadingDetailByAbBahaValue(MeterReadingDetailCreateDto r, AbBahaCalculationDetails? abBahaCalc, bool hasZeroValue, Guid? userIdExclude)
+        private MeterReadingDetailCreateDto GetMeterReadingDetailByAbBahaValue(MeterReadingDetailCreateDto r, AbBahaCalculationDetails? abBahaCalc, bool hasZeroValue, Guid? userIdExclude, ExcludedCauseEnum? excludedCauseEnum)
         {
             double preDebtAmount = r.WaterDebt;// await _customerInfoService.GetMembersBedBes(new ZoneIdAndCustomerNumber(r.ZoneId, r.CustomerNumber));//checkResult: changeDto
             var (sumItems, jam, pard) = GetAmounts(preDebtAmount, abBahaCalc?.SumItems ?? 0);
@@ -556,8 +561,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             r.ExcludedByUserId = userIdExclude;
             r.ExcludedDateTime = userIdExclude.HasValue ? DateTime.Now : null;
-            r.ExcludedCauseId = userIdExclude.HasValue ? (int)ExcludedCauseEnum.Error : null;
-            r.ExcludedCauseTitle = userIdExclude.HasValue ? ReportLiterals.Error : null;
+            r.ExcludedCauseId = userIdExclude.HasValue && excludedCauseEnum.HasValue ? (int)excludedCauseEnum : null;
+            r.ExcludedCauseTitle = userIdExclude.HasValue && excludedCauseEnum.HasValue ? GetExcludedCauseTitle(excludedCauseEnum.Value) : null;
             r.Barge = 0;
             r.PriNo = r.PreviousNumber;
             r.TodayNo = r.CurrentNumber;
@@ -689,6 +694,18 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             ex is TariffDateException ||
             ex is InvalidBillCommandException ||
             ex is TariffCalcException;
+        }
+        private string GetExcludedCauseTitle(ExcludedCauseEnum input)
+        {
+            return input switch
+            {
+                ExcludedCauseEnum.PriGTCurrent => ReportLiterals.PriGTCurrent,
+                ExcludedCauseEnum.NeedEvaluate => ReportLiterals.NeedEvaluate,
+                ExcludedCauseEnum.Error => ReportLiterals.Error,
+                ExcludedCauseEnum.DuplicateBill => ReportLiterals.DuplicateBill,
+                ExcludedCauseEnum.Deleted_Close => ReportLiterals.Deleted_Close,
+                _ => string.Empty,
+            };
         }
     }
 }

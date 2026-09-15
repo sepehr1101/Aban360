@@ -2,7 +2,7 @@
 
 namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts
 {
-    public interface ISmsTypeService
+    public interface ISmsStateGroupService
     {
         Task<NumericDictionary> Get(int id);
         Task<NumericDictionary?> Get(string title, bool hasException);

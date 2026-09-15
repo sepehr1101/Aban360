@@ -14,7 +14,6 @@ using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.CommunicationPool.Domain.Features.Sms.Commands;
 using Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementations;
-using Aban360.ReportPool.Domain.Base;
 using DotNetDBF;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
@@ -27,19 +26,18 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
     {
         private readonly IMeterReadingCreateBaseHandler _meterReadingCreateBaseHandler;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailQueryService;
-        private readonly IT51QueryService _zoneQueryService;
         private readonly ISmsStateTemplateQueryService _stateTemplateQueryService;
         private readonly IValidator<MeterReadingFileCreateDto> _validator;
-        private static string _reportTitle = ReportLiterals.MeterReadingCreateFile;
+        private readonly IT51QueryService _zoneQueryService;
         private static string _dbfPath = DirectoryLiterals.DbfFolderPath;
         private int _smsGroupId = CommonLiterals.SmsStateGroupCollectBills_Close;
         private int _reminderSmsTypeId = CommonLiterals.SmsTypeReminder;
         public MeterReadingFileCreateHandler(
             IMeterReadingCreateBaseHandler meterReadingCreateBaseHandler,
             IMeterReadingDetailQueryService meterReadingDetailQueryService,
-            IT51QueryService zoneQueryService,
             ISmsStateTemplateQueryService stateTemplateQueryService,
             IValidator<MeterReadingFileCreateDto> validator,
+            IT51QueryService zoneQueryService,
             IConfiguration configuration)
             : base(configuration)
         {
@@ -70,17 +68,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = await _meterReadingCreateBaseHandler.GetReadingDetailCreateFinal(readingDetails, appUser, cancellationToken);
 
             await _meterReadingCreateBaseHandler.ExecSql(readingDetailsCreate, fileCreateInfo, appUser);
-
-            int firstFlowId = readingDetailsCreate?.FirstOrDefault()?.FlowImportedId ?? 0;
-            IEnumerable<MeterReadingDetailDataOutputDto> meterReadigInfo = await _meterReadingDetailQueryService.Get(firstFlowId, false);
-            ICollection<MeterReadingDetailDataOutputDto> closeReadingDetailCreate = meterReadigInfo.Where(r => r.CurrentCounterStateCode == (int)CounterStateCodeEnum.Close).ToList();
-
-            if ((closeReadingDetailCreate?.Count() ?? 0) != 0)
-            {
-                int newSmsFlowId = await GenerateAndInsertCloseSms(closeReadingDetailCreate, appUser);
-                return new MeterReadingFileCreateOutputDto(firstFlowId, newSmsFlowId);
-            }
-            return new MeterReadingFileCreateOutputDto(0, 0);
+            return await InsertCloseSmsAndGetResult(readingDetailsCreate, appUser);
         }
         private async Task<IEnumerable<MeterReadingDetailCreateDto>> GetMeterReadingDetails(MeterReadingFileCreateDto meterFile, string filePath, Guid userId)
         {
@@ -113,8 +101,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     int agentCode = (int)(decimal)rowObjects[7];
                     int zoneId = (int)(decimal)rowObjects[13];
 
-                    MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
-                    meterReadingFileDetail.Add(meterDetail);
+                    int[] radifs = { 10325335, 10456492, 10861757, 11144438, 10882146, 11395938, 10982596 };
+                    if (radifs.Contains(customerNumber))
+                    {
+                        MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
+                        meterReadingFileDetail.Add(meterDetail);
+                    }
                 }
             }
             catch
@@ -143,6 +135,19 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 newSmsDraftList.Add(newSmsDraftInsert);
             }
             return newSmsDraftList;
+        }
+        public async Task<MeterReadingFileCreateOutputDto> InsertCloseSmsAndGetResult(ICollection<MeterReadingDetailCreateDto> readingDetailsCreate, IAppUser appUser)
+        {
+            int firstFlowId = readingDetailsCreate?.FirstOrDefault()?.FlowImportedId ?? 0;
+            IEnumerable<MeterReadingDetailDataOutputDto> meterReadigInfo = await _meterReadingDetailQueryService.Get(firstFlowId, false);
+            ICollection<MeterReadingDetailDataOutputDto> closeReadingDetailCreate = meterReadigInfo.Where(r => r.CurrentCounterStateCode == (int)CounterStateCodeEnum.Close).ToList();
+
+            if ((closeReadingDetailCreate?.Count() ?? 0) != 0)
+            {
+                int newSmsFlowId = await GenerateAndInsertCloseSms(closeReadingDetailCreate, appUser);
+                return new MeterReadingFileCreateOutputDto(firstFlowId, newSmsFlowId);
+            }
+            return new MeterReadingFileCreateOutputDto(0, 0);
         }
         private async Task<int> GenerateAndInsertCloseSms(ICollection<MeterReadingDetailDataOutputDto> closeReadingToSend, IAppUser appUser)
         {

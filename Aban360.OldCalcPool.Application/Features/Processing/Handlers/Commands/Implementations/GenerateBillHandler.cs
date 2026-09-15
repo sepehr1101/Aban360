@@ -1,15 +1,14 @@
-﻿using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
-using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
+﻿using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
+using Aban360.Common.Db.Services.Dtos;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
@@ -85,7 +84,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             await InputValidate(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await GetZoneIdANdCustomerNumber(inputDto.BillId);
-            CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
+            //CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
+            CustomerInfoGetDto customerInfo = await _commonMemberQueryService.GetMembersBedBesTavizInfo(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
             await Validate(inputDto, zoneIdAndCustomerNumber, customerInfo);
 
             AbBahaCalculationDetails abBahaCalcResult = await GetAbBahaCalc(inputDto, customerInfo, cancellationToken);
@@ -129,7 +129,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 MeterDateInfoWithMonthlyConsumptionOutputDto tariffMeterInfoByConsumptionAverage = new()
                 {
                     BillId = inputDto.BillId,
-                    PreviousDateJalali = customerInfo.BedBesInfo?.LastMeterDateJalali ?? customerInfo.MembersInfo.WaterInstallationDateJalali,
+                    PreviousDateJalali = customerInfo.BedBesInfo?.LastMeterDateJalali ?? customerInfo.MembersInfo.MeterInstallationDateJalali,
                     CurrentDateJalali = inputDto.CurrentDateJalali,
                     MonthlyAverageConsumption = (double)inputDto.ConsumptionAverage
                 };
@@ -188,7 +188,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             inputDto.MeterNumber = 0;
-            string previousDate = customerInfo.BedBesInfo?.LastMeterDateJalali ?? customerInfo.MembersInfo.WaterInstallationDateJalali;
+            string previousDate = customerInfo.BedBesInfo?.LastMeterDateJalali ?? customerInfo.MembersInfo.MeterInstallationDateJalali;
             int previousNumber = customerInfo.BedBesInfo?.LastMeterNumber ?? 0;
             int finalUnit = GetFinalDomesticUnit(customerInfo, inputDto.CurrentDateJalali);
             ConsumptionInfo consumptionInfo = new(previousDate, inputDto.CurrentDateJalali, 0, GetDuration(previousDate, inputDto.CurrentDateJalali), 0, finalUnit);
@@ -198,20 +198,20 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 ZoneId = customerInfo.MembersInfo.ZoneId,
                 Radif = customerInfo.MembersInfo.CustomerNumber,
-                BranchType = customerInfo.MembersInfo.BranchTypeId,
+                BranchType = customerInfo.MembersInfo.UseStateId,
                 UsageId = customerInfo.MembersInfo.UsageId,
                 DomesticUnit = customerInfo.MembersInfo.DomesticUnit,
                 CommertialUnit = customerInfo.MembersInfo.CommercialUnit,
                 OtherUnit = customerInfo.MembersInfo.OtherUnit,
                 EmptyUnit = customerInfo.MembersInfo.EmptyUnit,
-                WaterInstallationDateJalali = customerInfo.MembersInfo.WaterInstallationDateJalali,
-                SewageInstallationDateJalali = customerInfo.MembersInfo.SewageInstallationDateJalali,
-                WaterRegisterDate = customerInfo.MembersInfo.WaterRegisterDate,
-                SewageRegisterDate = customerInfo.MembersInfo.SewageRegisterDate,
+                WaterInstallationDateJalali = customerInfo.MembersInfo.MeterInstallationDateJalali,
+                SewageInstallationDateJalali = customerInfo.MembersInfo.SiphonInstallationDateJalali,
+                WaterRegisterDate = customerInfo.MembersInfo.MeterInstalltionRegisterDateJalali,
+                SewageRegisterDate = customerInfo.MembersInfo.SiphonInstalltionRegisterDateJalali,
                 SewageCalcState = customerInfo.MembersInfo.SewageCalcState,
                 ContractualCapacity = customerInfo.MembersInfo.ContractualCapacity,
                 HouseholdNumber = customerInfo.MembersInfo.HouseholdNumber,
-                HouseholdDate = customerInfo.MembersInfo.HouseholdDate,
+                HouseholdDate = customerInfo.MembersInfo.HouseholdDateJalali,
                 ReadingNumber = customerInfo.MembersInfo.ReadingNumber,
                 VillageId = customerInfo.MembersInfo.VillageId,
                 IsSpecial = customerInfo.MembersInfo.IsSpecial,
@@ -244,7 +244,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 return customerInfo.MembersInfo.DomesticUnit < 1 ? 1 : customerInfo.MembersInfo.DomesticUnit;//((/*customerInfo.OtherUnit + */customerInfo.DomesticUnit) == 0 ? 1 : /*customerInfo.OtherUnit + */ customerInfo.DomesticUnit);
             }
-            int finalHousehold = GetHouseholdUnit(customerInfo.MembersInfo.HouseholdNumber, customerInfo.MembersInfo.HouseholdDate, readingDateJalali);
+            int finalHousehold = GetHouseholdUnit(customerInfo.MembersInfo.HouseholdNumber, customerInfo.MembersInfo.HouseholdDateJalali, readingDateJalali);
             if (finalHousehold > 1)
             {
                 return customerInfo.MembersInfo.HouseholdNumber;//customerInfo.DomesticUnit;
@@ -369,7 +369,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             return new MeterInfoByPreviousDataInputDto()
             {
                 BillId = customerInfo.MembersInfo.BillId,
-                PreviousDateJalali = customerInfo.BedBesInfo?.LastMeterDateJalali ?? customerInfo.MembersInfo.WaterInstallationDateJalali,
+                PreviousDateJalali = customerInfo.BedBesInfo?.LastMeterDateJalali ?? customerInfo.MembersInfo.MeterInstallationDateJalali,
                 PreviousNumber = customerInfo.BedBesInfo?.LastMeterNumber ?? 0,
                 CurrentDateJalali = currentDateJalali,
                 CurrentMeterNumber = generateBillInfo.MeterNumber,
@@ -454,7 +454,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 NewAb = 0,
                 NewFa = 0,
                 Bodjeh = (decimal)abBahaCalc.SumBoodje,
-                Group1 = customerInfo.MembersInfo.ConsumptionUsageId,
+                Group1 = customerInfo.MembersInfo.UsageConsumptionId,
                 MasFas = GetSewageConsumption(abBahaCalc.Customer.UsageId, abBahaCalc.Consumption),
                 Faz = customerInfo.MembersInfo.SewageCalcState >= 1,
                 ChkKarbari = 0,
