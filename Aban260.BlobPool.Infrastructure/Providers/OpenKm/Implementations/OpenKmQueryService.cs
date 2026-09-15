@@ -1,10 +1,10 @@
 ﻿using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Exceptions;
+using Aban360.Common.Authentication;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using HttpClientToCurl;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -21,9 +21,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
         string plainText = @"text/plain";
         private readonly HttpClient _httpClient;
         private readonly OpenKmOptions _options;
-        private readonly IMemoryCache _cache;
-
-        private const string TokenCacheKey = "OpenKm_AccessToken";
+        private readonly IEsbTokenProvider _tokenProvider;
         private const string GroupNameFolder = "okg%3Amoshtarakin_folder";
         private const string GroupNameFile = "okg%3Amoshtarakin_file";
 
@@ -34,7 +32,7 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
         public OpenKmQueryService(
             IHttpClientFactory httpClientFactory,
             IOptions<OpenKmOptions> options,
-            IMemoryCache cache)
+            IEsbTokenProvider tokenProvider)
         {
             httpClientFactory.NotNull(nameof(httpClientFactory));
 
@@ -44,63 +42,13 @@ namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
             _options = options.Value;
             _options.NotNull(nameof(_options));
 
-            _cache = cache;
-            _cache.NotNull(nameof(_cache));
+            _tokenProvider = tokenProvider;
+            _tokenProvider.NotNull(nameof(_tokenProvider));
         }
 
-        private async Task<TokenResponse> GetToken()
-        {
-            if (_cache.TryGetValue(TokenCacheKey, out TokenResponse cachedToken))
-            {
-                return cachedToken;
-            }
-
-            var token = await RequestNewToken();
-
-            // set cache with expiration slightly earlier than real expiry
-            var cacheOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(token.ExpiresIn - 30)
-            };
-
-            _cache.Set(TokenCacheKey, token, cacheOptions);
-
-            return token;
-        }
-        private async Task<TokenResponse> RequestNewToken()
-        {
-            const string GrantTypeKey = "grant_type";
-            const string ClientCredentialsValue = "client_credentials";
-            const string BasicScheme = "Basic";
-            const string FormUrlEncoded = "application/x-www-form-urlencoded";
-
-            // Prepare form data
-            var formData = new Dictionary<string, string>
-            {
-                { GrantTypeKey, ClientCredentialsValue }
-            };
-
-            var request = new HttpRequestMessage(HttpMethod.Post, _options.TokenEndpoint)
-            {
-                Content = new FormUrlEncodedContent(formData)
-            };
-
-            // Encode username:password for Basic Auth
-            var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_options.Username}:{_options.Password}"));
-            request.Headers.Authorization = new AuthenticationHeaderValue(BasicScheme, credentials);
-
-            // Explicit content type
-            request.Content.Headers.ContentType = new MediaTypeHeaderValue(FormUrlEncoded);
-
-            // Send request
-            HttpResponseMessage response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<TokenResponse>(_jsonOptions);
-        }
         public async Task<AuthenticationHeaderValue> GetAuthenticationHeaderAsync()//todo: to Private
         {
-            TokenResponse token = await GetToken();
-            return new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
+            return await _tokenProvider.GetAuthenticationHeaderAsync();
         }
 
         public async Task<FileListResponse> GetRemovedFiles(string directory)

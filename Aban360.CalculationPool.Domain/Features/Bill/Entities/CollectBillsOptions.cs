@@ -4,9 +4,6 @@
     {
         public const string SectionName = "CollectBills";
         public string BaseUrl { get; set; } = default!;
-        public string UserName{ get; set; } = default!;
-        public string Password{ get; set; } = default!;
-        public string TokenEndpoint { get; set; } = default!;
         public string Login { get; set; } = default!;
         public string SubscriptionsInfo { get; set; } = default!;
         public string Upload { get; set; } = default!;
