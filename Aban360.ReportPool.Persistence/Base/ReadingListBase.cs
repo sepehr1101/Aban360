@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						On t51.C1=t46.C0
                     Where
 						c.ToDayJalali IS NULL AND
-                        c.DeletionStateId NOT IN (5) AND
+                        NOT (b.CounterStateCode = 4 AND c.DeletionStateId = 5)
                         (@FromReadingNumber IS NULL or
                     	@ToReadingNumber IS NULL or 
                     	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
@@ -61,7 +61,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	b.{groupingField} as ItemTitle,
                     	b.{groupingField},
                     	COUNT(Case When b.CounterStateCode IS NOT NULL Then 1 END) AS ReadingCount,
-                    	COUNT(Case When b.CounterStateCode=4 Then 1 END) AS CloseCount,
+                    	COUNT(Case When b.CounterStateCode=4 and c.DeletionStateId<>5  Then 1 END) AS CloseCount,
                     	COUNT(Case When b.CounterStateCode=7 Then 1 EnD) AS ObstacleCount,
                     	COUNT(Case When b.CounterStateCode=2 Then 1 END) AS ReplacementBranchCount,
                     	COUNT(Case When b.CounterStateCode=1 Then 1 END) AS MalfunctionCount,
@@ -77,7 +77,6 @@ namespace Aban360.ReportPool.Persistence.Base
 						On t51.C1=t46.C0
                     Where
                         c.ToDayJalali IS NULL AND
-						c.DeletionStateId NOT IN (5) AND
                         (@FromReadingNumber IS NULL or
                     	@ToReadingNumber IS NULL or 
                     	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND
