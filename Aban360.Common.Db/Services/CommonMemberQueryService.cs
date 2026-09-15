@@ -1,5 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Services.Dtos;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Dapper;
@@ -16,6 +17,7 @@ namespace Aban360.Common.Db.Services
         Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> Get(IEnumerable<string> billId, IDbConnection connection, IDbTransaction transction);
         Task<MemberInfoGetDto> Get(ZoneIdAndCustomerNumber input);
         Task<IEnumerable<MemberInfoGetDto>> Get(IEnumerable<ZoneIdAndCustomerNumber> input, IDbConnection connection);
+        Task<CustomerInfoGetDto> GetMembersBedBesTavizInfo(int zoneId, int customerNumber);
     }
     public sealed class CommonMemberQueryService : AbstractBaseConnection, ICommonMemberQueryService
     {
@@ -113,6 +115,27 @@ namespace Aban360.Common.Db.Services
             IEnumerable<MemberInfoGetDto> result = await connection.QueryAsync<MemberInfoGetDto>(GetMemeberInfoByBulkQuery(GetDbName(zoneId)), null);
             return result;
         }
+        public async Task<CustomerInfoGetDto> GetMembersBedBesTavizInfo(int zoneId, int customerNumber)
+        {
+            string dbName = GetDbName(zoneId);
+            string memberQuery = GetMemeberInfoQuery(dbName);
+            string bedBesQuery = GetBedBesQuery(dbName);
+            string tavizQuery = GetTavisQuery(dbName);
+
+            IEnumerable<int> validReturnCause = await GetLastMeterValid();
+            MemberInfoGetDto membersInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<MemberInfoGetDto>(memberQuery, new { zoneId, customerNumber });
+            LatesTavizInfo latestTavizInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<LatesTavizInfo>(tavizQuery, new { zoneId, customerNumber });
+            LatestBedBesConsumptionInfo latestBedBesInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<LatestBedBesConsumptionInfo>(bedBesQuery, new { zoneId, customerNumber, validReturnCause });
+
+            return new CustomerInfoGetDto(membersInfo, latestBedBesInfo, latestTavizInfo);
+        }
+        private async Task<IEnumerable<int>> GetLastMeterValid()
+        {
+            string query = GetLastMeterValidQuery();
+            IEnumerable<int> result = await _sqlReportConnection.QueryAsync<int>(query, null);
+
+            return result;
+        }
 
 
         private string GetZoneIdAndCustomerNumberQuery()
@@ -208,7 +231,9 @@ namespace Aban360.Common.Db.Services
 						m.operator AS Operator,
 						m.Senf AS Guild,
 						TRIM(m.date_KHANE) HouseholdDateJalali ,
-						bed_bes DebtAmount
+						bed_bes DebtAmount,
+                        m.n_faz as SewageCalcState,
+					    m.EJUCA as VirtualCategoryId
 					From [{dbName}].dbo.members m
 					Left Join [Db70].dbo.T51 t51
 						ON m.town=t51.C0
@@ -335,7 +360,80 @@ namespace Aban360.Common.Db.Services
         {
             return $@"Select * From #TempCustomerNumbers t";
         }
-
+     
+        private string GetLastMeterValidQuery()
+        {
+            return @"Select Id
+                    From [Db70].dbo.BillReturnCause
+                    Where 
+                        RemoveDateTime IS NULL AND
+                        IsLastMeterValid = 1";
+        }
+        private string GetBedBesQuery(string dbName)
+        {
+            return $@"With Cte As(
+                        Select 
+							b.id,
+                            b.radif,
+                    		b.date_bed,
+                    		b.pri_date,
+                    		b.today_date,
+                    		b.pri_no,
+                    		b.today_no,
+                    		r.elat,
+                    		b.del,
+							b.cod_vas CounterStateCode,
+							b.rate ConsumptionAverage,
+							b.masraf Consumption,
+                            b.baha,
+                            Case 
+                                When b.del = 0 And b.cod_vas In (4,7,8) Then NULL
+                                When b.del = 0 And b.cod_vas Not In (4,7,8) Then b.today_no
+                                When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas Not In (4,7,8) Then b.today_no
+                                When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas In (4,7,8) Then NULL
+                                Else NULL
+                            End As PreviousNumber,
+                    		Case 
+                                When b.del = 0 And b.cod_vas In (4,7,8) Then NULL
+                                When b.del = 0 And b.cod_vas Not In(4,7,8) Then b.today_date
+                                When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas Not In (4,7,8) Then b.today_date
+                                When b.del = 1 And r.elat Not In @validReturnCause And b.cod_vas In (4,7,8) Then NULL
+                                Else NULL
+                            End As PreviousDateJalali
+                         From  [{dbName}].dbo.bed_bes b
+                    	 Left Join [{dbName}].dbo.REPAIR r
+                    		On b.town=r.town And b.radif=r.radif And b.pri_date>=r.pri_date And b.today_date<=r.today_date
+                    	 Where b.radif=@CustomerNumber And b.town=@ZoneId
+                    )
+                    Select Top 1 
+                            c.radif CustomerNumber,
+                    		c.PreviousDateJalali LastMeterDateJalali,
+                    		c.PreviousNumber LastMeterNumber,
+							c.CounterStateCode LastCounterStateCode,
+							cv.Title LastCounterStateTitle,
+							c.ConsumptionAverage LastMonthlyConsumption,
+							c.Consumption LastConsumption,
+                            c.del IsReturned,
+                            c.baha LastSumItems
+                    From Cte c
+					Join [Db70].dbo.CounterVaziat cv
+						ON c.CounterStateCode=cv.MoshtarakinId
+                    Where PreviousNumber Is Not Null 
+                    Order By c.date_bed Desc ,c.Id Desc";
+        }
+        private string GetTavisQuery(string dbName)
+        {
+            return $@"Select 
+						t.taviz_date as TavizDateJalali,
+						t.elat as TavizCause,
+						t.date_sabt as TavizRegisterDateJalali,
+						t.taviz_no as TavizNumber
+					From [{dbName}].dbo.taviz t
+					Where
+						t.town=@zoneId AND
+						t.radif=@customerNumber
+					Order by t.taviz_date Desc;";
+        }
 
     }
 }

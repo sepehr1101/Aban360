@@ -72,5 +72,7 @@
         public string? DiscountTitle { get; set; }
         public string? BlockCode { get; set; }
         public long? DebtAmount { get; set; }
+        public int? SewageCalcState { get; set; }
+        public int? VirtualCategoryId { get; set; }
     }
 }

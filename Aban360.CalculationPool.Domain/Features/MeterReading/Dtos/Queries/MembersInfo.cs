@@ -29,5 +29,6 @@
         public string? BodySerial { get; set; }
         public long LatestDebtAmount { get; set; }
         public string? MobileNumber { get; set; }
+        public int DeletionStateId { get; set; }
     }
 }

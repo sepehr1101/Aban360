@@ -34,7 +34,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             _meterReadingCreateBaseHandler.NotNull(nameof(meterReadingCreateBaseHandler));
 
             _validator = validator;
-            _validator.NotNull(nameof(_validator));
+            _validator.NotNull(nameof(validator));
         }
 
         public async Task<ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto>> Handle(MeterReadingExcelFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken)

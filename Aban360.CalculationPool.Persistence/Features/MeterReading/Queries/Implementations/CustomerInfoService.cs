@@ -31,19 +31,19 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
 
             return result;
         }
-        public async Task<CustomerInfoGetDto> Get(int zoneId, int customerNumber)
-        {
-            string dbName = GetDbName(zoneId);
-            string memberQuery = GetMembers(dbName);
-            string bedBesQuery = GetBedBesQuery(dbName);
-            string tavizQuery = GetTavisQuery(dbName);
+        //public async Task<CustomerInfoGetDto> Get(int zoneId, int customerNumber)
+        //{
+        //    string dbName = GetDbName(zoneId);
+        //    string memberQuery = GetMembers(dbName);
+        //    string bedBesQuery = GetBedBesQuery(dbName);
+        //    string tavizQuery = GetTavisQuery(dbName);
 
-            MembersInfo membersInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<MembersInfo>(memberQuery, new { zoneId, customerNumber });
-            LatesTavizInfo latestTavizInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<LatesTavizInfo>(tavizQuery, new { zoneId, customerNumber });
-            LatestBedBesConsumptionInfo latestBedBesInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<LatestBedBesConsumptionInfo>(bedBesQuery, new { zoneId, customerNumber });
+        //    MembersInfo membersInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<MembersInfo>(memberQuery, new { zoneId, customerNumber });
+        //    LatesTavizInfo latestTavizInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<LatesTavizInfo>(tavizQuery, new { zoneId, customerNumber });
+        //    LatestBedBesConsumptionInfo latestBedBesInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<LatestBedBesConsumptionInfo>(bedBesQuery, new { zoneId, customerNumber });
 
-            return new CustomerInfoGetDto(membersInfo, latestBedBesInfo, latestTavizInfo);
-        }
+        //    return new CustomerInfoGetDto(membersInfo, latestBedBesInfo, latestTavizInfo);
+        //}
         public async Task<CustomersInfoGetDto> Get(int zoneId, ICollection<int> customerNumbers)
         {
             string dbName = GetDbName(zoneId);
@@ -221,7 +221,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
 						m.Khali_s as EmptyUnit,
 						Trim(m.serial_co) as BodySerial,
 						m.bed_bes LatestDebtAmount,
-						TRIM(m.MOBILE) MobileNumber
+						TRIM(m.MOBILE) MobileNumber,
+						m.hasf DeletionStateId
 					From [{dbName}].dbo.members m
 					{conditionQuery};";
         }
