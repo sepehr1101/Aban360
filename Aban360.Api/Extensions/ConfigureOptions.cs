@@ -1,5 +1,6 @@
 ﻿using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.CalculationPool.Domain.Features.Bill.Entities;
+using Aban360.Common.Authentication;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.TaxPool.Domain.Features.MaaherSTP.Dto;
 using Aban360.UserPool.Domain.Constants;
@@ -12,6 +13,7 @@ namespace Aban360.Api.Extensions
         public static IServiceCollection AddCustomOptions(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddBearerTokens(configuration);
+            services.AddEsbAuthentication(configuration);
             services.AddApiSettings(configuration);
             services.AddOpenKm(configuration);
             services.AddGeo(configuration);
@@ -19,6 +21,23 @@ namespace Aban360.Api.Extensions
             services.AddMap(configuration);
             services.AddCollectBills(configuration);
             return services;
+        }
+        private static void AddEsbAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            EsbAuthenticationOptions options = configuration
+                .GetRequiredSection(EsbAuthenticationOptions.SectionName)
+                .Get<EsbAuthenticationOptions>()
+                ?? throw new InvalidOperationException("ESB authentication configuration is missing.");
+
+            if (!Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out _) ||
+                string.IsNullOrWhiteSpace(options.TokenEndpoint) ||
+                string.IsNullOrWhiteSpace(options.Username) ||
+                string.IsNullOrWhiteSpace(options.Password))
+            {
+                throw new InvalidOperationException("ESB authentication configuration is invalid.");
+            }
+
+            services.AddSingleton(options);
         }
 
         //TODO: remove Validate method and invoke it somewhere else
