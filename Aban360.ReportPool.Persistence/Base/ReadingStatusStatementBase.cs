@@ -18,7 +18,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						SUM(b.SumItems) AS SumItems,
                     	b.{parameters.DateField} AS EventDateJalali,
                     	COUNT(Case When b.CounterStateCode NOT IN (4,7,8) Then 1 End)AS PureReading,
-                    	COUNT(Case When b.CounterStateCode=4 Then 1 End)AS Closed,
+                    	COUNT(Case When b.CounterStateCode=4 AND c.DeletionStateId<>5 Then 1 End)AS Closed,
                     	COUNT(Case When b.CounterStateCode=7 Then 1 End)AS Obstacle,
                     	COUNT(Case When b.CounterStateCode=8 Then 1 End)AS Temporarily,
                     	COUNT(Case When b.CounterStateCode!=1 Then 1 End)AS AllCount,
@@ -29,7 +29,6 @@ namespace Aban360.ReportPool.Persistence.Base
 						ON b.ZoneId=c.ZoneId AND b.CustomerNumber=c.CustomerNumber
                     Where
                         c.ToDayJalali IS NULL AND
-						c.DeletionStateId NOT IN (5) AND
                     	(b.{parameters.DateField} BETWEEN @FromDateJalali AND @ToDateJalali) AND
                         (   
                             @FromReadingNumber IS NULL or
@@ -52,7 +51,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	b.{parameters.GroupedField} AS ItemTitle ,
 						SUM(b.SumItems) AS SumItems,
                     	COUNT(Case When b.CounterStateCode NOT IN (4,7,8) Then 1 End) AS PureReading,
-                    	COUNT(Case When b.CounterStateCode=4 Then 1 End) AS Closed,
+                    	COUNT(Case When b.CounterStateCode=4  AND c.DeletionStateId<>5 Then 1 End) AS Closed,
                     	COUNT(Case When b.CounterStateCode=7 Then 1 End) AS Obstacle,
                     	COUNT(Case When b.CounterStateCode=8 Then 1 End) AS Temporarily,
                     	COUNT(Case When b.CounterStateCode!=1 Then 1 End) AS AllCount,
