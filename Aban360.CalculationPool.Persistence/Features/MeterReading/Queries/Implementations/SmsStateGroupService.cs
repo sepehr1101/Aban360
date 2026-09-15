@@ -8,9 +8,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Implementations
 {
-    public sealed class SmsTypeService : AbstractBaseConnection, ISmsTypeService
+    public sealed class SmsStateGroupService : AbstractBaseConnection, ISmsStateGroupService
     {
-        public SmsTypeService(IConfiguration configuration)
+        public SmsStateGroupService(IConfiguration configuration)
             : base(configuration)
         {
         }
@@ -18,23 +18,25 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
         public async Task<NumericDictionary> Get(int id)
         {
             string query = GetByIdQuery();
-            NumericDictionary? SmsType = await _sqlReportConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { id });
-            if (SmsType is null)
+            NumericDictionary? SmsStateGroup = await _sqlReportConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { id });
+            if (SmsStateGroup is null)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidId);
             }
-            return SmsType;
+            return SmsStateGroup;
         }
         public async Task<NumericDictionary?> Get(string title, bool hasException)
         {
             string query = GetByTitleQuery();
-            NumericDictionary? SmsType = await _sqlReportConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { title });
-            if (SmsType is null && hasException)
+            NumericDictionary? smsStateGroup = await _sqlReportConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { title });
+            if (smsStateGroup is null && hasException)
             {
                 throw new ReadingException(ExceptionLiterals.NotFoundData);
             }
-            return SmsType;
+            return smsStateGroup;
         }
+     
+
         public async Task<IEnumerable<NumericDictionary>> Get()
         {
             string query = GetQuery();
@@ -47,14 +49,14 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
             return @"SELECT
                         Id,
                         Title
-                    FROM Atlas.dbo.SmsType ";
+                    FROM Atlas.dbo.SmsStateGroup ";
         }
         private string GetByIdQuery()
         {
             return @"SELECT
                         Id,
                         Title
-                    FROM Atlas.dbo.SmsType
+                    FROM Atlas.dbo.SmsStateGroup
                     WHERE Id = @Id ";
         }
         private string GetByTitleQuery()
@@ -62,7 +64,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
             return @"SELECT
                         Id,
                         Title
-                    FROM Atlas.dbo.SmsType
+                    FROM Atlas.dbo.SmsStateGroup
                     WHERE Title = @Title ";
         }
     }

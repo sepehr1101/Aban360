@@ -7,20 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
 {
-    [Route("v1/sms-type")]
-    public class SmsTypeController : BaseController
+    [Route("v1/sms-state-group")]
+    public class SmsStateGroupController : BaseController
     {
-        private readonly ISmsTypeInsertHandler _smsTypeInsertHandler;
-        private readonly ISmsTypeGetAllHandler _smsTypeGetAllHandler;
-        public SmsTypeController(
-            ISmsTypeInsertHandler smsTypeInsertHandler,
-            ISmsTypeGetAllHandler smsTypeGetAllHandler)
+        private readonly ISmsStateGroupInsertHandler _smsStateGroupInsertHandler;
+        private readonly ISmsStateGroupGetAllHandler _smsStateGroupGetAllHandler;
+        public SmsStateGroupController(
+            ISmsStateGroupInsertHandler smsStateGroupInsertHandler,
+            ISmsStateGroupGetAllHandler smsStateGroupGetAllHandler)
         {
-            _smsTypeInsertHandler = smsTypeInsertHandler;
-            _smsTypeInsertHandler.NotNull(nameof(smsTypeInsertHandler));
+            _smsStateGroupInsertHandler = smsStateGroupInsertHandler;
+            _smsStateGroupInsertHandler.NotNull(nameof(smsStateGroupInsertHandler));
 
-            _smsTypeGetAllHandler = smsTypeGetAllHandler;
-            _smsTypeGetAllHandler.NotNull(nameof(smsTypeInsertHandler));
+            _smsStateGroupGetAllHandler = smsStateGroupGetAllHandler;
+            _smsStateGroupGetAllHandler.NotNull(nameof(smsStateGroupInsertHandler));
         }
 
         [HttpPost]
@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<SearchInput>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Insert(SearchInput inputDto, CancellationToken cancellationToken)
         {
-            await _smsTypeInsertHandler.Handle(inputDto.Input, cancellationToken);
+            await _smsStateGroupInsertHandler.Handle(inputDto.Input, cancellationToken);
             return Ok(inputDto);
         }
         [HttpGet]
@@ -36,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            IEnumerable<NumericDictionary> result = await _smsTypeGetAllHandler.Handle(cancellationToken);
+            IEnumerable<NumericDictionary> result = await _smsStateGroupGetAllHandler.Handle(cancellationToken);
             return Ok(result);
         }
     }

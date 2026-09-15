@@ -11,24 +11,24 @@ using System.Data;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
 {
-    internal sealed class SmsTypeInsertHandler : AbstractBaseConnection, ISmsTypeInsertHandler
+    internal sealed class SmsStateGroupInsertHandler : AbstractBaseConnection, ISmsStateGroupInsertHandler
     {
-        private readonly ISmsTypeService _smsTypeService;
-        public SmsTypeInsertHandler(
-            ISmsTypeService smsTypeService,
+        private readonly ISmsStateGroupService _SmsStateGroupService;
+        public SmsStateGroupInsertHandler(
+            ISmsStateGroupService SmsStateGroupService,
             IConfiguration configuration)
                 : base(configuration)
         {
-            _smsTypeService = smsTypeService;
-            _smsTypeService.NotNull(nameof(smsTypeService));
+            _SmsStateGroupService = SmsStateGroupService;
+            _SmsStateGroupService.NotNull(nameof(SmsStateGroupService));
         }
 
         public async Task Handle(string title, CancellationToken cancellationToken)
         {
-            NumericDictionary? smsTypeInfo = await _smsTypeService.Get(title, false);
-            if (smsTypeInfo is not null)
+            NumericDictionary? SmsStateGroupInfo = await _SmsStateGroupService.Get(title, false);
+            if (SmsStateGroupInfo is not null)
             {
-                throw new ReadingException(ExceptionLiterals.InvalidInsertDuplicateSmsType);
+                throw new ReadingException(ExceptionLiterals.InvalidInsertDuplicateSmsStateGroup);
             }
             await ExecSql(title);
         }
@@ -42,8 +42,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    SmsTypeCommandService smsTypeCommandService = new(connection, transaction);
-                    await smsTypeCommandService.Insert(title);
+                    SmsStateGroupCommandService SmsStateGroupCommandService = new(connection, transaction);
+                    await SmsStateGroupCommandService.Insert(title);
 
                     transaction.Commit();
                 }
