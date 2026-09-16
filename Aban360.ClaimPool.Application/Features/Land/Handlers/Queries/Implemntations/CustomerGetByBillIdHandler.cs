@@ -31,7 +31,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
             _commonZoneService.NotNull(nameof(commonZoneService));
         }
 
-        public async Task<SubscriptionGetDto> Handle(SearchInput inputDto,IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<SubscriptionGetDto> Handle(SearchInput inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             SubscriptionGetDto customerInfo = await _subscriptionAssignmentQueryService.GetInfo(inputDto.Input);
             await _commonZoneService.IsUserInZone(appUser, customerInfo.ZoneId);
@@ -39,8 +39,19 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
             {
                 throw new BaseException("شناسه قبض یافت نشد");
             }
-            CustomerLocationDto customerLocation = await _gisService.GetCustomerLocation(new CustomerLocationInputDto(inputDto.Input));
+            CustomerLocationDto customerLocation = await GetCustomerLocation(inputDto.Input);
             return GetLocationInfo(customerInfo, customerLocation);
+        }
+        private async Task<CustomerLocationDto> GetCustomerLocation(string billId)
+        {
+            try
+            {
+                return await _gisService.GetCustomerLocation(new CustomerLocationInputDto(billId));
+            }
+            catch (Exception ex)
+            {
+                return new CustomerLocationDto("0", "0");
+            }
         }
         private SubscriptionGetDto GetLocationInfo(SubscriptionGetDto customerInfo, CustomerLocationDto customerLocation)
         {
