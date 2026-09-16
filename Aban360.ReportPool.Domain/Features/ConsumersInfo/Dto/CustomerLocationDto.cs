@@ -22,6 +22,14 @@
     {
         public string? X { get; set; }
         public string? Y { get; set; }
+        public CustomerLocationDto(string x, string y)
+        {
+            X = x;
+            Y = y;
+        }
+        public CustomerLocationDto()
+        {
+        }
     }
     public record CustomerLocationInputDto
     {

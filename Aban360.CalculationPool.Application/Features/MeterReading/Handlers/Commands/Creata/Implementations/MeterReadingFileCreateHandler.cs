@@ -101,12 +101,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     int agentCode = (int)(decimal)rowObjects[7];
                     int zoneId = (int)(decimal)rowObjects[13];
 
-                    int[] radifs = { 10325335, 10456492, 10861757, 11144438, 10882146, 11395938, 10982596 };
-                    if (radifs.Contains(customerNumber))
-                    {
-                        MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
-                        meterReadingFileDetail.Add(meterDetail);
-                    }
+                    MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
+                    meterReadingFileDetail.Add(meterDetail);
                 }
             }
             catch
