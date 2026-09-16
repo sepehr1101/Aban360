@@ -11,20 +11,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
     {
         private readonly ICustomerUpdateHandler _customerUpdateHandler;
         private readonly ICustomerBranchTypeToNormalUpdateHandler _branchTypeToNormalUpdateHandler;
-        private readonly ICustomerDeletionStateUpdateHandler _customerDeletionStateUpdateHandler;
         public CustomerUpdateController(
             ICustomerUpdateHandler customerUpdateHandler,
-            ICustomerBranchTypeToNormalUpdateHandler branchTypeToNormalUpdateHandler,
-            ICustomerDeletionStateUpdateHandler customerDeletionStateUpdateHandler)
+            ICustomerBranchTypeToNormalUpdateHandler branchTypeToNormalUpdateHandler)
         {
             _customerUpdateHandler = customerUpdateHandler;
             _customerUpdateHandler.NotNull(nameof(customerUpdateHandler));
 
             _branchTypeToNormalUpdateHandler = branchTypeToNormalUpdateHandler;
             _branchTypeToNormalUpdateHandler.NotNull(nameof(branchTypeToNormalUpdateHandler));
-
-            _customerDeletionStateUpdateHandler = customerDeletionStateUpdateHandler;
-            _customerDeletionStateUpdateHandler.NotNull(nameof(customerDeletionStateUpdateHandler));
         }
 
         [HttpGet, HttpPost]
@@ -80,16 +75,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             await _branchTypeToNormalUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
-        
+
         [HttpGet, HttpPost]
         [Route("update-deletion-state")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerDeletionStateUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateDeletionState([FromBody] CustomerDeletionStateUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _customerDeletionStateUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
-        
+
         [HttpGet, HttpPost]
         [Route("update-household")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerDeletionStateUpdateInputDto>), StatusCodes.Status200OK)]

@@ -24,7 +24,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             _subscriptionAssignmentQueryService.NotNull(nameof(subscriptionAssignmentQueryService));
         }
 
-        public async Task Handle(SubscriptionAssignmentUpdateDto updateDto, CancellationToken cancellationToken)
+        public async Task Handle(SubscriptionAssignmentInputUpdateDto updateDto, CancellationToken cancellationToken)
         {
             SubscriptionGetDto previousSubscription = await _subscriptionAssignmentQueryService.GetInfo(updateDto.BillId);
             if (previousSubscription == null)
@@ -43,17 +43,16 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 {
                     ArchMemCommandService _archMemCommandService = new(_sqlReportConnection, transaction);
                     MembersCommandService _membersCommandService = new(_sqlReportConnection, transaction);
-                    string fromDbName = GetDbName(subscriptionUpdate.ZoneId);
-                    string insertToDbName = "Atlas";
+                    string dbName = GetDbName(subscriptionUpdate.ZoneId);
 
-                    await _archMemCommandService.Insert(subscriptionUpdate, fromDbName, insertToDbName);
-                    await _membersCommandService.Update(subscriptionUpdate, insertToDbName);
+                    await _archMemCommandService.Insert(subscriptionUpdate, dbName, dbName);
+                    await _membersCommandService.Update(subscriptionUpdate, dbName);
 
                     transaction.Commit();
                 }
             }
         }
-        private CustomerUpdateDto GetCustomerUpdateDto(SubscriptionAssignmentUpdateDto inputDto, SubscriptionGetDto previousSubscription)
+        private CustomerUpdateDto GetCustomerUpdateDto(SubscriptionAssignmentInputUpdateDto inputDto, SubscriptionGetDto previousSubscription)
         {
             return new CustomerUpdateDto()
             {

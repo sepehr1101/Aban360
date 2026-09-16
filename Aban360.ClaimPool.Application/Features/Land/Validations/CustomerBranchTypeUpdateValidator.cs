@@ -9,6 +9,18 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
     {
         public CustomerBranchTypeUpdateValidator()
         {
+            RuleFor(f => f.Id)
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(f => f.ZoneId)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
+            RuleFor(f => f.CustomerNumber)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull);
+
             RuleFor(f => f.BillId)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);

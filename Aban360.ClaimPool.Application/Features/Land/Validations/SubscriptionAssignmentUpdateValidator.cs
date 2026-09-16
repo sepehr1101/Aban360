@@ -5,9 +5,9 @@ using FluentValidation;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Validations
 {
-    public class CustomerMobileUpdateValidator : BaseValidator<CustomerMobileUpdateInputDto>
+    public class SubscriptionAssignmentUpdateValidator : BaseValidator<SubscriptionAssignmentInputUpdateDto>
     {
-        public CustomerMobileUpdateValidator()
+        public SubscriptionAssignmentUpdateValidator()
         {
             RuleFor(f => f.Id)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
@@ -25,10 +25,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Validations
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(f => f.MobileNumber)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull)
-                .Must(IsValidMobileNumber).WithMessage(ExceptionLiterals.MobileNumberFormat);
         }
     }
 }
