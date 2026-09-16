@@ -75,7 +75,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             HouseholdDate = input.CustomerInfo.HouseholdDate;
             if (tmpHouseholdNumber > 0 &&
                isHouseholdDateCorrect &&
-               householdDateTmp.AddYears(1) >= DateOnly.FromDateTime(DateAndTime.Now))
+               householdDateTmp.Value.AddYears(1) >= DateOnly.FromDateTime(DateAndTime.Now))
             {
                 HouseholdNumber = tmpHouseholdNumber;
             }
