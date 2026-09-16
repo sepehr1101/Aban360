@@ -56,7 +56,8 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         public CustomerInfoOutputDto(MeterImaginaryInputDto input)
         {
             int tmpHouseholdNumber = input.CustomerInfo.HouseholdNumber ?? 0;
-            bool isHouseholdDateCorrect = input.CustomerInfo.HouseholdDate.TryConvertToDateOnly(out DateOnly householdDateTmp);
+            DateOnly? householdDateTmp = input.CustomerInfo.HouseholdDate.ToGregorianDateOnly();
+            bool isHouseholdDateCorrect = householdDateTmp.HasValue;
 
             ZoneId = input.CustomerInfo.ZoneId;
             Radif = input.CustomerInfo.Radif ?? 0;

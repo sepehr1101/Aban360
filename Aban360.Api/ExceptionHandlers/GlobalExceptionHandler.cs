@@ -22,8 +22,11 @@ namespace Aban360.Api.ExceptionHandlers
             if (exception is BaseException ourAppException)
             {
                 var message = $"خطا در پردازش اطلاعات: {exception.Message}, توضیحات بیشتر:{exception.InnerException?.Message}";
+                int statusCode = exception is IdempotentOperationInProgressException
+                    ? StatusCodes.Status409Conflict
+                    : StatusCodes.Status400BadRequest;
 
-                var problemDetails = new ApiResponseEnvelope<string>(StatusCodes.Status400BadRequest, null, null, new[] { new ApiError(message, (int)HttpStatusCode.BadRequest) });
+                var problemDetails = new ApiResponseEnvelope<string>(statusCode, null, null, new[] { new ApiError(message, statusCode) });
 
                 httpContext.Response.StatusCode = problemDetails.HttpStatusCode;
 
