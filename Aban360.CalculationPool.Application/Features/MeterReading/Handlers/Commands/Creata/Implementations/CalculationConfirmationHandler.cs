@@ -4,6 +4,7 @@ using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Implementations;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Contracts;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
@@ -29,6 +30,7 @@ using DNTPersianUtils.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Text.Json;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
 {
@@ -46,6 +48,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IT5QueryService _t5QueryService;
         private readonly IT7QueryService _t7QueryService;
         private readonly IT41QueryService _t41QueryService;
+        private readonly IIdempotentOperationService _idempotentOperationService;
         static int[] _invalidCounterStateCode = { (int)CounterStateCodeEnum.Close, (int)CounterStateCodeEnum.Block, (int)CounterStateCodeEnum.NonRead };
         const int _paymentDeadline = 7;
         const int _maxPayIdLen = 13;
@@ -65,6 +68,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             IT7QueryService t7QueryService,
             IT5QueryService t5QueryService,
             IT41QueryService t41QueryService,
+            IIdempotentOperationService idempotentOperationService,
             IConfiguration configuration)
             : base(configuration)
         {
@@ -103,9 +107,50 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             _t41QueryService = t41QueryService;
             _t41QueryService.NotNull(nameof(t41QueryService));
+
+            _idempotentOperationService = idempotentOperationService;
+            _idempotentOperationService.NotNull(nameof(idempotentOperationService));
         }
 
         public async Task<MeterReadingCheckedOutputDto> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            string operationKey = $"MeterFlowAmountConfirmed:{latestFlowId}";
+            Guid lockToken = Guid.NewGuid();
+            IdempotentOperationResultDto operation = await _idempotentOperationService.TryBegin(operationKey, lockToken);
+
+            if (!operation.Acquired)
+            {
+                if (operation.Status == IdempotentOperationStatusEnum.Completed && !string.IsNullOrWhiteSpace(operation.ResponseJson))
+                {
+                    MeterReadingCheckedOutputDto? previousResult = JsonSerializer.Deserialize<MeterReadingCheckedOutputDto>(operation.ResponseJson);
+                    if (previousResult is not null)
+                    {
+                        return previousResult;
+                    }
+                }
+
+                throw new IdempotentOperationInProgressException("عملیات تایید مبلغ برای این جریان در حال انجام است.");
+            }
+
+            try
+            {
+                return await Execute(latestFlowId, appUser, operationKey, lockToken, cancellationToken);
+            }
+            catch
+            {
+                try
+                {
+                    await _idempotentOperationService.Fail(operationKey, lockToken);
+                }
+                catch
+                {
+                    // Preserve the original business exception.
+                }
+                throw;
+            }
+        }
+
+        private async Task<MeterReadingCheckedOutputDto> Execute(int latestFlowId, IAppUser appUser, string operationKey, Guid lockToken, CancellationToken cancellationToken)
         {
             await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
 
@@ -135,9 +180,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch = bedBesBatchWithoutDuplicate.Select(b => new MembersFazelabCountAndDebtAmountUpdateDto((int)b.Town, (int)b.Radif, b.ShGhabs1, (long)b.Baha, b.TodayDate)).ToList();
             ICollection<ContorUpdateDto> contorsUpdateBatch = GetContorsUpdateDto(bedBesBatchWithoutDuplicate, previousBillsInfo);
             string opLogText = string.Format(OpLogLiterals.GenerateBatchBillOpLog, billsBatch?.FirstOrDefault()?.ZoneTitle, bedBesBatchWithoutDuplicate?.Count() ?? 0);
-            int newMeterFlowId = await ExceSql(bedBesBatchWithoutDuplicate, kasrhasBatchWithoutDuplicate, billsBatch, memberDebtAmountBatch, contorsUpdateBatch, zoneId, firstFlowId, latestFlowId, appUser, opLogText);
-
-            return GetResult(newMeterFlowId, warningMessageForToleranceBills, warningMessageForDuplicateBills);
+            return await ExceSql(bedBesBatchWithoutDuplicate, kasrhasBatchWithoutDuplicate, billsBatch, memberDebtAmountBatch, contorsUpdateBatch, zoneId, firstFlowId, latestFlowId, appUser, opLogText, operationKey, lockToken, warningMessageForToleranceBills, warningMessageForDuplicateBills);
         }
 
         private async Task<(string?, IEnumerable<string>)> CheckToleranceBill(ICollection<BedBesCreateDto> input)
@@ -167,7 +210,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
             return (BedBesBatch, kasrHaBatch);
         }
-        private async Task<int> ExceSql(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, ICollection<BillInsertDto> billsBatch, ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch, ICollection<ContorUpdateDto> contorsUpdateBatch, int zoneId, int firstFlowId, int latestFlowId, IAppUser appUser, string opLogText)
+        private async Task<MeterReadingCheckedOutputDto> ExceSql(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, ICollection<BillInsertDto> billsBatch, ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch, ICollection<ContorUpdateDto> contorsUpdateBatch, int zoneId, int firstFlowId, int latestFlowId, IAppUser appUser, string opLogText, string operationKey, Guid lockToken, string? warningMessageForToleranceBills, string warningMessageForDuplicateBills)
         {
             string dbName = GetDbName(zoneId);
             //string dbName = "Atlas";
@@ -218,9 +261,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
                     await meterFlowCommandService.Update(meterFlowUpdate);
                     int newMeterFlowId = await meterFlowCommandService.Insert(newMeterFlow);
+                    MeterReadingCheckedOutputDto result = GetResult(newMeterFlowId, warningMessageForToleranceBills, warningMessageForDuplicateBills);
+                    await _idempotentOperationService.Complete(operationKey, lockToken, JsonSerializer.Serialize(result), connection, transaction);
 
                     transaction.Commit();
-                    return newMeterFlowId;
+                    return result;
                 }
             }
         }
