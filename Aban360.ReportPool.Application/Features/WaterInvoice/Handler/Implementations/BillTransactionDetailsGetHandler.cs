@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
         private readonly IMeterFlowQueryService _meterFlowQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly ICommonZoneService _commonZoneService;
-        private int _firstMeterNumber = 1;
+        private int _firstMeterNumber = 0;
         public BillTransactionDetailsGetHandler(
             IBillQueryService billQueryService,
             IBedBesQueryService bedBesQueryService,

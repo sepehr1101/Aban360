@@ -763,7 +763,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     		On b.town=r.town And b.radif=r.radif And b.pri_date>=r.pri_date And b.today_date<=r.today_date
                     	 Where b.radif=@CustomerNumber And b.town=@ZoneId
                     )
-                    Select Top 1 
+                    Select * 
+					From 
+					(	Select Top 1 
                             c.radif CustomerNumber,
                     		c.PreviousDateJalali,
                     		c.PreviousNumber,
@@ -771,11 +773,23 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 							cv.Title CounterStateTitle,
 							c.ConsumptionAverage,
 							c.Consumption
-                    From Cte c
-					Join [Db70].dbo.CounterVaziat cv
-						ON c.CounterStateCode=cv.MoshtarakinId
-                    Where PreviousNumber Is Not Null 
-                    Order By c.date_bed Desc ,c.Id Desc";
+						From Cte c
+						Join [Db70].dbo.CounterVaziat cv
+							ON c.CounterStateCode=cv.MoshtarakinId
+						Where PreviousNumber Is Not Null 
+						Order By c.date_bed Desc ,c.Id Desc
+					) LatestBill
+					Union All
+					Select  
+							m.radif CustomerNumber,
+                    		m.inst_ab PreviousDateJalali,
+                    		0 PreviousNumber,
+							0 CounterStateCode,
+							N'عادی' CounterStateTitle,
+							0 ConsumptionAverage,
+							0 Consumption
+					From [{dbName}].dbo.members m
+					Where m.radif=@CustomerNumber And m.town=@ZoneId";
         }
         private string GetPreviousMeterDateAndNumberByBulkCopyQuery(string dbName)
         {
