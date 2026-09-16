@@ -111,7 +111,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
             {
                 return (location, await Base64Operation.GetNotFoundBase64(cancellationToken));
             }
-            string base64 = await _mapService.GenerateMapBase64(location.X, location.Y);
+            string base64 = await _mapService.GenerateMapBase64(location.X, location.Y, cancellationToken);
             return (location, base64);
         }
     }

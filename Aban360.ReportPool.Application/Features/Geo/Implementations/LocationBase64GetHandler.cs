@@ -49,7 +49,7 @@ namespace Aban360.ReportPool.Application.Features.Geo.Implementations
             {
                 base64Image = await Base64Operation.GetNotFoundBase64(cancellationToken);
             }
-            base64Image = await _mapService.GenerateMapBase64(locationInfo.X, locationInfo.Y);
+            base64Image = await _mapService.GenerateMapBase64(locationInfo.X, locationInfo.Y, cancellationToken);
             return new LocationBase64Dto(zoneIdAndCustomerNumber.CustomerNumber, zoneIdAndCustomerNumber.ZoneId, billId, base64Image);
         }
     }

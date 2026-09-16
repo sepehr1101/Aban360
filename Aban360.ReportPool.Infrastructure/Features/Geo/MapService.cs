@@ -10,7 +10,7 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
 {
     public interface IMapService
     {
-        Task<string> GenerateMapBase64(string x, string y);
+        Task<string> GenerateMapBase64(string x, string y, CancellationToken cancellationToken);
     }
 
     public class MapService : IMapService
@@ -30,7 +30,7 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
             _mapOptions.NotNull(nameof(mapOptions));
         }
 
-        public async Task<string> GenerateMapBase64(string x, string y)
+        public async Task<string> GenerateMapBase64(string x, string y,CancellationToken cancellationToken)
         {
             double latitude = (double.Parse)(y);
             double longitude = (double.Parse)(x);
@@ -43,7 +43,8 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
 
             using MemoryStream output = new MemoryStream();
             finalBitmap.Save(output, ImageFormat.Png);
-            return Convert.ToBase64String(output.ToArray());
+            string base64Rusult = Convert.ToBase64String(output.ToArray());
+            return base64Rusult;
         }
         private async Task GetGraphicLocation(Bitmap finalBitmap, Graphics graphics, int centerTileX, int centerTileY)
         {
@@ -68,18 +69,26 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
         }
         private async Task<byte[]?> GetSingleImage(int tileX, int tileY)
         {
-            string requestUrl = _mapOptions.BaseUrl + _mapOptions.Road;
-
-            string urlPrameters = $"{zoom}/{tileX}/{tileY}.png";
-            string finalyUrl = requestUrl + urlPrameters;
-            var response = await _httpClient.GetAsync(finalyUrl);
-
-            if (!response.IsSuccessStatusCode)
+            byte[] bytes = null;
+            try
             {
-                return null;
+                string requestUrl = _mapOptions.BaseUrl + _mapOptions.Road;
+
+                string urlPrameters = $"{zoom}/{tileX}/{tileY}.png";
+                string finalyUrl = requestUrl + urlPrameters;
+                var response = await _httpClient.GetAsync(finalyUrl);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return null;
+                }
+                bytes = await response.Content.ReadAsByteArrayAsync();
+                return bytes;
             }
-            byte[] bytes = await response.Content.ReadAsByteArrayAsync();
-            return bytes;
+            catch (Exception ex)
+            {
+                return bytes;
+            }
         }
         private void DrawLocationIcon(Graphics graphics, double latitude, double longitude)
         {
@@ -96,19 +105,6 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.NotFoundFile);
             }
-            //using (FileStream fs = new FileStream(pinPath, FileMode.Open, FileAccess.Read))
-            //{
-            //    using (Image pinImage = Image.FromStream(fs))
-            //    {
-            //        int pinWidth = 100;
-            //        int pinHeight = 100;
-
-            //        float drawX = pointX - pinWidth / 2f;
-            //        float drawY = pointY - pinHeight;
-
-            //        graphics.DrawImage(pinImage, drawX, drawY, pinWidth, pinHeight);
-            //    }
-            //}
 
             using var fs = new FileStream(pinPath, FileMode.Open, FileAccess.Read);
             Image _pinImage = new Bitmap(fs);
