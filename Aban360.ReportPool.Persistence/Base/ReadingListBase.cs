@@ -45,7 +45,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						On t51.C1=t46.C0
                     Where
 						c.ToDayJalali IS NULL AND
-                        NOT (b.CounterStateCode = 4 AND c.DeletionStateId = 5)
+                        NOT (b.CounterStateCode = 4 AND c.DeletionStateId = 5) AND
                         (@FromReadingNumber IS NULL or
                     	@ToReadingNumber IS NULL or 
                     	b.ReadingNumber BETWEEN @FromReadingNumber and @ToReadingNumber) AND

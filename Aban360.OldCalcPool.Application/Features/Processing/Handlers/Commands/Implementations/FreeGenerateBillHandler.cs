@@ -157,6 +157,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 };
                 abBahaCalcResult = await _tariffEngine.Handle(tariffMeterInfoByPreviousData, cancellationToken);
             }
+            abBahaCalcResult.MonthlyConsumption = Math.Round(abBahaCalcResult.MonthlyConsumption, 2);
+            abBahaCalcResult.DailyConsumption=Math.Round(abBahaCalcResult.DailyConsumption, 3);
             return abBahaCalcResult;
         }
         private async Task<AbBahaCalculationDetails> GetChangeCounterStateData(FreeGenerateBillInputDto inputDto, CustomerInfoGetDto customerInfo, CancellationToken cancellationToken)
