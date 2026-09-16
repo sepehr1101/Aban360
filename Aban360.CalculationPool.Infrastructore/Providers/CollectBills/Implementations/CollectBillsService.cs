@@ -3,8 +3,8 @@ using Aban360.CalculationPool.Domain.Features.CollectBills.Inputs;
 using Aban360.CalculationPool.Domain.Features.CollectBills.Outputs;
 using Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Contracts;
 using Aban360.Common.Extensions;
+using Aban360.Common.Authentication;
 using Aban360.Common.Literals;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -17,15 +17,14 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
     {
         private readonly HttpClient _httpClient;
         private readonly CollectBillsOptions _options;
-        private readonly IMemoryCache _cache;
+        private readonly IEsbTokenProvider _tokenProvider;
         private const string _accept = "application/json";
         private const string _contentType = "application/json";
         const string _formUrlEncodedContentType = "application/x-www-form-urlencoded";
-        private const string _tokenCacheKey = "CollectBills_AccessToken";
         public CollectBillsService(
             IHttpClientFactory httpClientFactory,
             IOptions<CollectBillsOptions> options,
-            IMemoryCache cache)
+            IEsbTokenProvider tokenProvider)
         {
             _httpClient = httpClientFactory.CreateClient(HttpClientNames.CollectBills);
             _httpClient.NotNull(nameof(_httpClient));
@@ -33,66 +32,16 @@ namespace Aban360.CalculationPool.Infrastructure.Providers.CollectBills.Implemen
             _options = options.Value;
             _options.NotNull(nameof(_options));
 
-            _cache = cache;
-            _cache.NotNull(nameof(_cache));
+            _tokenProvider = tokenProvider;
+            _tokenProvider.NotNull(nameof(_tokenProvider));
         }
         private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };
-        private async Task<TokenResponse> GetToken()
-        {
-            if (_cache.TryGetValue(_tokenCacheKey, out TokenResponse cachedToken))
-            {
-                return cachedToken;
-            }
-
-            var token = await RequestNewToken();
-
-            // set cache with expiration slightly earlier than real expiry
-            var cacheOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(token.ExpiresIn - 30)
-            };
-
-            _cache.Set(_tokenCacheKey, token, cacheOptions);
-
-            return token;
-        }
-        private async Task<TokenResponse> RequestNewToken()
-        {
-            const string GrantTypeKey = "grant_type";
-            const string ClientCredentialsValue = "client_credentials";
-            const string BasicScheme = "Basic";
-            const string FormUrlEncoded = "application/x-www-form-urlencoded";
-
-            // Prepare form data
-            var formData = new Dictionary<string, string>
-            {
-                { GrantTypeKey, ClientCredentialsValue }
-            };
-
-            var request = new HttpRequestMessage(HttpMethod.Post, _options.TokenEndpoint)
-            {
-                Content = new FormUrlEncodedContent(formData)
-            };
-
-            // Encode username:password for Basic Auth
-            var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{_options.UserName}:{_options.Password}"));
-            request.Headers.Authorization = new AuthenticationHeaderValue(BasicScheme, credentials);
-
-            // Explicit content type
-            request.Content.Headers.ContentType = new MediaTypeHeaderValue(FormUrlEncoded);
-
-            // Send request
-            HttpResponseMessage response = await _httpClient.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<TokenResponse>(_jsonOptions);
-        }
         private async Task<AuthenticationHeaderValue> GetAuthenticationHeaderAsync()
         {
-            TokenResponse token = await GetToken();
-            return new AuthenticationHeaderValue(token.TokenType, token.AccessToken);
+            return await _tokenProvider.GetAuthenticationHeaderAsync();
         }
         public async Task<CollectBillsOutputDto<object>> SendCustomerInfo(CollectBillsSubscriptionInfoSendInputDto sampleInputDto)
         {

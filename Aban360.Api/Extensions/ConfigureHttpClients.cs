@@ -1,6 +1,7 @@
 ﻿using Aban360.Api.Exceptions;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.CalculationPool.Domain.Features.Bill.Entities;
+using Aban360.Common.Authentication;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.TaxPool.Domain.Features.MaaherSTP.Dto;
@@ -12,6 +13,8 @@ namespace Aban360.Api.Extensions
     {
         internal static IServiceCollection AddCustomHttpClients(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddSingleton<IEsbTokenProvider, EsbTokenProvider>();
+            services.AddTransient<EsbAuthenticationHandler>();
             services.AddOpenKm(configuration);
             services.AddGeo(configuration);
             services.AddMaaher(configuration);
@@ -29,7 +32,7 @@ namespace Aban360.Api.Extensions
                     throw new InvalidConfigFileException(ExceptionLiterals.InvalidConfiguration(nameof(OpenKmOptions), nameof(OpenKmOptions.BaseUrl)));
                 }
                 httpClient.BaseAddress = new Uri(options.Value.BaseUrl);
-            });
+            }).AddHttpMessageHandler<EsbAuthenticationHandler>();
         }
         private static void AddGeo(this IServiceCollection services, IConfiguration configuration)
         {
@@ -77,7 +80,7 @@ namespace Aban360.Api.Extensions
                     throw new InvalidConfigFileException(ExceptionLiterals.InvalidConfiguration(nameof(CollectBillsOptions), nameof(CollectBillsOptions.BaseUrl)));
                 }
                 HttpClient.BaseAddress = new Uri(options.Value.BaseUrl);
-            });
+            }).AddHttpMessageHandler<EsbAuthenticationHandler>();
         }
     }
 }
