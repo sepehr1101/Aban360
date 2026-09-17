@@ -12,12 +12,17 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
     [Route("v1/subscription-assignment")]
     public class SubscriptionAssignmentUpdateController : BaseController
     {
+        private readonly ICustomerUpdateHandler _customerUpdateHandler;
         private readonly ISubscriptionAssignmentUpdateHandler _subscriptionAssignmentHandler;
         private readonly ISubscriptionAssignmentByTrackNumberUpdateHandler _subscriptionAssigmentByTrackNumberHandler;
         public SubscriptionAssignmentUpdateController(
+            ICustomerUpdateHandler customerUpdateHandler,
             ISubscriptionAssignmentUpdateHandler subscriptionAssignmentHandler,
             ISubscriptionAssignmentByTrackNumberUpdateHandler subscriptionAssigmentByTrackNumberHandler)
         {
+            _customerUpdateHandler = customerUpdateHandler;
+            _customerUpdateHandler.NotNull(nameof(customerUpdateHandler));
+
             _subscriptionAssignmentHandler = subscriptionAssignmentHandler;
             _subscriptionAssignmentHandler.NotNull(nameof(subscriptionAssignmentHandler));
 
@@ -25,13 +30,23 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             _subscriptionAssigmentByTrackNumberHandler.NotNull(nameof(subscriptionAssigmentByTrackNumberHandler));
         }
 
+        //[HttpGet, HttpPost]
+        //[Route("update")]
+        //[ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionAssignmentInputUpdateDto>), StatusCodes.Status200OK)]
+        //[AllowAnonymous]
+        //public async Task<IActionResult> Update([FromBody] SubscriptionAssignmentInputUpdateDto updateDto, CancellationToken cancellationToken)
+        //{
+        //    await _subscriptionAssignmentHandler.Handle(updateDto, cancellationToken);
+        //    return Ok(updateDto);
+        //}
+        
         [HttpGet, HttpPost]
         [Route("update")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionAssignmentUpdateDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionAssignmentInputUpdateDto>), StatusCodes.Status200OK)]
         [AllowAnonymous]
-        public async Task<IActionResult> Update([FromBody] SubscriptionAssignmentUpdateDto updateDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update([FromBody] SubscriptionAssignmentInputUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _subscriptionAssignmentHandler.Handle(updateDto, cancellationToken);
+            await _customerUpdateHandler.Handle(updateDto,CurrentUser, cancellationToken);
             return Ok(updateDto);
         }
 

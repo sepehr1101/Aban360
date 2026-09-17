@@ -11,6 +11,7 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -29,7 +30,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         private static int[] _allowedSendMessageDisconnectResult = { 1, 2 };
         private static int _disconnectState = 5;
         private static int _connectState = 0;
-        private static int _operator = 666;
+        private static int _operator = ReportLiterals.RayabOperator;
         private static int _connectTypeId = 1;
         private static int _disconnectTypeId = 0;
         public ConnectDisconnectSetResultHandler(

@@ -4,6 +4,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.C
 {
     public interface ISubscriptionAssignmentUpdateHandler
     {
-        Task Handle(SubscriptionAssignmentUpdateDto updateDto, CancellationToken cancellationToken);
+        Task Handle(SubscriptionAssignmentInputUpdateDto updateDto, CancellationToken cancellationToken);
     }
 }

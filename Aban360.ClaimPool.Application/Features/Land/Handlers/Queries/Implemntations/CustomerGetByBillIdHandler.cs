@@ -39,19 +39,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
             {
                 throw new BaseException("شناسه قبض یافت نشد");
             }
-            CustomerLocationDto customerLocation = await GetCustomerLocation(inputDto.Input);
+            CustomerLocationDto customerLocation = await _gisService.GetCustomerLocation(new CustomerLocationInputDto(inputDto.Input));
             return GetLocationInfo(customerInfo, customerLocation);
-        }
-        private async Task<CustomerLocationDto> GetCustomerLocation(string billId)
-        {
-            try
-            {
-                return await _gisService.GetCustomerLocation(new CustomerLocationInputDto(billId));
-            }
-            catch (Exception ex)
-            {
-                return new CustomerLocationDto("0", "0");
-            }
         }
         private SubscriptionGetDto GetLocationInfo(SubscriptionGetDto customerInfo, CustomerLocationDto customerLocation)
         {

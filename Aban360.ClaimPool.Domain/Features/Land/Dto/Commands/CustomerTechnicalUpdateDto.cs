@@ -20,6 +20,5 @@
         public int CommonSiphon { get; set; }
         public string? BodySerial { get; set; }
 
-        public int Operator { get; set; }
     }
 }

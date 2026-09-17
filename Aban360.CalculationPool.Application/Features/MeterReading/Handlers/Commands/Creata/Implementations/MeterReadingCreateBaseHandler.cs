@@ -46,14 +46,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IPreviousAverageHandler _previousAverageHandler;
         private readonly IBedBesQueryService _bedBesQueryService;
         private int[] _domesticUnits = { 1, 3 };
-        private int[] _invalidLatestCounterStateCode = { 4, 7, 8 };
         const int _conditionPayableAmount = 10000;
         const int _conditionByConsumption = 99_999_999;
         const int _paymentDeadline = 7;
         const double _maxAmount = 999_999_999_999;
-        const int _commonMeterStateId = 0;
-        const int _desolateUnitMeterStateId = 9;//todo: rename
-        const int _disconnectionMeterStateId = 10;
         public MeterReadingCreateBaseHandler(
             IHttpContextAccessor contextAccessor,
             IBackgroundJobClient backgroundJobClient,

@@ -208,7 +208,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             {
                 return (location, await Base64Operation.GetNotFoundBase64(cancellationToken));
             }
-            string base64 = await _mapService.GenerateMapBase64(location.X, location.Y);
+            string base64 = await _mapService.GenerateMapBase64(location.X, location.Y, cancellationToken);
             return (location, base64);
         }
         private async Task<ReportOutput<CustomerGeneralInfoHeaderDto, CustomerGeneralInfoDataDto>> ValidateAndGetCustomerGeneral(ConnectDisconnectPrintInputDto inputDto, bool isConnect)

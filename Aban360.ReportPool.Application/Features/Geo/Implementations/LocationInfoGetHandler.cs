@@ -42,7 +42,7 @@ namespace Aban360.ReportPool.Application.Features.Geo.Implementations
             {
                 throw new BaseException("سرویس gis در دسترس نیست. لطفا با پشتیبانی موضوع را مطرح بفرمایید");
             }
-         
+
         }
 
         private LocationInfoDto GetLocationInfo(LocationInfoDto locationInfo, CustomerLocationDto customerLocation)

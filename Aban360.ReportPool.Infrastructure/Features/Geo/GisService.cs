@@ -12,7 +12,7 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
 {
     public interface IGisService
     {
-        Task<CustomerLocationDto> GetCustomerLocation(CustomerLocationInputDto inputDto, int timeoutSecond=3);
+        Task<CustomerLocationDto> GetCustomerLocation(CustomerLocationInputDto inputDto, int timeoutSecond = 3);
     }
     internal sealed class GisService : IGisService
     {
@@ -38,22 +38,29 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
 
         public async Task<CustomerLocationDto> GetCustomerLocation(CustomerLocationInputDto inputDto, int timeoutSecond)
         {
-            var token = await _tokenService.GetToken();
-            string requestUrl = _options.BaseUrl + _options.CustomerLocation;
+            try
+            {
+                var token = await _tokenService.GetToken();
+                string requestUrl = _options.BaseUrl + _options.CustomerLocation;
 
-            var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
-            request.Headers.Authorization = token;
-            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
+                var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
+                request.Headers.Authorization = token;
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(_accept));
 
-            string billId = JsonSerializer.Serialize(inputDto);
-            request.Content = new StringContent(billId, Encoding.UTF8, _contentType);
+                string billId = JsonSerializer.Serialize(inputDto);
+                request.Content = new StringContent(billId, Encoding.UTF8, _contentType);
 
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSecond));
-            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token);
-            response.EnsureSuccessStatusCode();
-            CustomerLocationDto result = await response.Content.ReadFromJsonAsync<CustomerLocationDto>();
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSecond));
+                using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cts.Token);
+                response.EnsureSuccessStatusCode();
+                CustomerLocationDto result = await response.Content.ReadFromJsonAsync<CustomerLocationDto>();
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new CustomerLocationDto("0", "0");
+            }
         }
     }
 }
