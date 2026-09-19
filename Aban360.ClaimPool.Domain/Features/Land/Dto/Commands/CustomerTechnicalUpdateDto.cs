@@ -1,4 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
+﻿using DNTPersianUtils.Core;
+
+namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
 {
     public record CustomerTechnicalUpdateDto
     {
@@ -19,6 +21,7 @@
         public int MainSiphon { get; set; }
         public int CommonSiphon { get; set; }
         public string? BodySerial { get; set; }
+        public string ToDayDateJalali { get { return DateTime.Now.ToShortPersianDateString(); } }
 
     }
 }

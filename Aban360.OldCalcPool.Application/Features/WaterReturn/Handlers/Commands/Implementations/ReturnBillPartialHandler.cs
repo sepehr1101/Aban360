@@ -38,8 +38,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private const int _12Olgoo = 12;
         private const int _13Olgoo = 13;
         private const int _14Olgoo = 14;
-        private int _11And12OlgooConsumptionAverage = 28;
-        private int _13And14OlgooConsumptionAverage = 29;
+        private int _11OlgooConsumptionAverage = 34;
+        private int _12OlgooConsumptionAverage = 36;
+        private int _13And14OlgooConsumptionAverage = 39;
         private int _domesticCAmount = 68022;
         private int _dayOfMonth = 30;
         private int _from4YearsAgo = -4;
@@ -212,7 +213,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             return _returnBillBaseHandler.IsDomestic(customerInfo.UsageId) ?
                   olgo switch
                   {
-                      _11Olgoo or _12Olgoo => _11And12OlgooConsumptionAverage,
+                      _11Olgoo => _11OlgooConsumptionAverage,
+                      _12Olgoo => _12OlgooConsumptionAverage,
                       _13Olgoo or _14Olgoo => _13And14OlgooConsumptionAverage,
                       _ => consumptionAverage,
                   } :

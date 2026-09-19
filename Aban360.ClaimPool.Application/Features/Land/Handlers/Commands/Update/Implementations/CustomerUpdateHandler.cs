@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Http;
 using Aban360.ClaimPool.Domain.Constants;
 using System.Threading;
 using Aban360.ReportPool.Domain.Base;
-using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementationsu
 {
