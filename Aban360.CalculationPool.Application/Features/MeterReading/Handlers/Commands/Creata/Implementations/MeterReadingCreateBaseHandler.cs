@@ -245,7 +245,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             string fromReadingNumber = meterReadings?.Min(m => m.ReadingNumber) ?? string.Empty;
             string toReadingNumber = meterReadings?.Max(m => m.ReadingNumber) ?? string.Empty;
             MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, 0, fileName, firstMeterDetail.ZoneId, fromReadingNumber, toReadingNumber, meterReadings?.Count() ?? 0, userId, description);
+            ICollection<int> customerNumbers = meterReadings.Select(m => m.CustomerNumber).ToList();
             IEnumerable<ZoneIdAndCustomerNumber> customersByInvalidPreviousBedBes = new List<ZoneIdAndCustomerNumber>();
+            IEnumerable<BedBesPreviousNumberAndDateOutputDto> previousBillsInfo = new List<BedBesPreviousNumberAndDateOutputDto>();
             CustomersInfoGetDto customersInfo;
             int meterFlowId = 0;
 
@@ -261,7 +263,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
                     meterFlowId = await meterflowCommandService.Insert(importedMeterFlow);
                     await meterflowCommandService.Update(meterFlowId, meterFlowId);
-                    customersInfo = await _customerInfoService.GetByBulkCopy(connection, transaction, firstMeterDetail.ZoneId, meterReadings.Select(m => m.CustomerNumber).ToList());
+                    customersInfo = await _customerInfoService.GetByBulkCopy(connection, transaction, firstMeterDetail.ZoneId, customerNumbers);
+                    previousBillsInfo = await _bedBesQueryService.GetPreviousDateAndNumber(connection, transaction, firstMeterDetail.ZoneId, customerNumbers);
                     transaction.Commit();
                 }
             }
@@ -269,7 +272,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 //if (item.IsReturned || _invalidLatestCounterStateCode.Contains(item.LastCounterStateCode ?? 0))
                 //{
-                BedBesPreviousNumberAndDateOutputDto? previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId, false);
+                //BedBesPreviousNumberAndDateOutputDto? previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId, false);
+                BedBesPreviousNumberAndDateOutputDto? previousInfo = previousBillsInfo.Where(p => p.CustomerNumber == item.CustomerNumber).FirstOrDefault();
                 if (previousInfo is null)
                 {
                     string? waterInstallationDateJalali = customersInfo?.MembersInfo?.Where(c => c.CustomerNumber == item.CustomerNumber)?.FirstOrDefault()?.WaterInstallationDateJalali ?? string.Empty;
