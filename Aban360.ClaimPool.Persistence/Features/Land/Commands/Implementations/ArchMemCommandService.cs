@@ -230,7 +230,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                     	tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_roz, Khali_s, Senf, date_KHANE--,x,y,DATEINS, 
                     )
                     SELECT 
-                        town, radif, par_no, eshtrak, name, family, father_nam, @MeterDiamterId, cod_enshab,
+                        town, radif, par_no, eshtrak, name, family, father_nam, @MeterDiameterId, cod_enshab,
                     	tedad_vahd, tedad_mas, ted_khane, tedad_tej, date_sabt, arse, aian, aian_mas,
                     	aian_tej, ask_ab, inst_ab, ask_fas, inst_fas, address, pelak, bed_bes, edareh_k,
                     	hasf, n_ab, n_faz, noe_va,  @MainSiphon, @Siphon100, @Siphon125, @Siphon150, @Siphon200, @CommonSiphon,
@@ -268,10 +268,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                     )
                     SELECT 
                         town, radif, par_no, eshtrak, name, family, father_nam, enshab,  @UsageSellId,
-                    	@OtherUnit, @DomesticUnit, ted_khane, @CommertialUnit, date_sabt, @Premises, @ImprovementOverall, @ImprovementDomestic,
+                    	@OtherUnit, @DomesticUnit, ted_khane, @CommertialUnit, @ToDayDateJalali, @Premises, @ImprovementOverall, @ImprovementDomestic,
                     	@ImprovementCommertial, ask_ab, inst_ab, ask_fas, inst_fas, address, pelak, bed_bes, edareh_k,
                     	hasf, n_ab, n_faz, noe_va, master_sif, sif_1, sif_2, sif_3, sif_4, sif_mosh_1,
-                    	@ContractualCapacity, @UsageConsumptionId, serial_co, G_inst_ab, G_inst_fas, {ReportLiterals.RayabOperator}, date_roz, POST_COD,
+                    	@ContractualCapacity, @UsageConsumptionId, serial_co, G_inst_ab, G_inst_fas, {ReportLiterals.RayabOperator}, @ToDayDateJalali, POST_COD,
                     	PHONE_NO, MOBILE, MELI_COD, oRadif, sif_5, sif_6, sif_7, sif_8, bill_id, MOJAVZ,
                     	c20, balansing, tmp_date_sabt, tmp_ask_ab, tmp_ask_fas, tmp_inst_ab,
                     	tmp_inst_fas, tmp_g_inst_ab, tmp_g_inst_fas, tmp_date_roz, @EmptyUnit, @GuildId, date_KHANE--,x,y,DATEINS, 

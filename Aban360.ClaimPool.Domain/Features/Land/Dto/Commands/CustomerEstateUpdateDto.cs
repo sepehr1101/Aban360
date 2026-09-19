@@ -1,4 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
+﻿using DNTPersianUtils.Core;
+
+namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Commands
 {
     public record CustomerEstateUpdateDto
     {
@@ -21,6 +23,7 @@
         public int UsageConsumptionId { get; set; }
         public int EmptyUnit { get; set; }
         public int ContractualCapacity { get; set; }
+        public string ToDayDateJalali { get { return DateTime.Now.ToShortPersianDateString(); } }
 
     }
 }
