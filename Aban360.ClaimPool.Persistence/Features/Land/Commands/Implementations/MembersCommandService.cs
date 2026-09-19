@@ -7,6 +7,7 @@ using ClaimLiteral = Aban360.ClaimPool.Persistence.Constants.Literals;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
+using Aban360.ReportPool.Domain.Base;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
@@ -278,7 +279,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         {
             return @$"UPDATE [{dbName}].dbo.members
                      SET 
-	                    enshab=@MeterDiamterId,
+	                    enshab=@MeterDiameterId,
 	                    master_sif=@MainSiphon,
 	                    sif_1=@Siphon100,
 	                    sif_2=@Siphon125,
@@ -288,9 +289,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 	                    sif_6=@Siphon6,
 	                    sif_7=@Siphon7,
 	                    sif_8=@Siphon8,	
-	                    operator=@Operator,
+	                    operator={ReportLiterals.RayabOperator},
 						serial_co=@BodySerial,
-						sif_mosh_1=@CommonSiphon
+						sif_mosh_1=@CommonSiphon,
+                        date_sabt=@ToDayDateJalali
                      WHERE 
                         id=@id AND
 						TRIM(bill_id)=@billId AND
@@ -311,9 +313,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 	                    aian_tej=@ImprovementCommertial,
 	                    fix_mas=@ContractualCapacity,
 	                    group1=@UsageConsumptionId,
-	                    operator=@Operator,
+	                    operator={ReportLiterals.RayabOperator},
 	                    Khali_s=@EmptyUnit,
-						Senf=@GuildId
+						Senf=@GuildId,
+                        date_sabt=@ToDayDateJalali
                      WHERE 
                         id=@id AND
 						TRIM(bill_id)=@billId AND
@@ -338,7 +341,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             return @$"UPDATE [{dbName}].dbo.members
                      SET 
 	                    noe_va=@BranchTypeId,
-	                    date_sabt=@ToDayDateJalali
+	                    date_sabt=@ToDayDateJalali,	
+	                    operator={ReportLiterals.RayabOperator}
                      WHERE 
                         id=@id AND
 						TRIM(bill_id)=@billId AND
@@ -350,7 +354,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
             return @$"UPDATE [{dbName}].dbo.members
                      SET 
 	                    hasf=@deletionStateId,
-	                    date_sabt=@ToDayDateJalali
+	                    date_sabt=@ToDayDateJalali,	
+	                    operator={ReportLiterals.RayabOperator}
                      WHERE 
                         id=@id AND
 						TRIM(bill_id)=@billId AND
@@ -363,7 +368,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                      SET 
 	                    ted_khane=@HouseholdNumber,
 	                    date_KHANE=@HouseholdDateJalali,
-	                    date_sabt=@ToDayDateJalali
+	                    date_sabt=@ToDayDateJalali,	
+	                    operator={ReportLiterals.RayabOperator}
                      WHERE 
                         id=@id AND
 						TRIM(bill_id)=@billId AND
@@ -377,7 +383,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                         eshtrak=@ReadingNumber,
                         address=@Address,
                         POST_COD=@PostalCode,
-	                    date_sabt=@ToDayDateJalali
+	                    date_sabt=@ToDayDateJalali,	
+	                    operator={ReportLiterals.RayabOperator}
                      WHERE 
                         id=@id AND
 						TRIM(bill_id)=@billId AND
