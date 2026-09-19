@@ -13,7 +13,9 @@
         public string? Title { get; set; }
 
         public int SumPureReading { get; set; }
+        public int SumPureReadingRemoved { get; set; }
         public int SumClosed { get; set; }
+        public int SumClosedRemoved { get; set; }
         public int SumObstacle { get; set; }
         public int SumTemporarily { get; set; }
         public int SumAll { get; set; }
