@@ -93,5 +93,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
+
+        [HttpGet, HttpPost]
+        [Route("update-installation-date")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MeterInstallationUpdateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateInstallationDate([FromBody] MeterInstallationUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(inputDto);
+        }
     }
 }
