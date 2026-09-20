@@ -42,7 +42,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
-       public async Task Update(CustomerTechnicalUpdateDto updateDto, string dbName)
+        public async Task Update(CustomerTechnicalUpdateDto updateDto, string dbName)
         {
             string command = GetTechnicalUpdateCommand(dbName);
             int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
@@ -99,6 +99,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
         public async Task Update(SubscriptionAssignmentUpdateDto updateDto, string dbName)
         {
             string command = GetUpdateSubscriptionAssignementCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+        public async Task Update(MeterInstallationUpdateDto updateDto, string dbName)
+        {
+            string command = GetUpdateMeterInstallationDateCommand(dbName);
             int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
             if (recordCount <= 0)
             {
@@ -383,6 +392,20 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                         eshtrak=@ReadingNumber,
                         address=@Address,
                         POST_COD=@PostalCode,
+	                    date_sabt=@ToDayDateJalali,	
+	                    operator={ReportLiterals.RayabOperator}
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+         private string GetUpdateMeterInstallationDateCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+                        G_inst_ab=@MeterInstallationDateJalali,
+                        G_inst_fas =@SiphonInstallationDateJalali,
 	                    date_sabt=@ToDayDateJalali,	
 	                    operator={ReportLiterals.RayabOperator}
                      WHERE 
