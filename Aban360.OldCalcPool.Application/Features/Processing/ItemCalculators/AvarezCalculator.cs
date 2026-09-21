@@ -19,7 +19,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const int _2000 = 2000;
         public TariffItemResult Calculate(ConsumptionPartialInfo consumptionPartialInfo, CustomerInfoOutputDto customerInfo, double monthlyConsumption)
         {
-            if (consumptionPartialInfo.StartDateJalali.More(date1404_12_29))
+            if (consumptionPartialInfo.StartDateJalali.MoreOrEq(date1404_12_29))
             {
                 return new TariffItemResult();
             }
