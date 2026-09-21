@@ -8,5 +8,8 @@
         public static int SmsStateGroupCollectBills_LastSms = 1;
         public static int SmsStateGroupCollectBills_Close = 3;
         public static int SmsTypeReminder= 2;
+
+        public static int BedBesConditionPayableAmount = 10000;
+
     }
 }

@@ -10,7 +10,7 @@
         public string Y { get; set; }
         public string ReadingNumber { get; set; }
         public string Address { get; set; }
-        public string PostalCode { get; set; }
+        public string? PostalCode { get; set; }
 
     }
 }

@@ -73,7 +73,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             CollectBillsGetDataToSendInputDto dtoToGenerateTxtFile = new(fromDateJalali: inputDateJalali, toDateJalali: inputDateJalali);
             IEnumerable<CollectBillsDataDto> customersDataToSend = await _collectBillsQueryService.Get(dtoToGenerateTxtFile);
-            CollectBillsGetZipFileInfo zipFileInfo = await CreateZip(customersDataToSend.Select(s => s.Row).ToList(), dtoToGenerateTxtFile.FromDateJalali, dtoToGenerateTxtFile.FromDateJalali);
+            CollectBillsGetZipFileInfo zipFileInfo = await CreateZip(customersDataToSend.Select(s => s.Row.Replace("\r","").Replace("\n", "")).ToList(), dtoToGenerateTxtFile.FromDateJalali, dtoToGenerateTxtFile.FromDateJalali);
             string description = string.Format(ExceptionLiterals.CollectBillsCreateZipFile, zipFileInfo.FileName, customersDataToSend?.Count() ?? 0);
             CollectBillsDetailUpdateDto createZipFileUpdateLogDto = new(effectedId, zipFileInfo.FileName, description, DateTime.Now);
             await CollectBillsDetailUpdate(createZipFileUpdateLogDto);

@@ -33,5 +33,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
         Task<IEnumerable<BedBesPreviousNumberAndDateOutputDto>> GetPreviousDateAndNumber(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers);
         Task<IEnumerable<ZoneIdAndCustomerNumber>> GetInvalidLastBillByWithSqlBulk(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers);
         Task<IEnumerable<BillReadingListDataOutputDto>> Get(BillReadingListInputDto input);
+        Task<IEnumerable<InvalidPaymentIdDataOutputDto>> Get(InvalidPaymentIdInputDto input);
     }
 }

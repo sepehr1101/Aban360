@@ -46,7 +46,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IPreviousAverageHandler _previousAverageHandler;
         private readonly IBedBesQueryService _bedBesQueryService;
         private int[] _domesticUnits = { 1, 3 };
-        const int _conditionPayableAmount = 10000;
         const int _conditionByConsumption = 99_999_999;
         const int _paymentDeadline = 7;
         const double _maxAmount = 999_999_999_999;
@@ -555,8 +554,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         }
         private MeterReadingDetailCreateDto GetMeterReadingDetailByAbBahaValue(MeterReadingDetailCreateDto r, AbBahaCalculationDetails? abBahaCalc, bool hasZeroValue, Guid? userIdExclude, ExcludedCauseEnum? excludedCauseEnum)
         {
-            double preDebtAmount = r.WaterDebt;// await _customerInfoService.GetMembersBedBes(new ZoneIdAndCustomerNumber(r.ZoneId, r.CustomerNumber));//checkResult: changeDto
-            var (sumItems, jam, pard) = GetAmounts(preDebtAmount, abBahaCalc?.SumItems ?? 0);
+            double preDebtAmount = r.WaterDebt;
+            var (sumItems, jam, pard) = TransactionIdGenerator.GetAmounts(preDebtAmount, abBahaCalc?.SumItems ?? 0);
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
 
             r.ExcludedByUserId = userIdExclude;
@@ -591,8 +590,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             r.CodEnshab = r.UsageId;
             r.Enshab = r.MeterDiameterId;
             r.Elat = 0;
-            r.Serial = 0;// string.IsNullOrWhiteSpace(meterReaing.BodySerial) ? 0 : int.Parse(meterReaing.BodySerial);//todo
-            r.Ser = 0;// string.IsNullOrWhiteSpace(meterReaing.BodySerial) ? 0 : int.Parse(meterReaing.BodySerial);//todo
+            r.Serial = 0;
+            r.Ser = 0;
             r.ZaribFasl = (decimal)(abBahaCalc?.HotSeasonAbBahaAmount ?? 0);
             r.Ab10 = 0;
             r.Ab20 = 0;
@@ -671,21 +670,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 r.MonthlyPerUnit = Math.Round((monthlyConsumption / finalTotalUnit), 2);
             }
             return r;
-        }
-        private (double, double, double) GetAmounts(double preDebt, double sumItems)
-        {
-            double jam = preDebt + sumItems;
-            if (jam > _conditionPayableAmount)
-            {
-                long divideJam = (long)(jam / 1000);
-                double payable = divideJam * 1000;
-                double remained = sumItems - payable;
-                return (sumItems, jam, payable);
-            }
-            else
-            {
-                return (sumItems, jam, 0);
-            }
         }
         private bool IsInException(Exception ex)
         {
