@@ -36,6 +36,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         private readonly IValidator<CustomerBranchTypeUpdateInputDto> _branchTypeUpdateValidator;
         private readonly IValidator<CustomerHouseholdUpdateInputDto> _householdUpdateValidator;
         private readonly IValidator<SubscriptionAssignmentInputUpdateDto> _subscriptionAssignmentUpdateValidator;
+        private readonly IValidator<MeterInstallationUpdateInputDto> _meterInstallationUpdateValidator;
         static int[] _allowedToSetConstructionType = { 0, 1 };
         private string _currentDateJalali = DateTime.Now.ToShortPersianDateString();
         private int _constructionId = 4;
@@ -52,6 +53,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             IValidator<CustomerBranchTypeUpdateInputDto> branchTypeUpdateValidator,
             IValidator<CustomerHouseholdUpdateInputDto> householdUpdateValidator,
             IValidator<SubscriptionAssignmentInputUpdateDto> subscriptionAssignmentUpdateValidator,
+            IValidator<MeterInstallationUpdateInputDto> meterInstallationUpdateValidator,
             IConfiguration configuration)
             : base(configuration)
         {
@@ -93,6 +95,9 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
             _subscriptionAssignmentUpdateValidator = subscriptionAssignmentUpdateValidator;
             _subscriptionAssignmentUpdateValidator.NotNull(nameof(subscriptionAssignmentUpdateValidator));
+
+            _meterInstallationUpdateValidator = meterInstallationUpdateValidator;
+            _meterInstallationUpdateValidator.NotNull(nameof(meterInstallationUpdateValidator));
         }
 
         public async Task Handle(CustomerUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
@@ -179,7 +184,16 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
 
             await ExecSql(deletionStateUpdateDto, appUser, opLogtText);
         }
-       
+        public async Task Handle(MeterInstallationUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            MeterInstallationUpdateDto updateDto = new(inputDto.Id, inputDto.ZoneId, inputDto.CustomerNumber, inputDto.BillId, inputDto.MeterInstallationDateJalali, inputDto.SiphonInstallationDateJalali);
+            string opLogText = string.Format(OpLogLiterals.MeterInstallationUpdateOpLog, inputDto.BillId);
+            await ExecSql(updateDto, appUser, opLogText);
+        }
+
         private async Task ExecSql(CustomerUpdateDto updateDto, IAppUser appUser, string opLogText)
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
@@ -397,7 +411,34 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 }
             }
         }
-       
+        private async Task ExecSql(MeterInstallationUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            string dbName = GetDbName(updateDto.ZoneId);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    ClientsCommandService clientsCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+
+                    await membersCommandService.Update(updateDto, dbName);
+                    int archMemId = await archMemCommandService.Insert(updateDto, dbName);
+                    await clientsCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
+                    await clientsCommandService.InsertByArchMemId(archMemId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    //transaction.Commit();
+                }
+            }
+        }
+
 
         private CustomerUpdateDto GetCustomerUpdate(CustomerUpdateInputDto inputDto, MemberInfoGetDto previousSubscription)
         {
@@ -536,6 +577,15 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         private async Task InputValidate(SubscriptionAssignmentInputUpdateDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _subscriptionAssignmentUpdateValidator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
+            }
+        }
+        private async Task InputValidate(MeterInstallationUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _meterInstallationUpdateValidator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));

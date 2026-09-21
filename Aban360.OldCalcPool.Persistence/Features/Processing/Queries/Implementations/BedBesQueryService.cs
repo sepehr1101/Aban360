@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
@@ -8,6 +9,8 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
+using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
+using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Data.SqlClient;
@@ -352,12 +355,18 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
         public async Task<IEnumerable<BillReadingListDataOutputDto>> Get(BillReadingListInputDto input)
         {
-            string dbName=GetDbName(input.ZoneId);
+            string dbName = GetDbName(input.ZoneId);
             string query = GetBillReadingListQuery(dbName);
             IEnumerable<BillReadingListDataOutputDto> data = await _sqlReportConnection.QueryAsync<BillReadingListDataOutputDto>(query, input);
             return data;
         }
-        
+        public async Task<IEnumerable<InvalidPaymentIdDataOutputDto>> Get(InvalidPaymentIdInputDto input)
+        {
+            string dbName = GetDbName(input.ZoneId);
+            string query = GetInvalidPaymentIdQuery(dbName);
+            IEnumerable<InvalidPaymentIdDataOutputDto> result = await _sqlReportConnection.QueryAsync<InvalidPaymentIdDataOutputDto>(query, input);
+            return result;
+        }
         private string GetBedBesConsumptionDataQuery(string dataBaseName)
         {
             return @$"Select Top 1 
@@ -958,6 +967,47 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     Select Top 500 * 
                     From Bills
                     Where Rn=1";
+        }
+        private string GetInvalidPaymentIdQuery(string dbName)
+        {
+            return @$"Select
+                    	b.id,
+                    	b.town ZoneId,
+                    	t51.C2 ZoneTitle,
+                    	t46.C0 RegionId,
+                    	t46.C2 RegionTitle,
+                    	b.radif CustomerNumber,
+                    	TRIM(b.eshtrak) ReadingNumber,
+                    	b.baha,
+                    	b.jam,
+                    	b.pard Payable,
+                    	TRIM(b.sh_ghabs1) BillId,
+                    	TRIM(b.sh_pard1) PaymentId,
+                    	b.date_bed RegisterDateJalali,
+                    	b.pri_date PreviousDateJalali,
+                    	b.today_date CurrentDateJalali,
+                    	b.pri_no PreviousNumber,
+                    	b.today_no CurrentNumber,
+                    	b.cod_vas CounterStateCode,
+                    	cv.Title CounterStateTitle
+                    From [{dbName}].dbo.bed_bes b
+                    Join Db70.dbo.t51 t51
+                    	ON b.town=t51.C0	
+                    Join Db70.dbo.t46 t46
+                    	ON t46.C0=t51.C1
+                    Join Db70.dbo.CounterVaziat cv
+                    	ON b.cod_vas=cv.MoshtarakinId
+                    Where 
+                    	((CAST(sh_pard1 AS bigint)/100000)-CAST((pard/1000)AS bigint)) NOT BETWEEN -10000 AND 10000 AND
+	                    LEN(pard) > 4 AND
+	                    LEN(TRIM(sh_pard1)) > 6 AND
+	                    b.del = 0 AND
+	                    b.cod_vas NOT IN (4,7,8) AND
+	                    b.operator = '666' AND
+	                    b.pard  >= 10000 AND
+	                    b.date_bed > '1405/06/01' AND
+                    	b.date_bed BETWEEN @FromDateJalali AND @ToDateJalali 
+                    Order By date_bed desc";
         }
     }
 }

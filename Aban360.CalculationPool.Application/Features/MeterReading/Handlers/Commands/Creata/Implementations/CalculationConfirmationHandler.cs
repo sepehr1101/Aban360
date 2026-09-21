@@ -333,10 +333,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private async Task<BedBesCreateDto> GetBedBes(MeterReadingDetailDataOutputDto meterReading, string paymentIdOption)
         {
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(meterReading.ZoneId, meterReading.CustomerNumber));
+            var (sumItems, jam, pard) = TransactionIdGenerator.GetAmounts(memberInfo.DebtAmount ?? 0, meterReading.SumItems ?? 0);
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
             decimal barge = await _variabService.GetAndRenew(meterReading.ZoneId);
-            string paymentId = TransactionIdGenerator.GeneratePaymentId((long)meterReading.Pard, meterReading.BillId, paymentIdOption);
+            string paymentId = jam < CommonLiterals.BedBesConditionPayableAmount ? string.Empty : TransactionIdGenerator.GeneratePaymentId((long)pard, meterReading.BillId, paymentIdOption);
 
             return new BedBesCreateDto()
             {
@@ -359,9 +360,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 JalaseNo = 0,//todo
                 Mohlat = mohlatDateJalali,
                 AbonAb = (decimal)meterReading.AbonAb,
-                Baha = (decimal)meterReading.SumItems,
-                Pard = (long)(meterReading.SumItems.Value + memberInfo.DebtAmount) / 1000 * 1000,//bedehi gahbli+currentSumItems   => check
-                Jam = (decimal)(meterReading.SumItems.Value + memberInfo.DebtAmount),//bedehi gahbli+currentSumItems  => check
+                Baha = (decimal)sumItems,
+                Pard = (decimal)pard,
+                Jam = (decimal)jam,
                 CodVas = meterReading.CurrentCounterStateCode,
                 Ghabs = "1",
                 Del = false,

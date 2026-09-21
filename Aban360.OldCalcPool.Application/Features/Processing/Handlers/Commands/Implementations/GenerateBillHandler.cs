@@ -379,11 +379,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private async Task<BedBesCreateDto> GetBedBes(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, GenerateBillInputDto generateBillInfo, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, int? counterSatetCode)
         {
             double preDebtAmount = await _customerInfoService.GetMembersBedBes(zoneIdAndCustomerNumber);//checkResult: changeDto
-            var (sumItems, jam, pard) = GetAmounts(preDebtAmount, abBahaCalc.SumItems);
+            var (sumItems, jam, pard) = TransactionIdGenerator.GetAmounts(preDebtAmount, abBahaCalc.SumItems);
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
             string paymentIdOption = $"{CommonLiterals.WaterPayIdUniqueCode}{currentDateJalali.Substring(5, 2)}";
-            string paymentId = IsAllowedZeroMeterNumber(counterSatetCode) ?
+            string paymentId = IsAllowedZeroMeterNumber(counterSatetCode) || jam < CommonLiterals.BedBesConditionPayableAmount ?
                 string.Empty :
                 TransactionIdGenerator.GeneratePaymentId((long)pard, abBahaCalc.Customer.BillId, paymentIdOption);
             if (paymentId.ToString().Length > _payIdMaxChar)
@@ -479,21 +479,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             };
         }
         private decimal GetSewageConsumption(int usageId, double consumption) => IsDomestic(usageId) ? (decimal)(consumption * _domesticMaltiplier) : (decimal)consumption;
-        private (double, double, double) GetAmounts(double preDebt, double sumItems)
-        {
-            double jam = preDebt + sumItems;
-            if (jam > _conditionPayableAmount)
-            {
-                long divideJam = (long)(jam / 1000);
-                double payable = divideJam * 1000;
-                double remained = sumItems - payable;
-                return (sumItems, jam, payable);
-            }
-            else
-            {
-                return (sumItems, jam, 0);
-            }
-        }
         private KasrHaDto GerKasrHa(CustomerInfoGetDto customerInfo, AbBahaCalculationDetails abBahaCalc, GenerateBillInputDto generateBillInfo)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();

@@ -1,4 +1,6 @@
-﻿namespace Aban360.Common.Extensions
+﻿using Aban360.Common.Literals;
+
+namespace Aban360.Common.Extensions
 {
     /// <summary>
     /// تولید و صحت سنجی شناسه قبض، شناسه پرداخت و کد پیگیری
@@ -16,7 +18,7 @@
         /// <param name="_3digitZoneId">کد شهر سه رقمی</param>
         /// <returns></returns>
         public static string GenerateBillId(string customerNumber, string _3digitZoneId)
-        {           
+        {
             var zoneIdAndServiceProvider = _3digitZoneId + Convert.ToInt32(_abfaServiceCode);
             var billId = CheckDigitManager.GetAppendedCheckDigitString(customerNumber + zoneIdAndServiceProvider);
             return billId;
@@ -71,6 +73,20 @@
             var devidedAmount = amount / 1000;
             var changedAmount = mod > 500 ? (devidedAmount + 1) : devidedAmount;
             return changedAmount.ToString();
+        }
+        public static (double, double, double) GetAmounts(double preDebt, double sumItems)
+        {
+            double jam = preDebt + sumItems;
+            if (jam > CommonLiterals.BedBesConditionPayableAmount)
+            {
+                string payableToGeneratePaymentId = TransactionIdGenerator.GetAmount((long)jam);
+                double payable = Convert.ToInt64(payableToGeneratePaymentId)*1000;
+                return (sumItems, jam, payable);
+            }
+            else
+            {
+                return (sumItems, jam, 0);
+            }
         }
     }
     file static class CheckDigitManager

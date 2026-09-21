@@ -80,14 +80,14 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                         string previousDay = row.ElementAt(10).Value.ToString();
                         string currentDay = row.ElementAt(1).Value.ToString();
                         int previousNumber = Convert.ToInt32(row.ElementAt(9).Value);
-                        int? currentNumber = Convert.ToInt32(row.ElementAt(0).Value);
+                        int? currentNumber = !string.IsNullOrWhiteSpace(row.ElementAt(0).Value.ToString()) ? Convert.ToInt32(row.ElementAt(0).Value) : null;
                         short counterStateCode = Convert.ToInt16(row.ElementAt(2).Value);
                         int agentCode = Convert.ToInt32(row.ElementAt(3).Value);
                         int zoneId = Convert.ToInt32(row.ElementAt(4).Value);
 
                         errorMessage = ExceptionLiterals.InvalidRecord(count);
 
-                        if (currentNumber is null || currentNumber == 0 && counterStateCode != (int)CounterStateCodeEnum.Close)
+                        if ((currentNumber is null || currentNumber == 0) && counterStateCode != (int)CounterStateCodeEnum.Close)
                         {
                             errorMessage = string.Join(" - ", errorMessage, ExceptionLiterals.InvalidZeroMeterNumber);
                             throw new ReadingException(errorMessage);

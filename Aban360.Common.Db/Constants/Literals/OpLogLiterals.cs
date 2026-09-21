@@ -84,6 +84,7 @@
 
         public static string SubscriptionAssignmentUpdate => @"انتساب اشتراک ویرایش شد. شناسه قبض:{0}";
         public static string CustomerHouseholdUpdateOpLog => @"خانواری ویرایش شد. شناسه قبض:{0} ";
+        public static string MeterInstallationUpdateOpLog => @"تاریخ نصب ویرایش شد. شناسه قبض:{0} ";
         public static string CustomerBranchTypeUpdateOpLog => @"نوع واگذاری ویرایش شد. شناسه قبض:{0} ";
         public static string CustomerDeletionStateUpdateOpLog => @"وضعیت انشعاب ویرایش شد. شناسه قبض:{0}  ردیف:{1}  ناحیه:{2}  وضعیت قبلی:{3}  وضعیت فعلی:{4}";
         public static string CustomerEstateUpdateOpLog => @"اطلاعات واحد و ملک ویرایش شد. شناسه قبض:{0}";

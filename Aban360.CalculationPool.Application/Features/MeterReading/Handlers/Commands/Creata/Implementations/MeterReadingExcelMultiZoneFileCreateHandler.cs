@@ -20,6 +20,7 @@ using FluentValidation;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Reflection;
 using Excel = MiniExcelLibs;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
@@ -320,8 +321,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             return customersInfo;
         }
 
-        private static (ICollection<BedBesCreateDto> BedBesRows, ICollection<KasrHaDto> KasrHaRows) CreateAtlasRows(
-            IEnumerable<MeterReadingDetailCreateDto> calculatedReadings)
+        private static (ICollection<BedBesCreateDto> BedBesRows, ICollection<KasrHaDto> KasrHaRows) CreateAtlasRows(IEnumerable<MeterReadingDetailCreateDto> calculatedReadings)
         {
             ICollection<BedBesCreateDto> bedBesRows = new List<BedBesCreateDto>();
             ICollection<KasrHaDto> kasrHaRows = new List<KasrHaDto>();
@@ -331,8 +331,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             foreach (MeterReadingDetailCreateDto reading in calculatedReadings)
             {
-                long payableAmount = Convert.ToInt64(decimal.Truncate(reading.Pard ?? 0));
-                string paymentId = TransactionIdGenerator.GeneratePaymentId(payableAmount, reading.BillId, paymentIdOption);
+                var (sumItems, jam, pard) = TransactionIdGenerator.GetAmounts(reading.WaterDebt, reading.SumItems ?? 0);
+                string paymentId = jam < CommonLiterals.BedBesConditionPayableAmount ? string.Empty : TransactionIdGenerator.GeneratePaymentId((long)pard, reading.BillId, paymentIdOption);
                 string storedPaymentId = paymentId.Length <= _maxPaymentIdLength ? paymentId : string.Empty;
                 long trackNumber = long.TryParse(paymentId, out long parsedTrackNumber) ? parsedTrackNumber : 0;
 
@@ -356,10 +356,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     DateBed = currentDateJalali,
                     JalaseNo = 0,
                     Mohlat = paymentDeadlineJalali,
-                    Baha = (decimal)(reading.SumItems ?? 0),
+                    Baha = (decimal)sumItems,
                     AbonAb = reading.AbonAb ?? 0,
-                    Pard = reading.Pard ?? 0,
-                    Jam = reading.Jam ?? 0,
+                    Pard = (decimal)pard,
+                    Jam = (decimal)jam,
                     CodVas = reading.CurrentCounterStateCode,
                     Ghabs = "1",
                     Del = false,
