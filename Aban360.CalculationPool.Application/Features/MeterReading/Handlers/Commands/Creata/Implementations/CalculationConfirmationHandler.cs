@@ -177,7 +177,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
             ICollection<KasrHaDto> kasrhasBatchWithoutDuplicate = kasrHaBatch.Where(s => !toleranceBillIds.Contains(s.ShGhabs)).ToList();
             ICollection<BillInsertDto> billsBatch = await GetBillsInsertDto(bedBesBatchWithoutDuplicate, kasrHaBatch);
-            ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch = bedBesBatchWithoutDuplicate.Select(b => new MembersFazelabCountAndDebtAmountUpdateDto((int)b.Town, (int)b.Radif, b.ShGhabs1, (long)b.Baha, b.TodayDate)).ToList();
+            ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch = bedBesBatchWithoutDuplicate.Select(b => new MembersFazelabCountAndDebtAmountUpdateDto((int)b.Town, (int)b.Radif, b.ShGhabs1, _invalidCounterStateCode.Contains((int)b.CodVas) ? 0 : (long)b.Baha, b.TodayDate)).ToList();
             ICollection<ContorUpdateDto> contorsUpdateBatch = GetContorsUpdateDto(bedBesBatchWithoutDuplicate, previousBillsInfo);
             string opLogText = string.Format(OpLogLiterals.GenerateBatchBillOpLog, billsBatch?.FirstOrDefault()?.ZoneTitle, bedBesBatchWithoutDuplicate?.Count() ?? 0);
             return await ExceSql(bedBesBatchWithoutDuplicate, kasrhasBatchWithoutDuplicate, billsBatch, memberDebtAmountBatch, contorsUpdateBatch, zoneId, firstFlowId, latestFlowId, appUser, opLogText, operationKey, lockToken, warningMessageForToleranceBills, warningMessageForDuplicateBills);
@@ -339,91 +339,91 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             decimal barge = await _variabService.GetAndRenew(meterReading.ZoneId);
             string paymentId = jam < CommonLiterals.BedBesConditionPayableAmount ? string.Empty : TransactionIdGenerator.GeneratePaymentId((long)pard, meterReading.BillId, paymentIdOption);
 
-            return new BedBesCreateDto()
-            {
-                Town = meterReading.ZoneId,
-                Radif = meterReading.CustomerNumber,
-                Eshtrak = meterReading.ReadingNumber,
-                Barge = barge,
-                PriNo = meterReading.PreviousNumber,
-                TodayNo = meterReading.CurrentNumber,
-                PriDate = meterReading.PreviousDateJalali,
-                TodayDate = meterReading.CurrentDateJalali,
-                AbonFas = (decimal)meterReading.AbonFas,
-                FasBaha = (decimal)meterReading.FasBaha,
-                AbBaha = (decimal)meterReading.AbBaha,
-                Ztadil = (decimal)meterReading.Ztadil,
-                Masraf = (decimal)meterReading.Consumption,
-                Shahrdari = (decimal)meterReading.Shahrdari,
-                Modat = meterReading.Modat ?? 0,
-                DateBed = currentDateJalali,
-                JalaseNo = 0,//todo
-                Mohlat = mohlatDateJalali,
-                AbonAb = (decimal)meterReading.AbonAb,
-                Baha = (decimal)sumItems,
-                Pard = (decimal)pard,
-                Jam = (decimal)jam,
-                CodVas = meterReading.CurrentCounterStateCode,
-                Ghabs = "1",
-                Del = false,
-                Type = "1",
-                CodEnshab = meterReading.UsageId,
-                Enshab = meterReading.MeterDiameterId,
-                Elat = 0,
-                Serial = 0,
-                Ser = 0,
-                ZaribFasl = (decimal)meterReading.ZaribFasl,
-                Ab10 = 0,
-                Ab20 = 0,
-                TedadVahd = meterReading.OtherUnit,
-                TedKhane = meterReading.HouseholdNumber,
-                TedadMas = meterReading.DomesticUnit,
-                TedadTej = meterReading.CommercialUnit,
-                NoeVa = meterReading.BranchTypeId,
-                Jarime = 0,
-                Masjar = 0,
-                Sabt = 1,
-                Rate = (decimal)meterReading.MonthlyConsumption,
-                Operator = 666,
-                Mamor = meterReading.AgentCode,
-                TavizDate = meterReading.TavizDateJalali ?? string.Empty,
-                ZaribCntr = 0,
-                Zabresani = 0,
-                ZaribD = (decimal)meterReading.ZaribD,
-                Tafavot = 0,
-                KasrHa = (decimal)meterReading.DiscountSum,
-                FixMas = meterReading.ContractualCapacity,
-                ShGhabs1 = meterReading.BillId,
-                ShPard1 = paymentId.Length <= _maxPayIdLen ? paymentId : string.Empty,
-                TabAbnA = 0,
-                TabAbnF = 0,
-                TabsFa = 0,
-                NewAb = 0,
-                NewFa = 0,
-                Bodjeh = (decimal)meterReading.Bodjeh,
-                Group1 = meterReading.ConsumptionUsageId,
-                MasFas = (decimal)meterReading.Consumption,
-                Faz = false,
-                ChkKarbari = (decimal)meterReading.ChkKarbari,
-                C200 = 0,
-                DateIns = currentDateJalali,
-                AbSevom = 0,
-                AbSevom1 = 0,
-                C70 = 0,
-                C80 = 0,
-                TmpDateBed = "",
-                TmpPriDate = "",
-                TmpTodayDate = "",
-                TmpMohlat = "",
-                TmpTavizDate = "",
-                C90 = 0,
-                C101 = 0,
-                KhaliS = meterReading.EmptyUnit,
-                EdarehK = meterReading.IsSpecial,
-                Tafa402 = 0,
-                Avarez = (decimal)meterReading.Avarez,
-                TrackNumber = long.Parse(paymentId)//Todo
-            };
+            var s = new BedBesCreateDto() { };
+
+            s.Town = meterReading.ZoneId;
+            s.Radif = meterReading.CustomerNumber;
+            s.Eshtrak = meterReading.ReadingNumber;
+            s.Barge = barge;
+            s.PriNo = meterReading.PreviousNumber;
+            s.TodayNo = meterReading.CurrentNumber;
+            s.PriDate = meterReading.PreviousDateJalali;
+            s.TodayDate = meterReading.CurrentDateJalali;
+            s.AbonFas = (decimal)meterReading.AbonFas;
+            s.FasBaha = (decimal)meterReading.FasBaha;
+            s.AbBaha = (decimal)meterReading.AbBaha;
+            s.Ztadil = (decimal)meterReading.Ztadil;
+            s.Masraf = (decimal)meterReading.Consumption;
+            s.Shahrdari = (decimal)meterReading.Shahrdari;
+            s.Modat = meterReading.Modat ?? 0;
+            s.DateBed = currentDateJalali;
+            s.JalaseNo = 0;//todo
+            s.Mohlat = mohlatDateJalali;
+            s.AbonAb = (decimal)meterReading.AbonAb;
+            s.Baha = (decimal)sumItems;
+            s.Pard = (decimal)pard;
+            s.Jam = (decimal)jam;
+            s.CodVas = meterReading.CurrentCounterStateCode;
+            s.Ghabs = "1";
+            s.Del = false;
+            s.Type = "1";
+            s.CodEnshab = meterReading.UsageId;
+            s.Enshab = meterReading.MeterDiameterId;
+            s.Elat = 0;
+            s.Serial = 0;
+            s.Ser = 0;
+            s.ZaribFasl = (decimal)meterReading.ZaribFasl;
+            s.Ab10 = 0;
+            s.Ab20 = 0;
+            s.TedadVahd = meterReading.OtherUnit;
+            s.TedKhane = meterReading.HouseholdNumber;
+            s.TedadMas = meterReading.DomesticUnit;
+            s.TedadTej = meterReading.CommercialUnit;
+            s.NoeVa = meterReading.BranchTypeId;
+            s.Jarime = 0;
+            s.Masjar = 0;
+            s.Sabt = 1;
+            s.Rate = (decimal)meterReading.MonthlyConsumption;
+            s.Operator = 666;
+            s.Mamor = meterReading.AgentCode;
+            s.TavizDate = meterReading.TavizDateJalali ?? string.Empty;
+            s.ZaribCntr = 0;
+            s.Zabresani = 0;
+            s.ZaribD = (decimal)meterReading.ZaribD;
+            s.Tafavot = 0;
+            s.KasrHa = (decimal)meterReading.DiscountSum;
+            s.FixMas = meterReading.ContractualCapacity;
+            s.ShGhabs1 = meterReading.BillId;
+            s.ShPard1 = paymentId.Length <= _maxPayIdLen ? paymentId : string.Empty;
+            s.TabAbnA = 0;
+            s.TabAbnF = 0;
+            s.TabsFa = 0;
+            s.NewAb = 0;
+            s.NewFa = 0;
+            s.Bodjeh = (decimal)meterReading.Bodjeh;
+            s.Group1 = meterReading.ConsumptionUsageId;
+            s.MasFas = (decimal)meterReading.Consumption;
+            s.Faz = false;
+            s.ChkKarbari = (decimal)meterReading.ChkKarbari;
+            s.C200 = 0;
+            s.DateIns = currentDateJalali;
+            s.AbSevom = 0;
+            s.AbSevom1 = 0;
+            s.C70 = 0;
+            s.C80 = 0;
+            s.TmpDateBed = "";
+            s.TmpPriDate = "";
+            s.TmpTodayDate = "";
+            s.TmpMohlat = "";
+            s.TmpTavizDate = "";
+            s.C90 = 0;
+            s.C101 = 0;
+            s.KhaliS = meterReading.EmptyUnit;
+            s.EdarehK = meterReading.IsSpecial;
+            s.Tafa402 = 0;
+            s.Avarez = (decimal)meterReading.Avarez;
+            s.TrackNumber = string.IsNullOrWhiteSpace(paymentId) ? 0 : long.Parse(paymentId);//Todo
+            return s;
         }
         private KasrHaDto GerKasrHa(MeterReadingDetailDataOutputDto meterReading, BedBesCreateDto bedBes)
         {
