@@ -35,8 +35,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             if (data is not null && data.Any())
             {
                 header.SumClosed = data.Sum(x => x.Closed);
+                header.SumClosedRemoved = data.Sum(x => x.ClosedRemoved);
                 header.SumObstacle = data.Sum(x => x.Obstacle);
                 header.SumPureReading = data.Sum(x => x.PureReading);
+                header.SumPureReadingRemoved = data.Sum(x => x.PureReadingRemoved);
                 header.SumRuined = data.Sum(x => x.Ruined);
                 header.SumTemporarily = data.Sum(x => x.Temporarily);
                 header.SumAll = data.Sum(x => x.AllCount);

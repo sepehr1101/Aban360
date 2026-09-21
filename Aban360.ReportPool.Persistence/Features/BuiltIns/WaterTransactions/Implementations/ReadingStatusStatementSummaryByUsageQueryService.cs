@@ -36,14 +36,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
             if (data is not null && data.Any())
             {
                 header.SumClosed = data.Sum(x => x.Closed);
+                header.SumClosedRemoved = data.Sum(x => x.ClosedReadingRemoved);
                 header.SumObstacle = data.Sum(x => x.Obstacle);
                 header.SumPureReading = data.Sum(x => x.PureReading);
+                header.SumPureReadingRemoved = data.Sum(x => x.PureReadingRemoved);
                 header.SumRuined = data.Sum(x => x.Ruined);
                 header.SumTemporarily = data.Sum(x => x.Temporarily);
                 header.SumAll = data.Sum(x => x.AllCount);
                 header.SumDebt = data.Sum(x => x.Debt);
                 header.SumSelfClaimed = data.Sum(x => x.SelfClaimedCount);
-                header.ReadCount = data.Sum(x => x.PureReading + x.Closed + x.Obstacle - x.SelfClaimedCount);
+                header.ReadCount = data.Sum(x => x.PureReading + x.PureReadingRemoved + x.Closed + x.Obstacle - x.SelfClaimedCount);
             }
 
             var result = new ReportOutput<ReadingStatusStatementHeaderOutputDto, ReadingStatusStatementSummaryDataOutputDto>(reportTitle, header, data);
