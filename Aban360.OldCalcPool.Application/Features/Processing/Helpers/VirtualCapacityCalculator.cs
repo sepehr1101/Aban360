@@ -19,7 +19,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
             {
                 return 0;
             }
-            if (consumptionPartialInfo.StartDateJalali.More(date1404_12_29))
+            if (consumptionPartialInfo.StartDateJalali.MoreOrEq(date1404_12_29))
             {
                 return 0;
             }
