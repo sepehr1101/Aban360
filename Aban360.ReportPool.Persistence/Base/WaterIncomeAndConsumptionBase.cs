@@ -41,6 +41,8 @@ namespace Aban360.ReportPool.Persistence.Base
         				t46.C2 RegionTitle,
 						b.ZoneTitle,
 						TRIM(b.BillId) as BillId,
+                        b.ZoneId,
+                        b.UsageId,
 						b.UsageTitle,
 						b.ReadingNumber,
 						/*Case When b.UsageId IN (1,3) AND 
@@ -94,7 +96,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
 						(@fromConsumption IS NULL OR
 						@toConsumption IS NULL OR
-						b.Consumption BETWEEn @fromConsumption AND @toConsumption) AND
+						b.Consumption BETWEEN @fromConsumption AND @toConsumption) AND
 						(@fromAmount IS NULL OR
 						@toAmount IS NULL OR
 						b.SumItems BETWEEN @fromAmount AND @toAmount) AND
@@ -117,7 +119,7 @@ namespace Aban360.ReportPool.Persistence.Base
             string usageQuery = hasUsage ? "AND b.UsageId IN @usageIds" : string.Empty;
             string branchTypeQuery = hasBranchType ? "AND b.BranchTypeId IN @branchTypeIds" : string.Empty;
 
-            var (groupKey, SelectKey) = GetEnumQuery(enumState, isUsageGroup);
+            var (groupKey, SelectKey, orderKey) = GetEnumQuery(enumState, isUsageGroup);
 
             //todo: rename "RegisterDay" to "PhysicalSewageInstallDateJalali"
             return @$";With cte as(
@@ -125,6 +127,8 @@ namespace Aban360.ReportPool.Persistence.Base
 							t46.C2 RegionTitle,
 							t46.C0 RegionId,
                     		b.ZoneTitle,
+                            b.ZoneId,
+                            b.UsageId,
                     		TRIM(b.BillId) as BillId,
                     		t41.C1 as UsageTitle, 
                             {usageGroup2TitleSelect}
@@ -208,6 +212,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						MAX(RegionId) RegionId,
 						MAX(RegionTitle) RegionTitle,
                     	{SelectKey} as GroupKey,
+                        {orderKey} as OrderKey,
                         SUM(BillC) as BillCount,
                     	SUM(SewageConsumption) as SewageConsumption,
                     	SUM(Consumption) as Consumption,
@@ -237,27 +242,27 @@ namespace Aban360.ReportPool.Persistence.Base
                         SUM(UnitC) as BillUnit,
                         SUM(TotalUnit) as TotalUnit
                     From cte
-                    Group By {groupKey}
-                    Order By {groupKey}";
+                    Group By {groupKey}, {orderKey}
+                    Order By {orderKey}";
         }
-        internal (string, string) GetEnumQuery(WaterIncomeAndConsumptionSummaryEnum enumState, bool isUsageGroup)
+        internal (string, string, string) GetEnumQuery(WaterIncomeAndConsumptionSummaryEnum enumState, bool isUsageGroup)
         {
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.AverageConsumption)
-                return ("Ceiling(ConsumptionAverage)", "Ceiling(ConsumptionAverage)");
+                return ("Ceiling(ConsumptionAverage)", "Ceiling(ConsumptionAverage)", "Ceiling(ConsumptionAverage)");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.RegisterDay)
-                return ("RegisterDay", "RegisterDay");
+                return ("RegisterDay", "RegisterDay", "RegisterDay");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Zone)
-                return ("ZoneTitle", "ZoneTitle");
+                return ("ZoneTitle", "ZoneTitle", "ZoneId");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Usage)
-                return isUsageGroup ? ("UsageGroup2Title", "UsageGroup2Title") : ("UsageTitle", "UsageTitle");
+                return isUsageGroup ? ("UsageGroup2Title", "UsageGroup2Title", "UsageGroup2Title") : ("UsageTitle", "UsageTitle", "UsageId");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Region)
-                return ("RegionTitle", "RegionTitle");
+                return ("RegionTitle", "RegionTitle", "RegionTitle");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.UsageAndZone)
                 return isUsageGroup ?
-                    ("ZoneTitle, UsageGroup2Title", "(ZoneTitle CollaTe SQL_Latin1_General_CP1_CI_AS+' - '+ UsageGroup2Title)") :
-                    ("ZoneTitle, UsageTitle", "(ZoneTitle CollaTe SQL_Latin1_General_CP1_CI_AS+' - '+UsageTitle)");
+                    ("ZoneTitle, UsageGroup2Title", "(ZoneTitle CollaTe SQL_Latin1_General_CP1_CI_AS+' - '+ UsageGroup2Title)", "ZoneTitle, UsageGroup2Title") :
+                    ("ZoneTitle, UsageTitle", "(ZoneTitle Collate SQL_Latin1_General_CP1_CI_AS+' - '+UsageTitle)", "ZoneId, UsageId");
 
-            return ("ZoneTitle", "ZoneTitle");
+            return ("ZoneTitle", "ZoneTitle", "ZoneTitle");
         }
         internal string GetIsZoneOrVillageTitle(IEnumerable<int> zoneIds)
         {
