@@ -258,7 +258,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             };
 
             bool hasReturned = await HasReturned(customerInfo.ZoneId, customerInfo.Radif);
-            ReturnBillHeaderOutputDto header = new(description, customerInfo.ZoneTitle, null, previousValues.MinutesNumber.ToString(), hasReturned);
+            ReturnBillHeaderOutputDto header = new( previousValues.RegisterDateJalali, description, customerInfo.ZoneTitle, null, previousValues.MinutesNumber.ToString(), hasReturned);
             ReturnBillOutputDto data = new(previousValues, currentValues, returnValues);
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = new(_title, header, data);
 

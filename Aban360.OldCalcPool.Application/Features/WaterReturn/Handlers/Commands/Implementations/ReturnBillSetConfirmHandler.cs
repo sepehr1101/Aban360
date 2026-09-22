@@ -454,7 +454,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Lavazem = 0
             };
             ReturnBillOutputDto data = new(previousValues, currentValues, returnValues);
-            ReturnBillHeaderOutputDto header = new(description, memberInfo.ZoneTitle, input.ConfirmedNumber, string.Empty, input.IsConfirmed);
+            ReturnBillHeaderOutputDto header = new(bedBes.DateBed, description, memberInfo.ZoneTitle, input.ConfirmedNumber, string.Empty, input.IsConfirmed);
 
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = new(_title, header, data);
             return result;

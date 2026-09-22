@@ -203,7 +203,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.
             };
 
             string description = await GetDescription(customerInfo, bedBesValue);
-            ReturnBillHeaderOutputDto header = new(description, customerInfo.ZoneTitle, previousValues.MinutesNumber, previousValues.MinutesNumber.ToString(), hasReturned);
+            ReturnBillHeaderOutputDto header = new(bedBesValue.DateBed, description, customerInfo.ZoneTitle, previousValues.MinutesNumber, previousValues.MinutesNumber.ToString(), hasReturned);
             ReturnBillOutputDto data = new(previousValues, currentValues, returnValues);
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = new(_title, header, data);
 

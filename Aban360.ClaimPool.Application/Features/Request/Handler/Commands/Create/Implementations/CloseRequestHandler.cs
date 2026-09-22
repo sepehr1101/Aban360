@@ -53,7 +53,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             if (trackingInfo == null)
             {
                 moshtrakInfo = await _moshtrakQueryService.Get(inputDto.Id, inputDto.ZoneId);
-                if (moshtrakInfo.IsRegistered == false)
+                if (moshtrakInfo.IsRegistered == true)
                 {
                     throw new InvalidTrackingException(ExceptionLiterals.NotFountOpenRequest);
                 }
