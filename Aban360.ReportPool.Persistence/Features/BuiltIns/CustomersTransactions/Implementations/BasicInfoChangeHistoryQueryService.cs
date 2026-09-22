@@ -21,7 +21,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
             var (changeTitle, changeField) = GetItemChangeProperty(input.ItemChange);
             string title = $"{ReportLiterals.BasicInfoChangeHistory} - {changeTitle}";
-            string query = GetQuery(changeField);
+            string query = GetQuery(changeField, input.UsageIds?.Any() ?? false, input.IsWater);
 
             IEnumerable<BasicInfoChangeHistoryDataOutputDto> data = await _sqlReportConnection.QueryAsync<BasicInfoChangeHistoryDataOutputDto>(query, input);
             BasicInfoChangeHistoryHeaderOutputDto header = new BasicInfoChangeHistoryHeaderOutputDto()
@@ -43,8 +43,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 
             return result;
         }
-        private string GetQuery(string titleField)
+        private string GetQuery(string titleField, bool hasUsage, bool isWater)
         {
+            string usageCondition = hasUsage ? " UsageId IN @UsageIds AND " : string.Empty;
+            string cUsageCondition = hasUsage ? " c.UsageId IN @UsageIds AND " : string.Empty;
+
+            string isWaterInstallationField = isWater ? "c.PhysicalWaterInstallDateJalali" : "c.PhysicalSewageInstallDateJalali";
+
             return $@";WITH History AS
                     (
                         SELECT
@@ -56,6 +61,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         FROM CustomerWarehouse.dbo.Clients
                     	Where 
                             ZoneId IN @ZoneIds AND
+                            {usageCondition}
                             (RegisterDayJalali BETWEEN @FromDateJalali AND @ToDateJalali) AND
                             (
                                  @FromReadingNumber IS NULL OR
@@ -90,6 +96,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                     WHERE
                     	c.ToDayJalali IS NULL AND
                         c.ZoneId IN @ZoneIds AND     
+                        {cUsageCondition}
+                        {isWaterInstallationField} > '1330/01/01' AND
                          (
                             @FromReadingNumber IS NULL OR
                             @ToReadingNumber IS NULL OR
@@ -111,13 +119,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 CustomerBasicPropertyEnum.DomesticUnit => ("آحاد مسکونی", "DomesticCount"),
                 CustomerBasicPropertyEnum.CommercialUnit => ("آحاد تجاری", "CommercialCount"),
                 CustomerBasicPropertyEnum.OtherUnit => ("آحاد سایر", "OtherCount"),
-                CustomerBasicPropertyEnum.HouseholdNumber => ("خانواری", "HouseholdDateJalali"),//?????
+                CustomerBasicPropertyEnum.HouseholdNumber => ("خانواری", "FamilyCount"),
                 CustomerBasicPropertyEnum.EmptyUnit => ("خالی از سکنه", "EmptyCount"),
                 CustomerBasicPropertyEnum.BranchType => ("نوع واگذرای", "BranchType"),
                 CustomerBasicPropertyEnum.DeletionState => ("وضعیت انشعاب", "DeletionStateTitle"),
                 CustomerBasicPropertyEnum.FirstName => ("نام", "FirstName"),
                 CustomerBasicPropertyEnum.Surname => ("نام خانوادگی", "SureName"),
                 CustomerBasicPropertyEnum.MobileNumber => ("موبایل", "MobileNo"),
+                CustomerBasicPropertyEnum.TotalUnit => ("آحاد کل", "(DomesticCount+CommercialCount+OtherCount)"),
                 _ => ("کاربری", "UsageTitle")
             };
         }
