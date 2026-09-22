@@ -13,6 +13,7 @@
         DeletionState = 9,
         FirstName = 10,
         Surname = 11,
-        MobileNumber = 12
+        MobileNumber = 12,
+        TotalUnit=13,
     }
 }
