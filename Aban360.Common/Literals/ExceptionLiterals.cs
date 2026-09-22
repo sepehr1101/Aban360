@@ -347,5 +347,9 @@
         //SmsDraft
         public static string InvalidSmsDraftInsert => "خطا در ذخیره بایگانی پیامک ها";
         public static string InvalidSmsDraftUpdate => "خطا در ویرایش تاریخ بایگانی پیامک ها";
+
+
+        public static string InvalidVillageIdByZoneSelect => "با انتخاب وضعیت 'شهری' مقادیر روستایی را از حالت انتخاب حذف کنید.";
+        public static string InvalidZoneIdByVillageSelect => "با انتخاب وضعیت 'روستایی' مقادیر شهری را از حالت انتخاب حذف کنید.";
     }
 }
