@@ -48,24 +48,31 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             _checkedListGetHandler.NotNull(nameof(checkedListGetHandler));
         }
 
-        public async Task<ReportOutput<BillTransactionDetailWithLastReadingDataHeaderOutputDto, BillTransactionDetailDataOutputDto>> Handle(string readingNumber, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<ReportOutput<BillTransactionDetailWithLastReadingDataHeaderOutputDto, BillTransactionDetailDataOutputDto>> Handle(string billIdOrReadingNumber, IAppUser appUser, CancellationToken cancellationToken)
         {
-            IEnumerable<int> myZoneIds = await _commonZoneService.GetMyZoneIds(appUser);
-            IEnumerable<ZoneIdAndCustomerNumberAndBillId> customersInfo = await _commonMemberQueryService.GetFromClient(new ZoneIdsAndReadingNumber(myZoneIds, readingNumber), false);
+            ZoneIdAndCustomerNumberAndBillId customersInfo = await GetCustomerInfo(billIdOrReadingNumber, appUser);
 
-            if (!customersInfo.Any())
-            {
-                throw new InvalidBillCommandException(ExceptionLiterals.InvalidReadingNumber);
-            }
-            if ((customersInfo?.Count() ?? 0) > 1)
-            {
-                throw new InvalidBillCommandException(ExceptionLiterals.InvalidMoreThan1ReadingNumber);
-            }
-            ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto> transactionInfo = await _billTransactionDetailsGetHandler.Handle(customersInfo.First().BillId, appUser, cancellationToken);
+            ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto> transactionInfo = await _billTransactionDetailsGetHandler.Handle(customersInfo.BillId, appUser, cancellationToken);
             var (meterReadingDetail, meterFlowStepEnum) = await GetMeterReadingData(transactionInfo.ReportHeader.BillId);
             BillTransactionDetailWithLastReadingDataHeaderOutputDto header = GetHeader(transactionInfo.ReportHeader, meterReadingDetail, meterFlowStepEnum);
 
             return new ReportOutput<BillTransactionDetailWithLastReadingDataHeaderOutputDto, BillTransactionDetailDataOutputDto>(transactionInfo.Title, header, transactionInfo.ReportData);
+        }
+        private async Task<ZoneIdAndCustomerNumberAndBillId> GetCustomerInfo(string billIdOrReadingNumber, IAppUser appUser)
+        {
+            IEnumerable<int> myZoneIds = await _commonZoneService.GetMyZoneIds(appUser);
+            IEnumerable<ZoneIdAndCustomerNumberAndBillId> customerInfoByReadingNumber = await _commonMemberQueryService.GetFromClient(new ZoneIdsAndReadingNumber(myZoneIds, billIdOrReadingNumber), false);
+            if ((customerInfoByReadingNumber?.Count() ?? 0) > 1)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidMoreThan1ReadingNumber);
+            }
+            if ((customerInfoByReadingNumber?.Count() ?? 0) == 1)
+            {
+                return customerInfoByReadingNumber.FirstOrDefault();
+            }
+            ZoneIdAndCustomerNumber customersZoneByBillId = await _commonMemberQueryService.Get(billIdOrReadingNumber);
+            ZoneIdAndCustomerNumberAndBillId customerInfoByBillId = new(customersZoneByBillId.ZoneId, customersZoneByBillId.CustomerNumber, billIdOrReadingNumber);
+            return customerInfoByBillId;
         }
         private async Task<(MeterReadingDetailDataOutputDto, MeterFlowStepEnum)> GetMeterReadingData(string billId)
         {

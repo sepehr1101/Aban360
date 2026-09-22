@@ -11,7 +11,9 @@ namespace Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inpu
         public string ToDateJalali { get; set; }
 
         public IEnumerable<int> ZoneIds { get; set; }
+        public IEnumerable<int>? UsageIds { get; set; }
         public CustomerBasicPropertyEnum ItemChange { get; set; }
+        public bool IsWater { get; set; }
 
     }
 }
