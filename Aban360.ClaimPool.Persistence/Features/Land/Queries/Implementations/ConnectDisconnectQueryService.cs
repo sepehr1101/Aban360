@@ -140,7 +140,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         TRIM(c.ReadingNumber) ReadingNumber 
                     From [CustomerWarehouse].dbo.connectdisconnect d
 					Join [CustomerWarehouse].dbo.Clients c
-						ON d.BillId Collate Arabic_CI_AS=c.BillId
+						ON TRIM(d.BillId) Collate Arabic_CI_AS=c.BillId
                     Where 
 						c.ToDayJalali Is Null AND
 						d.ZoneId=@zoneId
@@ -212,7 +212,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         RemovedBy
                     From [CustomerWarehouse].dbo.connectdisconnect
                     Where 
-                        BillId=@BillId AND
+                        TRIM(BillId)=@BillId AND
 						TypeId=@TypeId 
 						{resultCondition}
                         {removedCondition}";
