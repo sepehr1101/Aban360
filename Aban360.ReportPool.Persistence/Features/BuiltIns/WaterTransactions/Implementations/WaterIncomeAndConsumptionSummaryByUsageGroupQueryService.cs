@@ -56,6 +56,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToConsumption = input.ToConsumption,
 
                 SumBillCount = waterIncomeAndConsumptionData.Sum(w => w.BillCount),
+                SumTransactionCount = waterIncomeAndConsumptionData.Sum(w=>w.TransactionCount),
                 SumSewageConsumption = waterIncomeAndConsumptionData.Sum(w => w.SewageConsumption),
                 SumConsumption = waterIncomeAndConsumptionData.Sum(w => w.Consumption),
                 SumConsumptionAverage = waterIncomeAndConsumptionData.Sum(w => w.ConsumptionAverage),
@@ -82,7 +83,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 SumItem17 = waterIncomeAndConsumptionData.Sum(w => w.Item17),
                 SumItem18 = waterIncomeAndConsumptionData.Sum(w => w.Item18),
                 BillUnit = waterIncomeAndConsumptionData.Sum(w => w.BillUnit),
-                TotalUnit = waterIncomeAndConsumptionData.Sum(w => w.TotalUnit),
+                TotalUnit = waterIncomeAndConsumptionData.Sum(w => w.TotalUnit)
             };
 
             var result = new ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>(reportTitle, waterIncomeAndConsumptionHeader, waterIncomeAndConsumptionData);

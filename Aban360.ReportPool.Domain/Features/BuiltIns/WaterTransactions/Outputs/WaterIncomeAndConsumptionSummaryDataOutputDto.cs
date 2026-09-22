@@ -6,6 +6,7 @@
         public string RegionTitle { get; set; }
         public string GroupKey { get; set; }
         public int BillCount { get; set; }
+        public int TransactionCount { get; set; }
         public float SewageConsumption { get; set; }
         public int Consumption { get; set; }
         public float ConsumptionAverage { get; set; }

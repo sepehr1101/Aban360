@@ -9,9 +9,9 @@ namespace Aban360.ReportPool.Persistence.Base
         private static int[] _netItems = { 1, 3, 4, 5 };
         private static int[] _rawItems = { 1 };
         private static int[] _returnedItems = { 3, 4, 5 };
-        private static int[] _positiveModifications = [4];
-        private static int[] _negativeModifications = [5];
-        private static int[] _pureReturn = [3];
+        private static int[] _positiveModifications = [3];
+        private static int[] _negativeModifications = [4];
+        private static int[] _pureReturn = [5];
         public WaterIncomeAndConsumptionBase(IConfiguration configuration)
             : base(configuration)
         {
@@ -183,7 +183,7 @@ namespace Aban360.ReportPool.Persistence.Base
 							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)<=0 THEN 1
 							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)>0 THEN (b.OtherCount+b.CommercialCount+b.DomesticCount)
 							    Else 0 
-						    END UnitC
+						    END UnitC                            
                     From [CustomerWarehouse].dbo.Bills b
 					--Join [CustomerWarehouse].dbo.Clients c
 						--ON b.ZoneId=c.ZoneId and b.CustomerNumber=c.CustomerNumber
@@ -214,6 +214,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	{SelectKey} as GroupKey,
                         {orderKey} as OrderKey,
                         SUM(BillC) as BillCount,
+                        COUNT(1) as TransactionCount,
                     	SUM(SewageConsumption) as SewageConsumption,
                     	SUM(Consumption) as Consumption,
                     	AVG(ConsumptionAverage) as ConsumptionAverage,
