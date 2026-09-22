@@ -41,7 +41,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private int _11OlgooConsumptionAverage = 34;
         private int _12OlgooConsumptionAverage = 36;
         private int _13And14OlgooConsumptionAverage = 39;
-        private int _domesticCAmount = 68022;
+        private int _11OlgooCAmount = 143_000;
+        private int _12OlgooCAmount = 120_120;
+        private int _13And14OlgooCAmount = 132_990;
         private int _dayOfMonth = 30;
         private int _from4YearsAgo = -4;
         public ReturnBillPartialHandler(
@@ -82,6 +84,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             var (bedBesInfo, bedBesResult) = await GetBedBesCreateDto(inputDto, customerInfo);
 
             float consumptionAverage = 0;
+            int domesticCAmount = 0;
             if (BurstPipe.Contains(inputDto.ReturnCauseId))
             {
                 await BurstPipeValidate(bedBesResult, inputDto.ReturnCauseId);
@@ -90,9 +93,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 {
                     consumptionAverage = inputDto.UserInput.Value;
                 }
-                consumptionAverage = await GetConsumptionAverage(customerInfo, bedBesResult.PriDate, bedBesResult.TodayDate, consumptionAverage);
+                (consumptionAverage, domesticCAmount) = await GetOlgoAverageAndAmount(customerInfo, bedBesResult.PriDate, bedBesResult.TodayDate, consumptionAverage);
                 AbBahaCalculationDetails abBahaResult = await GetAbBahaTariff(inputDto, bedBesInfo, consumptionAverage, cancellationToken);
-                var (finalAmount, hadarConsumption) = await GetAbHadarMasHadar(bedBesResult, customerInfo, (float)abBahaResult.Consumption, bedBesResult.PriDate, bedBesResult.TodayDate);
+                var (finalAmount, hadarConsumption) = await GetAbHadarMasHadar(bedBesResult, customerInfo, (float)abBahaResult.Consumption, bedBesResult.PriDate, bedBesResult.TodayDate, domesticCAmount);
                 return await CreateAutoBacksAndReturn(abBahaResult, inputDto, bedBesInfo, bedBesResult, customerInfo, hadarConsumption, (long)finalAmount, consumptionAverage, jalaseNumber, appUser, inputDto.FromDateJalali, inputDto.ToDateJalali, cancellationToken);
             }
 
@@ -195,30 +198,31 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             return (bedBesInfo, bedBesResult);
         }
-        private async Task<(float, float)> GetAbHadarMasHadar(BedBesCreateDto bedBes, CustomerInfoOutputDto customerInfo, float consumption, string priDateLatestBill, string todayDateLatestBill)
+        private async Task<(float, float)> GetAbHadarMasHadar(BedBesCreateDto bedBes, CustomerInfoOutputDto customerInfo, float consumption, string priDateLatestBill, string todayDateLatestBill, int domesticCAmount)
         {
             var (olgo, c) = await GetOlgoAndC(priDateLatestBill, todayDateLatestBill, customerInfo.ZoneId);
 
             int customerConsumption = (int)bedBes.Masraf;
-            int amount = _returnBillBaseHandler.IsDomestic(customerInfo.UsageId) ? _domesticCAmount : c;
+            int amount = _returnBillBaseHandler.IsDomestic(customerInfo.UsageId) ? domesticCAmount : c;
             float masHadr = customerConsumption - consumption;
-            float finalAmount = amount * masHadr;
+            //374-153.4                  221
+            float finalAmount = amount * masHadr;//15,032,862
 
             return (finalAmount, masHadr);
         }
-        private async Task<float> GetConsumptionAverage(CustomerInfoOutputDto customerInfo, string priDateLatestBill, string todayDateLatestBill, float consumptionAverage)
+        private async Task<(float, int)> GetOlgoAverageAndAmount(CustomerInfoOutputDto customerInfo, string priDateLatestBill, string todayDateLatestBill, float consumptionAverage)
         {
             var (olgo, c) = await GetOlgoAndC(priDateLatestBill, todayDateLatestBill, customerInfo.ZoneId);
 
             return _returnBillBaseHandler.IsDomestic(customerInfo.UsageId) ?
                   olgo switch
                   {
-                      _11Olgoo => _11OlgooConsumptionAverage,
-                      _12Olgoo => _12OlgooConsumptionAverage,
-                      _13Olgoo or _14Olgoo => _13And14OlgooConsumptionAverage,
-                      _ => consumptionAverage,
+                      _11Olgoo => (_11OlgooConsumptionAverage, _11OlgooCAmount),
+                      _12Olgoo => (_12OlgooConsumptionAverage, _12OlgooCAmount),
+                      _13Olgoo or _14Olgoo => (_13And14OlgooConsumptionAverage, _13And14OlgooCAmount),
+                      _ => (consumptionAverage, _11OlgooCAmount),
                   } :
-                 consumptionAverage;
+                 (consumptionAverage, _11OlgooCAmount);
         }
         private async Task<(int, int)> GetOlgoAndC(string fromDate, string toDate, int zoneId)
         {

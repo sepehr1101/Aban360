@@ -54,7 +54,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             NewRequestOutputDto outputDto;
             if (assessmentSetTimeDto is not null)
             {
-                SetAssessmentTimeOutputDto assessmentTimeSmsOutputDto = GetAssessmentTimeOutputDto(false, false, assessmentSetTimeDto);
+                SetAssessmentTimeOutputDto assessmentTimeSmsOutputDto = GetAssessmentTimeOutputDto(true, true, assessmentSetTimeDto);
                 outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null, assessmentTimeSmsOutputDto.HasCustomerSms, assessmentTimeSmsOutputDto.CustomerMessage, assessmentTimeSmsOutputDto.HasAssessmentSms, assessmentTimeSmsOutputDto.AssessmentMessage, assessmentDateJalali: assessmentSetTimeDto.AssessmentDateJalai, assessmentName: assessmentSetTimeDto.AssessmentName);
                 return Ok(outputDto);
             }

@@ -361,7 +361,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
         private string GetUpdateSabtByIdCommand(string dbName)
         {
             return $@"Update [{dbName}].dbo.moshtrak
-						Set sabt=@IsRegister , sharh=@Description
+						Set sabt=@IsRegister, date_sabt=@RegisterDateJalali, sharh=@Description
 						Where Id=@Id";
         }
         private string GetUpdateCustomerNumberCommand(string dbName)
