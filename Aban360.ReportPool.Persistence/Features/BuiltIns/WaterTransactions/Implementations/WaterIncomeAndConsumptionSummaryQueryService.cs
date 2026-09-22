@@ -1,8 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Domain.Base;
-using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.WaterTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Base;
@@ -58,6 +56,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 ToConsumption = input.ToConsumption,
 
                 SumBillCount = waterIncomeAndConsumptionData.Sum(w => w.BillCount),
+                SumTransactionCount = waterIncomeAndConsumptionData.Sum(w => w.TransactionCount),
                 SumSewageConsumption = waterIncomeAndConsumptionData.Sum(w => w.SewageConsumption),
                 SumConsumption = waterIncomeAndConsumptionData.Sum(w => w.Consumption),
                 SumConsumptionAverage = waterIncomeAndConsumptionData.Sum(w => w.ConsumptionAverage),
