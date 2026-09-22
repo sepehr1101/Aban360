@@ -63,7 +63,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             ICollection<MeterReadingFileDetail> meterReadingFileDetail = new List<MeterReadingFileDetail>();
             var rows = Excel.MiniExcel.Query(filePath, useHeaderRow: false, sheetName: ExceptionLiterals.Page(1));
             string errorMessage = ExceptionLiterals.InvalidReadingFile;
-            int count = 0;
+            int count = 1;
 
             try
             {
@@ -73,6 +73,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     count++;
                     try
                     {
+                        errorMessage = ExceptionLiterals.InvalidRecord(count);
+
                         //0:CurrentNumber 1:CurretnDate 2:CurrentCounterState 3:AgentCode 4:ZoneId 5:ZoneTitle
                         //6:CustomerNumber 7:BillId 8:ReadingNumber 9:PriNumber 10:PriDate 
                         int customerNumber = Convert.ToInt32(row.ElementAt(6).Value);
@@ -85,7 +87,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                         int agentCode = Convert.ToInt32(row.ElementAt(3).Value);
                         int zoneId = Convert.ToInt32(row.ElementAt(4).Value);
 
-                        errorMessage = ExceptionLiterals.InvalidRecord(count);
 
                         if ((currentNumber is null || currentNumber == 0) && counterStateCode != (int)CounterStateCodeEnum.Close)
                         {

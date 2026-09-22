@@ -201,6 +201,7 @@ namespace Aban360.Common.Extensions
                     {"OldBillId", "شناسه قبض قبلی"},
                     {"VillageId", "کد روستا"},
                     {"VillageName", "نام روستا"},
+                    {"VillageTitle", "نام روستا"},
                     {"SpecialCustomer", "خاص"},
                     {"CommonSiphon", "سیفون مشترک"},
                     {"UnSpecified", "قطر نامشخص"},
@@ -624,6 +625,8 @@ namespace Aban360.Common.Extensions
                     {"RawAmount","خالص - آب بها (خالص)" },
                     {"RawAmountAverage","خالص - متوسط نرخ آب بها(ریال)" },
                     {"ConsumptionAverageInMonth","خالص - متوسط مصرف مترمکعب در ماه" },
+                    {"StringCode","شناسه یکتا" },
+
             };
         }
     }
