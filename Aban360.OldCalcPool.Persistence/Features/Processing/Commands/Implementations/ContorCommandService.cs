@@ -12,6 +12,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 {
     public sealed class ContorCommandService
     {
+        private const int BulkUpdateCommandTimeoutSeconds = 300;
+
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
         public ContorCommandService(
@@ -59,11 +61,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 bulk.ColumnMappings.Add(col.ColumnName, col.ColumnName);
 
             await bulk.WriteToServerAsync(updateDataTable);
-            IEnumerable<int> check = await _connection.QueryAsync<int>("SELECT CustomerNumber  FROM #ContorTemp", null, _transaction);
-
             int expectedCount = inputDto?.DistinctBy(m => m.CustomerNumber)?.Count() ?? 0;
             string updateCommand = GetUpdateWithTempTableCommand(dbName, isUpdateTavizField);
-            int recordEffected = await _connection.ExecuteAsync(updateCommand, null, _transaction);
+            int recordEffected = await _connection.ExecuteAsync(
+                updateCommand,
+                param: null,
+                transaction: _transaction,
+                commandTimeout: BulkUpdateCommandTimeoutSeconds);
             if(recordEffected != expectedCount)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidUpdateContor);
