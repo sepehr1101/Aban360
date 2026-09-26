@@ -37,4 +37,32 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.WaterTransactions.Ha
             return waterIncomeAndConsumptionSummary;
         }
     }
+    internal sealed class WaterReturnSummaryHandler : IWaterReturnSummaryHandler
+    {
+        private readonly IWaterReturnSummaryQueryService _WaterReturnSummaryQueryService;
+        private readonly IValidator<WaterReturnSummaryInputDto> _validator;
+        public WaterReturnSummaryHandler(
+            IWaterReturnSummaryQueryService WaterReturnSummaryQueryService,
+            IValidator<WaterReturnSummaryInputDto> validator)
+        {
+            _WaterReturnSummaryQueryService = WaterReturnSummaryQueryService;
+            _WaterReturnSummaryQueryService.NotNull(nameof(WaterReturnSummaryQueryService));
+
+            _validator = validator;
+            _validator.NotNull(nameof(validator));
+        }
+
+        public async Task<ReportOutput<WaterReturnSummaryHeaderOutputDto, WaterReturnSummaryDataOutputDto>> Handle(WaterReturnSummaryInputDto input, CancellationToken cancellationToken)
+        {
+            var validationResult = await _validator.ValidateAsync(input, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomValidationException(message);
+            }
+
+            ReportOutput<WaterReturnSummaryHeaderOutputDto, WaterReturnSummaryDataOutputDto> WaterReturnSummary = await _WaterReturnSummaryQueryService.Get(input);
+            return WaterReturnSummary;
+        }
+    }
 }

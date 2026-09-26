@@ -118,19 +118,19 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             Guid lockToken = Guid.NewGuid();
             IdempotentOperationResultDto operation = await _idempotentOperationService.TryBegin(operationKey, lockToken);
 
-            //if (!operation.Acquired)
-            //{
-            //    if (operation.Status == IdempotentOperationStatusEnum.Completed && !string.IsNullOrWhiteSpace(operation.ResponseJson))
-            //    {
-            //        MeterReadingCheckedOutputDto? previousResult = JsonSerializer.Deserialize<MeterReadingCheckedOutputDto>(operation.ResponseJson);
-            //        if (previousResult is not null)
-            //        {
-            //            return previousResult;
-            //        }
-            //    }
+            if (!operation.Acquired)
+            {
+                if (operation.Status == IdempotentOperationStatusEnum.Completed && !string.IsNullOrWhiteSpace(operation.ResponseJson))
+                {
+                    MeterReadingCheckedOutputDto? previousResult = JsonSerializer.Deserialize<MeterReadingCheckedOutputDto>(operation.ResponseJson);
+                    if (previousResult is not null)
+                    {
+                        return previousResult;
+                    }
+                }
 
-            //    throw new IdempotentOperationInProgressException("عملیات تایید مبلغ برای این جریان در حال انجام است.");
-            //}
+                throw new IdempotentOperationInProgressException("عملیات تایید مبلغ برای این جریان در حال انجام است.");
+            }
 
             try
             {
@@ -263,9 +263,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             await ExcludeExecSql(invalidDuplicateReadingToExcludeList, firstFlowId);
             string warningInvalidDuplicateMessage = invalidDuplicateCount == 0 ? string.Empty : ExceptionLiterals.InvalidDuplicateGenerateBill(invalidDuplicateCount);
             string warningInvalidLessThan5DayMessage = invalidLessThan5DayCount == 0 ? string.Empty : ExceptionLiterals.InvalidToleranceGenerateBill(invalidLessThan5DayCount);
-            string finalWarnin = $"{warningInvalidDuplicateMessage} - {warningInvalidLessThan5DayMessage}";
+            string finalWarning = $"{warningInvalidDuplicateMessage} - {warningInvalidLessThan5DayMessage}";
 
-            return (finalWarnin, invalidDuplicateReadingToExcludeList);
+            return (finalWarning, invalidDuplicateReadingToExcludeList);
         }
         private async Task<(ICollection<MeterReadingDetailExcludedDto>, int, int)> GetInvlaidDuplicateReading(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, IEnumerable<BedBesPreviousNumberAndDateOutputDto> previousBillsInfo, IAppUser appUser)
         {
@@ -280,14 +280,14 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 {
                     throw new ReadingException(ExceptionLiterals.InvalidPreviousBillInfo(item.BillId));
                 }
-                if (item.PreviousDateJalali.CompareTo(previousBills.PreviousDateJalali) < 0)
+                if (item.PreviousDateJalali.CompareTo(previousBills.PreviousDateJalali) != 0)//previousBills.PreviousDateJalali: تا تاریخ قرائت قبلی
                 {
                     MeterReadingDetailExcludedDto excludeDto = new(item.Id, appUser.UserId, currentDateTime, ExcludedCauseEnum.DuplicateBill, ReportLiterals.DuplicateBill);
                     invalidDuplicateMeterReadingToExcludeList.Add(excludeDto);
                     invalidDuplicateCount++;
                 }
                 DateTime previousRegisterDate = ConvertDate.JalaliToDateTime(previousBills.RegisterDateJalali);
-                if (item.DateBed.CompareTo(previousRegisterDate.AddDays(5).ToShortPersianDateString()) < 0)
+                if (item.DateBed.CompareTo(previousRegisterDate.AddDays(5).ToShortPersianDateString()) < 0)//تاریخ صدور قبض
                 {
                     MeterReadingDetailExcludedDto excludeDto = new(item.Id, appUser.UserId, currentDateTime, ExcludedCauseEnum.DuplicateBill5, ReportLiterals.DuplicateBill5);
                     invalidDuplicateMeterReadingToExcludeList.Add(excludeDto);
