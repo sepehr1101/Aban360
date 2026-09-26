@@ -74,7 +74,10 @@
 
         public static string WaterIncomeAndConsumptionDetail { get { return $"{Report} جزئیات درآمد مصارف و آب‌بها"; } }
         public static string WaterIncomeAndConsumptionSummary { get { return $"{Report} خلاصه درآمد مصارف و آب‌بها"; } }
-        //
+       
+        public static string WaterReturnDetail { get { return $"{Report} جزئیات برگشتی آب‌بها"; } }
+        public static string WaterReturnSummary { get { return $"{Report} خلاصه برگشتی آب‌بها"; } }
+       
 
         public static string ServiceLinkDebtorCustomers { get { return $"{Report} مانده مطالبات سررسید شده"; } }
         public static string DebtorByDayDetail { get { return $"{Report} جزئیات روزنامه بدهکاران"; } }
