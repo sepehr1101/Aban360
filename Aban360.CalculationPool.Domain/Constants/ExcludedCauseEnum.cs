@@ -6,6 +6,7 @@
         NeedEvaluate = 2,
         Error = 3,
         DuplicateBill = 4,
-        Deleted_Close=5,
+        Deleted_Close = 5,
+        DuplicateBill5 = 6
     }
 }

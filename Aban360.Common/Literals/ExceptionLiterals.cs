@@ -185,7 +185,9 @@
         public static string InlvalidUpdateMeterReadingDetailToExclude => "خطا در اعمال خروج از لیست قبوض تکرای.";
         public static string InvalidToleranceGenerateBill(string billIds) => @$"طی 5 روز جاری برای مشترکین با شناسه قبض: {billIds} قبض صادر گردیده است. ";
         public static string InvalidDuplicateGenerateBill(string billIds) => @$"در مدت محاسبه تا تایید برای شناسه قبض: {billIds} تراکنش انجام شده. ";
-
+        public static string InvalidToleranceGenerateBill(int invalidCount) => @$"طی 5 روز جاری برای {invalidCount} مشترک قبض صادر گردیده است. ";
+        public static string InvalidDuplicateGenerateBill(int invalidCount) => @$"در مدت محاسبه تا تایید برای {invalidCount} شناسه قبض، تراکنش انجام شده. ";
+        public static string InvalidPreviousBillInfo(string billId) => $@"اطلاعات آخرین قبض برای مشترک:{billId} یافت نشد.";
 
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";
@@ -272,7 +274,7 @@
 
 
         public static string InvalidDuplicateInstallment(string insertedBy, int installmentCount, string registerDateJalali) => @$"تعداد {installmentCount} قسط، توسط کاربر{insertedBy} در تاریخ{registerDateJalali} ایجاد شده.";
-      
+
         public static string InvalidInsertClientDiscount => "خطا در ثبت درخواست تخفیف";
         public static string InvalidUpdateClientDiscount => "خطا در ویرایش درخواست تخفیف";
         public static string InvalidRemoveClientDiscount => "خطا در حذف درخواست تخفیف";
