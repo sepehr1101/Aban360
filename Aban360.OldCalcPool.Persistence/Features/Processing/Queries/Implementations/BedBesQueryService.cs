@@ -271,7 +271,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                             		sh_ghabs1 BillId,
                             		date_bed,
                             		Rn=Row_Number() Over(Partition By radif Order By date_bed Desc)
-                            	From [{dbName}].dbo.bed_bes
+                            	From [{dbName}].dbo.bed_bes bb
+                                    Inner Join #tempInput tt
+                            	On tt.InputBillId Collate Arabic_CI_AS = bb.BillId Collate Arabic_CI_AS
                                 Where town=@zoneId
                             )
                             Select b.BillId
@@ -279,6 +281,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                             Inner Join #tempInput t
                             	On t.InputBillId Collate Arabic_CI_AS = b.BillId Collate Arabic_CI_AS
                             Where 
+                                RN=1 AND
                                 CustomerWarehouse.dbo.PersianToMiladi(t.InputDateJalali) < DATEADD(DAY,+5,CustomerWarehouse.dbo.PersianToMiladi(b.date_bed))
                             Order By b.date_bed Desc";*/
 
