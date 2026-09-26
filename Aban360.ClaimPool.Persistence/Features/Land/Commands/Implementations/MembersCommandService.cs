@@ -13,6 +13,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 {
     public sealed class MembersCommandService
     {
+        private const int BulkUpdateCommandTimeoutSeconds = 300;
+
         private readonly IDbConnection _sqlConnection;
         private readonly IDbTransaction _dbTransaction;
         public MembersCommandService(IDbConnection sqlConnection, IDbTransaction transaction)
@@ -151,7 +153,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 
             int expectedCount = input?.DistinctBy(m => m.CustomerNumber)?.Count() ?? 0;
             string updateCommand = GetUpdateDebtAmountCommand(dbName);
-            int recordEffected = await _sqlConnection.ExecuteAsync(updateCommand, null, _dbTransaction);
+            int recordEffected = await _sqlConnection.ExecuteAsync(
+                updateCommand,
+                param: null,
+                transaction: _dbTransaction,
+                commandTimeout: BulkUpdateCommandTimeoutSeconds);
             if (recordEffected != expectedCount)
             {
                 throw new ReadingException(CommonLiteral.ExceptionLiterals.InvalidUpdateMembersDebtAmount);

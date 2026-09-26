@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Filters;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
@@ -19,6 +20,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [HttpPost]
         [Route("remove")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
+        [TypeFilter(typeof(EndpointAuthorizationFilter))]
         public async Task<IActionResult> Remove(RemoveBillInputDto input, CancellationToken cancellationToken)
         {
             await _removedBillHandler.Handle(input, CurrentUser, cancellationToken);

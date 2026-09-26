@@ -1,4 +1,5 @@
 ﻿using Aban360.Api.Cronjobs;
+using Aban360.Api.Filters;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -39,6 +40,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         [HttpPost]
         [Route("partial")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
+        [TypeFilter(typeof(EndpointAuthorizationFilter))]
         public async Task<IActionResult> PartialReturn([FromBody] ReturnBillPartialInputDto input, CancellationToken cancellationToken)
         {
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billPartialHandler.Handle(input, CurrentUser, cancellationToken);
@@ -48,6 +50,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         [HttpPost]
         [Route("full")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
+        [TypeFilter(typeof(EndpointAuthorizationFilter))]
         public async Task<IActionResult> FullReturn([FromBody] ReturnBillFullInputDto input, CancellationToken cancellationToken)
         {
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billFullHandler.Handle(input, CurrentUser, cancellationToken);
