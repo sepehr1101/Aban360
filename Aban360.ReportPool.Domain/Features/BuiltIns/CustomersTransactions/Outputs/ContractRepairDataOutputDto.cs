@@ -14,14 +14,19 @@
         public string BillId { get; set; }
 
         public string ChangeDateJalali { get; set; }
+
         public string UsageTitle { get; set; }
-        public int TotalUnit { get; set; }
+        public int DomesticUnit { get; set; }
+        public int CommercialUnit { get; set; }
+        public int OtherUnit { get; set; }
         public int ContractualCapacity { get; set; }
+
         public string PreviousUsageTitle { get; set; }
-        public int PreviousTotalUnit { get; set; }
+        public int PreviousDomesticUnit { get; set; }
+        public int PreviousCommercialUnit { get; set; }
+        public int PreviousOtherUnit { get; set; }
         public int PreviousContractualCapacity { get; set; }
-        public long Amount  { get; set; }
-        public string ItemTitle  { get; set; }
-        public int ItemId{ get; set; }
+
+        public long Amount { get; set; }
     }
 }
