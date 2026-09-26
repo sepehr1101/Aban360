@@ -10,6 +10,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
 {
     public sealed class WaterDebtCommandService
     {
+        private const int BulkUpdateCommandTimeoutSeconds = 300;
+
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
         public WaterDebtCommandService(
@@ -37,7 +39,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         {
             int expectedCount = input?.DistinctBy(m => m.CustomerNumber)?.Count() ?? 0;
             string updateCommand = GetUpdateDebtAmountCommand();
-            int recordEffected = await _connection.ExecuteAsync(updateCommand, null, _transaction, 60000);
+            int recordEffected = await _connection.ExecuteAsync(
+                updateCommand,
+                param: null,
+                transaction: _transaction,
+                commandTimeout: BulkUpdateCommandTimeoutSeconds);
             if (recordEffected != expectedCount)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidUpdateWaterDebt);

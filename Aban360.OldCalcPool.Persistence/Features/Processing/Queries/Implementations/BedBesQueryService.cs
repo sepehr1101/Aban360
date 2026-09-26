@@ -1,5 +1,4 @@
 ﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
-using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
@@ -9,8 +8,6 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
-using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
-using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Data.SqlClient;
@@ -21,6 +18,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 {
     internal sealed class BedBesQueryService : AbstractBaseConnection, IBedBesQueryService
     {
+        private const int BulkCommandTimeoutSeconds = 300;
+
         string _manualBillTitle = "قبوض دستی";
         public BedBesQueryService(IConfiguration configuration)
             : base(configuration)
@@ -245,16 +244,22 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                                     (
                                         InputBillId nvarchar(20)  not Null,
                                         InputDateJalali nvarchar(10) not Null
-                                    );";
+                                    );
+                                    Create Nonclustered Index IX_tempInput_InputBillId
+                                        On #tempInput(InputBillId);";
             SqlConnection connection = _sqlReportConnection;
             if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }
-            await connection.ExecuteAsync(createTmpTable);
+            await connection.ExecuteAsync(
+                createTmpTable,
+                commandTimeout: BulkCommandTimeoutSeconds);
             using (var bulkCopy = new SqlBulkCopy(connection))
             {
                 bulkCopy.DestinationTableName = "#tempInput";
+                bulkCopy.BatchSize = 5000;
+                bulkCopy.BulkCopyTimeout = BulkCommandTimeoutSeconds;
                 bulkCopy.ColumnMappings.Add("InputBillId", "InputBillId");
                 bulkCopy.ColumnMappings.Add("InputDateJalali", "InputDateJalali");
 
@@ -277,7 +282,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                             Where 
                                 b.Rn=1 AND
                                 CustomerWarehouse.dbo.PersianToMiladi(b.InputDateJalali) < DATEADD(DAY,+5,CustomerWarehouse.dbo.PersianToMiladi(b.PreviousDateJalali));";
-            var result = await connection.QueryAsync<string>(query, new { zoneId });
+            var result = await connection.QueryAsync<string>(
+                query,
+                new { zoneId },
+                commandTimeout: BulkCommandTimeoutSeconds);
             return result;
         }
         public async Task<BedBesItemsOutputDto> GetLatestByCustomerNumber(ZoneIdAndCustomerNumber input)
@@ -317,7 +325,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 
             IEnumerable<int> validReturnCause = await GetLastMeterValid();
             string query = GetPreviousMeterDateAndNumberByBulkCopyQuery(GetDbName(zoneId));
-            IEnumerable<BedBesPreviousNumberAndDateOutputDto> result = await connection.QueryAsync<BedBesPreviousNumberAndDateOutputDto>(query, new { validReturnCause }, transaction);
+            IEnumerable<BedBesPreviousNumberAndDateOutputDto> result = await connection.QueryAsync<BedBesPreviousNumberAndDateOutputDto>(
+                query,
+                new { validReturnCause },
+                transaction,
+                commandTimeout: BulkCommandTimeoutSeconds);
             return result;
         }
         public async Task<IEnumerable<ZoneIdAndCustomerNumber>> GetInvalidLastBillByWithSqlBulk(IDbConnection connection, IDbTransaction transaction, int zoneId, ICollection<int> customerNumbers)
@@ -337,7 +349,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         }
         private async Task CreateCustomerNumbersBulkCopy(IDbConnection connection, IDbTransaction transaction, ICollection<int> customerNumbers, int zoneId, int batchSize, string tableName)
         {
-            await connection.ExecuteAsync(@$"Create Table {tableName} (ZoneId int Not Null , CustomerNumber int Not Null)", null, transaction);
+            await connection.ExecuteAsync(
+                @$"Create Table {tableName} (ZoneId int Not Null, CustomerNumber int Not Null);
+                   Create Clustered Index IX_TempCustomerNumbers_ZoneId_CustomerNumber
+                       On {tableName}(ZoneId, CustomerNumber);",
+                param: null,
+                transaction: transaction,
+                commandTimeout: BulkCommandTimeoutSeconds);
 
             var table = new DataTable();
             table.Columns.Add("ZoneId", typeof(int));
@@ -351,6 +369,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             {
                 bulkCopy.DestinationTableName = tableName;
                 bulkCopy.BatchSize = batchSize;
+                bulkCopy.BulkCopyTimeout = BulkCommandTimeoutSeconds;
                 await bulkCopy.WriteToServerAsync(table);
             }
         }

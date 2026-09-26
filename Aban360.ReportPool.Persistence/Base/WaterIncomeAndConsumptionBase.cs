@@ -180,8 +180,8 @@ namespace Aban360.ReportPool.Persistence.Base
 							    Else 0 
 						    END BillC,
 						    Case
-							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)<=0 THEN 1
-							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)>0 THEN (b.OtherCount+b.CommercialCount+b.DomesticCount)
+							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount-b.EmptyCount)<=0 THEN 1
+							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount-EmptyCount)>0 THEN (b.OtherCount+b.CommercialCount+b.DomesticCount-EmptyCount)
 							    Else 0 
 						    END UnitC                            
                     From [CustomerWarehouse].dbo.Bills b
