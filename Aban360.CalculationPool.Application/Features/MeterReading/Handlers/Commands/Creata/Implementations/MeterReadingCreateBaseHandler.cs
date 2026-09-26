@@ -480,7 +480,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private (bool, bool, ExcludedCauseEnum?) DataValidate(MeterReadingDetailCreateDto readingDetail)
         {
             int[] invalidCounterStateCode = [(int)CounterStateCodeEnum.Close, /*_withoutConsumptionMeterTypeId,*/ (int)CounterStateCodeEnum.Block, (int)CounterStateCodeEnum.NonRead, (int)CounterStateCodeEnum.DesolateUnit, (int)CounterStateCodeEnum.Disconnection];
+            DateTime previousDate = ConvertDate.JalaliToDateTime(readingDetail.PreviousDateJalali);
 
+            if (readingDetail.CurrentDateJalali.CompareTo(previousDate.AddDays(3).ToShortPersianDateString()) < 0)
+            {
+                return (false, true, ExcludedCauseEnum.PriGTCurrent);
+            }
             if (readingDetail.DeletionStateId == (int)DeletionStateEnum.HazfMovaghat && readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Close)
             {
                 return (false, true, ExcludedCauseEnum.Deleted_Close);
