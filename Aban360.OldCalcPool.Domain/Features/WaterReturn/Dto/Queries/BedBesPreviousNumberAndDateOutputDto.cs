@@ -9,7 +9,8 @@
         public string CounterStateTitle { get; set; }
         public int Consumption { get; set; }
         public float ConsumptionAverage { get; set; }
-        public BedBesPreviousNumberAndDateOutputDto(int customerNumber, string previousDateJalali, int previousNumber, int counterStateCode, string counterStateTitle, int consumption, float consumptionAverage)
+        public string RegisterDateJalali { get; set; }
+        public BedBesPreviousNumberAndDateOutputDto(int customerNumber, string previousDateJalali, int previousNumber, int counterStateCode, string counterStateTitle, int consumption, float consumptionAverage, string registerDateJalali)
         {
             CustomerNumber = customerNumber;
             PreviousDateJalali = previousDateJalali;
@@ -18,6 +19,7 @@
             CounterStateTitle = counterStateTitle;
             Consumption = consumption;
             ConsumptionAverage = consumptionAverage;
+            PreviousDateJalali = previousDateJalali;
         }
         public BedBesPreviousNumberAndDateOutputDto()
         {

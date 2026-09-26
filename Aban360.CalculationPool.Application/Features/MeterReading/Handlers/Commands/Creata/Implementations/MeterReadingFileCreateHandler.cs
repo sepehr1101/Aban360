@@ -102,9 +102,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     int zoneId = (int)(decimal)rowObjects[13];
 
                     MeterReadingFileDetail meterDetail = _meterReadingCreateBaseHandler.CreateMeterReading(zoneId, customerNumber, readingNumber, agentCode, counterStateCode, previousDay, currentDay, previousNumber, currentNumber, userId);
-                    meterReadingFileDetail.Add(meterDetail);
+                        meterReadingFileDetail.Add(meterDetail);
+                    }
                 }
-            }
             catch
             {
                 throw new ReadingException(ExceptionLiterals.InvalidReadingFile);

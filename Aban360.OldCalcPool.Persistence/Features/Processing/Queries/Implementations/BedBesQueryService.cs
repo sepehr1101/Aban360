@@ -263,19 +263,20 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 
             string query = @$";With Cte As(
                             	Select 
-                            		sh_ghabs1 BillId,
-                            		date_bed,
-                            		Rn=Row_Number() Over(Partition By radif Order By date_bed Desc)
-                            	From [{dbName}].dbo.bed_bes
-                                Where town=@zoneId
+                            		b.sh_ghabs1 BillId,
+                            		b.date_bed PreviousDateJalali,
+                                    t.InputDateJalali,
+                            		Rn = Row_Number() Over(Partition By b.radif Order By b.date_bed Desc)
+                            	From [{dbName}].dbo.bed_bes b
+                                Inner Join #tempInput t
+                                	On t.InputBillId Collate Arabic_CI_AS = b.sh_ghabs1 Collate Arabic_CI_AS
+                                Where b.town = @zoneId
                             )
                             Select b.BillId
                             From Cte b
-                            Inner Join #tempInput t
-                            	On t.InputBillId Collate Arabic_CI_AS = b.BillId Collate Arabic_CI_AS
                             Where 
-                                CustomerWarehouse.dbo.PersianToMiladi(t.InputDateJalali) < DATEADD(DAY,+5,CustomerWarehouse.dbo.PersianToMiladi(b.date_bed))
-                            Order By b.date_bed Desc";
+                                b.Rn=1 AND
+                                CustomerWarehouse.dbo.PersianToMiladi(b.InputDateJalali) < DATEADD(DAY,+5,CustomerWarehouse.dbo.PersianToMiladi(b.PreviousDateJalali));";
             var result = await connection.QueryAsync<string>(query, new { zoneId });
             return result;
         }
@@ -781,7 +782,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 							c.CounterStateCode,
 							cv.Title CounterStateTitle,
 							c.ConsumptionAverage,
-							c.Consumption
+							c.Consumption,
+                            c.date_bed RegisterDateJalali
 						From Cte c
 						Join [Db70].dbo.CounterVaziat cv
 							ON c.CounterStateCode=cv.MoshtarakinId
@@ -796,7 +798,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 							0 CounterStateCode,
 							N'عادی' CounterStateTitle,
 							0 ConsumptionAverage,
-							0 Consumption
+							0 Consumption,
+                            m.inst_ab RegisterDateJalali
 					From [{dbName}].dbo.members m
 					Where m.radif=@CustomerNumber And m.town=@ZoneId";
         }
@@ -847,6 +850,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                             cv.Title CounterStateTitle,
                             c.ConsumptionAverage,
                             c.Consumption,
+                            c.date_bed RegisterDateJalali,
                             ROW_NUMBER() OVER (PARTITION BY c.town, c.radif ORDER BY c.date_bed Desc, c.Id Desc) As rn
                         From Cte c
                         Join [Db70].dbo.CounterVaziat cv
@@ -862,7 +866,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	    CounterStateCode,
                     	    CounterStateTitle,
                     	    ConsumptionAverage,
-                    	    Consumption
+                    	    Consumption,
+                            RegisterDateJalali
                     	From LastBills
                     	Where rn = 1
                     ),
@@ -875,7 +880,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	    0 CounterStateCode,
                     	    N'عادی' CounterStateTitle,
                     	    0 ConsumptionAverage,
-                    	    0 Consumption
+                    	    0 Consumption,
+                            m.inst_ab RegisterDateJalali
                         From #TempCustomerNumbersForGetPreviousBills t 
                         Left Join ValidData vd
 					        ON 	t.ZoneId = vd.ZoneId AND t.CustomerNumber = vd.CustomerNumber 
