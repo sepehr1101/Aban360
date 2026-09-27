@@ -50,31 +50,31 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
         }
         public async Task<IEnumerable<ConnectDisconnectMainDataOutputDto>> Get(ConnectDisconnectMainInputDto inputDto)
         {
-            string query = GetMainReportQuery(false);
+            string query = GetMainReportQuery(false, inputDto.IsRegisterDate);
             IEnumerable<ConnectDisconnectMainDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectMainDataOutputDto>(query, inputDto);
             return result;
         }
         public async Task<IEnumerable<ConnectDisconnectMainByCompanyDataOutputDto>> GetWithCompany(ConnectDisconnectMainInputDto inputDto)
         {
-            string query = GetMainReportQuery(true);
+            string query = GetMainReportQuery(true, inputDto.IsRegisterDate);
             IEnumerable<ConnectDisconnectMainByCompanyDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectMainByCompanyDataOutputDto>(query, inputDto);
             return result;
         }
         public async Task<IEnumerable<ConnectDisconnectDetailDataOutputDto>> Get(ConnectDisconnectDetailInputDto inputDto)
         {
-            string query = GetDetailReportQuery(false);
+            string query = GetDetailReportQuery(false, inputDto.IsRegisterDate);
             IEnumerable<ConnectDisconnectDetailDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectDetailDataOutputDto>(query, inputDto);
             return result;
         }
         public async Task<IEnumerable<ConnectDisconnectDetailByCompanyDataOutputDto>> GetWithCompany(ConnectDisconnectDetailInputDto inputDto)
         {
-            string query = GetDetailReportQuery(true);
+            string query = GetDetailReportQuery(true, inputDto.IsRegisterDate);
             IEnumerable<ConnectDisconnectDetailByCompanyDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectDetailByCompanyDataOutputDto>(query, inputDto);
             return result;
         }
         public async Task<IEnumerable<ConnectDisconnectVeryDetailDataOutputDto>> Get(ConnectDisconnectVeryDetailInputDto input)
         {
-            string query = GetByDateConditionQuery();
+            string query = GetByDateConditionQuery(input.IsRegisterDate);
             IEnumerable<ConnectDisconnectVeryDetailDataOutputDto> result = await _sqlReportConnection.QueryAsync<ConnectDisconnectVeryDetailDataOutputDto>(query, input);
             return result;
         }
@@ -217,9 +217,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 						{resultCondition}
                         {removedCondition}";
         }
-        private string GetMainReportQuery(bool hasCompany)
+        private string GetMainReportQuery(bool hasCompany, bool isRegisterDate)
         {
             string companyCondition = hasCompany ? " CompanyTitle, " : string.Empty;
+            string datePropertyCondition = isRegisterDate ? " CommandDateTime " : " ResultDateTime ";
+
             return $@"Select 
                     	ZoneTitle,
                         {companyCondition}
@@ -228,7 +230,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                     From CustomerWarehouse.dbo.ConnectDisconnect
                     Where 
                     	ZoneId IN @ZoneIds AND
-                    	FORMAT(CAST(CommandDateTime AS DATE),'yyyy/MM/dd','fa') BETWEEN @FromDateJalali AND @ToDateJalali
+                    	FORMAT(CAST({datePropertyCondition} AS DATE),'yyyy/MM/dd','fa') BETWEEN @FromDateJalali AND @ToDateJalali
                     GROUP BY 
                     	ZoneTitle,
                         {companyCondition}
@@ -238,9 +240,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         {companyCondition}
                         TypeTitle";
         }
-        private string GetDetailReportQuery(bool hasCompany)
+        private string GetDetailReportQuery(bool hasCompany, bool isRegisterDate)
         {
             string companyCondition = hasCompany ? " CompanyTitle, " : string.Empty;
+            string datePropertyCondition = isRegisterDate ? " CommandDateTime " : " ResultDateTime ";
             return $@"Select 
                     	ZoneTitle,
                         {companyCondition}
@@ -251,7 +254,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                     From CustomerWarehouse.dbo.ConnectDisconnect
                     Where 
                     	ZoneId = @ZoneId AND
-                    	FORMAT(CAST(CommandDateTime AS DATE),'yyyy/MM/dd','fa') BETWEEN @FromDateJalali AND @ToDateJalali
+                    	FORMAT(CAST({datePropertyCondition} AS DATE),'yyyy/MM/dd','fa') BETWEEN @FromDateJalali AND @ToDateJalali
                     GROUP BY 
                     	ZoneTitle,
                         {companyCondition}
@@ -265,8 +268,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 	                    CommandCauseTitle,
 	                    ResultTitle";
         }
-        private string GetByDateConditionQuery()
+        private string GetByDateConditionQuery(bool isRegisterDate)
         {
+            string datePropertyCondition = isRegisterDate ? " CommandDateTime " : " ResultDateTime ";
             return $@"Select 
                     	Id,
 						BillId,
@@ -293,7 +297,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                     From CustomerWarehouse.dbo.ConnectDisconnect
                     Where 
                     	ZoneId=@ZoneId AND
-                    	FORMAT(CAST(CommandDateTime AS DATE),'yyyy/MM/dd','fa') BETWEEN @FromDateJalali AND @ToDateJalali ";
+                    	FORMAT(CAST({datePropertyCondition} AS DATE),'yyyy/MM/dd','fa') BETWEEN @FromDateJalali AND @ToDateJalali ";
         }
     }
 }
