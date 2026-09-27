@@ -32,6 +32,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 ExcludedCauseEnum.PriGTCurrent => ReportLiterals.PriGTCurrent,
                 ExcludedCauseEnum.NeedEvaluate => ReportLiterals.NeedEvaluate,
                 ExcludedCauseEnum.Error => ReportLiterals.Error,
+                ExcludedCauseEnum.DuplicateBill => ReportLiterals.DuplicateBill,
+                ExcludedCauseEnum.Deleted_Close => ReportLiterals.Deleted_Close,
+                ExcludedCauseEnum.DuplicateBill5 => ReportLiterals.DuplicateBill5,
+                ExcludedCauseEnum.Deleted_Block => ReportLiterals.Deleted_Block,
                 _ => string.Empty,
             };
             MeterReadingDetailExcludedDto readingCreateExcluded = new(inputDto.Id, appUser.UserId, DateTime.Now, inputDto.CauseId, causeTitle);

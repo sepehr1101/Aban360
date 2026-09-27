@@ -7,6 +7,7 @@
         Error = 3,
         DuplicateBill = 4,
         Deleted_Close = 5,
-        DuplicateBill5 = 6
+        DuplicateBill5 = 6,
+        Deleted_Block = 7
     }
 }
