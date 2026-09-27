@@ -28,6 +28,7 @@
         public static string NotMoreThan11 => "مقدار وارد شده نباید بیش از 11 کاراکتر باشد";
         public static string NotMoreThan13 => "مقدار وارد شده نباید بیش از 13 کاراکتر باشد";
         public static string NotMoreThan15 => "مقدار وارد شده نباید بیش از 15 کاراکتر باشد";
+        public static string NotMoreThan20 => "مقدار وارد شده نباید بیش از 20 کاراکتر باشد";
         public static string NotMoreThan31 => "مقدار وارد شده نباید بیش از 31 کاراکتر باشد";
         public static string NotMoreThan60 => "مقدار وارد شده نباید بیش از 60 کاراکتر باشد";
         public static string NotMoreThan100 => "مقدار وارد شده نباید بیش از 100 باشد";

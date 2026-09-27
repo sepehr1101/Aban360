@@ -24,6 +24,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Validations
             RuleFor(r => r.ReturnCauseId)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+            
+            RuleFor(r => r.Description)
+                .MaximumLength(20).WithMessage(ExceptionLiterals.NotMoreThan20);
 
         }
     }

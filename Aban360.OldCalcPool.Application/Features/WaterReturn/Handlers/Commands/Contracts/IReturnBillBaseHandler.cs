@@ -11,12 +11,12 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
     public interface IReturnBillBaseHandler
     {
         Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> GetReturn(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, CustomerInfoOutputDto customerInfo, int billCount, bool isConfirm, bool isPartial, IAppUser appUser, string fromDateJalali, string toDateJalali);
-        AutoBackCreateDto GetFullNewCalculation(BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, int jalaseNumber);
-        AutoBackCreateDto GetNewCalculation(AbBahaCalculationDetails tariffInfo, BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, float? consumptionHadar, long? abHadarAmount, int jalaseNumber);
-        AutoBackCreateDto GetDifferent(BedBesCreateDto bedBes, AutoBackCreateDto repair, int jalaseNumber);
+        AutoBackCreateDto GetFullNewCalculation(BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, int jalaseNumber, string? description);
+        AutoBackCreateDto GetNewCalculation(AbBahaCalculationDetails tariffInfo, BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, float? consumptionHadar, long? abHadarAmount, int jalaseNumber, string? description);
+        AutoBackCreateDto GetDifferent(BedBesCreateDto bedBes, AutoBackCreateDto repair, int jalaseNumber, string? description);
         Task<IEnumerable<BedBesCreateDto>> GetBedBesList(CustomerInfoOutputDto customerInfo, string fromDateJalali, string toDateJalali);
         BedBesCreateDto GetBedbes(IEnumerable<BedBesCreateDto> input, CustomerInfoOutputDto customerInfo);
-        AutoBackCreateDto GetBedBes(BedBesCreateDto bedBes, int bedBesCount, int jalaseNumber, int returnCauseId);
+        AutoBackCreateDto GetBedBes(BedBesCreateDto bedBes, int bedBesCount, int jalaseNumber, int returnCauseId, string? description);
         Task<int> GetJalaliNumber(int? minutesNumber, int zoneId, int customerNumber);
         Task FullValidate(ReturnBillFullInputDto input, CancellationToken cancellationToken);
         Task PartialValidate(ReturnBillPartialInputDto input, CancellationToken cancellationToken);

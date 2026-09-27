@@ -258,7 +258,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             };
 
             bool hasReturned = await HasReturned(customerInfo.ZoneId, customerInfo.Radif);
-            ReturnBillHeaderOutputDto header = new( previousValues.RegisterDateJalali, description, customerInfo.ZoneTitle, null, previousValues.MinutesNumber.ToString(), hasReturned);
+            ReturnBillHeaderOutputDto header = new(previousValues.RegisterDateJalali, description, customerInfo.ZoneTitle, null, previousValues.MinutesNumber.ToString(), hasReturned, bedBes.Description ?? string.Empty);
             ReturnBillOutputDto data = new(previousValues, currentValues, returnValues);
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = new(_title, header, data);
 
@@ -286,7 +286,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             await ExecSql(bedBes, newCalculation, different, appUser, logText);
             return result;
         }
-        public AutoBackCreateDto GetFullNewCalculation(BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, int jalaseNumber)
+        public AutoBackCreateDto GetFullNewCalculation(BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, int jalaseNumber, string? description)
         {
             string toDayDateJalali = DateTime.Now.ToShortPersianDateString();
 
@@ -360,10 +360,11 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 EdarehK = bedBes.EdarehK,
                 Group1 = bedBes.Group1,
                 Avarez = 0,
-                DateSbt = toDayDateJalali
+                DateSbt = toDayDateJalali,
+                Description = description
             };
         }
-        public AutoBackCreateDto GetNewCalculation(AbBahaCalculationDetails tariffInfo, BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, float? consumptionHadar, long? abHadarAmount, int jalaseNumber)
+        public AutoBackCreateDto GetNewCalculation(AbBahaCalculationDetails tariffInfo, BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, float? consumptionHadar, long? abHadarAmount, int jalaseNumber, string? description)
         {
             double wastedWaterTax = _taxCalculator.Calculate(new[] { (double)abHadarAmount }).Allowed;
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
@@ -440,10 +441,11 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 EdarehK = tariffInfo.Customer.IsSpecial,
                 DateSbt = currentDateJalali,
                 Avarez = (decimal)tariffInfo.AvarezAmount,
-                TedKhane = tariffInfo.Customer.HouseholdNumber
+                TedKhane = tariffInfo.Customer.HouseholdNumber,
+                Description = description
             };
         }
-        public AutoBackCreateDto GetDifferent(BedBesCreateDto bedBes, AutoBackCreateDto repair, int jalaseNumber)
+        public AutoBackCreateDto GetDifferent(BedBesCreateDto bedBes, AutoBackCreateDto repair, int jalaseNumber, string? description)
         {
             double wastedWaterTax = _taxCalculator.Calculate(new[] { (double)repair.AbHadar }).Allowed;
             decimal wastedWaterValues = (decimal)wastedWaterTax + repair.AbHadar;
@@ -522,7 +524,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 DateSbt = currentDateJalali,
                 Avarez = Diff(bedBes.Avarez, repair.Avarez),
                 EdarehK = bedBes.EdarehK,
-                Group1 = bedBes.Group1
+                Group1 = bedBes.Group1,
+                Description = description
             };
         }
         public async Task<IEnumerable<BedBesCreateDto>> GetBedBesList(CustomerInfoOutputDto customerInfo, string fromDateJalali, string toDateJalali)
@@ -542,7 +545,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             return bedBesInfo;
         }
-        public AutoBackCreateDto GetBedBes(BedBesCreateDto bedBes, int bedBesCount, int jalaseNumber, int returnCauseId)
+        public AutoBackCreateDto GetBedBes(BedBesCreateDto bedBes, int bedBesCount, int jalaseNumber, int returnCauseId, string? description)
         {
             string toDayDateJalali = DateTime.Now.ToShortPersianDateString();
 
@@ -616,7 +619,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 EdarehK = bedBes.EdarehK,
                 Group1 = bedBes.Group1,
                 Avarez = bedBes.Avarez,
-                DateSbt = toDayDateJalali
+                DateSbt = toDayDateJalali,
+                Description = description
             };
         }
         public BedBesCreateDto GetBedbes(IEnumerable<BedBesCreateDto> input, CustomerInfoOutputDto customerInfo)

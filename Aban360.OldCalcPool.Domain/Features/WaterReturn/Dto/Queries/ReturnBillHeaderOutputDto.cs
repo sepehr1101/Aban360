@@ -11,7 +11,8 @@ namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
         public string? InputMinutesNumber { get; set; }
         public string ZoneTitle { get; set; }
         public bool HasReturned { get; set; }
-        public ReturnBillHeaderOutputDto(string registerDateJalali, string description, string zoneTitle, int? confirmNumber, string? inputMinutesNumber, bool hasReturned)
+        public string? InputDescription { get; set; }
+        public ReturnBillHeaderOutputDto(string registerDateJalali, string description, string zoneTitle, int? confirmNumber, string? inputMinutesNumber, bool hasReturned,string? inputDescription)
         {
             RegisterDateJalali = registerDateJalali;
             Description = description;
@@ -22,6 +23,7 @@ namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
             InputMinutesNumber = inputMinutesNumber;
 
             HasReturned = hasReturned;
+            InputDescription = inputDescription;
         }
     }
 }
