@@ -286,12 +286,15 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     invalidDuplicateMeterReadingToExcludeList.Add(excludeDto);
                     invalidDuplicateCount++;
                 }
-                DateTime previousRegisterDate = ConvertDate.JalaliToDateTime(previousBills.RegisterDateJalali);
-                if (item.DateBed.CompareTo(previousRegisterDate.AddDays(5).ToShortPersianDateString()) < 0)//تاریخ صدور قبض
+                else
                 {
-                    MeterReadingDetailExcludedDto excludeDto = new(item.Id, appUser.UserId, currentDateTime, ExcludedCauseEnum.DuplicateBill5, ReportLiterals.DuplicateBill5);
-                    invalidDuplicateMeterReadingToExcludeList.Add(excludeDto);
-                    invalidLessThan5DayCount++;
+                    DateTime previousRegisterDate = ConvertDate.JalaliToDateTime(previousBills.RegisterDateJalali);
+                    if (item.DateBed.CompareTo(previousRegisterDate.AddDays(5).ToShortPersianDateString()) < 0)//تاریخ صدور قبض
+                    {
+                        MeterReadingDetailExcludedDto excludeDto = new(item.Id, appUser.UserId, currentDateTime, ExcludedCauseEnum.DuplicateBill5, ReportLiterals.DuplicateBill5);
+                        invalidDuplicateMeterReadingToExcludeList.Add(excludeDto);
+                        invalidLessThan5DayCount++;
+                    }
                 }
             }
 
