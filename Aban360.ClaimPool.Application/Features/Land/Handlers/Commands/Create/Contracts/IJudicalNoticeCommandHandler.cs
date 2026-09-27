@@ -9,5 +9,4 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.C
     {
         Task<FlatReportOutput<JudicalNoticeCommandHeaderOutputDto, JudicalNoticeCommandDataOutputDto>> Handle(JudicalNoticeCommandInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
     }
-
 }

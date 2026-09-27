@@ -175,5 +175,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
         {
             return string.IsNullOrWhiteSpace(value) ? "-" : value;
         }
+     
     }
 }

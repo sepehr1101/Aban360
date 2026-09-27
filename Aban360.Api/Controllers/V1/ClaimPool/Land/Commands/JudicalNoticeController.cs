@@ -60,10 +60,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 
         [HttpPost, HttpGet]
         [Route("result")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<NumericDictionary>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ServiceLinkDisconnectResultDto>>), StatusCodes.Status200OK)]
         public IActionResult GetResults(CancellationToken cancellationToken)
         {
-            ICollection<NumericDictionary> results = _judicialNoticeSetResultHandler.GetJudicialResults();
+            ICollection<ServiceLinkDisconnectResultDto> results = _judicialNoticeSetResultHandler.GetJudicalNoticeResults();
             return Ok(results);
         }
     }
