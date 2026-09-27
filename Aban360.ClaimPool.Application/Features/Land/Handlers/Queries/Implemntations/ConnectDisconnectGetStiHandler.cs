@@ -91,6 +91,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemnta
                 Base64 = locInfo.Item2,
                 X = locInfo.Item1.Easting.ToString(),
                 Y = locInfo.Item1.Northing.ToString(),
+                TypeId = connectDisconnectInfo.TypeId
             });
             ConnectDisconnectPrintHeaderOutputDto header = new()
             {

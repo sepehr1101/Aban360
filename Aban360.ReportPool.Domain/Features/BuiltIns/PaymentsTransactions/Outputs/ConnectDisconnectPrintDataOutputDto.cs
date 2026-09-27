@@ -31,5 +31,6 @@ namespace Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outpu
         public string ReportDateJalali { get; set; } = DateTime.Now.ToShortPersianDateString();
         public string X { get; set; }
         public string Y { get; set; }
+        public int TypeId { get; set; }
     }
 }

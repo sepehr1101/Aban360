@@ -8,6 +8,7 @@ using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.NotificationPool.Application.Features.Sms;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -15,6 +16,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using SkiaSharp;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 {
@@ -27,6 +29,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         private readonly IConnectDisconnectNoResultDeleteHandler _connectDisconnectNoResultDeleteHandler;
         private readonly IConnectDisconnectGetStiHandler _connectDisconnectGetStiHandler;
         private readonly IJudicialNoticeSetResultHandler _judicialNoticeSetResultHandler;
+        private readonly IJudicialNoticeGetByIdHandler _judicialNoticeGetByIdHandler;
         private readonly IReportGenerator _reportGenerator;
         private readonly ISmsOldHandler _smsHandler;
         private readonly IBackgroundJobClient _jobClient;
@@ -38,6 +41,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
             IConnectDisconnectNoResultDeleteHandler connectDisconnectNoResultDeleteHandler,
             IConnectDisconnectGetStiHandler connectDisconnectGetStiHandler,
             IJudicialNoticeSetResultHandler judicialNoticeSetResultHandler,
+            IJudicialNoticeGetByIdHandler judicialNoticeGetByIdHandler,
             IReportGenerator reportGenerator,
             ISmsOldHandler smsHandler,
             IBackgroundJobClient jobClient)
@@ -59,6 +63,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 
             _judicialNoticeSetResultHandler = judicialNoticeSetResultHandler;
             _judicialNoticeSetResultHandler.NotNull(nameof(judicialNoticeSetResultHandler));
+
+            _judicialNoticeGetByIdHandler = judicialNoticeGetByIdHandler;
+            _judicialNoticeGetByIdHandler.NotNull(nameof(judicialNoticeGetByIdHandler));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(reportGenerator));
@@ -193,14 +200,31 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSti(long id, CancellationToken cancellationToken)
         {
-            int connectReportCode = 2070;
-            int disconnectReportCode = 2071;
-            ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await _connectDisconnectGetStiHandler.Handle(id, CurrentUser, cancellationToken);
-            int reportCode = result?.ReportData?.FirstOrDefault()?.IsConnect ?? false ? connectReportCode : disconnectReportCode;
+            int connectReportCode = (int)StiReportCodeLiterals.ConnectServiceLink;
+            int disconnectReportCode = (int)StiReportCodeLiterals.DisconnectServiceLink;
+            int judicialNoticeReportCode = (int)StiReportCodeLiterals.JudicialNoticeServiceLink;
+            int reportCode = 0;
+            ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> connectDisconnectResult = await _connectDisconnectGetStiHandler.Handle(id, CurrentUser, cancellationToken);
 
-            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
+            int typeCode = connectDisconnectResult.ReportData.FirstOrDefault().TypeId;
+            if (typeCode == ReportLiterals.ConnectId)
+            {
+                JsonReportId reportId = await JsonOperation.ExportToJsonFlat(connectDisconnectResult, cancellationToken, connectReportCode, true);
+                return Ok(reportId);
 
-            return Ok(reportId);
+            }
+            else if (typeCode == ReportLiterals.DisconnectId)
+            {
+                JsonReportId reportId = await JsonOperation.ExportToJsonFlat(connectDisconnectResult, cancellationToken, disconnectReportCode, true);
+                return Ok(reportId);
+            }
+            else if (typeCode == ReportLiterals.JudicalNoticeId)
+            {
+                FlatReportOutput<JudicalNoticeCommandHeaderOutputDto, JudicalNoticeCommandDataOutputDto> judicialResult = await _judicialNoticeGetByIdHandler.Handle(id, CurrentUser, cancellationToken);
+                JsonReportId reportId = await JsonOperation.ExportToJsonFlat(judicialResult, cancellationToken, judicialNoticeReportCode, true);
+                return Ok(reportId);
+            }
+            return Ok(id);
         }
     }
 }
