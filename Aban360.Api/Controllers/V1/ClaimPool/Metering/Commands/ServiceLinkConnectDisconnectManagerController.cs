@@ -1,4 +1,5 @@
 ﻿using Aban360.Api.Cronjobs;
+using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts;
@@ -9,6 +10,7 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.NotificationPool.Application.Features.Sms;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
+using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Hangfire;
@@ -24,6 +26,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         private readonly IConnectDisconnectGetAllHandler _connectDisconnectGetAllHandler;
         private readonly IConnectDisconnectNoResultDeleteHandler _connectDisconnectNoResultDeleteHandler;
         private readonly IConnectDisconnectGetStiHandler _connectDisconnectGetStiHandler;
+        private readonly IJudicialNoticeSetResultHandler _judicialNoticeSetResultHandler;
         private readonly IReportGenerator _reportGenerator;
         private readonly ISmsOldHandler _smsHandler;
         private readonly IBackgroundJobClient _jobClient;
@@ -34,6 +37,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
             IConnectDisconnectGetAllHandler connectDisconnectGetAllHandler,
             IConnectDisconnectNoResultDeleteHandler connectDisconnectNoResultDeleteHandler,
             IConnectDisconnectGetStiHandler connectDisconnectGetStiHandler,
+            IJudicialNoticeSetResultHandler judicialNoticeSetResultHandler,
             IReportGenerator reportGenerator,
             ISmsOldHandler smsHandler,
             IBackgroundJobClient jobClient)
@@ -52,6 +56,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 
             _connectDisconnectGetStiHandler = connectDisconnectGetStiHandler;
             _connectDisconnectGetStiHandler.NotNull(nameof(connectDisconnectGetStiHandler));
+
+            _judicialNoticeSetResultHandler = judicialNoticeSetResultHandler;
+            _judicialNoticeSetResultHandler.NotNull(nameof(judicialNoticeSetResultHandler));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(reportGenerator));
@@ -127,6 +134,40 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         {
             ICollection<ServiceLinkDisconnectResultDto> dictionary = _connectDisconnectSetResultHandler.GetDisconnectResults();
             return Ok(dictionary);
+        }
+
+        [HttpGet]
+        [Route("connect-disconnect-result/{typeId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ServiceLinkDisconnectResultDto>>), StatusCodes.Status200OK)]
+        public IActionResult GetDisconnectResultDictionary(int typeId, CancellationToken cancellationToken)
+        {
+            ICollection<ServiceLinkDisconnectResultDto> result = new List<ServiceLinkDisconnectResultDto>();
+
+            if (typeId == ReportLiterals.DisconnectId)
+            {
+                result = _connectDisconnectSetResultHandler.GetDisconnectResults();
+            }
+            if (typeId == ReportLiterals.JudicalNoticeId)
+            {
+                result = _judicialNoticeSetResultHandler.GetJudicalNoticeResults();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("connect-disconnect-sub-result/{typeId}/{subTypeId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<NumericDictionary>>), StatusCodes.Status200OK)]
+        public IActionResult GetDisconnectResultDictionary(int typeId, int subTypeId, CancellationToken cancellationToken)
+        {
+            ICollection<NumericDictionary> result = new List<NumericDictionary>();
+
+            if (typeId == ReportLiterals.JudicalNoticeId && subTypeId == 2)
+            {
+                result = _judicialNoticeSetResultHandler.GetCustomerDebtSubResult();
+            }
+
+            return Ok(result);
         }
 
         [HttpGet]

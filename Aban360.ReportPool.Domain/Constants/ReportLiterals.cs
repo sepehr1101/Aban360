@@ -10,6 +10,19 @@
         public static string AbAndFazelab { get { return "AbAndFazelab"; } }
         public static string Db70 { get { return "Db70"; } }
 
+        public static string Madrese { get { return "تخفیف مدارس"; } }
+        public static string KomiteEmdad  { get { return "کمیته امداد"; } }
+        public static string Behzisti  { get { return "بهزیستی"; } }
+        public static string GolzarShohada  { get { return "گزار شهدا"; } }
+        public static string KhaneAlem  { get { return "خانه عالم"; } }
+        public static string Masjed  { get { return "مسجد"; } }
+        public static string Hoseiniye  { get { return "حسینیه"; } }
+        public static string DarolGhoran  { get { return "دارالقران"; } }
+        public static string MadaresOlomDini  { get { return "مدارس علوم دینی"; } }
+        public static string AmakenMazhabiVaEmamZadeh  { get { return "اماکن مذهبی و امام زاده"; } }
+        public static string TajmiTakhfif  { get { return "تجمیع تخفیفات"; } }
+    
+
         public static string Report { get { return "گزارش"; } }
         public static string RegisterDate { get { return "تاریخ ثبت"; } }
         public static string ChangeDate { get { return "تاریخ تعویض"; } }
@@ -77,6 +90,9 @@
        
         public static string WaterReturnDetail { get { return $"{Report} جزئیات برگشتی آب‌بها"; } }
         public static string WaterReturnSummary { get { return $"{Report} خلاصه برگشتی آب‌بها"; } }
+       
+        public static string WaterIncomeDiscountDetail { get { return $"{Report} جزئیات تخفیفات آب‌بها"; } }
+        public static string WaterIncomeDiscountSummary { get { return $"{Report} خلاصه تخفیفات آب‌بها"; } }
        
 
         public static string ServiceLinkDebtorCustomers { get { return $"{Report} مانده مطالبات سررسید شده"; } }
@@ -308,6 +324,7 @@
         public static string Error { get { return "خطا سیستم"; } }
         public static string DuplicateBill { get { return "قبض تکراری"; } }
         public static string Deleted_Close { get { return "حذف موقت_بسته"; } }
+        public static string Deleted_Block{ get { return "حذف موقت_مانع"; } }
         public static string DuplicateBill5 { get { return "قبض تکراری 5 روزه"; } }
 
         public static string NonRead { get { return "NonRead"; } }

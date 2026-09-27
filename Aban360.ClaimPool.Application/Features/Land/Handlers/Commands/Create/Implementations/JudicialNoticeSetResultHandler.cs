@@ -45,7 +45,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
         {
             await Validate(inputDto, cancellationToken);
             ConnectDisconnectGetDto judicialNoticeInfo = await _connectDisconnectQueryService.Get(inputDto.Id, ReportLiterals.JudicalNoticeId);
-            NumericDictionary resultInfo = GetJudicialReslt(inputDto.ResultId);
+            ServiceLinkDisconnectResultDto resultInfo = GetJudicialReslt(inputDto.ResultId);
             ConnectDisconnectUpdateDto connectDiscnnectUpdateDto = new(inputDto.Id, appUser.UserId, resultInfo.Id, resultInfo.Title, inputDto.JudicialId, string.Join("_", new string[] { judicialNoticeInfo.Description ?? string.Empty, inputDto.Description ?? string.Empty }));
             string opLogText = string.Format(OpLogLiterals.JudicalNoticeSetResultOpLog, judicialNoticeInfo.BillId, resultInfo.Title, inputDto.JudicialId);
 
@@ -80,20 +80,34 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
                 throw new BaseException(message);
             }
         }
-        private NumericDictionary GetJudicialReslt(int id)
+        private ServiceLinkDisconnectResultDto GetJudicialReslt(int id)
         {
-            NumericDictionary? resultInfo = GetJudicialResults().Where(j => j.Id == id).FirstOrDefault();
+            ServiceLinkDisconnectResultDto? resultInfo = GetJudicalNoticeResults().Where(j => j.Id == id).FirstOrDefault();
             if (resultInfo is null)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidId);
             }
             return resultInfo;
         }
-        public ICollection<NumericDictionary> GetJudicialResults()
+        public ICollection<ServiceLinkDisconnectResultDto> GetJudicalNoticeResults()
+        {
+            ICollection<ServiceLinkDisconnectResultDto> results = new List<ServiceLinkDisconnectResultDto>()
+            {
+                new ServiceLinkDisconnectResultDto(1,"مشترک تسویه حساب نمود.",true),
+                new ServiceLinkDisconnectResultDto(2,".مشترک هنوز بدهکار است",false),
+            };
+            return results;
+        }
+        public ICollection<NumericDictionary> GetCustomerDebtSubResult()
         {
             ICollection<NumericDictionary> results = new List<NumericDictionary>()
             {
-                new NumericDictionary(1,"موفق")
+                new NumericDictionary(1,"ثبت شماره بایگانی"),
+                new NumericDictionary(2,"ثبت درخواست ممنوع الخروج"),
+                new NumericDictionary(3,"ثبت درخواست بستن حسابهای بانکی"),
+                new NumericDictionary(4,"ثبت درخواست توقیف اموال منقول وسایل نقلیه"),
+                new NumericDictionary(5,"ثبت درخواست توقیف اموال غیرمنقول املاک"),
+                new NumericDictionary(6,"ثبت درخواست قطع شماره تلفن و موبایل"),
             };
             return results;
         }

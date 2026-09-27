@@ -480,10 +480,19 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private (bool, bool, ExcludedCauseEnum?) DataValidate(MeterReadingDetailCreateDto readingDetail)
         {
             int[] invalidCounterStateCode = [(int)CounterStateCodeEnum.Close, /*_withoutConsumptionMeterTypeId,*/ (int)CounterStateCodeEnum.Block, (int)CounterStateCodeEnum.NonRead, (int)CounterStateCodeEnum.DesolateUnit, (int)CounterStateCodeEnum.Disconnection];
+            DateTime previousDate = ConvertDate.JalaliToDateTime(readingDetail.PreviousDateJalali);
 
+            if (readingDetail.CurrentDateJalali.CompareTo(previousDate.AddDays(3).ToShortPersianDateString()) < 0)
+            {
+                return (false, true, ExcludedCauseEnum.PriGTCurrent);
+            }
             if (readingDetail.DeletionStateId == (int)DeletionStateEnum.HazfMovaghat && readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Close)
             {
                 return (false, true, ExcludedCauseEnum.Deleted_Close);
+            }
+            if (readingDetail.DeletionStateId == (int)DeletionStateEnum.HazfMovaghat && readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Block)
+            {
+                return (false, true, ExcludedCauseEnum.Deleted_Block);
             }
             if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Common && readingDetail.PreviousNumber > readingDetail.CurrentNumber)
             {
@@ -688,6 +697,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 ExcludedCauseEnum.Error => ReportLiterals.Error,
                 ExcludedCauseEnum.DuplicateBill => ReportLiterals.DuplicateBill,
                 ExcludedCauseEnum.Deleted_Close => ReportLiterals.Deleted_Close,
+                ExcludedCauseEnum.DuplicateBill5 => ReportLiterals.DuplicateBill5,
+                ExcludedCauseEnum.Deleted_Block => ReportLiterals.Deleted_Block,
                 _ => string.Empty,
             };
         }

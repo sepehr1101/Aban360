@@ -54,7 +54,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
         [AllowAnonymous]
         public async Task<IActionResult> GetStiReport(WaterReturnSummaryByUsageGroupInputDto inputDto, CancellationToken cancellationToken)
         {
-            int reportCode = (int)StiReportCodeLiterals.WaterReturnGroupSummary;
+            int reportCode = (int)StiReportCodeLiterals.WaterReturnUsageGroup;
             ReportOutput<WaterReturnSummaryHeaderOutputDto, WaterReturnSummaryDataOutputDto> calculationDetails = await _waterReturnSummary.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
