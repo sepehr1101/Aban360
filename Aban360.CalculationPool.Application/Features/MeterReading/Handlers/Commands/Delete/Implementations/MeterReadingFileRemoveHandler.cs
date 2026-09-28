@@ -66,8 +66,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
+                {
                     connection.Open();
-
+                }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     MeterFlowCommandService meterFlowCommand = new(connection, transaction);

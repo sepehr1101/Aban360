@@ -269,9 +269,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
             foreach (var item in customersInfo.BedBesInfo)
             {
-                //if (item.IsReturned || _invalidLatestCounterStateCode.Contains(item.LastCounterStateCode ?? 0))
-                //{
-                //BedBesPreviousNumberAndDateOutputDto? previousInfo = await _bedBesQueryService.GetPreviousDateAndNumber(new ZoneIdAndCustomerNumber(item.ZoneId, item.CustomerNumber), item.BillId, false);
                 BedBesPreviousNumberAndDateOutputDto? previousInfo = previousBillsInfo.Where(p => p.CustomerNumber == item.CustomerNumber).FirstOrDefault();
                 if (previousInfo is null)
                 {
@@ -294,7 +291,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     item.LastConsumption = previousInfo.Consumption;
                     item.LastMonthlyConsumption = previousInfo.ConsumptionAverage;
                 }
-                //}
             }
 
             return (customersInfo, meterFlowId);

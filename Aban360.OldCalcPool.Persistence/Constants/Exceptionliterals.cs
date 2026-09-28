@@ -10,6 +10,7 @@
         public static string InvalidRemoveBill_ClosedVariab => "امکان حذف قبض برقرار نیست (حساب بسته شده)";
         public static string InvalidGhestAbInsert => "خطا در ذخیره اقساط آب‌بها";
         public static string InvalidGhestAbUpdate => "خطا در ویرایش اقساط آب‌بها";
+        public static string InvalidGhestAbRemove => "خطا در حذف اقساط آب‌بها";
         public static string InvalidDebtlessThan100000 => "مبلغ بدهی کمتر از 100.000تومان است.";
         public static string InvalidInsertMeterChange => "خطا در ذخیره تعویض";
         public static string InvalidDateLessThan1Month => "تاریخ نمی‌تواند کمتر از 1 ماه باشد.";

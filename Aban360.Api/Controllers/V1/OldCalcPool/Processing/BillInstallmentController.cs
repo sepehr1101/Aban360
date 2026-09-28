@@ -17,12 +17,14 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         private readonly IBillInstallmentCreateHandler _billInstallmentCreateHandler;
         private readonly IBillInstallmentManualCreateHandler _billInstallmentManualCreateHandler;
         private readonly IBillInstallmentUpdateHandler _billInstallmentUpdateHandler;
+        private readonly IBillInstallmentRemoveHandle _billInstallmentRemoveHandle;
         private readonly IBillInstallmentGetHandler _billInstallmentGetHandler;
         private readonly IReportGenerator _reportGenerator;
         public BillInstallmentController(
             IBillInstallmentCreateHandler billInstallmentCreateHandler,
             IBillInstallmentManualCreateHandler billInstallmentManualCreateHandler,
             IBillInstallmentUpdateHandler billInstallmentUpdateHandler,
+            IBillInstallmentRemoveHandle billInstallmentRemoveHandle,
             IBillInstallmentGetHandler billInstallmentGetHandler,
             IReportGenerator reportGenerator)
         {
@@ -34,6 +36,9 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
 
             _billInstallmentUpdateHandler = billInstallmentUpdateHandler;
             _billInstallmentUpdateHandler.NotNull(nameof(billInstallmentUpdateHandler));
+
+            _billInstallmentRemoveHandle = billInstallmentRemoveHandle;
+            _billInstallmentRemoveHandle.NotNull(nameof(billInstallmentRemoveHandle));
 
             _billInstallmentGetHandler = billInstallmentGetHandler;
             _billInstallmentGetHandler.NotNull(nameof(billInstallmentGetHandler));
@@ -65,8 +70,17 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [ProducesResponseType(typeof(ApiResponseEnvelope<BillInstallmentDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateManual([FromBody] BillInstallmentUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            BillInstallmentDataOutputDto result= await _billInstallmentUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            BillInstallmentDataOutputDto result = await _billInstallmentUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("remove")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<BillInstallmentRemoveInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Remove([FromBody] BillInstallmentRemoveInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _billInstallmentRemoveHandle.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(inputDto);
         }
 
         [HttpPost]

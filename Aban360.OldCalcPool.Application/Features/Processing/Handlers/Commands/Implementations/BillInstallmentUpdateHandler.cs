@@ -61,10 +61,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             BillInstallmentUpdateDto updateDto = new(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber, inputDto.Id, inputDto.DeadLineDateJalali, inputDto.Amount);
             string logText = string.Format(OpLogLiterals.BillInstallmentUpdateOpLog, inputDto.BillId, inputDto.Id, billInstallmentInfo.Payable, inputDto.Amount, billInstallmentInfo.DeadLineDateJalali, inputDto.DeadLineDateJalali);
 
-            await SqlCommands(updateDto, appUser, logText);
+            await ExecSql(updateDto, appUser, logText);
             return GetResult(inputDto, billInstallmentInfo);
         }
-        private async Task SqlCommands(BillInstallmentUpdateDto updateDto, IAppUser appUser,string logText)
+        private async Task ExecSql(BillInstallmentUpdateDto updateDto, IAppUser appUser,string logText)
         {
             string dbName = GetDbName(updateDto.ZoneId);
             using (IDbConnection connection = _sqlReportConnection)

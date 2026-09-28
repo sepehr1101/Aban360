@@ -38,11 +38,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IValidator<MeterReadingDetailUpdateDto> _validator;
         static MeterFlowStepEnum[] _allowedUpdateFileStep = { MeterFlowStepEnum.Imported, MeterFlowStepEnum.Calculated, MeterFlowStepEnum.ConsumptionChecked };
         const double _maxAmount = 999_999_999_999;
-        const int _conditionConsumption = 99_999_999;
         const int _conditionPayableAmount = 10000;
         const int _paymentDeadline = 7;
-        const int _malfunctionMeterStateId = 1;
-        private int[] _domesticUnits = { 1, 3 };
+        const int _malfunctionMeterStateId = (int)CounterStateCodeEnum.Malfunction;
+        private int[] _domesticUnits = { (int)UsageEnum.Domestic, (int)UsageEnum.DomesticCommercial };
 
         public MeterReadingDetailUpdateHandler(
             IMeterFlowQueryService meterFlowQueryService,
@@ -88,7 +87,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             CommonDto.CustomerInfoGetDto customerInfo = await _commonMemberQueryService.GetMembersBedBesTavizInfo(previousMeterDetailDto.ZoneId, previousMeterDetailDto.CustomerNumber);
             AbBahaCalculationDetails abBahaResult = await CalcAbBahaTariff(input, previousMeterDetailDto, customerInfo, cancellationToken);
-            //MeterReadingDetailCreateDuplicateDto readingCreateDuplicate = new(input.Id, input.CurrentCounterStateCode, input.CurrentDateJalali, input.CurrentNumber, appUser.UserId, DateTime.Now, abBahaResult.SumItems, abBahaResult.SumItemsBeforeDiscount, abBahaResult.DiscountSum, abBahaResult.Consumption, abBahaResult.MonthlyConsumption);
             MeterReadingDetailCreateDto meterReadingCreateDto = await GetMeterReadingDetailCreateDto(abBahaResult, input, previousMeterDetailDto, customerInfo, appUser);
             MeterReadingDetailDeleteDto readingDeleteDto = new(input.Id, appUser.UserId, DateTime.Now, MeterReadingDetailRemovedType.EditRecord);
             if (abBahaResult.SumItems > _maxAmount)
@@ -190,7 +188,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         {
             MeterReadingDetailCreateDto meterDetailCreateDto = new MeterReadingDetailCreateDto();
 
-            // MeterReadingDetailDataOutputDto previousMeterDetailDto = await _meterReadingDetailService.GetById(input.Id);
             var (sumItems, jam, pard) = GetAmounts(customerInfo.MembersInfo.DebtAmount ?? 0, abBahaCalc?.SumItems ?? 0);
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
 

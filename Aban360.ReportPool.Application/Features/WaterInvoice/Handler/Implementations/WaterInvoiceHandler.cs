@@ -58,7 +58,6 @@ namespace Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Implement
             
             ReportOutput<WaterInvoiceDto, LineItemsDto> result = await _waterInvoiceWithLastDbQueryService.Get(zoneIdAndCustomerNumber);
             result.ReportHeader.ChartIndex = await GetGuageValue(result.ReportHeader.ConsumptionAverage, result.ReportHeader.ContractualCapacity, input, result.ReportHeader.UsageId, result.ReportHeader.ZoneId);
-            if(result.ReportHeader.IsRemovable)//to double check
             {
                 result.ReportHeader.IsRemovable = await _variabService.IsOperationValid(result.ReportHeader.ZoneId, result.ReportHeader.RegisterDateJalali);
             }            

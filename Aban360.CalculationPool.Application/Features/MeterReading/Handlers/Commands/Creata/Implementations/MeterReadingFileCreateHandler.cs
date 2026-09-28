@@ -54,7 +54,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             _stateTemplateQueryService.NotNull(nameof(stateTemplateQueryService));
 
             _validator = validator;
-            _validator.NotNull(nameof(_validator));
+            _validator.NotNull(nameof(validator));
         }
 
         public async Task<MeterReadingFileCreateOutputDto> Handle(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken)
