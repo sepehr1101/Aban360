@@ -153,13 +153,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private async Task<MeterReadingCheckedOutputDto> Execute(int latestFlowId, IAppUser appUser, string operationKey, Guid lockToken, CancellationToken cancellationToken)
         {
             await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
-
-            int firstFlowId = await _meterFlowQueryService.GetFirstFlowId(latestFlowId);
-            IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId, false);
-            if (!meterReadings.Any())
-            {
-                throw new ReadingException(ExceptionLiterals.NotFoundMeterReadingDetail);
-            }
+            var (meterReadings, firstFlowId) = await GetMeterReadings(latestFlowId);
 
             int zoneId = meterReadings.FirstOrDefault().ZoneId;
             IEnumerable<BedBesPreviousNumberAndDateOutputDto> previousBillsInfo = await GetPreviousBills(meterReadings, zoneId);
@@ -167,46 +161,23 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             IEnumerable<MeterReadingDetailDataOutputDto> allMeterReadingWithoutInvalids = meterReadings.Where(r => !invalidMeterReadingsExcludedList.Any(invalid => invalid.Id == r.Id)).ToList();
 
             var (bedBesBatch, kasrHaBatch) = await GetBedBesAndKasrHaDto(allMeterReadingWithoutInvalids, cancellationToken);
-            if ((bedBesBatch?.Count() ?? 0) <= 0)
-            {
-                throw new ReadingException(ExceptionLiterals.NotFoundBillsToConfirm);
-            }
             ICollection<BillInsertDto> billsBatch = await GetBillsInsertDto(bedBesBatch, kasrHaBatch);
             ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch = bedBesBatch.Select(b => new MembersFazelabCountAndDebtAmountUpdateDto((int)b.Town, (int)b.Radif, b.ShGhabs1, _invalidCounterStateCode.Contains((int)b.CodVas) ? 0 : (long)b.Baha, b.TodayDate)).ToList();
             ICollection<ContorUpdateDto> contorsUpdateBatch = GetContorsUpdateDto(bedBesBatch, previousBillsInfo);
-            string opLogText = string.Format(OpLogLiterals.GenerateBatchBillOpLog, billsBatch?.FirstOrDefault()?.ZoneTitle, bedBesBatch?.Count() ?? 0);
-            return await ExceSql(bedBesBatch, kasrHaBatch, billsBatch, memberDebtAmountBatch, contorsUpdateBatch, zoneId, firstFlowId, latestFlowId, appUser, opLogText, operationKey, lockToken, finalWarning);
-        }
-        private async Task<(ICollection<BedBesCreateDto>, ICollection<KasrHaDto>)> GetBedBesAndKasrHaDto(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, CancellationToken cancellationToken)
-        {
-            ICollection<BedBesCreateDto> BedBesBatch = new List<BedBesCreateDto>();
-            ICollection<KasrHaDto> kasrHaBatch = new List<KasrHaDto>();
-            string currnetDateJalali = DateTime.Now.ToShortPersianDateString();
-            string month = currnetDateJalali.Substring(5, 2);
 
-            foreach (var mr in meterReadings)
-            {
-                BedBesCreateDto bedBes = await GetBedBes(mr, $"{CommonLiterals.WaterPayIdUniqueCode}{month}");
-                BedBesBatch.Add(bedBes);
-
-                if (mr.DiscountSum > 0)
-                {
-                    KasrHaDto kasrHa = GerKasrHa(mr, bedBes);
-                    kasrHaBatch.Add(kasrHa);
-                }
-            }
-            return (BedBesBatch, kasrHaBatch);
-        }
-        private async Task<MeterReadingCheckedOutputDto> ExceSql(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, ICollection<BillInsertDto> billsBatch, ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch, ICollection<ContorUpdateDto> contorsUpdateBatch, int zoneId, int firstFlowId, int latestFlowId, IAppUser appUser, string opLogText, string operationKey, Guid lockToken, string finalWarning)
-        {
-            string dbName = GetDbName(zoneId);
-            //string dbName = "Atlas";
-            MeterFlowGetDto meterFlow = await _meterFlowQueryService.Get(latestFlowId);
             MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
-            MeterFlowCreateDto newMeterFlow = new()
+            MeterFlowCreateDto newMeterFlow = await GetMeterFlowCreate(latestFlowId, appUser);
+
+            string opLogText = string.Format(OpLogLiterals.GenerateBatchBillOpLog, billsBatch?.FirstOrDefault()?.ZoneTitle, bedBesBatch?.Count() ?? 0);
+            return await ExceSql(bedBesBatch, kasrHaBatch, billsBatch, memberDebtAmountBatch, contorsUpdateBatch, meterFlowUpdate, newMeterFlow, appUser, opLogText, operationKey, lockToken, finalWarning);
+        }
+        private async Task<MeterFlowCreateDto> GetMeterFlowCreate(int latestFlowId, IAppUser appUser)
+        {
+            MeterFlowGetDto meterFlow = await _meterFlowQueryService.Get(latestFlowId);
+            return new MeterFlowCreateDto()
             {
                 MeterFlowStepId = MeterFlowStepEnum.CalculationConfirmed,
-                FirstFlowId = firstFlowId,
+                FirstFlowId = meterFlow.FirstFlowId,
                 ZoneId = meterFlow.ZoneId,
                 FileName = meterFlow.FileName,
                 FromReadingNumber = meterFlow.FromReadingNumber,
@@ -216,6 +187,45 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 InsertDateTime = DateTime.Now,
                 Description = meterFlow.Description
             };
+        }
+        private async Task<(IEnumerable<MeterReadingDetailDataOutputDto>, int)> GetMeterReadings(int latestFlowId)
+        {
+            int firstFlowId = await _meterFlowQueryService.GetFirstFlowId(latestFlowId);
+            IEnumerable<MeterReadingDetailDataOutputDto> meterReadings = await _meterReadingDetailService.Get(firstFlowId, false);
+            if (!meterReadings.Any())
+            {
+                throw new ReadingException(ExceptionLiterals.NotFoundMeterReadingDetail);
+            }
+
+            return (meterReadings, firstFlowId);
+        }
+        private async Task<(ICollection<BedBesCreateDto>, ICollection<KasrHaDto>)> GetBedBesAndKasrHaDto(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, CancellationToken cancellationToken)
+        {
+            ICollection<BedBesCreateDto> bedBesBatch = new List<BedBesCreateDto>();
+            ICollection<KasrHaDto> kasrHaBatch = new List<KasrHaDto>();
+            string currnetDateJalali = DateTime.Now.ToShortPersianDateString();
+            string month = currnetDateJalali.Substring(5, 2);
+
+            foreach (var mr in meterReadings)
+            {
+                BedBesCreateDto bedBes = await GetBedBes(mr, $"{CommonLiterals.WaterPayIdUniqueCode}{month}");
+                bedBesBatch.Add(bedBes);
+
+                if (mr.DiscountSum > 0)
+                {
+                    KasrHaDto kasrHa = GerKasrHa(mr, bedBes);
+                    kasrHaBatch.Add(kasrHa);
+                }
+            }
+            if ((bedBesBatch?.Count() ?? 0) <= 0)
+            {
+                throw new ReadingException(ExceptionLiterals.NotFoundBillsToConfirm);
+            }
+            return (bedBesBatch, kasrHaBatch);
+        }
+        private async Task<MeterReadingCheckedOutputDto> ExceSql(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, ICollection<BillInsertDto> billsBatch, ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch, ICollection<ContorUpdateDto> contorsUpdateBatch, MeterFlowUpdateDto meterFlowUpdate, MeterFlowCreateDto newMeterFlow, IAppUser appUser, string opLogText, string operationKey, Guid lockToken, string finalWarning)
+        {
+            string dbName = GetDbName(newMeterFlow.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
             {
