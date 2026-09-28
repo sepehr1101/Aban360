@@ -31,5 +31,6 @@
         public int ReturnCauseId { get; set; }
         public string ReturnCauseTitle { get; set; }
         public int Operator { get; set; }
+        public string? Description { get; set; }
     }
 }

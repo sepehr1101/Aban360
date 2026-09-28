@@ -211,6 +211,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                         tmp_date_bed AS TmpDateBed,
                         tmp_mohlat AS TmpMohlat,
                         tmp_taviz_date AS TmpTavizDate,
+                        Description,
                         IsConfirmed,
                         IsDeleted
                     FROM [{dbName}].dbo.[autoback]
@@ -250,6 +251,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                     		a.elat ReturnCauseId,
                     		r.Title ReturnCauseTitle,
 							a.jalase_no,
+                            a.Description,
                     		Rn=Row_Number() Over(Partition By a.jalase_no Order by a.date_bed Desc, a.Id Desc)
                     	From [Atlas].dbo.autoback a
                     	Join [Db70].dbo.T51 t51
@@ -304,6 +306,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                     		a.elat ReturnCauseId,
                     		r.Title ReturnCauseTitle,
 							a.jalase_no,
+                            a.Description,
                     		Rn=Row_Number() Over(Partition By a.jalase_no Order by a.date_bed Desc, a.Id Desc)
                     	From [Atlas].dbo.autoback a
                     	Join [Db70].dbo.T51 t51

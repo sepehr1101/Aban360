@@ -58,8 +58,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implement
 
         private string GetCreateCommand(string dbName, bool isAtlas)
         {
-            string isAtlasField = isAtlas ? ", IsConfirmed , IsDeleted" : string.Empty;
-            string isAtlasParm = isAtlas ? " , 0 , 0" : string.Empty;
+            string isAtlasField = isAtlas ? ",Description , IsConfirmed , IsDeleted" : string.Empty;
+            string isAtlasParm = isAtlas ? " , @Description , 0 , 0" : string.Empty;
             
 
 

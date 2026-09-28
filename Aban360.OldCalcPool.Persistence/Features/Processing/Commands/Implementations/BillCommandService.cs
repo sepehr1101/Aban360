@@ -183,6 +183,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             table.Columns.Add("BranchTypeId", typeof(int));
 
             table.Columns.Add("IsSettlement", typeof(bool));
+            table.Columns.Add("SewageV", typeof(int));
+            table.Columns.Add("HouseholdCount", typeof(int));
+
             foreach (var x in items)
             {
                 var row = table.NewRow();
@@ -272,6 +275,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 row["BranchTypeId"] = x.BranchTypeId ?? (object)DBNull.Value;
 
                 row["IsSettlement"] = x.IsSettlement;
+                row["SewageV"] = x.SewageV;
+                row["HouseholdCount"] = x.HouseholdCount;
 
                 table.Rows.Add(row);
             }
@@ -372,7 +377,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                          b.noe_va,
                          IIF(b.ghabs='2' AND b.cod_vas NOT IN(4,7,8),1,0) IsSettlement,
                          0 OldDbDel,
-                         0 OldDbSerial
+                         0 OldDbSerial,
+                         0 SewageV,
+                         0 HouseholdCount
                     FROM [{dbName}].dbo.bed_bes b
                     JOIN Db70.dbo.T51 z
                     	ON b.town=z.C0
@@ -509,7 +516,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	b.noe_va,
                     	0 IsSettlement,
                         1 OldDbDel ,
-                        0 OldDbSerial
+                        0 OldDbSerial,
+                        0 SewageV,
+                        0 HouseholdCount
                     from [{dbName}].dbo.REPAIR b
                     join Db70.dbo.T51 z
                     	on b.town=z.C0

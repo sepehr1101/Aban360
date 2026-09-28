@@ -72,6 +72,7 @@
         public bool? EdarehK { get; set; }//isSpecial
         public string DateSbt { get; set; }
         public decimal Avarez { get; set; }
+        public string? Description { get; set; }
         public bool IsConfirmed { get; set; }
         public bool IsDeleted { get; set; }
     }

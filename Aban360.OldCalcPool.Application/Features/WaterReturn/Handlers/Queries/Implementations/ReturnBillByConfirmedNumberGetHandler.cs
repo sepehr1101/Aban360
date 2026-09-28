@@ -101,7 +101,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.
                 UsageConsumption = bedBesValue.Group1,
                 HasSewage = bedBesValue.Faz,
                 IsSpecial = bedBesValue.EdarehK,
-                Lavazem = 0
+                Lavazem = 0,
             };
             ReturnBillDataOutputDto currentValues = new ReturnBillDataOutputDto()
             {
@@ -203,7 +203,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.
             };
 
             string description = await GetDescription(customerInfo, bedBesValue);
-            ReturnBillHeaderOutputDto header = new(bedBesValue.DateBed, description, customerInfo.ZoneTitle, previousValues.MinutesNumber, previousValues.MinutesNumber.ToString(), hasReturned);
+            ReturnBillHeaderOutputDto header = new(bedBesValue.DateBed, description, customerInfo.ZoneTitle, previousValues.MinutesNumber, previousValues.MinutesNumber.ToString(), hasReturned, bedBesValue.Description);
             ReturnBillOutputDto data = new(previousValues, currentValues, returnValues);
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = new(_title, header, data);
 

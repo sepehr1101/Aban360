@@ -24,7 +24,7 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
         }
         public async Task<int> Insert(RepairCreateDto input, string dbName)
         {
-            string query = InsertCommand(dbName,true);
+            string query = InsertCommand(dbName, true);
             int recordId = await _connection.QueryFirstOrDefaultAsync<int>(query, input, _transaction);
             if (recordId <= 0)
             {
@@ -34,7 +34,7 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
         }
         public async Task Insert(IEnumerable<RepairCreateDto> input, string dbName)
         {
-            string query = InsertCommand(dbName,false);
+            string query = InsertCommand(dbName, false);
             int recordCount = await _connection.ExecuteAsync(query, input, _transaction);
             if (recordCount <= 0)
             {
@@ -105,7 +105,7 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
                         mas_hadar, ab_hadar, range_mas, taf_back, ted_ghabs, TAB_ABN_A, TAB_ABN_F,
                         TABS_FA, bodjeh, group1, FAZ, CHK_KARBARI, C200, tmp_pri_date,
                         tmp_today_date, tmp_mohlat, tmp_taviz_date, tmp_date_bed, edareh_k,
-                        date_sbt, Avarez
+                        date_sbt, Avarez 
                     )
                     VALUES (
                        @Town, @Radif, @Eshtrak, @Barge, @PriNo, @TodayNo, @PriDate, @TodayDate,

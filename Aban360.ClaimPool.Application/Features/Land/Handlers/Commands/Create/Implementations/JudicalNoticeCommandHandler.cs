@@ -24,12 +24,14 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IConCompanyQueryService _conCompanyQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly ICommonZoneService _commonZoneService;
         private readonly IValidator<JudicalNoticeCommandInputDto> _validator;
         static string _title = ReportLiterals.JudicalNoticeCommand;
         public JudicalNoticeCommandHandler(
             IHttpContextAccessor contextAccessor,
             IConCompanyQueryService conCompanyQueryService,
             ICommonMemberQueryService commonMemberQueryService,
+            ICommonZoneService commonZoneService,
             IValidator<JudicalNoticeCommandInputDto> validator,
             IConfiguration configuration)
                 : base(configuration)
@@ -43,6 +45,9 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
 
+            _commonZoneService = commonZoneService;
+            _commonZoneService.NotNull(nameof(commonZoneService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
@@ -52,6 +57,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
             ConCompanyGetDto conCompanyInfo = await _conCompanyQueryService.GetValid(inputDto.CompanyId);
             ZoneIdAndCustomerNumber zoneIdAndCustomeorNumber = await _commonMemberQueryService.Get(inputDto.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomeorNumber);
+            await _commonZoneService.IsUserInZone(appUser, zoneIdAndCustomeorNumber.ZoneId);
 
             ConnectDisconnectInsertDto connectDisconnectInsertDto = GetConnectDisconnectInsertDto(memberInfo, inputDto, conCompanyInfo, appUser);
             string opLogText = string.Format(OpLogLiterals.JudicalNoticeCommandInsertOpLog, memberInfo.BillId, memberInfo.DebtAmount, conCompanyInfo.CompanyName, conCompanyInfo.AdministratorName);
@@ -175,6 +181,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
         {
             return string.IsNullOrWhiteSpace(value) ? "-" : value;
         }
-     
+
     }
 }

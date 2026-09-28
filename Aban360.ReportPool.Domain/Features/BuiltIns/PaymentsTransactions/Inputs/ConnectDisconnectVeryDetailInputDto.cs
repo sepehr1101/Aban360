@@ -5,5 +5,6 @@
         public int ZoneId { get; set; }
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
+        public bool IsRegisterDate { get; set; }
     }
 }

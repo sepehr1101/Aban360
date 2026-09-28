@@ -119,5 +119,7 @@
         public int? BranchTypeId { get; set; }
 
         public bool IsSettlement { get; set; }
+        public int SewageV { get { return 0; } }
+        public int HouseholdCount { get { return 0; } }
     }
 }
