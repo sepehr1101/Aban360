@@ -35,6 +35,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 _ => string.Empty,
             };
             MeterReadingDetailExcludedDto readingCreateExcluded = new(inputDto.Id, appUser.UserId, DateTime.Now, inputDto.CauseId, causeTitle);
+            await ExecSql(readingCreateExcluded);
+        }
+        private async Task ExecSql(MeterReadingDetailExcludedDto readingCreateExcluded)
+        {
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)

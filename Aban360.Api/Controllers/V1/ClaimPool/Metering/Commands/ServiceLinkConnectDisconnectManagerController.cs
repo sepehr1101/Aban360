@@ -16,7 +16,6 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
-using SkiaSharp;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 {
@@ -83,7 +82,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetConnectCommandSti(ConnectDisconnectPrintInputDto inputDto, CancellationToken cancellationToken)
         {
-            int reportCode = 2070;
+            int reportCode = (int)StiReportCodeLiterals.ConnectServiceLink;
             ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await _connectDisconnectCommandHandler.Handle(inputDto, CurrentUser, true, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
 
@@ -99,7 +98,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDisconnectCommandSti(ConnectDisconnectPrintInputDto inputDto, CancellationToken cancellationToken)
         {
-            int reportCode = 2071;
+            int reportCode = (int)StiReportCodeLiterals.DisconnectServiceLink;
             ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await _connectDisconnectCommandHandler.Handle(inputDto, CurrentUser, false, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
 

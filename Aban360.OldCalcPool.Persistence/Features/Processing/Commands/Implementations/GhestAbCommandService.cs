@@ -41,6 +41,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidGhestAbUpdate);
             }
         }
+        public async Task Remove(BillInstallmentRemoveInputDto inputDto, string dbName)
+        {
+            string command = GetRemoveCommand(dbName);
+            int recordCount = await _connection.ExecuteAsync(command, inputDto, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidBillCommandException(Exceptionliterals.InvalidGhestAbRemove);
+            }
+        }
 
         private string GetInsertCommand(string dbName)
         {
@@ -62,6 +71,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	town=@zoneId AND
                     	radif=@customerNumber";
         }
-
+        private string GetRemoveCommand(string dbName)
+        {
+            return $@"Delete [{dbName}].dbo.ghest_ab 
+                    Where 
+                    	ID=@id AND
+                    	town=@zoneId AND
+                    	radif=@customerNumber";
+        }
     }
 }

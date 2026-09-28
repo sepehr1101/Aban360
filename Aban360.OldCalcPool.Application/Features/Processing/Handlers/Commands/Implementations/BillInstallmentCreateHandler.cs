@@ -7,7 +7,6 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.OldCalcPool.Application.Constant;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -16,6 +15,7 @@ using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementatio
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
 using Aban360.OldCalcPools.WaterReturn.Dto.Queries;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -31,7 +31,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IGhestAbQueryService _ghestAbQueryService;
         private readonly IVariabService _variabService;
         private readonly IValidator<BillInstallmentInputDto> _validator;
-        private const int _operator = 5;
+        private static int _operator = ReportLiterals.RayabOperator;
         private const long _debtAmountLimit = 1000000;
         private const string _title = "اقساط آب‌بها";
         public BillInstallmentCreateHandler(
@@ -69,12 +69,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             if (input.IsConfirm)
             {
-                await SqlCommands(memberInfo, zoneIdCustomerNumber, installments, logText, appUser);
+                await ExecSql(memberInfo, zoneIdCustomerNumber, installments, logText, appUser);
             }
 
             return GetResult(installments, memberInfo);
         }
-        private async Task SqlCommands(MemberGetDto memberInfo, ZoneIdAndCustomerNumber zoneIdCustomerNumber, ICollection<BillInstallmentCreateDto> installments, string logText, IAppUser appUser)
+        private async Task ExecSql(MemberGetDto memberInfo, ZoneIdAndCustomerNumber zoneIdCustomerNumber, ICollection<BillInstallmentCreateDto> installments, string logText, IAppUser appUser)
         {
             await DuplicateValidation(zoneIdCustomerNumber, memberInfo.LatestDebt);
             string dbName = GetDbName(memberInfo.ZoneId);

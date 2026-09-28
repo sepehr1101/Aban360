@@ -13,6 +13,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -28,7 +29,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IGhestAbQueryService _ghestAbQueryService;
         private readonly IVariabService _variabService;
         private readonly IValidator<BillInstallmentManualInputDto> _validator;
-        private const int _operator = 666;
+        private static int _operator = ReportLiterals.RayabOperator;
         private const string _title = "اقساط آب‌بها";
         public BillInstallmentManualCreateHandler(
             IHttpContextAccessor contextAccessor,
@@ -46,7 +47,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
 
             _ghestAbQueryService = ghestAbQueryService;
-            _ghestAbQueryService.NotNull( nameof(ghestAbQueryService));
+            _ghestAbQueryService.NotNull(nameof(ghestAbQueryService));
 
             _variabService = variabService;
             _variabService.NotNull(nameof(validator));

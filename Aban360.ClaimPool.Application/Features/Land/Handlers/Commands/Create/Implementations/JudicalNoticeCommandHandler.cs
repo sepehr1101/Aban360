@@ -12,6 +12,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
         private readonly IConCompanyQueryService _conCompanyQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly ICommonZoneService _commonZoneService;
+        private readonly IConnectDisconnectQueryService _connectDisconnectQueryService;
         private readonly IValidator<JudicalNoticeCommandInputDto> _validator;
         static string _title = ReportLiterals.JudicalNoticeCommand;
         public JudicalNoticeCommandHandler(
@@ -32,6 +34,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
             IConCompanyQueryService conCompanyQueryService,
             ICommonMemberQueryService commonMemberQueryService,
             ICommonZoneService commonZoneService,
+            IConnectDisconnectQueryService connectDisconnectQueryService,
             IValidator<JudicalNoticeCommandInputDto> validator,
             IConfiguration configuration)
                 : base(configuration)
@@ -48,12 +51,17 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
             _commonZoneService = commonZoneService;
             _commonZoneService.NotNull(nameof(commonZoneService));
 
+            _connectDisconnectQueryService = connectDisconnectQueryService;
+            _connectDisconnectQueryService.NotNull(nameof(connectDisconnectQueryService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
         public async Task<FlatReportOutput<JudicalNoticeCommandHeaderOutputDto, JudicalNoticeCommandDataOutputDto>> Handle(JudicalNoticeCommandInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await Validate(inputDto, cancellationToken);
+            await InputValidate(inputDto, cancellationToken);
+            await CheckDuplicateRequest(inputDto.BillId, ReportLiterals.JudicalNoticeId);
+
             ConCompanyGetDto conCompanyInfo = await _conCompanyQueryService.GetValid(inputDto.CompanyId);
             ZoneIdAndCustomerNumber zoneIdAndCustomeorNumber = await _commonMemberQueryService.Get(inputDto.BillId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomeorNumber);
@@ -85,6 +93,14 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
                 }
             }
         }
+        private async Task CheckDuplicateRequest(string billId, int typeId)
+        {
+            ConnectDisconnectGetDto? previousRequest = await _connectDisconnectQueryService.Get(new ConnectDisconnectGetWithConditionDto(billId, typeId, false, false));
+            if (previousRequest is not null)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidConnectDisconnectDuplicateRequest);
+            }
+        }
         private ConnectDisconnectInsertDto GetConnectDisconnectInsertDto(MemberInfoGetDto memberInfo, JudicalNoticeCommandInputDto inputDto, ConCompanyGetDto conCompanyInfo, IAppUser appUser)
         {
             return new ConnectDisconnectInsertDto()
@@ -110,7 +126,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
                 Description = inputDto.Description ?? string.Empty,
             };
         }
-        private async Task Validate(JudicalNoticeCommandInputDto inputDto, CancellationToken cancellationToken)
+        private async Task InputValidate(JudicalNoticeCommandInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -181,6 +197,5 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.I
         {
             return string.IsNullOrWhiteSpace(value) ? "-" : value;
         }
-
     }
 }

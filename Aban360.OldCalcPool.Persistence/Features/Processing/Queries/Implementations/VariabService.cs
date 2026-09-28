@@ -50,8 +50,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             {
                 return false;
             }
-            string _35daysAgo = DateTime.Now.AddDays(-35).ToShortPersianDateString();
-            if (operationDate.CompareTo(_35daysAgo) <= 0)
+            string _40daysAgo = DateTime.Now.AddDays(-40).ToShortPersianDateString();
+            if (operationDate.CompareTo(_40daysAgo) <= 0)
             {
                 return false;
             }
