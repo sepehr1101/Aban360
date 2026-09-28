@@ -397,7 +397,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             s.Masjar = 0;
             s.Sabt = 1;
             s.Rate = (decimal)meterReading.MonthlyConsumption;
-            s.Operator = 666;
+            s.Operator = ReportLiterals.RayabOperator;
             s.Mamor = meterReading.AgentCode;
             s.TavizDate = meterReading.TavizDateJalali ?? string.Empty;
             s.ZaribCntr = 0;
