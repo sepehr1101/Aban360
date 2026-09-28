@@ -4,22 +4,28 @@ using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using FluentValidation;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations
 {
-    internal sealed class DisplayRequestHandler : IDisplayRequestHandler
+    public interface IToCalulationConfirmHandler
+    {
+        Task<MoshtrakDataOutputDto> Handle(Guid trackId, IAppUser appUser, CancellationToken cancellationToken);
+    }
+    internal sealed class ToCalulationConfirmHandler : IToCalulationConfirmHandler
     {
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ITrackingQueryService _trackingQueryService;
-        private readonly IValidator<ZoneIdAndTrackNumber> _validator;
-        public DisplayRequestHandler(
+        private readonly ICommonZoneService _commonZoneService;
+        public ToCalulationConfirmHandler(
             IMoshtrakQueryService moshtrakQueryService,
             ITrackingQueryService trackingQueryService,
-            IValidator<ZoneIdAndTrackNumber> validator)
+            ICommonZoneService commonZoneService)
         {
             _moshtrakQueryService = moshtrakQueryService;
             _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
@@ -27,32 +33,22 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             _trackingQueryService = trackingQueryService;
             _trackingQueryService.NotNull(nameof(trackingQueryService));
 
-            _validator = validator;
-            _validator.NotNull(nameof(validator));
+            _commonZoneService = commonZoneService;
+            _commonZoneService.NotNull(nameof(commonZoneService));
         }
 
-        public async Task<MoshtrakDataOutputDto> Handle(ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken)
+        public async Task<MoshtrakDataOutputDto> Handle(Guid trackId, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await Validation(inputDto, cancellationToken);
-
-            TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
-            MoshtrakGetDto moshtrackSearch = new(trackingInfo.ZoneId, null, null, inputDto.TrackNumber);
+            TrackingOutputDto trackingInfo = await _trackingQueryService.Get(trackId);
+            MoshtrakGetDto moshtrackSearch = new(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(moshtrackSearch, MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
+            await _commonZoneService.IsUserInZone(appUser, trackingInfo.ZoneId);
 
             MoshtrakServiceDto sData = GetSDto(moshtrakInfo);
             IEnumerable<SelectionDto> companyServices = MoshtrakService.GetMoshtrakCompanyServiceDto(sData, trackingInfo.ServiceGroupId);
 
             MoshtrakDataOutputDto moshtrakData = GetMoshtrakData(moshtrakInfo, companyServices, trackingInfo);
             return moshtrakData;
-        }
-        private async Task Validation(ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken)
-        {
-            var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
-            if (!validationResult.IsValid)
-            {
-                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomValidationException(message);
-            }
         }
         private MoshtrakServiceDto GetSDto(MoshtrakOutputDto input)
         {
