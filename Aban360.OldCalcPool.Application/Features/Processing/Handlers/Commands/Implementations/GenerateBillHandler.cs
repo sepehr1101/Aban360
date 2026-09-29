@@ -562,7 +562,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
 
         }
-        private bool IsChangedOrReverse(int? counterStateCode) => counterStateCode == (int)CounterStateCodeEnum.Reverse || counterStateCode == (int)CounterStateCodeEnum.NextRound || counterStateCode == _changeCounterState;
+        private bool IsChangedOrReverse(int? counterStateCode) => counterStateCode == (int)CounterStateCodeEnum.Reverse || counterStateCode == (int)CounterStateCodeEnum.NextRound || counterStateCode == (int)CounterStateCodeEnum.Change;
         private bool IsDomestic(int usageId) => _domesticUsage.Contains(usageId);
         private bool IsAllowedZeroMeterNumber(int? counterStateCode) => _allowedZeroMeterNumberCounterState.Contains(counterStateCode ?? 0);
         private int GetDuration(string previousDate, string currentDate)
