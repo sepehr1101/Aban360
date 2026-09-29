@@ -7,5 +7,6 @@
         public const string Maaher = nameof(Maaher);
         public const string Map = nameof(Map);
         public const string CollectBills = nameof(CollectBills);
+        public const string AutoReading = nameof(AutoReading);
     }
 }
