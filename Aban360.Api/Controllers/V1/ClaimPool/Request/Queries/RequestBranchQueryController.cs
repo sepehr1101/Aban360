@@ -9,20 +9,35 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
 {
     [Route("v1/request")]
-    public class RequestBranchInfoController : BaseController
+    public class RequestBranchQueryController : BaseController
     {
         private readonly IKartableRequestGetAllHandler _requestKartableGetAllHandler;
+        private readonly IDisplayRequestHandler _displayRequestHandler;
+        private readonly IDisplayRequestByTrackIdHandler _displayRequestByTrackIdHandler;
+        private readonly IRequestBasicInfoGetHandler _requestBasicInfoGetHandler;
         private readonly IToSetAssessmentTimeGetByTrackIdHandler _toSetAssessmentTimeGetHandler;
         private readonly IToSetReAssessmentTimeGetByTrackIdHandler _toSetReAssessmentTimeGetHandler;
         private readonly IToCalulationConfirmHandler _toSetCalulationHandler;
-        public RequestBranchInfoController(
-               IKartableRequestGetAllHandler requestKartableGetAllHandler,
-               IToSetAssessmentTimeGetByTrackIdHandler toSetAssessmentTimeGetHandler,
-               IToSetReAssessmentTimeGetByTrackIdHandler toSetReAssessmentTimeGetHandler,
-               IToCalulationConfirmHandler toSetCalulationHandler)
+        public RequestBranchQueryController(
+            IKartableRequestGetAllHandler requestKartableGetAllHandler,
+            IDisplayRequestHandler displayRequestHandler,
+            IDisplayRequestByTrackIdHandler displayRequestByTrackIdHandler,
+            IRequestBasicInfoGetHandler requestBasicInfoGetHandler,
+            IToSetAssessmentTimeGetByTrackIdHandler toSetAssessmentTimeGetHandler,
+            IToSetReAssessmentTimeGetByTrackIdHandler toSetReAssessmentTimeGetHandler,
+            IToCalulationConfirmHandler toSetCalulationHandler)
         {
             _requestKartableGetAllHandler = requestKartableGetAllHandler;
             _requestKartableGetAllHandler.NotNull(nameof(requestKartableGetAllHandler));
+
+            _displayRequestByTrackIdHandler = displayRequestByTrackIdHandler;
+            _displayRequestByTrackIdHandler.NotNull(nameof(displayRequestByTrackIdHandler));
+
+            _displayRequestHandler = displayRequestHandler;
+            _displayRequestHandler.NotNull(nameof(displayRequestHandler));
+
+            _requestBasicInfoGetHandler = requestBasicInfoGetHandler;
+            _requestBasicInfoGetHandler.NotNull(nameof(requestBasicInfoGetHandler));
 
             _toSetAssessmentTimeGetHandler = toSetAssessmentTimeGetHandler;
             _toSetAssessmentTimeGetHandler.NotNull(nameof(toSetAssessmentTimeGetHandler));
@@ -41,6 +56,33 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         public async Task<IActionResult> RequestKartable(CancellationToken cancellationToken)
         {
             ReportOutput<TrackingKartableHeaderOutputDto, TrackingKartableDataOutputDto> result = await _requestKartableGetAllHandler.Handle(CurrentUser, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("display")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakDataOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> DisplayRequest([FromBody] ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken)
+        {
+            MoshtrakDataOutputDto result = await _displayRequestHandler.Handle(inputDto, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("display/{trackId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakDataOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> DisplayRequestByTrackId(Guid trackId, CancellationToken cancellationToken)
+        {
+            MoshtrakDataOutputDto result = await _displayRequestByTrackIdHandler.Handle(trackId, CurrentUser, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("basic-info/{trackNumber}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<RequestBasicInfoDataOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetBasicInfo(int trackNumber, CancellationToken cancellationToken)
+        {
+            RequestBasicInfoDataOutputDto result = await _requestBasicInfoGetHandler.Handle(trackNumber, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -64,13 +106,13 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
 
         [HttpGet]
         [Route("calculation-confirm/{trackId}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakDataOutputDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ToCalculationConfirmGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSetCalculationInfo(Guid trackId, CancellationToken cancellationToken)
         {
-            MoshtrakDataOutputDto result = await _toSetCalulationHandler.Handle(trackId, CurrentUser, cancellationToken);
+            ToCalculationConfirmGetDto result = await _toSetCalulationHandler.Handle(trackId, CurrentUser, cancellationToken);
             return Ok(result);
         }
-       
+
         //amount-confirm
     }
 }

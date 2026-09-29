@@ -37,7 +37,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         static int[] _domesticUsage = { 1, 3 };//todo: IsTrue?
         static int[] _allowedZeroMeterNumberCounterState = { 4, 7 };
         const int _paymentDeadline = 7;
-        const int _conditionPayableAmount = 10000;
         const float _domesticMaltiplier = 0.7f;
         const int _collectedDeletionStateId = 1;
         const int _temporaryDeletionStateId = 5;
@@ -84,7 +83,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         {
             await InputValidate(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await GetZoneIdANdCustomerNumber(inputDto.BillId);
-            //CustomerInfoGetDto customerInfo = await _customerInfoService.Get(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
             CustomerInfoGetDto customerInfo = await _commonMemberQueryService.GetMembersBedBesTavizInfo(zoneIdAndCustomerNumber.ZoneId, zoneIdAndCustomerNumber.CustomerNumber);
             await Validate(inputDto, zoneIdAndCustomerNumber, customerInfo);
 

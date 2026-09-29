@@ -1,5 +1,4 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations;
-using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
@@ -7,7 +6,6 @@ using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
-using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using FluentValidation;
 
@@ -15,16 +13,18 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 {
     public interface IToCalulationConfirmHandler
     {
-        Task<MoshtrakDataOutputDto> Handle(Guid trackId, IAppUser appUser, CancellationToken cancellationToken);
+        Task<ToCalculationConfirmGetDto> Handle(Guid trackId, IAppUser appUser, CancellationToken cancellationToken);
     }
     internal sealed class ToCalulationConfirmHandler : IToCalulationConfirmHandler
     {
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ITrackingQueryService _trackingQueryService;
+        private readonly IExaminationQueryService _assessmentQueryService;
         private readonly ICommonZoneService _commonZoneService;
         public ToCalulationConfirmHandler(
             IMoshtrakQueryService moshtrakQueryService,
             ITrackingQueryService trackingQueryService,
+            IExaminationQueryService assessmentQueryService,
             ICommonZoneService commonZoneService)
         {
             _moshtrakQueryService = moshtrakQueryService;
@@ -33,21 +33,25 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             _trackingQueryService = trackingQueryService;
             _trackingQueryService.NotNull(nameof(trackingQueryService));
 
+            _assessmentQueryService = assessmentQueryService;
+            _assessmentQueryService.NotNull(nameof(assessmentQueryService));
+
             _commonZoneService = commonZoneService;
             _commonZoneService.NotNull(nameof(commonZoneService));
         }
 
-        public async Task<MoshtrakDataOutputDto> Handle(Guid trackId, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<ToCalculationConfirmGetDto> Handle(Guid trackId, IAppUser appUser, CancellationToken cancellationToken)
         {
             TrackingOutputDto trackingInfo = await _trackingQueryService.Get(trackId);
             MoshtrakGetDto moshtrackSearch = new(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(moshtrackSearch, MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
+            AssessmentDataOutputDto assessmentInfo = await _assessmentQueryService.GetByTrackId(trackId);
             await _commonZoneService.IsUserInZone(appUser, trackingInfo.ZoneId);
 
             MoshtrakServiceDto sData = GetSDto(moshtrakInfo);
             IEnumerable<SelectionDto> companyServices = MoshtrakService.GetMoshtrakCompanyServiceDto(sData, trackingInfo.ServiceGroupId);
 
-            MoshtrakDataOutputDto moshtrakData = GetMoshtrakData(moshtrakInfo, companyServices, trackingInfo);
+            ToCalculationConfirmGetDto moshtrakData = GetData(moshtrakInfo, companyServices, trackingInfo, assessmentInfo);
             return moshtrakData;
         }
         private MoshtrakServiceDto GetSDto(MoshtrakOutputDto input)
@@ -103,60 +107,64 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 s48 = input.s48,
             };
         }
-        private MoshtrakDataOutputDto GetMoshtrakData(MoshtrakOutputDto input, IEnumerable<SelectionDto> companyServices, TrackingOutputDto trackingInfo)
+        private ToCalculationConfirmGetDto GetData(MoshtrakOutputDto moshtrakInfo, IEnumerable<SelectionDto> companyServices, TrackingOutputDto trackingInfo, AssessmentDataOutputDto assessmentInfo)
         {
-            return new MoshtrakDataOutputDto()
+            return new ToCalculationConfirmGetDto()
             {
-                Id = input.Id,
-                ZoneId = input.ZoneId,
-                ZoneTitle = input.ZoneTitle,
-                CustomerNumber = input.CustomerNumber,
-                ReadingNumber = input.ReadingNumber,
-                FirstName = input.FirstName,
-                Surname = input.Surname,
-                FatherName = input.FatherName,
-                NationalCode = input.NationalCode,
-                PhoneNumber = input.PhoneNumber,
-                MobileNumber = input.MobileNumber,
-                RequestDateJalali = input.RequestDateJalali,
-                Address = input.Address,
-                PostalCode = input.PostalCode,
-                NeighbourBillId = input.NeighbourBillId,
-                TrackNumber = input.TrackNumber,
-                UsageId = input.UsageId,
-                UsageTitle = input.UsageTitle,
-                IsRegistered = input.IsRegistered,
-                BranchTypeId = input.BranchTypeId,
-                BranchTypeTitle = input.BranchTypeTitle,
-                Premises = input.Premises,
-                ImprovementOverall = input.ImprovementOverall,
-                ImprovementDomestic = input.ImprovementDomestic,
-                ImprovementCommercial = input.ImprovementCommercial,
-                OtherUnit = input.OtherUnit,
-                DomesticUnit = input.DomesticUnit,
-                CommercialUnit = input.CommercialUnit,
-                ContractualCapacity = input.ContractualCapacity,
-                Siphon100 = input.Siphon100,
-                Siphon125 = input.Siphon125,
-                Siphon150 = input.Siphon150,
-                Siphon200 = input.Siphon200,
-                MainSiphon = input.MainSiphon,
-                CommonSiphon = input.CommonSiphon,
-                MeterDiameterTitle = input.MeterDiameterTitle,
-                MeterDiameterId = input.MeterDiameterId,
-                DiscountTypeId = input.DiscountTypeId,
-                DiscountTypeTitle = input.DiscountTypeTitle,
-                DiscountCount = input.DiscountCount,
-                IsSpecial = input.IsSpecial,
-                CounterType = input.CounterType,
-                NotificationNumber = input.NotificationMobile,
-                Description = input.Description,
-                HouseValue = input.HouseValue,
-                IsNonPermanent = input.IsNonPermanent,
-                BlockId = input.BlockId,
-                BrokerId = input.BrokerId,
+                ZoneId = moshtrakInfo.ZoneId,
+                ZoneTitle = moshtrakInfo.ZoneTitle,
+                CustomerNumber = moshtrakInfo.CustomerNumber,
+                ReadingNumber = moshtrakInfo.ReadingNumber,
+                FirstName = moshtrakInfo.FirstName,
+                Surname = moshtrakInfo.Surname,
+                FatherName = moshtrakInfo.FatherName,
+                NationalCode = moshtrakInfo.NationalCode,
+                PhoneNumber = moshtrakInfo.PhoneNumber,
+                MobileNumber = moshtrakInfo.MobileNumber,
+                RequestDateJalali = moshtrakInfo.RequestDateJalali,
+                Address = moshtrakInfo.Address,
+                PostalCode = moshtrakInfo.PostalCode,
+                NeighbourBillId = moshtrakInfo.NeighbourBillId,
+                TrackNumber = moshtrakInfo.TrackNumber,
+                UsageId = moshtrakInfo.UsageId,
+                UsageTitle = moshtrakInfo.UsageTitle,
+                IsRegistered = moshtrakInfo.IsRegistered,
+                BranchTypeId = moshtrakInfo.BranchTypeId,
+                BranchTypeTitle = moshtrakInfo.BranchTypeTitle,
+                Premises = moshtrakInfo.Premises,
+                ImprovementOverall = moshtrakInfo.ImprovementOverall,
+                ImprovementDomestic = moshtrakInfo.ImprovementDomestic,
+                ImprovementCommercial = moshtrakInfo.ImprovementCommercial,
+                OtherUnit = moshtrakInfo.OtherUnit,
+                DomesticUnit = moshtrakInfo.DomesticUnit,
+                CommercialUnit = moshtrakInfo.CommercialUnit,
+                TotalUnit = moshtrakInfo.OtherUnit + moshtrakInfo.DomesticUnit + moshtrakInfo.CommercialUnit,
+                ContractualCapacity = moshtrakInfo.ContractualCapacity,
+                Siphon100 = moshtrakInfo.Siphon100,
+                Siphon125 = moshtrakInfo.Siphon125,
+                Siphon150 = moshtrakInfo.Siphon150,
+                Siphon200 = moshtrakInfo.Siphon200,
+                MainSiphon = moshtrakInfo.MainSiphon,
+                CommonSiphon = moshtrakInfo.CommonSiphon,
+                MeterDiameterTitle = moshtrakInfo.MeterDiameterTitle,
+                MeterDiameterId = moshtrakInfo.MeterDiameterId,
+                DiscountTypeId = moshtrakInfo.DiscountTypeId,
+                DiscountTypeTitle = moshtrakInfo.DiscountTypeTitle,
+                DiscountCount = moshtrakInfo.DiscountCount,
+                IsSpecial = moshtrakInfo.IsSpecial,
+                CounterType = moshtrakInfo.CounterType,
+                NotificationNumber = moshtrakInfo.NotificationMobile,
+                Description = moshtrakInfo.Description,
+                HouseValue = moshtrakInfo.HouseValue,
+                IsNonPermanent = moshtrakInfo.IsNonPermanent,
+                BlockId = moshtrakInfo.BlockId,
+                BrokerId = moshtrakInfo.BrokerId,
                 ServiceGroupTitle = trackingInfo.ServiceGroupTitle,
                 ServiceGroupId = trackingInfo.ServiceGroupId,
+                AssessmentCode = assessmentInfo.AssessmentCode,
+                AssessmentDateJalali = assessmentInfo.AssessmentDateJalali,
+                AssessmentMobile = assessmentInfo.AssessmentMobile,
+                AssessmentName = assessmentInfo.AssessmentName,
                 CompanyServiceItems = companyServices
             };
         }
