@@ -61,7 +61,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             bool isSuccessResult = await GetIsSucces(inputDto.ResultId);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(inputDto.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto = new(inputDto.TrackNumber, _seenByAssessmentStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true);
-            TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(inputDto.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, isSuccessResult, false);
+            TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(inputDto.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, isSuccessResult, false, 1);
             AssessmentUpdateDto assessmentUpdateDto = await GetAssessmentUpdateDto(inputDto, assessmentCode, trackingInsertSetAssessmentResultDto.TrackId, requestBody);
             MoshtrkUpdateDto moshtrakUpdateDto = GetMoshtrackUpdateDto(inputDto);
             await Validate(moshtrakInfo, inputDto.TrackingId);

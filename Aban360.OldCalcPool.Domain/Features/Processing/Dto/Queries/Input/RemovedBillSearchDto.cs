@@ -11,7 +11,7 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input
         {
             ZoneId = zoneid;
             CustomerNumber = customerNumber;
-            ComparisonDateJalali = DateTime.Now.AddDays(-35).ToShortPersianDateString();
+            ComparisonDateJalali = DateTime.Now.AddDays(-40).ToShortPersianDateString();
         }
     }
 }

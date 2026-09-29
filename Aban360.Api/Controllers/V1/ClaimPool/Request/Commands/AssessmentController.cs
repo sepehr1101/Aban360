@@ -144,12 +144,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
         [HttpPost]
         [Route("reAssessment")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<TrackNumberWithDescriptionInputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ReAssessment([FromBody] TrackNumberWithDescriptionInputDto inputDto, CancellationToken cancellationToken)
+        [ProducesResponseType(typeof(ApiResponseEnvelope<SetAssessmentTimeOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ReAssessment([FromBody] SetReAssessmentTimeInputDto inputDto, CancellationToken cancellationToken)
         {
             int userName = UserService.GetUserCode(CurrentUser.Username);
-            await _reAssessmentRequestHandler.Handle(inputDto, userName, cancellationToken);
-            return Ok(inputDto);
+            SetAssessmentTimeDataOutputDto result = await _reAssessmentRequestHandler.Handle(inputDto, userName, cancellationToken);
+            SetAssessmentTimeOutputDto outputDto = GetAssessmentTimeOutputDto(hasCustomerSms: true, hasAssessmentSms: true, result);
+
+            return Ok(outputDto);
         }
         private SetAssessmentTimeOutputDto GetAssessmentTimeOutputDto(bool hasCustomerSms, bool hasAssessmentSms, SetAssessmentTimeDataOutputDto result)
         {

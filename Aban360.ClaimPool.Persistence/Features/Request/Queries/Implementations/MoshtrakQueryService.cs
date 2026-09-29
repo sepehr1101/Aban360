@@ -124,6 +124,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         {
             return $@"Select
                         Id,
+						t46.C0 RegionId,
+						t46.C2 RegionTitle,
                     	town ZoneId,
                     	t51.C2 ZoneTitle,
                     	radif CustomerNumber,
@@ -223,6 +225,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     From [{dbName}].dbo.moshtrak 
                     Left Join Db70.dbo.T51 t51
                     	ON town=t51.C0
+					Left Join Db70.dbo.t46 t46
+						ON t51.C1=t46.C0
 					Left Join Db70.dbo.T5 t5
 						ON enshab=t5.C0
 					Left Join Db70.dbo.T41 t41
@@ -238,6 +242,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         {
             return $@"Select
                         Id,
+						t46.C0 RegionId,
+						t46.C2 RegionTitle,
                     	town ZoneId,
                     	t51.C2 ZoneTitle,
                     	radif CustomerNumber,
@@ -337,6 +343,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     From [{dbName}].dbo.moshtrak 
                     Left Join Db70.dbo.T51 t51
                     	ON town=t51.C0
+					Left Join Db70.dbo.t46 t46
+						ON t51.C1=t46.C0
 					Left Join Db70.dbo.T5 t5
 						ON enshab=t5.C0
 					Left Join Db70.dbo.T41 t41
@@ -352,6 +360,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         {
             return $@"Select
                         Id,
+						t46.C0 RegionId,
+						t46.C2 RegionTitle,
                     	town ZoneId,
                     	t51.C2 ZoneTitle,
                     	radif CustomerNumber,
@@ -451,6 +461,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     From [{dbName}].dbo.moshtrak 
                     Join Db70.dbo.T51 t51
                     	ON town=t51.C0
+					Left Join Db70.dbo.t46 t46
+						ON t51.C1=t46.C0
 					Join Db70.dbo.T5 t5
 						ON enshab=t5.C0
 					Join Db70.dbo.T41 t41

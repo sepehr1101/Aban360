@@ -69,34 +69,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             _swapRequestTypeHandler.NotNull(nameof(swapRequestTypeHandler));
         }
 
-
-        [HttpGet]
-        [Route("kartable")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<TrackingKartableHeaderOutputDto, TrackingKartableDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> RequestKartable(CancellationToken cancellationToken)
-        {
-            ReportOutput<TrackingKartableHeaderOutputDto, TrackingKartableDataOutputDto> result = await _requestKartableGetAllHandler.Handle(CurrentUser, cancellationToken);
-            return Ok(result);
-        }
-
-        [HttpPost]
-        [Route("display")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakDataOutputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> DisplayRequest([FromBody] ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken)
-        {
-            MoshtrakDataOutputDto result = await _displayRequestHandler.Handle(inputDto, cancellationToken);
-            return Ok(result);
-        }
-
-        [HttpPost]
-        [Route("basic-info/{trackNumber}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<RequestBasicInfoDataOutputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetBasicInfo(int trackNumber, CancellationToken cancellationToken)
-        {
-            RequestBasicInfoDataOutputDto result = await _requestBasicInfoGetHandler.Handle(trackNumber, CurrentUser, cancellationToken);
-            return Ok(result);
-        }
-
         [HttpPost]
         [Route("edit")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakUpdateInputDto>), StatusCodes.Status200OK)]

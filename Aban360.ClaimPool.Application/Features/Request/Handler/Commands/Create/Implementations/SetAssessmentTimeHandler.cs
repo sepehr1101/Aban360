@@ -78,6 +78,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             TrackingInsertDuplicateDto trackingInsert = GetTrackingCreateDto(input, userName);
             AssessmentInsertDto assessmentInsert = await GetAssessmentInsertDto(input, latestTrackingInfo, trackingInsert.TrackId, moshtrakInfo);
 
+            await ExecSql(trackingInsert, assessmentInsert);
+            return await GetOutputDto(input, moshtrakInfo, assessmentInsert, trackingInsert.TrackId, latestTrackingInfo.ServiceGroupId);
+        }
+        private async Task ExecSql(TrackingInsertDuplicateDto trackingInsert, AssessmentInsertDto assessmentInsert)
+        {
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -94,8 +99,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     transaction.Commit();
                 }
             }
-
-            return await GetOutputDto(input, moshtrakInfo, assessmentInsert, trackingInsert.TrackId, latestTrackingInfo.ServiceGroupId);
         }
         private async Task<TrackingOutputDto> Validation(AssessmentSetTimeInputDto input, CancellationToken cancellationToken)
         {
@@ -211,7 +214,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private async Task<SetAssessmentTimeDataOutputDto> GetOutputDto(AssessmentSetTimeInputDto input, MoshtrakOutputDto moshtrakInfo, AssessmentInsertDto assessmentInsert, Guid trackId, int serviceGroupId)
         {
-            IEnumerable<NumericDictionary> moshtrakServiceSelected = MoshtrakService.GetServicesSelectedDto(GetMoshtrakServiceDto(moshtrakInfo), serviceGroupId);
+            IEnumerable<NumericDictionary> moshtrakServiceSelected = MoshtrakService.GetServicesSelectedDto(MoshtrakService.GetMoshtrakServiceDto(moshtrakInfo), serviceGroupId);
             string serviceSelected = string.Join(",", moshtrakServiceSelected.Select(m => m.Title));
 
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(input.TrackNumber);
@@ -240,59 +243,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AssessmentCode = assessmentInsert.AssessmentCode,
                 AssessmentMobileNumber = assessmentInsert.AssessmentMobile,
                 AssessmentDateJalai = assessmentInsert.AssessmentDateJalali
-            };
-        }
-        private MoshtrakServiceDto GetMoshtrakServiceDto(MoshtrakOutputDto moshtrakInfo)
-        {
-            return new MoshtrakServiceDto()
-            {
-                s0 = moshtrakInfo.s0,
-                s1 = moshtrakInfo.s1,
-                s2 = moshtrakInfo.s2,
-                s3 = moshtrakInfo.s3,
-                s4 = moshtrakInfo.s4,
-                s5 = moshtrakInfo.s5,
-                s8 = moshtrakInfo.s8,
-                s9 = moshtrakInfo.s9,
-                s10 = moshtrakInfo.s10,
-                s11 = moshtrakInfo.s11,
-                s12 = moshtrakInfo.s12,
-                s13 = moshtrakInfo.s13,
-                s14 = moshtrakInfo.s14,
-                s15 = moshtrakInfo.s15,
-                s16 = moshtrakInfo.s16,
-                s17 = moshtrakInfo.s17,
-                s18 = moshtrakInfo.s18,
-                s19 = moshtrakInfo.s19,
-                s20 = moshtrakInfo.s20,
-                s21 = moshtrakInfo.s21,
-                s22 = moshtrakInfo.s22,
-                s23 = moshtrakInfo.s23,
-                s24 = moshtrakInfo.s24,
-                s25 = moshtrakInfo.s25,
-                s26 = moshtrakInfo.s26,
-                s27 = moshtrakInfo.s27,
-                s28 = moshtrakInfo.s28,
-                s29 = moshtrakInfo.s29,
-                s30 = moshtrakInfo.s30,
-                s31 = moshtrakInfo.s31,
-                s32 = moshtrakInfo.s32,
-                s33 = moshtrakInfo.s33,
-                s34 = moshtrakInfo.s34,
-                s35 = moshtrakInfo.s35,
-                s36 = moshtrakInfo.s36,
-                s37 = moshtrakInfo.s37,
-                s38 = moshtrakInfo.s38,
-                s39 = moshtrakInfo.s39,
-                s40 = moshtrakInfo.s40,
-                s41 = moshtrakInfo.s41,
-                s42 = moshtrakInfo.s42,
-                s43 = moshtrakInfo.s43,
-                s44 = moshtrakInfo.s44,
-                s45 = moshtrakInfo.s45,
-                s46 = moshtrakInfo.s46,
-                s47 = moshtrakInfo.s47,
-                s48 = moshtrakInfo.s48,
             };
         }
     }
