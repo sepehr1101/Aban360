@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
@@ -16,6 +17,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -34,17 +36,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IBedBesQueryService _bedBesQueryService;
         private readonly IValidator<GenerateBillInputDto> _validator;
         private readonly IVariabService _variabService;
-        static int[] _domesticUsage = { 1, 3 };//todo: IsTrue?
-        static int[] _allowedZeroMeterNumberCounterState = { 4, 7 };
+        static int[] _domesticUsage = { (int)UsageEnum.Domestic, (int)UsageEnum.DomesticCommercial };//todo: IsTrue?
+        static int[] _allowedZeroMeterNumberCounterState = { (int)CounterStateCodeEnum.Close, (int)CounterStateCodeEnum.Block };
         const int _paymentDeadline = 7;
         const float _domesticMaltiplier = 0.7f;
-        const int _collectedDeletionStateId = 1;
-        const int _temporaryDeletionStateId = 5;
-        const int _malfunctionCounterState = 1;
-        const int _changeCounterState = 2;
-        const int _reverseCounterState = 3;
-        const int _nextRoundCounterSatate = 5;
-        const int _operator = 666;
         const int _payIdMaxChar = 13;
         public GenerateBillHandler(
             IHttpContextAccessor contextAccessor,
@@ -118,11 +113,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 abBahaCalcResult = GetAbBahaCalcWithZeroValues(inputDto, customerInfo);
             }
-            else if (inputDto.CounterStateCode == _changeCounterState)
+            else if (inputDto.CounterStateCode == (int)CounterStateCodeEnum.Change)
             {
                 abBahaCalcResult = await GetChangeCounterStateData(inputDto, customerInfo, cancellationToken);
             }
-            else if (inputDto.CounterStateCode == _malfunctionCounterState && inputDto.ConsumptionAverage.HasValue)
+            else if (inputDto.CounterStateCode == (int)CounterStateCodeEnum.Malfunction && inputDto.ConsumptionAverage.HasValue)
             {
                 MeterDateInfoWithMonthlyConsumptionOutputDto tariffMeterInfoByConsumptionAverage = new()
                 {
@@ -143,20 +138,18 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         }
         private async Task<AbBahaCalculationDetails> GetChangeCounterStateData(GenerateBillInputDto inputDto, CustomerInfoGetDto customerInfo, CancellationToken cancellationToken)
         {
-            if (inputDto.CounterStateCode == _changeCounterState && string.IsNullOrWhiteSpace(customerInfo.TavizInfo?.TavizDateJalali ?? string.Empty))
+            if (inputDto.CounterStateCode == (int)CounterStateCodeEnum.Change && string.IsNullOrWhiteSpace(customerInfo.TavizInfo?.TavizDateJalali ?? string.Empty))
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidChangeDate);
             }
-            else if (inputDto.CounterStateCode == _changeCounterState && customerInfo.TavizInfo.TavizDateJalali.CompareTo(inputDto.CurrentDateJalali) > 0)
+            else if (inputDto.CounterStateCode == (int)CounterStateCodeEnum.Change && customerInfo.TavizInfo.TavizDateJalali.CompareTo(inputDto.CurrentDateJalali) > 0)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidChangeDate);
             }
-            else if (inputDto.CounterStateCode == _changeCounterState && customerInfo.TavizInfo.TavizDateJalali.CompareTo(customerInfo.BedBesInfo.LastMeterDateJalali) < 0)
+            else if (inputDto.CounterStateCode == (int)CounterStateCodeEnum.Change && customerInfo.TavizInfo.TavizDateJalali.CompareTo(customerInfo.BedBesInfo.LastMeterDateJalali) < 0)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidChangeDate);
             }
-            //else if (inputDto.CounterStateCode == _changeCounterState) //taviz
-            //{
             int previousNumber = customerInfo.BedBesInfo.LastMeterNumber ?? 0;
             string previousDateJalali = customerInfo.BedBesInfo.LastMeterDateJalali;
 
@@ -435,7 +428,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 Masjar = 0,
                 Sabt = 1,//todo
                 Rate = (decimal)abBahaCalc.MonthlyConsumption,
-                Operator = _operator,
+                Operator = ReportLiterals.RayabOperator,
                 Mamor = 0,
                 TavizDate = customerInfo?.TavizInfo?.TavizDateJalali ?? string.Empty,
                 ZaribCntr = 0,
@@ -549,11 +542,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private async Task DeletionStateValidation(ZoneIdAndCustomerNumber input)
         {
             MemberInfoGetDto customerInfo = await _commonMemberQueryService.Get(input);
-            if (customerInfo.DeletionStateId == _temporaryDeletionStateId)
+            if (customerInfo.DeletionStateId == (int)DeletionStateEnum.HazfMovaghat)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidTemporaryDeletionState);
             }
-            if (customerInfo.DeletionStateId == _collectedDeletionStateId)
+            if (customerInfo.DeletionStateId == (int)DeletionStateEnum.JamAvari)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidCollectedDeletionState);
             }
@@ -569,7 +562,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             }
 
         }
-        private bool IsChangedOrReverse(int? counterStateCode) => counterStateCode == _reverseCounterState || counterStateCode == _nextRoundCounterSatate || counterStateCode == _changeCounterState;
+        private bool IsChangedOrReverse(int? counterStateCode) => counterStateCode == (int)CounterStateCodeEnum.Reverse || counterStateCode == (int)CounterStateCodeEnum.NextRound || counterStateCode == _changeCounterState;
         private bool IsDomestic(int usageId) => _domesticUsage.Contains(usageId);
         private bool IsAllowedZeroMeterNumber(int? counterStateCode) => _allowedZeroMeterNumberCounterState.Contains(counterStateCode ?? 0);
         private int GetDuration(string previousDate, string currentDate)
