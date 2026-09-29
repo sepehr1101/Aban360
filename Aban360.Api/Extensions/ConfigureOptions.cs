@@ -1,6 +1,7 @@
 ﻿using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.Common.Authentication;
+using Aban360.MeterPool.Domain.Features.AutoReading.Dtos.Queries;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.TaxPool.Domain.Features.MaaherSTP.Dto;
 using Aban360.UserPool.Domain.Constants;
@@ -20,6 +21,7 @@ namespace Aban360.Api.Extensions
             services.AddMaaher(configuration);
             services.AddMap(configuration);
             services.AddCollectBills(configuration);
+            services.Configure<AutoReadingOptions>(configuration.GetSection(AutoReadingOptions.SectionName));
             return services;
         }
         private static void AddEsbAuthentication(this IServiceCollection services, IConfiguration configuration)
