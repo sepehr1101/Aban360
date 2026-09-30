@@ -38,6 +38,7 @@
         public static string InvalidMeterDiameterTitle => "کد قطر انشعاب یافت نشد";
         public static string InvalidUsageTitle => "کد کاربری یافت نشد";
         public static string InvalidBranchTypeTitle => "کد نوع واگذاری یافت نشد";
+        public static string InvalidDiscountTypeTitle => "کد نوع تخفیف یافت نشد";
 
         public static string InvalidInsertConnectDisconnect => "خطا در ذخیره قطع/وصل";
         public static string InvalidUpdateConnectDisconnect => "خطا در ویرایش قطع/وصل";

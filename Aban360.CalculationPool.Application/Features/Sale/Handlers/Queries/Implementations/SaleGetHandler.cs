@@ -243,7 +243,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             short meterDiamter = meterDiameterId ?? 0;
             if (!isWater)
             {
-                meterDiameterId = GetMeterDiamterId(meterDiameterId);
+                meterDiamter = GetMeterDiamterId(meterDiameterId);
             }
 
             var installationAndEquipment = new InstallationAndEquipmentGetDto(isWater, meterDiamter, DateTime.Now.ToShortPersianDateString());

@@ -126,6 +126,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 Address = input.Address,
                 PostalCode = input.PostalCode,
                 NeighbourBillId = input.NeighbourBillId,
+                BillId = trackingInfo.BillId ?? string.Empty,
                 TrackNumber = input.TrackNumber,
                 UsageId = input.UsageId,
                 UsageTitle = input.UsageTitle,

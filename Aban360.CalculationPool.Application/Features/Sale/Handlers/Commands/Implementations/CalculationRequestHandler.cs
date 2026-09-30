@@ -7,6 +7,8 @@ using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Imp
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
+using Aban360.ClaimPool.Persistence.Features.People.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations;
@@ -29,6 +31,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly IT15QueryService _discountTypeQueryService;
         private static int _saleServiceId = 1;
         private static int _afterSaleServiceId = 2;
         private static int _kartTypeId = 2;
@@ -43,6 +46,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
             ICommonMemberQueryService commonMemberQueryService,
+            IT15QueryService discountTypeQueryService,
             IConfiguration configuration)
         : base(configuration)
         {
@@ -60,6 +64,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
 
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+
+            _discountTypeQueryService = discountTypeQueryService;
+            _discountTypeQueryService.NotNull(nameof(discountTypeQueryService));
         }
 
         public async Task<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> Handle(TrackNumberWithDescriptionInputDto inputDto, int userCode, CancellationToken cancellationToken)
@@ -107,7 +114,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             };
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> saleResult = await _saleGetHandler.Handle(saleInputDto, cancellationToken);
 
-            IEnumerable<SaleAndAfterSaleDataOutputDto> data = GetSaleResult(saleResult.ReportData);
+            IEnumerable<SaleAndAfterSaleDataOutputDto> data = await GetSaleResult(saleResult.ReportData);
             ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(saleResult.Title, GetHeaderResul(data), data);
             return result;
         }
@@ -158,7 +165,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             };
             FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto> afterSaleResult = await _afterSaleGetHandler.Handle(afterSaleInputDto, cancellationToken);
 
-            IEnumerable<SaleAndAfterSaleDataOutputDto> data = GetAfterSaleResult(afterSaleResult.ReportData);
+            IEnumerable<SaleAndAfterSaleDataOutputDto> data =await GetAfterSaleResult(afterSaleResult.ReportData);
             ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(afterSaleResult.Title, GetHeaderResul(data), data);
             return result;
         }
@@ -215,8 +222,16 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 s48 = serviceSelected.s48,
             };
         }
-        private IEnumerable<SaleAndAfterSaleDataOutputDto> GetSaleResult(IEnumerable<SaleDataOutputDto> data) => data.Select(s => new SaleAndAfterSaleDataOutputDto(s.Id, s.Title, s.Amount, s.Discount, s.FinalAmount, s.DiscountTypeId, false));
-        private IEnumerable<SaleAndAfterSaleDataOutputDto> GetAfterSaleResult(AfterSaleDataOutputDto data) => data.DifferentValue.Select(s => new SaleAndAfterSaleDataOutputDto(s.Id, s.Title, s.Amount, s.Discount, s.FinalAmount, s.DiscountTypeId, false));
+        private async Task<IEnumerable<SaleAndAfterSaleDataOutputDto>> GetSaleResult(IEnumerable<SaleDataOutputDto> data)
+        {
+            IEnumerable<NumericDictionary> discountTypes = await _discountTypeQueryService.Get();
+            return data.Select(s => new SaleAndAfterSaleDataOutputDto(s.Id, s.Title, s.Amount, s.Discount, s.FinalAmount, s.DiscountTypeId, discountTypes?.Where(d => d.Id == s.DiscountTypeId)?.FirstOrDefault()?.Title ?? string.Empty, false));
+        }
+        private async Task<IEnumerable<SaleAndAfterSaleDataOutputDto>> GetAfterSaleResult(AfterSaleDataOutputDto data)
+        {
+            IEnumerable<NumericDictionary> discountTypes = await _discountTypeQueryService.Get();
+            return data.DifferentValue.Select(s => new SaleAndAfterSaleDataOutputDto(s.Id, s.Title, s.Amount, s.Discount, s.FinalAmount, s.DiscountTypeId, discountTypes?.Where(d => d.Id == s.DiscountTypeId)?.FirstOrDefault()?.Title ?? string.Empty, false));
+        }
         private SaleAndAfterSaleHeaderOutputDto GetHeaderResul(IEnumerable<SaleAndAfterSaleDataOutputDto> data)
         {
             long amount = data?.Sum(s => s.Amount) ?? 0;

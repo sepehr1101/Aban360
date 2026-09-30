@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
         [TypeFilter(typeof(EndpointAuthorizationFilter))]
         public async Task<IActionResult> RemoveFile([FromBody] RemoveFileDto removeFileDto, CancellationToken cancellation)
         {
-            await _removeFileHandler.Handle(removeFileDto, cancellation);
+            await _removeFileHandler.Handle(removeFileDto, CurrentUser, cancellation);
             return Ok(removeFileDto);
         }
     }

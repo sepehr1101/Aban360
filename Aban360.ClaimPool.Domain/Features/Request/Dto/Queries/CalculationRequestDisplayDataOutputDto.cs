@@ -7,8 +7,9 @@
         public long Amount { get; set; }
         public long Discount { get; set; }
         public int DiscountTypeId { get; set; }
+        public string DiscountTypeTitle { get; set; }
         public bool Removable { get; set; }
-        public CalculationRequestDisplayDataOutputDto(int id, string title, long amount, long discount, int discountTypeId, bool removable)
+        public CalculationRequestDisplayDataOutputDto(int id, string title, long amount, long discount, int discountTypeId, string? discountTypeTitle, bool removable)
         {
             Id = id;
             Title = title;
@@ -16,6 +17,7 @@
             Discount = discount;
             DiscountTypeId = discountTypeId;
             Removable = removable;
+            DiscountTypeTitle = discountTypeTitle ?? string.Empty;
         }
         public CalculationRequestDisplayDataOutputDto()
         {

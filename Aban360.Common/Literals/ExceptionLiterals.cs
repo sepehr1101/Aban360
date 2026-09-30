@@ -150,7 +150,7 @@
         public static string UnSuccessfulToSave(string tableName) => $"ذخیره در جدول {tableName} با خطا روبرو شد";
 
         //Reading
-        public static string InvalidRecord(int i) => $" خط {i}ام از فایل آپلود شده دارای مقدار نامعتبر است. ";
+        public static string InvalidRecord(int i) => $" خط {i} ام از فایل آپلود شده دارای مقدار نامعتبر است. ";
         public static string InvalidReadingFile => "خطا در پیمایش فایل";
         public static string InvalidZeroMeterNumber => "رقم کنتور با وضعیت ارسالی مطابقت ندارد.";
         public static string InvalidDataInReadingFile => "اطلاعاتی در فایل بارگذاری شده یافت نشد.";

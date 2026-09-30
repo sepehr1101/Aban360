@@ -73,6 +73,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     count++;
                     try
                     {
+                        if (count == 80)
+                        {
+                            var s = 1;
+                        }
                         errorMessage = ExceptionLiterals.InvalidRecord(count);
 
                         //0:CurrentNumber 1:CurretnDate 2:CurrentCounterState 3:AgentCode 4:ZoneId 5:ZoneTitle

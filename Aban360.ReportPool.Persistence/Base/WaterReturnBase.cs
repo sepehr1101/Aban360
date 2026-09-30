@@ -30,6 +30,20 @@ namespace Aban360.ReportPool.Persistence.Base
                 _ => _netItems
             };
         }
+        internal int[] GetTypeCodes(WaterIncomeAndConsumptionTypeEnum[] input)
+        {
+            IEnumerable<int[]> items = input.Select(s => s switch
+            {
+                WaterIncomeAndConsumptionTypeEnum.Net => _netItems,
+                WaterIncomeAndConsumptionTypeEnum.Raw => _rawItems,
+                WaterIncomeAndConsumptionTypeEnum.Returned => _returnedItems,
+                WaterIncomeAndConsumptionTypeEnum.PositiveModification => _positiveModifications,
+                WaterIncomeAndConsumptionTypeEnum.NegativeModification => _negativeModifications,
+                WaterIncomeAndConsumptionTypeEnum.PureReturn => _pureReturn,
+                _ => _netItems
+            });
+            return items.SelectMany(i => i).Distinct().ToArray();
+        }
         internal string GetDetailQuery(bool hasZone, bool hasUsage, bool hasBranchType)
         {
             string zoneQuery = hasZone ? "AND b.ZoneId IN @zoneIds" : string.Empty;
