@@ -3,6 +3,7 @@ using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.Common.Authentication;
 using Aban360.Common.Literals;
+using Aban360.MeterPool.Domain.Features.AutoReading.Dtos.Queries;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.TaxPool.Domain.Features.MaaherSTP.Dto;
 using Microsoft.Extensions.Options;
@@ -20,8 +21,27 @@ namespace Aban360.Api.Extensions
             services.AddMaaher(configuration);
             services.AddMap(configuration);
             services.AddCollectBills(configuration);
+            services.AddAutoReading();
             return services;
         }
+        private static void AddAutoReading(this IServiceCollection services)
+        {
+            services.AddHttpClient(HttpClientNames.AutoReading, (sp, httpClient) =>
+            {
+                AutoReadingOptions options = sp.GetRequiredService<IOptions<AutoReadingOptions>>().Value;
+                if (!Uri.TryCreate(options.BaseUrl, UriKind.Absolute, out Uri? baseUri)
+                    || (baseUri.Scheme != Uri.UriSchemeHttps && baseUri.Scheme != Uri.UriSchemeHttp))
+                    throw new InvalidConfigFileException(ExceptionLiterals.InvalidConfiguration(nameof(AutoReadingOptions), nameof(AutoReadingOptions.BaseUrl)));
+                if (string.IsNullOrWhiteSpace(options.FlowMeterReportEndpoint)
+                    || !Uri.TryCreate(options.FlowMeterReportEndpoint, UriKind.Relative, out _)
+                    || options.FlowMeterReportEndpoint.StartsWith('/')
+                    || options.FlowMeterReportEndpoint.Contains('?')
+                    || options.FlowMeterReportEndpoint.Contains('#'))
+                    throw new InvalidConfigFileException(ExceptionLiterals.InvalidConfiguration(nameof(AutoReadingOptions), nameof(AutoReadingOptions.FlowMeterReportEndpoint)));
+                httpClient.BaseAddress = new Uri(options.BaseUrl.TrimEnd('/') + "/");
+            }).AddHttpMessageHandler<EsbAuthenticationHandler>();
+        }
+
         private static void AddOpenKm(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpClient(HttpClientNames.Kaj, (sp, httpClient) =>
