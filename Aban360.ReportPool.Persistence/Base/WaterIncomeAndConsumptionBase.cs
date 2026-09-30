@@ -253,7 +253,7 @@ namespace Aban360.ReportPool.Persistence.Base
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.RegisterDay)
                 return ("RegisterDay", "RegisterDay", "RegisterDay");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Zone)
-                return ("ZoneTitle", "ZoneTitle", "ZoneId");
+                return ("ZoneTitle", "ZoneTitle", "ZoneId % 10000, ZoneTitle");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Usage)
                 return isUsageGroup ? ("UsageGroup2Title", "UsageGroup2Title", "UsageGroup2Title") : ("UsageTitle", "UsageTitle", "UsageId");
             if (enumState == WaterIncomeAndConsumptionSummaryEnum.Region)
