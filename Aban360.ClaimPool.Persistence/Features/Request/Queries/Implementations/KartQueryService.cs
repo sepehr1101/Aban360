@@ -57,11 +57,14 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t100.C1 Title,
                     	k.pard Amount,
                     	k.takhfif Discount,
-                        k.cod_takh  DiscountTypeId,
+						t15.C1 DiscountTypeTitle,
+                        k.cod_takh DiscountTypeId,
 						IIF(k.Serial=0,0,1) Removable
                     From [{dbName}].dbo.kart k
                     Join [Db70].dbo.T100 t100	
                     	ON k.noe_bed=t100.C0
+					Join [Db70].dbo.T15 t15
+						ON k.cod_takh = t15.C0
                     where k.par_no=@stringTrackNumber";
         }
         private string GetByIdQuery(string dbName)
@@ -72,10 +75,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	    k.pard Amount,
                     	    k.takhfif Discount,
                             k.cod_takh  DiscountTypeId,
+						    t15.C1 DiscountTypeTitle,
 						    IIF(k.Serial=0,0,1) Removable
                     From [{dbName}].dbo.kart k
                     Join [Db70].dbo.T100 t100	
                     	ON k.noe_bed=t100.C0
+					Join [Db70].dbo.T15 t15
+						ON k.cod_takh = t15.C0
                     where k.id=@id";
         }
         private string GetAllByTrackNumberQuery(string dbName)

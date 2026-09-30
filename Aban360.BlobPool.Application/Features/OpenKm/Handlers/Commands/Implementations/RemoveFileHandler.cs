@@ -2,6 +2,9 @@
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Querys.Contracts;
 using Aban360.BlobPool.Domain.Features.OpenKm;
+using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Constants.Literals;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 
 namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Implementations
@@ -10,19 +13,24 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
     {
         private readonly ICreateFolderHandler _createFolderHandler;
         private readonly IOpenKmQueryService _openKmQueryService;
+        private readonly IOpLogCommandService _opLogCommandService;
 
         private const string deleteFolderName = "deleted";
         public RemoveFileHandler(
             ICreateFolderHandler createFolderHandler,
-            IOpenKmQueryService openKmQueryService)
+            IOpenKmQueryService openKmQueryService,
+            IOpLogCommandService opLogCommandService)
         {
             _createFolderHandler = createFolderHandler;
             _createFolderHandler.NotNull(nameof(createFolderHandler));
 
             _openKmQueryService = openKmQueryService;
             _openKmQueryService.NotNull(nameof(openKmQueryService));
+
+            _opLogCommandService = opLogCommandService;
+            _opLogCommandService.NotNull(nameof(opLogCommandService));
         }
-        public async Task Handle(RemoveFileDto removeFileDto, CancellationToken cancellationToken)
+        public async Task Handle(RemoveFileDto removeFileDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             string directory = removeFileDto.IsBillId ? removeFileDto.FolderName : $"r_{removeFileDto.FolderName}";
             try
@@ -36,6 +44,8 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
                 await _createFolderHandler.Handle(deleteFolderName, cancellationToken, directory);
             }
             await _openKmQueryService.Move(removeFileDto.Uuid, $"{directory}/{deleteFolderName}");
+            string opLogText = string.Format(OpLogLiterals.OpenKmRemoveFileOpLog, removeFileDto.Uuid, directory);
+            await _opLogCommandService.Insert(opLogText, appUser);
         }
     }
 }

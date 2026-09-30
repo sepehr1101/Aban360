@@ -20,9 +20,9 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
         [HttpPost]
         [Route("add-file")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AddFileDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> AddFile([FromForm]AddFormFileInput input, CancellationToken cancellation)
+        public async Task<IActionResult> AddFile([FromForm] AddFormFileInput input, CancellationToken cancellation)
         {
-            AddFileDto result = await _addFileHandler.Handle(input, cancellation);
+            AddFileDto result = await _addFileHandler.Handle(input, CurrentUser, cancellation);
             return Ok(result);
         }
 
@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<AddFileDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddFileDiscount([FromForm] AddDiscountFileInput input, CancellationToken cancellation)
         {
-            AddFileDto result = await _addFileHandler.Handle(input, cancellation);
+            AddFileDto result = await _addFileHandler.Handle(input, CurrentUser, cancellation);
             return Ok(result);
         }
 
@@ -40,7 +40,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<AddFileDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddFile(AddBase64FileInput input, CancellationToken cancellation)
         {
-            AddFileDto result = await _addFileHandler.Handle(input, cancellation);
+            AddFileDto result = await _addFileHandler.Handle(input, CurrentUser, cancellation);
             return Ok(result);
         }
     }

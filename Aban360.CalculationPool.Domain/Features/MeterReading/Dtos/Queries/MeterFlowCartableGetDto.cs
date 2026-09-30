@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Domain.Constants;
+using DNTPersianUtils.Core;
 
 namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
 {
@@ -15,8 +16,9 @@ namespace Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries
         public int PrimaryCount { get; set; }
         public string ZoneTitle { get; set; }
         public DateTime InsertDateTime { get; set; }
+        public string InsertDateTimeJalali { get { return InsertDateTime.ToShortPersianDateTimeString(); } }
         public Guid InsertByUserId { get; set; }
         public string? Description { get; set; }
-       
+
     }
 }

@@ -8,8 +8,9 @@
         public long? Discount { get; set; }
         public long FinalAmount { get; set; }
         public int DiscountTypeId { get; set; }
+        public string DiscountTypeTitle { get; set; }
         public bool Removable { get; set; }
-        public SaleAndAfterSaleDataOutputDto(int id, string title, long? amount, long? discount, long? finalAmount, int discountTypeId, bool removable)
+        public SaleAndAfterSaleDataOutputDto(int id, string title, long? amount, long? discount, long? finalAmount, int discountTypeId, string? discountTypeTitle, bool removable)
         {
             Id = id;
             Title = title;
@@ -18,6 +19,7 @@
             FinalAmount = finalAmount ?? 0;
             DiscountTypeId = discountTypeId;
             Removable = removable;
+            DiscountTypeTitle = discountTypeTitle ?? string.Empty;
         }
     }
 }

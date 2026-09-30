@@ -7,9 +7,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
 {
-    internal sealed class T41QueryService : AbstractBaseConnection, IT41QueryService
+    internal sealed class T15QueryService : AbstractBaseConnection, IT15QueryService
     {
-        public T41QueryService(IConfiguration configuration)
+        public T15QueryService(IConfiguration configuration)
             : base(configuration)
         {
         }
@@ -27,7 +27,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             NumericDictionary? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<NumericDictionary>(query, new { id });
             if (result is null && hasException)
             {
-                throw new InvalidDataException(ExceptionLiterals.InvalidUsageTitle);
+                throw new InvalidDataException(ExceptionLiterals.InvalidDiscountTypeTitle);
             }
             return result is null ? new NumericDictionary(id, string.Empty) : result;
         }
@@ -37,16 +37,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             return @"Select 
                     	C0 Id,
                     	C1 Title
-                    From [Db70].dbo.T41";
+                    From [Db70].dbo.T15";
         }
         private string GetByIdQuery()
         {
             return @"Select 
                     	C0 Id,
                     	C1 Title
-                    From [Db70].dbo.T41
+                    From [Db70].dbo.T15
                     Where C0=@id";
         }
-
     }
 }

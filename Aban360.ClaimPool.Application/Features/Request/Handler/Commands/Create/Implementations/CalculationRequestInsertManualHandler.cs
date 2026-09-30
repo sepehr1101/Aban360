@@ -3,6 +3,7 @@ using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Con
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations;
@@ -27,6 +28,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IT100QueryService _t100QueryService;
+        private readonly IT15QueryService _discountTypeQueryService;
         private readonly IValidator<KartInsertManualInputDto> _validator;
         static string _insertBy = "Aban";
         static int _manualSerial = 10000;
@@ -37,6 +39,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
             IT100QueryService t100QueryService,
+            IT15QueryService discountTypeQueryService,
             IValidator<KartInsertManualInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
@@ -53,6 +56,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _t100QueryService = t100QueryService;
             _t100QueryService.NotNull(nameof(t100QueryService));
 
+            _discountTypeQueryService = discountTypeQueryService;
+            _discountTypeQueryService.NotNull(nameof(discountTypeQueryService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
@@ -65,6 +71,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             KartInsertDto kartInsertDto = GetKartInsertDto(inputDto, moshtrakInfo);
             GhestUpdateDto ghestInsertDto = new(trackingInfo.StringTrackNumber, kartInsertDto.FinalAmount);
             NumericDictionary amountItemInfo = await _t100QueryService.Get(inputDto.AmountItemId, true);
+            NumericDictionary discountTypeInfo = await _discountTypeQueryService.Get(kartInsertDto.DiscountTypeId, false);
+
             string opLogText = string.Format(OpLogLiterals.RequestOfferingInsertOpLog, amountItemInfo.Title, inputDto.TrackNumber, kartInsertDto.FinalAmount, inputDto.CategoryType.ToString());//todo: CategoryType not persian -> user dateBase
             string dbName = GetDbName(trackingInfo.ZoneId);
 
@@ -85,7 +93,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     transaction.Commit();
                 }
             }
-            return new SaleAndAfterSaleDataOutputDto((short)kartInsertDto.AmountItemId, amountItemInfo.Title, kartInsertDto.FinalAmount + kartInsertDto.DiscountAmount, kartInsertDto.DiscountAmount, kartInsertDto.FinalAmount, kartInsertDto.DiscountTypeId, true);
+            return new SaleAndAfterSaleDataOutputDto((short)kartInsertDto.AmountItemId, amountItemInfo.Title, kartInsertDto.FinalAmount + kartInsertDto.DiscountAmount, kartInsertDto.DiscountAmount, kartInsertDto.FinalAmount, kartInsertDto.DiscountTypeId, discountTypeInfo.Title, true);
         }
         private async Task InputValidate(KartInsertManualInputDto inputDto, CancellationToken cancellationToken)
         {

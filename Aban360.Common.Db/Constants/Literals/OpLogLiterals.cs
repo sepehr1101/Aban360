@@ -99,6 +99,9 @@
         public static string BillReturnCauseInsertOpLog => @"علت برگشتی آب‌بها ایجاد شد. کد:{0}  عنوان:{1}  نمایش در لیست:{2}  اعتبار رقم قبلی:{3}  برگشتی محاسبه مجدد:{4}";
         public static string BillReturnCauseUpdateOpLog => @"علت برگشتی آب‌بها ویرایش شد.شناسه:{0}  کد:از{1}به{2}  عنوان:از-{3}-به-{4}-  نمایش در لیست:از{5}به{6}  اعتبار رقم قبلی:از{7}به{8}  برگشتی محاسبه مجدد:از{9}به{10}";
         public static string BillReturnCauseDeleteOpLog => @"علت برگشتی آب‌بها حذف شد. شناسه:{0}";
+        
+        public static string OpenKmRemoveFileOpLog => @"فایل بایگانی الکترونیک حذف شد. شناسه فایل:{0}  دایرکتوری:{1}";
+        public static string OpenKmAddFileOpLog => @"فایل بایگانی الکترونیک ایجاد شد. شناسه فایل:{0}  عنوان:{1}";
 
 
     }

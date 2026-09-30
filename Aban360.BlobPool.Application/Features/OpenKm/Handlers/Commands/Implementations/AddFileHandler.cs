@@ -2,12 +2,17 @@
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Querys.Contracts;
 using Aban360.BlobPool.Domain.Features.DmsServices.Dto.Commands;
+using Aban360.BlobPool.Domain.Features.OpenKm;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.BlobPool.Persistence.Features.DmsServices.Queries.Contracts;
+using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Constants.Literals;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using System.IO;
 
 namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Implementations
 {
@@ -18,13 +23,15 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
         private readonly IAddOrUpdateMetaDataHandler _addMetaHandler;
         private readonly IOpenKmMetaDataQueryServices _matadataService;
         private readonly ICreateFolderHandler _createFolderHandler;
+        private readonly IOpLogCommandService _opLogCommandService;
 
         public AddFileHandler(
             IOptions<OpenKmOptions> options,
             IOpenKmQueryService openKmQueryService,
             IAddOrUpdateMetaDataHandler addMetaHandler,
             IOpenKmMetaDataQueryServices metadataService,
-            ICreateFolderHandler createFolderHandler)
+            ICreateFolderHandler createFolderHandler,
+            IOpLogCommandService opLogCommandService)
         {
             _options = options.Value;
             _options.NotNull(nameof(_options));
@@ -40,19 +47,22 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
 
             _createFolderHandler = createFolderHandler;
             _createFolderHandler.NotNull(nameof(_createFolderHandler));
+
+            _opLogCommandService = opLogCommandService;
+            _opLogCommandService.NotNull(nameof(_opLogCommandService));
         }
-        
-        public async Task<AddFileDto> Handle(AddFormFileInput input, CancellationToken cancellationToken)
-        {           
+
+        public async Task<AddFileDto> Handle(AddFormFileInput input, IAppUser appUser, CancellationToken cancellationToken)
+        {
             StreamContent content = await GetStreamContent(input.File);
-            return await Handle(input.BillId, input.TrackNumber, input.DocumentTypeId, content, input.File.FileName, cancellationToken);
+            return await Handle(input.BillId, input.TrackNumber, input.DocumentTypeId, content, input.File.FileName, appUser, cancellationToken);
         }
-        public async Task<AddFileDto> Handle(AddBase64FileInput input, CancellationToken cancellationToken)
-        {   
+        public async Task<AddFileDto> Handle(AddBase64FileInput input, IAppUser appUser, CancellationToken cancellationToken)
+        {
             StreamContent content = GetStreamContent(input.File);
-            return await Handle(input.BillId, input.TrackNumber, input.DocumentTypeId, content, input.FileName, cancellationToken);
+            return await Handle(input.BillId, input.TrackNumber, input.DocumentTypeId, content, input.FileName, appUser, cancellationToken);
         }
-        public async Task<AddFileDto> Handle(AddDiscountFileInput input, CancellationToken cancellationToken)
+        public async Task<AddFileDto> Handle(AddDiscountFileInput input, IAppUser appUser, CancellationToken cancellationToken)
         {
             StreamContent content = await GetStreamContent(input.File);
             int documentTypeValue = await _matadataService.GetFileValue(input.DocumentTypeId);
@@ -65,27 +75,33 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
                 title = documentTypeValue
             };
             await _addMetaHandler.Handle(addMetaDto, addFileDto.Uuid, cancellationToken);
+            string opLogText = string.Format(OpLogLiterals.OpenKmAddFileOpLog, addFileDto.Uuid, addMetaDto.title);
+            await _opLogCommandService.Insert(opLogText, appUser);
+
             return addFileDto;
         }
 
-        private async Task<AddFileDto> Handle(string billId, long? trackNumber, int documentTypeId, StreamContent content, string name, CancellationToken cancellationToken)
+        private async Task<AddFileDto> Handle(string billId, long? trackNumber, int documentTypeId, StreamContent content, string name, IAppUser appUser, CancellationToken cancellationToken)
         {
-            if(string.IsNullOrWhiteSpace(billId) && !trackNumber.HasValue)
+            if (string.IsNullOrWhiteSpace(billId) && !trackNumber.HasValue)
             {
                 throw new BaseException("خطای پارامتر، شماره پیگیری و شناسه قبض هر دو بدون مقدار هستند");
             }
-            int dotIndex= name.LastIndexOf('.');
+            int dotIndex = name.LastIndexOf('.');
             name = dotIndex > 0 ? name + name.Insert(dotIndex, DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")) : name;
             int documentTypeValue = await _matadataService.GetFileValue(documentTypeId);
             var (folderName, filePath) = GetFoldernameAndPath(billId, trackNumber, name);
             string folderUuid = await _createFolderHandler.Handle(folderName, cancellationToken);
-            AddFileDto addFileDto= await _openKmQueryService.AddFile(filePath, content, name);
+            AddFileDto addFileDto = await _openKmQueryService.AddFile(filePath, content, name);
             await _openKmQueryService.MarkNodeAsMetadatable(addFileDto.Uuid, true);
             AddOrUpdateMetaDataDto addMetaDto = new()
-            {               
-                title=documentTypeValue
+            {
+                title = documentTypeValue
             };
             await _addMetaHandler.Handle(addMetaDto, addFileDto.Uuid, cancellationToken);
+            string opLogText = string.Format(OpLogLiterals.OpenKmAddFileOpLog, addFileDto.Uuid, addMetaDto.title);
+            await _opLogCommandService.Insert(opLogText, appUser);
+
             return addFileDto;
         }
         private (string, string) GetFoldernameAndPath(string billId, long? trackNumber, string fileName)
