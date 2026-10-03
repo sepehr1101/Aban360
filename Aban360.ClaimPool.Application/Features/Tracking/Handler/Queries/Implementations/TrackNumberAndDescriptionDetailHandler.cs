@@ -1,7 +1,9 @@
 ﻿using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
-using Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Contracts;
-using Aban360.Common.Exceptions;
+using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using FluentValidation;
 
@@ -9,33 +11,24 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
 {
     internal sealed class TrackNumberAndDescriptionDetailHandler : ITrackNumberAndDescriptionDetailHandler
     {
-        private readonly ITrackingDetailQueryService _trackingDetailQueryService;
-        private readonly IValidator<TrackingDetailGetDto> _validator;
+        private readonly ICommonZoneService _zoneService;
+        private readonly ITrackingQueryService _trackingQueryService;
         public TrackNumberAndDescriptionDetailHandler(
-            ITrackingDetailQueryService trackingDetailQueryService,
-            IValidator<TrackingDetailGetDto> validator)
+            ICommonZoneService zoneService,
+            ITrackingQueryService trackingQueryService)
         {
-            _trackingDetailQueryService = trackingDetailQueryService;
-            _trackingDetailQueryService.NotNull(nameof(trackingDetailQueryService));
+            _zoneService = zoneService;
+            _zoneService.NotNull(nameof(zoneService));
 
-            _validator = validator;
-            _validator.NotNull(nameof(validator));
+            _trackingQueryService = trackingQueryService;
+            _trackingQueryService.NotNull(nameof(trackingQueryService));
         }
 
-        public async Task<TrackNumberAndDescriptionOutputDto> Handle(TrackingDetailGetDto inputDto, CancellationToken cancellationToken)
+        public async Task<TrackNumberAndDescriptionOutputDto> Handle(Guid id, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await Validation(inputDto, cancellationToken);
-            TrackNumberAndDescriptionOutputDto data = await _trackingDetailQueryService.GetTrackNumberAndDescription(inputDto);
-            return data;
-        }
-        private async Task Validation(TrackingDetailGetDto inputDto, CancellationToken cancellationToken)
-        {
-            var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
-            if (!validationResult.IsValid)
-            {
-                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new BaseException(message);
-            }
+            TrackingOutputDto trackingInfo = await _trackingQueryService.Get(id);
+            await _zoneService.IsUserInZone(appUser, trackingInfo.ZoneId);
+            return new TrackNumberAndDescriptionOutputDto(trackingInfo.TrackNumber, trackingInfo.Description ?? string.Empty);
         }
     }
 }

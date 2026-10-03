@@ -62,6 +62,7 @@
         public static string NotFoundReadingNumber => "شماره اشتراک یافت نشد";
         public static string NotFoundAnyCustomer => "هیچ مشترکی با اطلاعات وارد شده یافت نشد";
         public static string InvalidTrackNumber => "شماره پیگیری یافت نشد.";
+        public static string InvalidTrackId => "شناسه یکتا پیگیری یافت نشد.";
         public static string InvalidDate => "تاریخ ناصحیح";
         public static string InvalidFromDate => "تاریخ شروع ناصحیح";
         public static string InvalidToDate => "تاریخ پایان ناصحیح";

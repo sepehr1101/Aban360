@@ -132,7 +132,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                         TRIM(eshtrak) ReadingNumber,
                     	TRIM(name) FirstName,
                     	TRIM(family) Surname,
-                    	TRIM(father_nam) FatherName,
+                        TRIM(name) + ' ' + TRIM(family) FullName,
+                     	TRIM(father_nam) FatherName,
                     	TRIM(meli_cod) NationalCode,
                     	TRIM(phone_no) PhoneNumber,
                     	TRIM(mobile) MobileNumber,
@@ -164,8 +165,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 						cod_takh DiscountTypeId,
 						t15.C1 DiscountTypeTitle,
 						ted_takh DiscountCount,
+						ted_afrad FamilyCount,
+						ted_khane HouseholdNumber,
 						edareh_k IsSpecial,
 						CounterType,
+                        cv.Title CounterTypeTitle,
+						zarib_f RegionMultiplier,
+
 						TRIM(C99) NotificationMobile,
 						TRIM(sharh) Description ,
                         zarib_f HouseValue,
@@ -235,6 +241,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 						ON enshab=t15.C0
                     Left join [Db70].dbo.T7 t7
                     	On noe_va=t7.C0
+					Join [Db70].dbo.CounterVaziat cv
+						ON CounterType=cv.MoshtarakinId
                     where {condition}
                     Order By date_ask Desc";
         }
@@ -250,6 +258,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                         TRIM(eshtrak) ReadingNumber,
                     	TRIM(name) FirstName,
                     	TRIM(family) Surname,
+                        TRIM(name) + ' ' + TRIM(family) FullName,
                     	TRIM(father_nam) FatherName,
                     	TRIM(meli_cod) NationalCode,
                     	TRIM(phone_no) PhoneNumber,
@@ -282,8 +291,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 						cod_takh DiscountTypeId,
 						t15.C1 DiscountTypeTitle,
 						ted_takh DiscountCount,
+						ted_afrad FamilyCount,
+						ted_khane HouseholdNumber,
 						edareh_k IsSpecial,
 						CounterType,
+                        cv.Title CounterTypeTitle,
+						zarib_f RegionMultiplier,
+
 						TRIM(C99) NotificationMobile,
 						TRIM(sharh) Description ,
                         zarib_f HouseValue,
@@ -353,6 +367,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 						ON enshab=t15.C0
                     Left join [Db70].dbo.T7 t7
                     	On noe_va=t7.C0
+					Join [Db70].dbo.CounterVaziat cv
+						ON CounterType=cv.MoshtarakinId
                     where {condition} AND sabt<>1
                     Order By date_ask Desc";
         }
@@ -368,6 +384,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                         TRIM(eshtrak) ReadingNumber,
                     	TRIM(name) FirstName,
                     	TRIM(family) Surname,
+                        TRIM(name) + ' ' + TRIM(family) FullName,
                     	TRIM(father_nam) FatherName,
                     	TRIM(meli_cod) NationalCode,
                     	TRIM(phone_no) PhoneNumber,
@@ -400,8 +417,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 						cod_takh DiscountTypeId,
 						t15.C1 DiscountTypeTitle,
 						ted_takh DiscountCount,
+						ted_afrad FamilyCount,
+						ted_khane HouseholdNumber,
 						edareh_k IsSpecial,
 						CounterType,
+                        cv.Title CounterTypeTitle,
+						zarib_f RegionMultiplier,
+
 						TRIM(C99) NotificationMobile,
 						TRIM(sharh) Description ,
                         zarib_f HouseValue,
@@ -471,6 +493,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 						ON enshab=t15.C0
                     join [Db70].dbo.T7 t7
                     	On noe_va=t7.C0
+					Join [Db70].dbo.CounterVaziat cv
+						ON CounterType=cv.MoshtarakinId
                     Where id=@id";
         }
         private string GetAllRequestByCustomerNumber(string dbName)

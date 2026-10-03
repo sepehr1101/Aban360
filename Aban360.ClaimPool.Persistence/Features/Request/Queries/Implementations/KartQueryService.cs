@@ -1,7 +1,9 @@
 ﻿using Aban360.CalculationPool.Domain.Features.ServiceLink;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
+using Aban360.ReportPool.Domain.Base;
 using Dapper;
 using Microsoft.Extensions.Configuration;
 
@@ -20,6 +22,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             string query = GetByTrackNumberQuery(dbName);
             IEnumerable<CalculationRequestDisplayDataOutputDto> data = await _sqlReportConnection.QueryAsync<CalculationRequestDisplayDataOutputDto>(query, new { stringTrackNumber });
             return data;
+        }
+        public async Task<IEnumerable<OfferingAmountOutputDto>> GetByTrackNumber(string tableName, string trackNumber, int zoneId)
+        {
+            string dbName = GetDbName(zoneId);
+            string offeringQuery = GetRegisterOfferingQuery(dbName, tableName);
+            return await _sqlReportConnection.QueryAsync<OfferingAmountOutputDto>(offeringQuery, new { trackNumber });
         }
         public async Task<CalculationRequestDisplayDataOutputDto> Get(int id, int zoneId)
         {
@@ -66,6 +74,18 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 					Join [Db70].dbo.T15 t15
 						ON k.cod_takh = t15.C0
                     where k.par_no=@stringTrackNumber";
+        }
+        private string GetRegisterOfferingQuery(string dbName, string tableName)
+        {
+            return $@"Select 
+						t100.C1 Title,
+						pard Amount,
+						takhfif Discount
+					From [{dbName}].dbo.{tableName} k
+					Join [Db70].dbo.T100 t100
+						ON k.noe_bed=t100.C0
+					Where LTRIM(k.par_no,'0')=@trackNumber
+					Order By t100.C0";
         }
         private string GetByIdQuery(string dbName)
         {

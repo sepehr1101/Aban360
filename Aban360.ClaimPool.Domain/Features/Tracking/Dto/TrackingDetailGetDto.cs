@@ -4,8 +4,8 @@
     {
         public int ZoneId { get; set; }
         public Guid TrackId { get; set; }
-        public string TrackNumber { get; set; }
-        public TrackingDetailGetDto(int zoneId, Guid trackId, string trackNumber)
+        public int TrackNumber { get; set; }
+        public TrackingDetailGetDto(int zoneId, Guid trackId, int trackNumber)
         {
             ZoneId = zoneId;
             TrackId = trackId;

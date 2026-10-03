@@ -4,5 +4,13 @@
     {
         public int TrackNumber { get; set; }
         public string? Description { get; set; }
+        public TrackNumberAndDescriptionOutputDto(int trackNumber, string? description)
+        {
+            TrackNumber = trackNumber;
+            Description = description;
+        }
+        public TrackNumberAndDescriptionOutputDto()
+        {
+        }
     }
 }

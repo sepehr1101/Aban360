@@ -24,6 +24,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IValidator<MeterReadingExcelFileCreateDto> _validator;
         private static string _reportTitle = ReportLiterals.MeterReadingCreateFile;
         private static string _dbfPath = DirectoryLiterals.DbfFolderPath;
+        private static int[] _validZeroCounterStateCode = { (int)CounterStateCodeEnum.Close, (int)CounterStateCodeEnum.Block };
         public MeterReadingExcelFileCreateHandler(
             IMeterReadingCreateBaseHandler meterReadingCreateBaseHandler,
             IValidator<MeterReadingExcelFileCreateDto> validator,
@@ -73,10 +74,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     count++;
                     try
                     {
-                        if (count == 80)
-                        {
-                            var s = 1;
-                        }
                         errorMessage = ExceptionLiterals.InvalidRecord(count);
 
                         //0:CurrentNumber 1:CurretnDate 2:CurrentCounterState 3:AgentCode 4:ZoneId 5:ZoneTitle
@@ -92,7 +89,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                         int zoneId = Convert.ToInt32(row.ElementAt(4).Value);
 
 
-                        if ((currentNumber is null || currentNumber == 0) && counterStateCode != (int)CounterStateCodeEnum.Close)
+                        if ((currentNumber is null || currentNumber == 0) && !_validZeroCounterStateCode.Contains(counterStateCode))
                         {
                             errorMessage = string.Join(" - ", errorMessage, ExceptionLiterals.InvalidZeroMeterNumber);
                             throw new ReadingException(errorMessage);

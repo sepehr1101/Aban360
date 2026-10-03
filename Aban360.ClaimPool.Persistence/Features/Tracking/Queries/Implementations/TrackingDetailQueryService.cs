@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
+﻿using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Dapper;
@@ -53,14 +54,14 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
         {
             string dbName = GetDbName(inputDto.ZoneId);
 
-            IEnumerable<OfferingAmountOutputDto> offerings = await GetOfferings("karten75", dbName, inputDto.TrackNumber);
+            IEnumerable<OfferingAmountOutputDto> offerings = await GetOfferings("karten75", dbName, inputDto.TrackNumber.ToString());
             if (!offerings.Any())
             {
-                offerings = await GetOfferings("kart", dbName, inputDto.TrackNumber);
+                offerings = await GetOfferings("kart", dbName, inputDto.TrackNumber.ToString());
             }
 
             string installmentQuery = GetIstallmentAndpaymentQuery(dbName);
-            IEnumerable<InstallmentAndPaymentOutputDto> installments = await _sqlReportConnection.QueryAsync<InstallmentAndPaymentOutputDto>(installmentQuery, new { inputDto.TrackNumber });
+            IEnumerable<InstallmentRequestDataOutputDto> installments = await _sqlReportConnection.QueryAsync<InstallmentRequestDataOutputDto>(installmentQuery, new { inputDto.TrackNumber });
 
             long sumAmount = offerings?.Sum(x => x.Amount) ?? 0;
             long sumDiscount = offerings?.Sum(x => x.Discount) ?? 0;
@@ -272,7 +273,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Tracking.Queries.Implementation
             return $@"Select 
 						pard Amount,
 						mohlat DueDateJalali,
-						TRIM(sh_pard1) PayId
+						TRIM(sh_pard1) PaymentId
 					From [{dbName}].dbo.ghest
 					where  LTRIM(par_no,'0')=@trackNumber
 					Order by mohlat ";

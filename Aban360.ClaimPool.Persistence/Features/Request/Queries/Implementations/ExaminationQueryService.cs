@@ -27,10 +27,24 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             AssessmentDataOutputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<AssessmentDataOutputDto>(query, new { id });
             return result;
         }
-        public async Task<AssessmentDataOutputDto> GetByTrackId(Guid id)
+        public async Task<AssessmentDataOutputDto> GetByTrackId(Guid id, bool hasException)
         {
             string query = GetByTrackIdQuery();
-            AssessmentDataOutputDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<AssessmentDataOutputDto>(query, new { id });
+            AssessmentDataOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<AssessmentDataOutputDto>(query, new { id });
+            if (result is null && hasException)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidTrackId);
+            }
+            return result;
+        }
+        public async Task<AssessmentDataOutputDto> Get(int trackNumber, DateTime assessmentSeenDateTime, bool hasException)
+        {
+            string query = GetByAssessmentSeenDaTeTimeQuery();
+            AssessmentDataOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<AssessmentDataOutputDto>(query, new { trackNumber, RegisterDateGregorian = assessmentSeenDateTime.Date });
+            if (result is null && hasException)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidTrackId);
+            }
             return result;
         }
         public async Task<AssessmentDataOutputDto> GetLatestByTrackNumber(int trackNumber)
@@ -85,6 +99,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t51.C2 ZoneTitle,
                     	ResultId,
                     	t64.C1 ResultTitle,
+						t64.C4 IsResultSuccess,
                     	SetResultDateTime SetResultDateTime,
                     	ResultDescription Description,
                     	TrackId ,
@@ -124,6 +139,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t51.C2 ZoneTitle,
                     	ResultId,
                     	t64.C1 ResultTitle,
+						t64.C4 IsResultSuccess,
                     	SetResultDateTime SetResultDateTime,
                     	ResultDescription Description,
                     	TrackId ,
@@ -164,6 +180,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t51.C2 ZoneTitle,
                     	ResultId,
                     	t64.C1 ResultTitle,
+						t64.C4 IsResultSuccess,
                     	SetResultDateTime SetResultDateTime,
                     	ResultDescription Description,
                     	TrackId ,
@@ -189,6 +206,48 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     Where 
                         TrackId=@id OR 
 						TrackIdResult=@id";
+        }
+        private string GetByAssessmentSeenDaTeTimeQuery()
+        {
+            return @"Select 
+                    	Id,
+                    	TrackNumber,
+                    	BillId,
+                    	ExaminerCode AssessmentCode ,
+                    	ExaminerName AssessmentName,
+                    	ExaminerMobile AssessmentMobile,
+                    	DayJalali AssessmentDateJalali,
+                    	DayMiladi AssessmentGregorianDateTime,
+                    	ZoneId,
+                    	t51.C2 ZoneTitle,
+                    	ResultId,
+                    	t64.C1 ResultTitle,
+						t64.C4 IsResultSuccess,
+                    	SetResultDateTime SetResultDateTime,
+                    	ResultDescription Description,
+                    	TrackId ,
+                    	TrackIdResult,
+                    	X1,
+                    	Y1,
+                    	X2,
+                    	Y2,
+                        Accuracy,
+                    	Eshterak ReadingNumber,
+                    	Arse Premises,
+                    	ArzeshMelk HouserValue,
+                    	KarbariId UsageId,
+                    	t41.C1 UsageTitle,
+                    	AllInJson
+                    From AbAndFazelab.dbo.Examination 
+                    Left Join [Db70].dbo.T51 t51
+                    	ON ZoneId=t51.C0
+                    Left Join [Db70].dbo.T41 t41
+                    	ON KarbariId=t41.C0
+                    Left Join [Db70].dbo.T64 t64
+                    	ON ResultId=t64.C0
+                    Where 
+                        TrackNumber = @TrackNumber AND
+						Cast(SetResultDateTime as Date) = @RegisterDateGregorian ";
         }
         private string GetHasResultByTrackIdQuery()
         {
