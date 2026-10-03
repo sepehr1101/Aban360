@@ -1,4 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Tracking.Dto
+﻿using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+
+namespace Aban360.ClaimPool.Domain.Features.Tracking.Dto
 {
     public record AmountConfirmedOutputDto
     {
@@ -7,7 +9,7 @@
         public long OfferingDiscount { get; set; }
         public long OfferingPayable { get; set; }
 
-        public IEnumerable<InstallmentAndPaymentOutputDto> IstallmentsAndPayments { get; set; }
+        public IEnumerable<InstallmentRequestDataOutputDto> IstallmentsAndPayments { get; set; }
         public long IstallmentAndPaymentAmount { get; set; }
     }
 }   

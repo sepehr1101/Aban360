@@ -29,7 +29,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
         public async Task<AssessmentLocationsGetDto> Handle(Guid trackId, CancellationToken cancellationToken)
         {
-            AssessmentDataOutputDto examinationInfo = await _examinationQueryService.GetByTrackId(trackId);
+            AssessmentDataOutputDto examinationInfo = await _examinationQueryService.GetByTrackId(trackId, true);
             TrackingOutputDto trackingInfo = await _trackingQueryService.Get(trackId);
             AssessmentLocationsGetDto result = new()
             {

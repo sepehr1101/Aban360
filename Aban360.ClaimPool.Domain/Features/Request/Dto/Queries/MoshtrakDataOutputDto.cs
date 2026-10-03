@@ -47,7 +47,7 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
         public string DiscountTypeTitle { get; set; }
         public int DiscountCount { get; set; }
         public bool IsSpecial { get; set; }
-        public bool CounterType { get; set; }
+        public int CounterType { get; set; }
         public string? NotificationNumber { get; set; }
         public string? Description { get; set; }
         public int HouseValue { get; set; }

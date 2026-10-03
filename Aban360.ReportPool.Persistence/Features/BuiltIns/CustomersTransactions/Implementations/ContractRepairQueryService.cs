@@ -130,7 +130,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                         c.SureName AS Surname,
                         c.FirstName + ' ' + c.SureName AS FullName,
                     
-                        r.RegisterDayJalali,
+                        r.RegisterDayJalali ChangeDateJalali,
                         r.PreviousRegisterDayJalali,
                     
                         r.UsageTitle,

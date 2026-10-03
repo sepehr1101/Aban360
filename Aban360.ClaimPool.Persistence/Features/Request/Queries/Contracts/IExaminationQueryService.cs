@@ -6,7 +6,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts
     {
         Task<AssessmentGetDto> Get(int code);
         Task<AssessmentDataOutputDto> Get(Guid id);
-        Task<AssessmentDataOutputDto> GetByTrackId(Guid id);
+        Task<AssessmentDataOutputDto> GetByTrackId(Guid id, bool hasException);
+        Task<AssessmentDataOutputDto> Get(int trackNumber, DateTime assessmentSeenDateTime, bool hasException);
         Task<AssessmentDataOutputDto> GetLatestByTrackNumber(int trackNumber);
         Task<bool> HasResultByTrackId(Guid trackId);
         Task<int> GetWithoutResultInDate(string assessmentDateJalai, int assessmentCode);

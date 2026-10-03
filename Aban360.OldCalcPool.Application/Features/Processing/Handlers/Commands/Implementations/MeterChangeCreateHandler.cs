@@ -9,9 +9,11 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Persistence.Constants;
 using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
+using Aban360.ReportPool.Domain.Base;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Xml.Linq;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -44,28 +46,33 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             await Validation(inputDto, cancellationToken);
             var (memberInfo, changeCause) = await GetInfos(inputDto);
             var (tavizInsertDto, meterChangeInsertDto, contorMeterChangeUpdateDto) = GetCommandDtos(inputDto, memberInfo, changeCause);
-            string dbName = GetDbName(memberInfo.ZoneId);
 
             if (inputDto.IsConfirm)
             {
-                using (IDbConnection connection = _sqlReportConnection)
+                await ExecSql(tavizInsertDto, meterChangeInsertDto, contorMeterChangeUpdateDto);
+            }
+        }
+        private async Task ExecSql(TavizInsertDto tavizInsertDto, MeterChangeInsertDto meterChangeInsertDto, ContorUpdateDto contorMeterChangeUpdateDto)
+        {
+            string dbName = GetDbName(tavizInsertDto.ZoneId);
+
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
                 {
-                    if (connection.State != ConnectionState.Open)
-                    {
-                        connection.Open();
-                    }
-                    using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
-                    {
-                        TavizCommandService tavizCommandService = new(connection, transaction);
-                        MeterChangeCommandService meterChangeCommandService = new(connection, transaction);
-                        ContorCommandService contorCommandService = new(connection, transaction);
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    TavizCommandService tavizCommandService = new(connection, transaction);
+                    MeterChangeCommandService meterChangeCommandService = new(connection, transaction);
+                    ContorCommandService contorCommandService = new(connection, transaction);
 
-                        await tavizCommandService.Insert(tavizInsertDto, dbName);
-                        await meterChangeCommandService.Insert(meterChangeInsertDto);
-                        await contorCommandService.Update(contorMeterChangeUpdateDto, dbName, true);
+                    await tavizCommandService.Insert(tavizInsertDto, dbName);
+                    await meterChangeCommandService.Insert(meterChangeInsertDto);
+                    await contorCommandService.Update(contorMeterChangeUpdateDto, dbName, true);
 
-                        transaction.Commit();
-                    }
+                    transaction.Commit();
                 }
             }
         }
@@ -75,7 +82,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 ZoneId = memberInfo.ZoneId,
                 CustomerNumber = memberInfo.CustomerNumber,
-                Operator = 0,
+                Operator = ReportLiterals.RayabOperator,
                 MeterNumber = inputDto.MeterNumber,
                 MeterChangeDateJalali = inputDto.MeterChangeDateJalali,
                 MeterDiameterId = memberInfo.MeterDiameterId,
