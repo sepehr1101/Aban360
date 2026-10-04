@@ -13,6 +13,7 @@
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
         public string? ResultTitle { get; set; }
+        public bool IsResultSuccess { get; set; }
         public int? ResultId { get; set; }
         public DateTime? SetResultDateTime { get; set; }
         public string? Description { get; set; }

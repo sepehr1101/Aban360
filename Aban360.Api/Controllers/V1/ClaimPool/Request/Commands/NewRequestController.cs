@@ -54,7 +54,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             NewRequestOutputDto outputDto;
             if (assessmentSetTimeOutputDto is not null)
             {
-                SetAssessmentTimeOutputDto assessmentTimeSmsOutputDto = GetAssessmentTimeOutputDto(true, true, assessmentSetTimeOutputDto);
+                SetAssessmentTimeOutputDto assessmentTimeSmsOutputDto = GetAssessmentTimeOutputDto(hasCustomerSms: true, hasAssessmentSms: true, assessmentSetTimeOutputDto);
                 outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null, assessmentTimeSmsOutputDto.HasCustomerSms, assessmentTimeSmsOutputDto.CustomerMessage, assessmentTimeSmsOutputDto.HasAssessmentSms, assessmentTimeSmsOutputDto.AssessmentMessage, assessmentDateJalali: assessmentSetTimeOutputDto.AssessmentDateJalai, assessmentName: assessmentSetTimeOutputDto.AssessmentName);
                 return Ok(outputDto);
             }
@@ -67,6 +67,17 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<TrackingDuplicateValidationOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> IsDuplicateNewRequest([FromBody] NewTrackingDuplicateValidationInputDto inputDto, CancellationToken cancellationToken)
         {
+            TrackingDuplicateValidationInputDto totalValidation = new(null, inputDto.NeighbourBillId, inputDto.NationalCode, TrackingDuplicateValidationTypeEnum.ByNationalCode);
+            TrackingDuplicateValidationOutputDto result = await _requestDuplicateValidation.Handle(totalValidation, cancellationToken);
+            return Ok(result);
+        }
+        
+        [HttpGet]
+        [Route("is-duplicate/new/{neighbourBillId}/{nationalCode}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TrackingDuplicateValidationOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> IsDuplicateNewRequestFromQuery(string neighbourBillId,string nationalCode, CancellationToken cancellationToken)
+        {
+            NewTrackingDuplicateValidationInputDto inputDto = new(neighbourBillId, nationalCode);
             TrackingDuplicateValidationInputDto totalValidation = new(null, inputDto.NeighbourBillId, inputDto.NationalCode, TrackingDuplicateValidationTypeEnum.ByNationalCode);
             TrackingDuplicateValidationOutputDto result = await _requestDuplicateValidation.Handle(totalValidation, cancellationToken);
             return Ok(result);

@@ -60,11 +60,11 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         }
         private TrackingDetailGetDto GetTrackDetail(TrackingOutputDto input)
         {
-            return new TrackingDetailGetDto(input.ZoneId, input.TrackId, input.TrackNumber.ToString());
+            return new TrackingDetailGetDto(input.ZoneId, input.TrackId, input.TrackNumber);
         }
         private async Task<IActionResult> AssessmentResult(TrackingDetailGetDto TrackDetailInput, GeneralRequestDataOutputDto generalInfo, CancellationToken cancellationToken)
         {
-            SetExaminationResultOutputDto assessmentResult = await _setExaminationResultDetailHandler.Handle(TrackDetailInput, cancellationToken);
+            SetExaminationResultOutputDto assessmentResult = await _setExaminationResultDetailHandler.Handle(TrackDetailInput.TrackId, CurrentUser, cancellationToken);
             if (assessmentResult.IsResultSuccess)
             {
                 return Ok(GetAssessmentSuccess(assessmentResult, generalInfo));
@@ -76,7 +76,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         }
         private async Task<IActionResult> ReCalculation(TrackingDetailGetDto TrackDetailInput, GeneralRequestDataOutputDto generalInfo, CancellationToken cancellationToken)
         {
-            SetExaminationResultOutputDto assessmentResult = await _setExaminationResultDetailHandler.Handle(TrackDetailInput, cancellationToken);
+            SetExaminationResultOutputDto assessmentResult = await _setExaminationResultDetailHandler.Handle(TrackDetailInput.TrackId, CurrentUser, cancellationToken);
             return Ok(GetAssessmentSuccess(assessmentResult, generalInfo));
         }
         private AssessmentSuccessResultDataOutputDto GetAssessmentSuccess(SetExaminationResultOutputDto assessmentResult, GeneralRequestDataOutputDto generalInfo)

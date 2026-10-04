@@ -71,6 +71,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             TrackingDuplicateValidationOutputDto result = await _requestDuplicateValidation.Handle(totalValidation, cancellationToken);
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("is-duplicate/new/{billId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TrackingDuplicateValidationOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> IsDuplicateAfterSaleRequestFromQuery(string billId, CancellationToken cancellationToken)
+        {
+            TrackingDuplicateValidationInputDto totalValidation = new(billId, null, null, TrackingDuplicateValidationTypeEnum.ByBillId);
+            TrackingDuplicateValidationOutputDto result = await _requestDuplicateValidation.Handle(totalValidation, cancellationToken);
+            return Ok(result);
+        }
         private SetAssessmentTimeOutputDto GetAssessmentTimeOutputDto(bool hasCustomerSms, bool hasAssessmentSms, SetAssessmentTimeDataOutputDto result)
         {
             string customerText = string.Format(SmsTemplates.RequestTimeSet, result.AssessmentName, result.AssessmentMobileNumber, result.AssessmentDateJalai, result.TrackNumber);

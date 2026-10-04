@@ -6,7 +6,6 @@ namespace Aban360.ReportPool.Persistence.Base
 {
     internal abstract class WaterReturnBase : AbstractBaseConnection
     {
-
         private static int[] _netItems = { 1, 3, 4, 5 };
         private static int[] _rawItems = { 1 };
         private static int[] _returnedItems = { 3, 4, 5 };

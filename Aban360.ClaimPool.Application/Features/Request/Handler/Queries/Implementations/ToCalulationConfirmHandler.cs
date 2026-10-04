@@ -45,7 +45,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             TrackingOutputDto trackingInfo = await _trackingQueryService.Get(trackId);
             MoshtrakGetDto moshtrackSearch = new(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(moshtrackSearch, MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
-            AssessmentDataOutputDto assessmentInfo = await _assessmentQueryService.GetByTrackId(trackId);
+            AssessmentDataOutputDto assessmentInfo = await _assessmentQueryService.GetByTrackId(trackId, true);
             await _commonZoneService.IsUserInZone(appUser, trackingInfo.ZoneId);
 
             MoshtrakServiceDto sData = GetSDto(moshtrakInfo);

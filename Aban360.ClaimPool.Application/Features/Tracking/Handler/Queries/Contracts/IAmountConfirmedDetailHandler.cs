@@ -1,9 +1,10 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
+using Aban360.Common.ApplicationUser;
 
 namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts
 {
     public interface IAmountConfirmedDetailHandler
     {
-        Task<AmountConfirmedOutputDto> Handle(TrackingDetailGetDto inputDto, CancellationToken cancellationToken);
+        Task<AmountConfirmedOutputDto> Handle(Guid id, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

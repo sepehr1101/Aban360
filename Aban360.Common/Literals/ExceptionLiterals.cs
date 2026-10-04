@@ -62,6 +62,7 @@
         public static string NotFoundReadingNumber => "شماره اشتراک یافت نشد";
         public static string NotFoundAnyCustomer => "هیچ مشترکی با اطلاعات وارد شده یافت نشد";
         public static string InvalidTrackNumber => "شماره پیگیری یافت نشد.";
+        public static string InvalidTrackId => "شناسه یکتا پیگیری یافت نشد.";
         public static string InvalidDate => "تاریخ ناصحیح";
         public static string InvalidFromDate => "تاریخ شروع ناصحیح";
         public static string InvalidToDate => "تاریخ پایان ناصحیح";
@@ -354,5 +355,9 @@
 
         public static string InvalidVillageIdByZoneSelect => "با انتخاب وضعیت 'شهری' مقادیر روستایی را از حالت انتخاب حذف کنید.";
         public static string InvalidZoneIdByVillageSelect => "با انتخاب وضعیت 'روستایی' مقادیر شهری را از حالت انتخاب حذف کنید.";
+
+        public static string InvalidInsertOtherExpensesItems => "خطا در ذخیره اقلام هزینه های متفرقه";
+        public static string InvalidDeleteOtherExpensesItems => "خطا در حذف اقلام هزینه های متفرقه";
+
     }
 }

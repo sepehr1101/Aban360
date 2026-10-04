@@ -10,24 +10,23 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
         public MeterChangeValidator()
         {
             RuleFor(g => g.BillId)
-            .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
-            .NotNull().WithMessage(ExceptionLiterals.NotNull);
+                .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(g => g.MeterChangeDateJalali)
-                        .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
-                        .NotNull().WithMessage(ExceptionLiterals.NotNull);
+                .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(g => g.MeterNumber)
-                        .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
-                        .NotNull().WithMessage(ExceptionLiterals.NotNull);
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(g => g.BodySerial)
-                        .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
-                        .NotNull().WithMessage(ExceptionLiterals.NotNull);
+                .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(g => g.ChangeCauseId)
-                        .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
-                        .NotNull().WithMessage(ExceptionLiterals.NotNull);
+                .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
         }
     }

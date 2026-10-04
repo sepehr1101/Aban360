@@ -88,7 +88,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             {
                 return await GetResult(autoBacksInfo, input, memberInfo);
             }
-
+            if (autoBacksInfo.Where(a => a.IsConfirmed).Any())
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidReturnDuplicate);
+            }
 
             string zoneDbName = GetDbName((int)(repairInfo?.Town ?? 0));
             string atlasDbName = ReportLiterals.Atlas;

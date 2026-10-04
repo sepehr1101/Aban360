@@ -11,6 +11,7 @@
         public string? ReadingNumber { get; set; }
         public string? FirstName { get; set; }
         public string? Surname { get; set; }
+        public string? FullName { get; set; }
         public string FatherName { get; set; }
         public string NationalCode { get; set; }
         public string? PhoneNumber { get; set; }
@@ -24,7 +25,10 @@
         public int UsageId { get; set; }
         public string UsageTitle { get; set; }
         public bool IsRegistered { get; set; }
+        public int RegionMultiplier { get; set; }
 
+        public int FamilyCount { get; set; }
+        public int HouseholdNumber { get; set; }
         public int BranchTypeId { get; set; }
         public string BranchTypeTitle { get; set; }
         public int Premises { get; set; }
@@ -47,7 +51,8 @@
         public string DiscountTypeTitle { get; set; }
         public int DiscountCount { get; set; }
         public bool IsSpecial { get; set; }
-        public bool CounterType { get; set; }
+        public int CounterType { get; set; }
+        public string? CounterTypeTitle { get; set; }
         public string? NotificationMobile { get; set; }
         public string? Description { get; set; }
         public int HouseValue { get; set; }
