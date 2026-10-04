@@ -28,10 +28,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryWithStringCodeDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterRequestSummaryHeaderOutputDto, SewageWaterRequestSummaryWithStringCodeDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterRequestWithStringCodeInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryWithStringCodeDataOutputDto> result = await _sewageWaterRequestSummaryByZoneHandler.Handle(input, cancellationToken);
+            ReportOutput<SewageWaterRequestSummaryHeaderOutputDto, SewageWaterRequestSummaryWithStringCodeDataOutputDto> result = await _sewageWaterRequestSummaryByZoneHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 

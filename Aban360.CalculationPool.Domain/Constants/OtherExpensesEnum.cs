@@ -2,7 +2,7 @@
 {
     public enum OtherExpensesEnum
     {
-        Connect = 303,//s32   t9:27
+        ConnectDisconnect = 303,
         Fines = 306,
         MeterTest = 307,
     }

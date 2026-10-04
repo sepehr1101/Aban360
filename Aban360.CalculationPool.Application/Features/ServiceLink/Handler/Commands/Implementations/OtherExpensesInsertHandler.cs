@@ -1,5 +1,7 @@
 ﻿using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Contracts;
+using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.ServiceLink;
+using Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
@@ -32,7 +34,9 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         private readonly IVariabService _variabService;
         private readonly IModifyTypeQueryService _modifyTypeQueryService;
         private readonly IT100QueryService _t100QueryService;
+        private readonly IOtherExpensesItemsQueryService _otherExpensesItemsQueryService;
         private readonly IValidator<OtherExpensesInsertInputDto> _validator;
+        private readonly OtherExpensesEnum[] _manualServiceIds = { OtherExpensesEnum.ConnectDisconnect, OtherExpensesEnum.MeterTest };
         private string _currentDateJalali = DateTime.Now.ToShortPersianDateString();
         private string _title = ReportLiterals.ServiceLinkOtherExpenses;
         private string _insertWayTitle = "رایاب";
@@ -51,6 +55,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
             IVariabService variabService,
             IModifyTypeQueryService modifyTypeQueryService,
             IT100QueryService t100QueryService,
+            IOtherExpensesItemsQueryService otherExpensesItemsQueryService,
             IValidator<OtherExpensesInsertInputDto> validator,
             IConfiguration configuration)
                 : base(configuration)
@@ -76,16 +81,20 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
             _t100QueryService = t100QueryService;
             _t100QueryService.NotNull(nameof(t100QueryService));
 
+            _otherExpensesItemsQueryService = otherExpensesItemsQueryService;
+            _otherExpensesItemsQueryService.NotNull(nameof(otherExpensesItemsQueryService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
 
         public async Task<ReportOutput<OtherExpensesHeaderOutputDto, OtherExpensesDataOutputDto>> Handle(OtherExpensesInsertInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await InputValidate(inputDto, appUser, cancellationToken);
+            await InputValidate(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumbere = await _memberQueryService.Get(inputDto.BillId);
             MemberInfoGetDto memberInfo = await _memberQueryService.Get(zoneIdAndCustomerNumbere);
             await _zoneService.IsUserInZone(appUser, memberInfo.ZoneId);
+            await AmountValidate(memberInfo, inputDto);
             decimal barge = await _variabService.GetAndRenew(memberInfo.ZoneId);
 
             IEnumerable<KartInsertDto> kartsInsertDto = GetKartInsertDto(inputDto, memberInfo, (int)barge);
@@ -158,13 +167,24 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
             }
             return new ReportOutput<OtherExpensesHeaderOutputDto, OtherExpensesDataOutputDto>(_title, header, data);
         }
-        private async Task InputValidate(OtherExpensesInsertInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        private async Task InputValidate(OtherExpensesInsertInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
+            }
+        }
+        private async Task AmountValidate(MemberInfoGetDto memberInfo, OtherExpensesInsertInputDto inputDto)
+        {
+            if (_manualServiceIds.Contains(inputDto.Offering))
+            {
+                OtherExpensesItemsDataDto otherExpensesItemsInfo = await _otherExpensesItemsQueryService.Get(new OtherExpensesItemsGetDto(memberInfo.ZoneId, memberInfo.UsageId, (int)inputDto.Offering));
+                if (inputDto.Amount != otherExpensesItemsInfo.Amount)
+                {
+                    throw new InvalidBillCommandException(ExceptionLiterals.InvalidAmount);
+                }
             }
         }
         private MoshtrakCreateDto GetMoshtrackCreateDto(OtherExpensesInsertInputDto inputDto, MemberInfoGetDto memberInfo, int trackNumber)//todo

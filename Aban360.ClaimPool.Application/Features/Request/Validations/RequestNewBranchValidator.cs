@@ -37,15 +37,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .Length(5, 100).WithMessage(ExceptionLiterals.Between5And100);
 
-            RuleFor(f => f.NeighbourBillId)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull)
-                .MinimumLength(6).WithMessage(ExceptionLiterals.NotLessThan6)
-                .Must(IsDigit).WithMessage(ExceptionLiterals.MustDigit);
-
             RuleFor(f => f.PostalCode)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .Must(IsValidPostalCode).WithMessage(ExceptionLiterals.PostalCodeFormat);
+
+            RuleFor(f => f.ZoneId)
+                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(f => f.SelectedServices)
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)

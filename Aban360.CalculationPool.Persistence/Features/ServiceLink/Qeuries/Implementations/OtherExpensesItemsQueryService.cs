@@ -15,26 +15,26 @@ namespace Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Imple
         {
         }
 
-        public async Task<IEnumerable<OtherExpensesItemsGetDto>> Get()
+        public async Task<IEnumerable<OtherExpensesItemsDataDto>> Get()
         {
             string query = GetAllQuery();
-            IEnumerable<OtherExpensesItemsGetDto> result = await _sqlReportConnection.QueryAsync<OtherExpensesItemsGetDto>(query);
+            IEnumerable<OtherExpensesItemsDataDto> result = await _sqlReportConnection.QueryAsync<OtherExpensesItemsDataDto>(query);
             return result;
         }
-        public async Task<OtherExpensesItemsGetDto> Get(int id)
+        public async Task<OtherExpensesItemsDataDto> Get(int id)
         {
             string query = GetByIdQuery();
-            OtherExpensesItemsGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<OtherExpensesItemsGetDto>(query, new { id });
+            OtherExpensesItemsDataDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<OtherExpensesItemsDataDto>(query, new { id });
             if (result == null)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidId);
             }
             return result;
         }
-        public async Task<OtherExpensesItemsGetDto> GetByItemId(int id)
+        public async Task<OtherExpensesItemsDataDto> Get(OtherExpensesItemsGetDto inputDto)
         {
             string query = GetByIdQuery();
-            OtherExpensesItemsGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<OtherExpensesItemsGetDto>(query, new { id });
+            OtherExpensesItemsDataDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<OtherExpensesItemsDataDto>(query, inputDto);
             if (result == null)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidId);

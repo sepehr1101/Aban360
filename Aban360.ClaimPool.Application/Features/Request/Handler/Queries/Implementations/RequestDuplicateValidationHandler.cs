@@ -34,7 +34,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         public async Task<TrackingDuplicateValidationOutputDto> Handle(TrackingDuplicateValidationInputDto inputDto, CancellationToken cancellationToken)
         {
             var (moshtrakSearch, moshtrakSearchType, regionAndZoneInfo) = await GetMoshtrakDto(inputDto);
-            MoshtrakOutputDto? moshtrakInfo = (await _moshtrakQueryService.GetValid(moshtrakSearch, moshtrakSearchType, false)).OrderBy(m => m.IsRegistered).ThenByDescending(m => m.RequestDateJalali).FirstOrDefault();
+            MoshtrakOutputDto? moshtrakInfo = moshtrakSearch is not null ? (await _moshtrakQueryService.GetValid(moshtrakSearch, moshtrakSearchType, false)).OrderBy(m => m.IsRegistered).ThenByDescending(m => m.RequestDateJalali).FirstOrDefault() : null;
             TrackingOutputDto? latestTrackingInfo = await _trackingQueryService.GetLatest(moshtrakInfo?.TrackNumber ?? 0, false);
             TrackingOutputDto? firstTrackingInfo = await _trackingQueryService.GetFirstStep(moshtrakInfo?.TrackNumber ?? 0, false);
             NumericDictionary? requestOrigin = RequestOrigin.GetRequestOrigin(firstTrackingInfo?.RequestOriginId ?? 0);
@@ -50,18 +50,20 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             return GetResultDto(inputDto, serviceSelected, moshtrakInfo, latestTrackingInfo, firstTrackingInfo, requestOrigin, regionAndZoneInfo);
         }
-        private async Task<(MoshtrakGetDto, MoshtrakSearchTypeEnum, RegionAndZoneGetDto)> GetMoshtrakDto(TrackingDuplicateValidationInputDto inputDto)
+        private async Task<(MoshtrakGetDto?, MoshtrakSearchTypeEnum, RegionAndZoneGetDto?)> GetMoshtrakDto(TrackingDuplicateValidationInputDto inputDto)
         {
-            RegionAndZoneGetDto regionAndZoneInfo = new();
-            MoshtrakGetDto moshtrakSearch = new();
+            RegionAndZoneGetDto? regionAndZoneInfo = null;
+            MoshtrakGetDto? moshtrakSearch = null;
             MoshtrakSearchTypeEnum moshtrakSearchType = 0;
             if (inputDto.ValidationType == TrackingDuplicateValidationTypeEnum.ByNationalCode)
             {
-                ZoneIdAndCustomerNumber neighbourZoneInfo = await _commonMemberQueryService.Get(inputDto.NeighbourBillId);
-                MemberInfoGetDto neighbourInfo = await _commonMemberQueryService.Get(neighbourZoneInfo);
-                regionAndZoneInfo = new(neighbourInfo.RegionId, neighbourInfo.RegionTitle, neighbourInfo.ZoneId, neighbourInfo.ZoneTitle);
-
-                moshtrakSearch = new(neighbourZoneInfo.ZoneId, null, inputDto.NationalCode, null);
+                if (inputDto.NeighbourBillId is not null)
+                {
+                    ZoneIdAndCustomerNumber neighbourZoneInfo = await _commonMemberQueryService.Get(inputDto.NeighbourBillId);
+                    MemberInfoGetDto neighbourInfo = await _commonMemberQueryService.Get(neighbourZoneInfo);
+                    regionAndZoneInfo = new(neighbourInfo.RegionId, neighbourInfo.RegionTitle, neighbourInfo.ZoneId, neighbourInfo.ZoneTitle);
+                    moshtrakSearch = new(neighbourZoneInfo.ZoneId, null, inputDto.NationalCode, null);
+                }
                 moshtrakSearchType = MoshtrakSearchTypeEnum.ByNationalCode;
             }
             if (inputDto.ValidationType == TrackingDuplicateValidationTypeEnum.ByBillId)
@@ -129,15 +131,15 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 s48 = serviceSelected.s48,
             };
         }
-        private TrackingDuplicateValidationOutputDto GetResultDto(TrackingDuplicateValidationInputDto inputDto, IEnumerable<NumericDictionary>? serviceSelected, MoshtrakOutputDto? moshtrakInfo, TrackingOutputDto? latestTrackingInfo, TrackingOutputDto? firstTrackingInfo, NumericDictionary? requestOrigin, RegionAndZoneGetDto regionAndZoneInfo)
+        private TrackingDuplicateValidationOutputDto GetResultDto(TrackingDuplicateValidationInputDto inputDto, IEnumerable<NumericDictionary>? serviceSelected, MoshtrakOutputDto? moshtrakInfo, TrackingOutputDto? latestTrackingInfo, TrackingOutputDto? firstTrackingInfo, NumericDictionary? requestOrigin, RegionAndZoneGetDto? regionAndZoneInfo)
         {
             return new TrackingDuplicateValidationOutputDto()
             {
                 Id = moshtrakInfo?.Id ?? 0,
-                ZoneId = regionAndZoneInfo.ZoneId,
-                ZoneTitle = regionAndZoneInfo.ZoneTitle,
-                RegionId = regionAndZoneInfo.RegionId,
-                RegionTitle = regionAndZoneInfo.RegionTitle,
+                ZoneId = regionAndZoneInfo?.ZoneId ?? 0,
+                ZoneTitle = regionAndZoneInfo?.ZoneTitle ?? string.Empty,
+                RegionId = regionAndZoneInfo?.RegionId ?? 0,
+                RegionTitle = regionAndZoneInfo?.RegionTitle ?? string.Empty,
                 BillId = latestTrackingInfo?.BillId ?? inputDto.BillId ?? string.Empty,
                 CustomerNumber = moshtrakInfo?.CustomerNumber ?? 0,
                 NationalCode = moshtrakInfo?.NationalCode ?? inputDto.NationalCode ?? string.Empty,

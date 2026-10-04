@@ -2,9 +2,9 @@
 {
     public record NewTrackingDuplicateValidationInputDto
     {
-        public string NeighbourBillId { get; set; }
+        public string? NeighbourBillId { get; set; }
         public string NationalCode { get; set; }
-        public NewTrackingDuplicateValidationInputDto(string neighbourBillId, string natianalCode)
+        public NewTrackingDuplicateValidationInputDto(string? neighbourBillId, string natianalCode)
         {
             NeighbourBillId = neighbourBillId;
             NationalCode = natianalCode;

@@ -15,15 +15,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
     {
         public WithoutSewageRequestSummaryQueryService(IConfiguration configuration)
             : base(configuration)
-        { 
+        {
         }
 
-        public async Task<ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryDataOutputDto>> Get(WithoutSewageRequestInputDto input)
+        public async Task<ReportOutput<WithoutSewageRequestSummaryHeaderOutputDto, WithoutSewageRequestSummaryDataOutputDto>> Get(WithoutSewageRequestInputDto input)
         {
             string query = GetGroupedQuery(GroupingFields.UsageTitle);
 
             IEnumerable<WithoutSewageRequestSummaryDataOutputDto> withoutSewageRequestData = await _sqlReportConnection.QueryAsync<WithoutSewageRequestSummaryDataOutputDto>(query, input);
-            WithoutSewageRequestHeaderOutputDto withoutSewageRequestHeader = new WithoutSewageRequestHeaderOutputDto()
+            WithoutSewageRequestSummaryHeaderOutputDto withoutSewageRequestHeader = new WithoutSewageRequestSummaryHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
@@ -31,15 +31,27 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = (withoutSewageRequestData is not null && withoutSewageRequestData.Any()) ? withoutSewageRequestData.Count() : 0,
-                Title= ReportLiterals.WithoutSewageRequestSummary,
+                Title = ReportLiterals.WithoutSewageRequestSummary,
 
-                SumCommercialUnit = withoutSewageRequestData.Sum(i => i.CommercialUnit),
-                SumDomesticUnit = withoutSewageRequestData.Sum(i => i.DomesticUnit),
-                SumOtherUnit = withoutSewageRequestData.Sum(i => i.OtherUnit),
-                TotalUnit = withoutSewageRequestData.Sum(i => i.TotalUnit),
-                CustomerCount = withoutSewageRequestData.Sum(i => i.CustomerCount),
+                SumCommercialUnit = withoutSewageRequestData?.Sum(i => i.CommercialUnit) ?? 0,
+                SumDomesticUnit = withoutSewageRequestData?.Sum(i => i.DomesticUnit) ?? 0,
+                SumOtherUnit = withoutSewageRequestData?.Sum(i => i.OtherUnit) ?? 0,
+                TotalUnit = withoutSewageRequestData?.Sum(i => i.TotalUnit) ?? 0,
+                CustomerCount = withoutSewageRequestData?.Sum(i => i.CustomerCount) ?? 0,
+
+                UnSpecified = withoutSewageRequestData?.Sum(i => i.UnSpecified) ?? 0,
+                Field0_5 = withoutSewageRequestData?.Sum(i => i.Field0_5) ?? 0,
+                Field0_75 = withoutSewageRequestData?.Sum(i => i.Field0_75) ?? 0,
+                Field1 = withoutSewageRequestData?.Sum(i => i.Field1) ?? 0,
+                Field1_2 = withoutSewageRequestData?.Sum(i => i.Field1_2) ?? 0,
+                Field1_5 = withoutSewageRequestData?.Sum(i => i.Field1_5) ?? 0,
+                Field2 = withoutSewageRequestData?.Sum(i => i.Field2) ?? 0,
+                Field3 = withoutSewageRequestData?.Sum(i => i.Field3) ?? 0,
+                Field4 = withoutSewageRequestData?.Sum(i => i.Field4) ?? 0,
+                Field5 = withoutSewageRequestData?.Sum(i => i.Field5) ?? 0,
+                MoreThan6 = withoutSewageRequestData?.Sum(i => i.MoreThan6) ?? 0,
             };
-            var result = new ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryDataOutputDto>
+            var result = new ReportOutput<WithoutSewageRequestSummaryHeaderOutputDto, WithoutSewageRequestSummaryDataOutputDto>
                 (ReportLiterals.WithoutSewageRequestSummary, withoutSewageRequestHeader, withoutSewageRequestData);
 
             return result;

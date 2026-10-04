@@ -10,7 +10,8 @@
         public string NationalCode { get; set; }
         public string? BirthCertificateNumber { get; set; }
         public string Address { get; set; }
-        public string NeighbourBillId { get; set; }
+        public string? NeighbourBillId { get; set; }
+        public int ZoneId { get; set; }
         public string PostalCode { get; set; }
         public string? Description { get; set; }
         public bool HasSms { get; set; }

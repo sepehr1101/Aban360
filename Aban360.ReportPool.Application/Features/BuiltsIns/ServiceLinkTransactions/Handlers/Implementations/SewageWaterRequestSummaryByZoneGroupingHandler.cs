@@ -24,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<SewageWaterRequestHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>>> Handle(SewageWaterRequestInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<SewageWaterRequestSummaryHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>>> Handle(SewageWaterRequestInputDto input, CancellationToken cancellationToken)
         {
             var validatioResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validatioResult.IsValid)
@@ -76,14 +76,14 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                     })
                 ))
                 .ToList();
-            ReportOutput<SewageWaterRequestHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>> finalData = new(result.Title, result.ReportHeader, dataGroup);
+            ReportOutput<SewageWaterRequestSummaryHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>> finalData = new(result.Title, result.ReportHeader, dataGroup);
 
             return finalData;
         }
 
-        public async Task<ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>> HandleFlat(SewageWaterRequestInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<SewageWaterRequestSummaryHeaderOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>> HandleFlat(SewageWaterRequestInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<SewageWaterRequestHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>> result = await Handle(input, cancellationToken);
+            ReportOutput<SewageWaterRequestSummaryHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>> result = await Handle(input, cancellationToken);
 
 
             ICollection<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto> flatReportData = result
@@ -97,7 +97,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                  })
                  .ToList();
 
-            ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto> flatResult = new
+            ReportOutput<SewageWaterRequestSummaryHeaderOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto> flatResult = new
                 (result.Title,
                 result.ReportHeader,
                 flatReportData);

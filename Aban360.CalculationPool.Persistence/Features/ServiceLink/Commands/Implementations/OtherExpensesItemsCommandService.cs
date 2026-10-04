@@ -49,12 +49,26 @@ namespace Aban360.CalculationPool.Persistence.Features.ServiceLink.Commands.Impl
 
         private string GetInsertCommand()
         {
-            return $@"";
+            return $@"Insert Into [Aban360].CalculationPool.OtherExpensesItmes
+                    (
+                    	ServiceId, ServiceTitle, ZoneId, ZoneTitle, UsageId, UsageTitle,
+                    	Amount, InsertBy, InsertDateTime
+                    )
+                    Values
+                    (
+                    	@ServiceId, @ServiceTitle, @ZoneId, @ZoneTitle, @UsageId, @UsageTitle,
+                    	@Amount, @InsertBy, @InsertDateTime
+                    );";
         }
         private string GetRemoveCommand()
         {
-            return $@"";
+            return $@"Update Aban360.CalculationPool.OtherExpensesItmes
+                    Set 
+                        RemoveBy = @RemoveBy ,
+                        RemoveDateTime = @RemoveDateTime
+                    Where 
+                        Id = @Id AND 
+                        RemoveBy IS NULL";
         }
-
     }
 }

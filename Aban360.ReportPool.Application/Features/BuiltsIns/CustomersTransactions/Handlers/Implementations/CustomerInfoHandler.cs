@@ -6,7 +6,6 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions.Contracts;
 using FluentValidation;
-using System.ComponentModel.DataAnnotations;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations
 {
@@ -27,7 +26,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 
         public async Task<CustomerInfoByBillIdOutputDto> Handle(SearchInput input, CancellationToken cancellationToken)
         {
-            CustomerInfoByBillIdOutputDto customerInfo = await _customerInfoQueryService.Get(input.Input);
+            CustomerInfoByBillIdOutputDto customerInfo = await _customerInfoQueryService.Get(input.Input, false);
             return customerInfo;
         }
         public async Task<BillIdReppar> Handle(CustomerInfoByZoneAndCustomerNumberInputDto input, CancellationToken cancellationToken)
