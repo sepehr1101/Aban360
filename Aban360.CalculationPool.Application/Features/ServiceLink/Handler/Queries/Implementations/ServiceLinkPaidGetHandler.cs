@@ -45,7 +45,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
         {
             await _commonZoneQueryServcice.IsUserInZone(appUser, input.ZoneId);
             IEnumerable<ServiceLinkPaidDataOutputDto> data = await _vosolEnQueryService.Get(input);
-            //await ValidateDates(data);
+            await ValidateDates(data);
             ServiceLinkPaidHeaderOutputDto header = new()
             {
                 ZoneId = input.ZoneId,

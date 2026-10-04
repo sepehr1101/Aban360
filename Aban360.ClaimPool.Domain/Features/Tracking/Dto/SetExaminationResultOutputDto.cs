@@ -1,7 +1,15 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Tracking.Dto
+﻿using Aban360.Common.BaseEntities;
+
+namespace Aban360.ClaimPool.Domain.Features.Tracking.Dto
 {
     public record SetExaminationResultOutputDto
     {
+        public string BillId { get; set; }
+        public int ZoneId { get; set; }
+        public string ZoneTitle { get; set; }
+        public int RegionId { get; set; }
+        public string RegionTitle { get; set; }
+
         public int AssessmentCode { get; set; }
         public string AssessmentName { get; set; }
         public string AssessmentMobile { get; set; }
@@ -13,6 +21,7 @@
         public string AssessmentResultTitle { get; set; }
         public bool IsResultSuccess { get; set; }
         public bool HasTrench { get; set; }
+        public IEnumerable<NumericDictionary> ServiceSelected { get; set; }
 
     }
 }

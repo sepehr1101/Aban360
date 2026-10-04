@@ -355,5 +355,9 @@
 
         public static string InvalidVillageIdByZoneSelect => "با انتخاب وضعیت 'شهری' مقادیر روستایی را از حالت انتخاب حذف کنید.";
         public static string InvalidZoneIdByVillageSelect => "با انتخاب وضعیت 'روستایی' مقادیر شهری را از حالت انتخاب حذف کنید.";
+
+        public static string InvalidInsertOtherExpensesItems => "خطا در ذخیره اقلام هزینه های متفرقه";
+        public static string InvalidDeleteOtherExpensesItems => "خطا در حذف اقلام هزینه های متفرقه";
+
     }
 }

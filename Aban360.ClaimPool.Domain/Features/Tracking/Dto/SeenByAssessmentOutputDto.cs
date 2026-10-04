@@ -1,4 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Tracking.Dto
+﻿using Aban360.Common.BaseEntities;
+
+namespace Aban360.ClaimPool.Domain.Features.Tracking.Dto
 {
     public record SeenByAssessmentOutputDto
     {
@@ -22,6 +24,7 @@
         public string? Y1 { get; set; }
         public string? X2 { get; set; }
         public string? Y2 { get; set; }
+        public IEnumerable<NumericDictionary> ServiceSelected { get; set; }
 
     }
 }

@@ -1,9 +1,12 @@
-﻿using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
+﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations;
+using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -43,8 +46,22 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             }
 
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber, true)).FirstOrDefault();
-            CustomerNumberSpecifiedOutputDto result = new(moshtrakInfo.CustomerNumber, trackingInfo.BillId);
+            MoshtrakServiceDto sData = MoshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
+            IEnumerable<NumericDictionary> s = MoshtrakService.GetServicesSelectedDto(sData, trackingInfo.ServiceGroupId);
+            CustomerNumberSpecifiedOutputDto result = GetOutput(trackingInfo, moshtrakInfo, s);
             return result;
+        }
+        private CustomerNumberSpecifiedOutputDto GetOutput(TrackingOutputDto trackingInfo, MoshtrakOutputDto moshtrakInfo, IEnumerable<NumericDictionary> s)
+        {
+            return new CustomerNumberSpecifiedOutputDto()
+            {
+                BillId = trackingInfo.BillId ?? string.Empty,
+                ZoneId = trackingInfo.ZoneId,
+                ZoneTitle = trackingInfo.ZoneTitle,
+                RegionId = trackingInfo.RegionId,
+                RegionTitle = trackingInfo.RegionTitle,
+                ServiceSelected = s
+            };
         }
     }
 }

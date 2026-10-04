@@ -1,9 +1,12 @@
-﻿using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
+﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations;
+using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -46,12 +49,14 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber, true)).FirstOrDefault();
+            MoshtrakServiceDto sData = MoshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
+            IEnumerable<NumericDictionary> s = MoshtrakService.GetServicesSelectedDto(sData, trackingInfo.ServiceGroupId);
             AssessmentDataOutputDto assessmentInfo = await _examinationQueryService.Get(trackingInfo.TrackNumber, trackingInfo.InsertDateTimeGregorian, true);
 
-            SeenByAssessmentOutputDto result = GetOutput(moshtrakInfo, assessmentInfo);
+            SeenByAssessmentOutputDto result = GetOutput(moshtrakInfo, assessmentInfo, s);
             return result;
         }
-        private SeenByAssessmentOutputDto GetOutput(MoshtrakOutputDto moshtrakInfo, AssessmentDataOutputDto assessmentInfo)
+        private SeenByAssessmentOutputDto GetOutput(MoshtrakOutputDto moshtrakInfo, AssessmentDataOutputDto assessmentInfo, IEnumerable<NumericDictionary> s)
         {
             return new SeenByAssessmentOutputDto()
             {
@@ -75,6 +80,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 Y1 = assessmentInfo.Y1,
                 X2 = assessmentInfo.X2,
                 Y2 = assessmentInfo.Y2,
+                ServiceSelected = s
             };
         }
     }

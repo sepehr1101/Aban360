@@ -83,7 +83,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 ZoneId = memberInfo.ZoneId,
                 CustomerNumber = memberInfo.CustomerNumber,
                 Operator = ReportLiterals.RayabOperator,
-                MeterNumber = inputDto.MeterNumber,
+                MeterNumber = inputDto.MeterNumber ?? 0,
                 MeterChangeDateJalali = inputDto.MeterChangeDateJalali,
                 MeterDiameterId = memberInfo.MeterDiameterId,
                 BodySerial = inputDto.BodySerial,
@@ -94,7 +94,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 ZoneId = memberInfo.ZoneId,
                 CustomerNumber = memberInfo.CustomerNumber,
-                MeterNumber = inputDto.MeterNumber,
+                MeterNumber = inputDto.MeterNumber ?? 0,
                 MeterChangeDateJalali = inputDto.MeterChangeDateJalali,
                 BodySerial = inputDto.BodySerial,
                 ChangeCauseId = changeCause.Id,

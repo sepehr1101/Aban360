@@ -1,9 +1,12 @@
-﻿using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
+﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations;
+using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -48,15 +51,23 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             }
 
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber, true)).FirstOrDefault();
+            MoshtrakServiceDto sData = MoshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
+            IEnumerable<NumericDictionary> s = MoshtrakService.GetServicesSelectedDto(sData, trackingInfo.ServiceGroupId);
             AssessmentDataOutputDto assessmentInfo = await _examinationQueryService.GetByTrackId(id, true);
 
-            SetExaminationResultOutputDto result = GetOutput(moshtrakInfo, assessmentInfo);
+            SetExaminationResultOutputDto result = GetOutput(trackingInfo, moshtrakInfo, assessmentInfo, s);
             return result;
         }
-        private SetExaminationResultOutputDto GetOutput(MoshtrakOutputDto moshtrakInfo, AssessmentDataOutputDto assessmentInfo)
+        private SetExaminationResultOutputDto GetOutput(TrackingOutputDto trackingInfo, MoshtrakOutputDto moshtrakInfo, AssessmentDataOutputDto assessmentInfo, IEnumerable<NumericDictionary> s)
         {
             return new SetExaminationResultOutputDto()
             {
+                BillId = trackingInfo.BillId ?? string.Empty,
+                ZoneId = trackingInfo.ZoneId,
+                ZoneTitle = trackingInfo.ZoneTitle,
+                RegionId = trackingInfo.RegionId,
+                RegionTitle = trackingInfo.RegionTitle,
+
                 AssessmentCode = assessmentInfo.AssessmentCode,
                 AssessmentName = assessmentInfo.AssessmentName,
                 AssessmentMobile = assessmentInfo.AssessmentMobile,
@@ -68,6 +79,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 AssessmentResultTitle = assessmentInfo.ResultTitle ?? string.Empty,
                 IsResultSuccess = assessmentInfo.IsResultSuccess,
                 HasTrench = (moshtrakInfo.HasEnsheabAb || moshtrakInfo.HasEnsheabFazelab) && assessmentInfo.IsResultSuccess,
+                ServiceSelected = s
             };
         }
     }

@@ -101,7 +101,6 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 PostalCode = moshtrakInfo.PostalCode ?? string.Empty,
                 Description = trackingInfo.Description,
                 CompanyServiceSelected = s.ToList(),
-
             };
         }
     }
