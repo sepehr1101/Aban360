@@ -33,6 +33,6 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
         public string LatestStatusTitle { get; set; }
         public int LatestStatusId { get; set; }
 
-        public IEnumerable<NumericDictionary> ServiceSelected { get; set; }
+        public IEnumerable<NumericDictionary>? ServiceSelected { get; set; }
     }
 }

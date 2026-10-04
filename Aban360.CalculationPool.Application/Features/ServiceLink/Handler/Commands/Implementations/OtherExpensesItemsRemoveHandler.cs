@@ -24,13 +24,13 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
 
         public async Task Handle(int id, IAppUser appUser, CancellationToken cancellationToken)
         {
-            OtherExpensesItemsGetDto itemInfo = await _otherExpensesItemsQueryService.Get(id);
+            OtherExpensesItemsDataDto itemInfo = await _otherExpensesItemsQueryService.Get(id);
             OtherExpensesItemsRemoveDto RemoveDto = GetRemoveDto(itemInfo, appUser);
             await ExceSql(RemoveDto);
         }
         private async Task ExceSql(OtherExpensesItemsRemoveDto otherExpensesItmesRemoveDto)
         {
-            using (IDbConnection connection = _sqlReportConnection)
+            using (IDbConnection connection = _sqlConnection)
             {
                 if (connection.State != ConnectionState.Open)
                 {
@@ -45,7 +45,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 }
             }
         }
-        private OtherExpensesItemsRemoveDto GetRemoveDto(OtherExpensesItemsGetDto itemInfo, IAppUser appUser)
+        private OtherExpensesItemsRemoveDto GetRemoveDto(OtherExpensesItemsDataDto itemInfo, IAppUser appUser)
         {
             return new OtherExpensesItemsRemoveDto()
             {

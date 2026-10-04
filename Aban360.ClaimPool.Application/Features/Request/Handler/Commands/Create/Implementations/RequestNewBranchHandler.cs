@@ -65,15 +65,19 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         public async Task<(MoshtrakCreateDto, SetAssessmentTimeDataOutputDto?, Guid)> Handle(RequestNewBranchInputDto inputDto, int userName, CancellationToken cancellationToken)
         {
             await Validate(inputDto, cancellationToken);
-            ZoneIdAndCustomerNumber neighbourCustomerInfo = await _commonMemberQueryService.Get(inputDto.NeighbourBillId);
-            MemberInfoGetDto neighbourMemeberInfo = await _commonMemberQueryService.Get(neighbourCustomerInfo);
-            if (!inputDto.IsSkipDuplicate)
+            MemberInfoGetDto? neighbourMemeberInfo = null;
+            if (!string.IsNullOrWhiteSpace(inputDto.NeighbourBillId))
             {
-                await _moshtrakQueryService.CheckOpenRequest(inputDto.NationalCode, neighbourCustomerInfo.ZoneId);
+                ZoneIdAndCustomerNumber neighbourCustomerInfo = await _commonMemberQueryService.Get(inputDto.NeighbourBillId);
+                neighbourMemeberInfo = await _commonMemberQueryService.Get(neighbourCustomerInfo);
+                if (!inputDto.IsSkipDuplicate)
+                {
+                    await _moshtrakQueryService.CheckOpenRequest(inputDto.NationalCode, neighbourCustomerInfo.ZoneId);
+                }
             }
             var (assessmentCode, assessmentDateJalali) = await GetAssessmentDateTime(neighbourMemeberInfo);
 
-            var (moshtrakCreateDto, assessmentInsertDto, trackId) = await ExecSql(inputDto, neighbourCustomerInfo, userName, assessmentDateJalali, assessmentCode);
+            var (moshtrakCreateDto, assessmentInsertDto, trackId) = await ExecSql(inputDto, userName, assessmentDateJalali, assessmentCode);
             SetAssessmentTimeDataOutputDto? assessmentTimeDto = assessmentInsertDto is not null ?
                 GetAssessmentTimeOutputDto(moshtrakCreateDto, neighbourMemeberInfo, assessmentInsertDto, trackId) :
                 null;
@@ -213,12 +217,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 RequestOrigin = _requestOrigin,
             };
         }
-        private async Task<(MoshtrakCreateDto, AssessmentInsertDto?, Guid)> ExecSql(RequestNewBranchInputDto inputDto, ZoneIdAndCustomerNumber neighbourCustomerInfo, int userName, string assessmentDateJalali, int assessmentCode)
+        private async Task<(MoshtrakCreateDto, AssessmentInsertDto?, Guid)> ExecSql(RequestNewBranchInputDto inputDto, int userName, string assessmentDateJalali, int assessmentCode)
         {
             MoshtrakCreateDto moshtrakInsertDto;
             AssessmentInsertDto? assessmentInsert = null;
             Guid trackId = new Guid();
-            string dbName = GetDbName(neighbourCustomerInfo.ZoneId);
+            string dbName = GetDbName(inputDto.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -234,8 +238,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     ExaminationCommandService examinationCommandService = new(connection, transaction);
 
                     int trackNumber = (int)(await t0CommandService.GetTrackNumber());
-                    moshtrakInsertDto = GetMoshtrackCreateDto(inputDto, trackNumber, neighbourCustomerInfo.ZoneId);
-                    TrackingInsertDto trackingSetRequestInsertDto = GetTrackingCreateDto(inputDto, userName, trackNumber, neighbourCustomerInfo.ZoneId);
+                    moshtrakInsertDto = GetMoshtrackCreateDto(inputDto, trackNumber, inputDto.ZoneId);
+                    TrackingInsertDto trackingSetRequestInsertDto = GetTrackingCreateDto(inputDto, userName, trackNumber, inputDto.ZoneId);
                     trackId = trackingSetRequestInsertDto.TrackId;
 
                     await moshtrakCommandService.Insert(moshtrakInsertDto, dbName);
@@ -256,46 +260,49 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             return (moshtrakInsertDto, assessmentInsert, trackId);
 
         }
-        private async Task<(int, string)> GetAssessmentDateTime(MemberInfoGetDto memberInfo)
+        private async Task<(int, string)> GetAssessmentDateTime(MemberInfoGetDto? memberInfo)
         {
-            IEnumerable<AssessmentScaduleGetDto> assessmentsScadule = await _examinationScheduleQueryService.Get(memberInfo.ZoneId, memberInfo.ReadingNumber);
-
-            for (int offset = 1; offset <= 14; offset++)
+            if (memberInfo is not null)
             {
-                DateTime date = DateTime.Now.Date.AddDays(offset);
-                string dateJalali = date.ToShortPersianDateString();
+                IEnumerable<AssessmentScaduleGetDto> assessmentsScadule = await _examinationScheduleQueryService.Get(memberInfo.ZoneId, memberInfo.ReadingNumber);
 
-                int dayIndex =
-                    date.DayOfWeek == DayOfWeek.Saturday ? 0 :
-                    date.DayOfWeek == DayOfWeek.Sunday ? 1 :
-                    date.DayOfWeek == DayOfWeek.Monday ? 2 :
-                    date.DayOfWeek == DayOfWeek.Tuesday ? 3 :
-                    date.DayOfWeek == DayOfWeek.Wednesday ? 4 :
-                    date.DayOfWeek == DayOfWeek.Thursday ? 5 :
-                                                          6;
-
-                foreach (var eachAssessment in assessmentsScadule)
+                for (int offset = 1; offset <= 14; offset++)
                 {
-                    int dayValue = dayIndex switch
+                    DateTime date = DateTime.Now.Date.AddDays(offset);
+                    string dateJalali = date.ToShortPersianDateString();
+
+                    int dayIndex =
+                        date.DayOfWeek == DayOfWeek.Saturday ? 0 :
+                        date.DayOfWeek == DayOfWeek.Sunday ? 1 :
+                        date.DayOfWeek == DayOfWeek.Monday ? 2 :
+                        date.DayOfWeek == DayOfWeek.Tuesday ? 3 :
+                        date.DayOfWeek == DayOfWeek.Wednesday ? 4 :
+                        date.DayOfWeek == DayOfWeek.Thursday ? 5 :
+                                                              6;
+
+                    foreach (var eachAssessment in assessmentsScadule)
                     {
-                        0 => eachAssessment.Day0,
-                        1 => eachAssessment.Day1,
-                        2 => eachAssessment.Day2,
-                        3 => eachAssessment.Day3,
-                        4 => eachAssessment.Day4,
-                        5 => eachAssessment.Day5,
-                        6 => eachAssessment.Day6,
-                        _ => 0
-                    };
+                        int dayValue = dayIndex switch
+                        {
+                            0 => eachAssessment.Day0,
+                            1 => eachAssessment.Day1,
+                            2 => eachAssessment.Day2,
+                            3 => eachAssessment.Day3,
+                            4 => eachAssessment.Day4,
+                            5 => eachAssessment.Day5,
+                            6 => eachAssessment.Day6,
+                            _ => 0
+                        };
 
-                    if (dayValue <= 0) continue;
+                        if (dayValue <= 0) continue;
 
-                    int assessmentTaskCount =
-                        await _examinationQueryService.GetWithoutResultInDate(dateJalali, eachAssessment.AssessmentCode);
+                        int assessmentTaskCount =
+                            await _examinationQueryService.GetWithoutResultInDate(dateJalali, eachAssessment.AssessmentCode);
 
-                    if (assessmentTaskCount < dayValue)
-                    {
-                        return (eachAssessment.AssessmentCode, dateJalali);
+                        if (assessmentTaskCount < dayValue)
+                        {
+                            return (eachAssessment.AssessmentCode, dateJalali);
+                        }
                     }
                 }
             }

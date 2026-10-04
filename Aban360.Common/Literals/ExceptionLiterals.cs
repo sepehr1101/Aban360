@@ -37,6 +37,7 @@
         public static string NotMoreThan1023 => "مقدار وارد شده نباید بیش از 1023 کاراکتر باشد";
         public static string InvalidFridayDate => "روز انتخابی، جمعه است";
         public static string InvalidOfficialHolidayDate => "روز انتخابی، تعطیل است";
+        public static string InvalidAmount => "مبلغ نامعتبر است.";
         public static string InvalidOffDate => "ارزیاب در روز انتخابی مرخصی است";
         public static string InvalidPreviousBillsDataToGenerateContro(string billId) => $"اطلاعات قرائت قبلی برای مشترک:{billId} یافت نشد. خطا در ویرایش جدول کنتور";
         public static string InvalidPreviousDate => "تاریخ ارزیابی باید از امروز بزرگتر باشد.";

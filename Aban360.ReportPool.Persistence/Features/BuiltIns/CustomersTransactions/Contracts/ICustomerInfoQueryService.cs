@@ -6,7 +6,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
 {
     public interface ICustomerInfoQueryService
     {
-        Task<CustomerInfoByBillIdOutputDto> Get(string billId);
+        Task<CustomerInfoByBillIdOutputDto?> Get(string billId, bool hasException);
         Task<BillIdReppar> Get(CustomerInfoByZoneAndCustomerNumberInputDto input);
         Task<ZoneIdAndCustomerNumberOutputDto> GetZoneIdAndCustomerNumber(string billId);
         Task<IEnumerable<CustomerLegalDetailDataOutputDto>> GetDetail(CustomerLegalDetailInputDto input);

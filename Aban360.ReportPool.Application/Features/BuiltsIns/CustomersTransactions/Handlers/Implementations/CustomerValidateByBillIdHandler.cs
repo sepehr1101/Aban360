@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Features.BuiltIns.CustomersTransactions.Inputs;
@@ -9,11 +8,11 @@ using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Handlers.Implementations
 {
-    internal sealed class CustomerInfoHandler : ICustomerInfoHandler
+    internal sealed class CustomerValidateByBillIdHandler : ICustomerValidateByBillIdHandler
     {
         private readonly ICustomerInfoQueryService _customerInfoQueryService;
         private readonly IValidator<CustomerInfoByZoneAndCustomerNumberInputDto> _validator;
-        public CustomerInfoHandler(
+        public CustomerValidateByBillIdHandler(
             ICustomerInfoQueryService customerInfoQueryService,
             IValidator<CustomerInfoByZoneAndCustomerNumberInputDto> validator)
         {
@@ -24,20 +23,11 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<CustomerInfoByBillIdOutputDto> Handle(SearchInput input, CancellationToken cancellationToken)
+        public async Task<CustomerBillIdValidateDto> Handle(SearchInput input, CancellationToken cancellationToken)
         {
-            CustomerInfoByBillIdOutputDto customerInfo = await _customerInfoQueryService.Get(input.Input, false);
-            return customerInfo;
-        }
-        public async Task<BillIdReppar> Handle(CustomerInfoByZoneAndCustomerNumberInputDto input, CancellationToken cancellationToken)
-        {
-            var validatioResult = await _validator.ValidateAsync(input, cancellationToken);
-            if (!validatioResult.IsValid)
-            {
-                var message = string.Join(", ", validatioResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomValidationException(message);
-            }
-            return await _customerInfoQueryService.Get(input);
+            CustomerInfoByBillIdOutputDto? customerInfo = await _customerInfoQueryService.Get(input.Input, true);
+            bool isValidBillId = customerInfo is null ? false : true;
+            return new CustomerBillIdValidateDto(input.Input, isValidBillId);
         }
     }
 }
