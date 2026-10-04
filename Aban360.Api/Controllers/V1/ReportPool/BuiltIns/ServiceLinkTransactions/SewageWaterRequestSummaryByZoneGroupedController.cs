@@ -29,10 +29,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterRequestHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterRequestSummaryHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterRequestInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<SewageWaterRequestHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>> result = await _sewageWaterRequestSummaryByZoneHandler.Handle(input, cancellationToken);
+            ReportOutput<SewageWaterRequestSummaryHeaderOutputDto, ReportOutput<SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto>> result = await _sewageWaterRequestSummaryByZoneHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -52,7 +52,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetStiReport(SewageWaterRequestInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 263;
-            ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto> result = await _sewageWaterRequestSummaryByZoneHandler.HandleFlat(inputDto, cancellationToken);
+            ReportOutput<SewageWaterRequestSummaryHeaderOutputDto, SewageWaterRequestSummaryByZoneIdGroupingDataOutputDto> result = await _sewageWaterRequestSummaryByZoneHandler.HandleFlat(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }

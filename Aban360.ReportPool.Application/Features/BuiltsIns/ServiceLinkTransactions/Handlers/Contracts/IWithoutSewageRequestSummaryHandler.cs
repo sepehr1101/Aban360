@@ -7,6 +7,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 {
     public interface IWithoutSewageRequestSummaryHandler
     {
-        Task<ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryDataOutputDto>> Handle(WithoutSewageRequestInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<WithoutSewageRequestSummaryHeaderOutputDto, WithoutSewageRequestSummaryDataOutputDto>> Handle(WithoutSewageRequestInputDto input, CancellationToken cancellationToken);
     }
 }

@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         [HttpPost, HttpGet]
         [Route("raw")]
         [AllowTimeWindowFilter]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationDetailDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterInstallationDetailHeaderOutputDto, SewageWaterInstallationDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterInstallationInputDto input, CancellationToken cancellationToken)
         {
             var result = await _sewageWaterInstallationDetailHandler.Handle(input, cancellationToken);
@@ -56,7 +56,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetStiReport(SewageWaterInstallationInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 650;
-            ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationDetailDataOutputDto> calculationDetails = await _sewageWaterInstallationDetailHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<SewageWaterInstallationDetailHeaderOutputDto, SewageWaterInstallationDetailDataOutputDto> calculationDetails = await _sewageWaterInstallationDetailHandler.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
         }

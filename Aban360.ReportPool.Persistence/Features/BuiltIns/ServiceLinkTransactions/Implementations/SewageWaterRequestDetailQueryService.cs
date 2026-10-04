@@ -18,13 +18,13 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         { 
         }
 
-        public async Task<ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestDetailDataOutputDto>> Get(SewageWaterRequestInputDto input)
+        public async Task<ReportOutput<SewageWaterRequestDetailHeaderOutputDto, SewageWaterRequestDetailDataOutputDto>> Get(SewageWaterRequestInputDto input)
         {
             string query = GetDetailsQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.Request);
             string reportTitle = input.IsWater ? ReportLiterals.WaterRequestDetail : ReportLiterals.SewageRequestDetail;
 
             IEnumerable<SewageWaterRequestDetailDataOutputDto> RequestData = await _sqlReportConnection.QueryAsync<SewageWaterRequestDetailDataOutputDto>(query, input);
-            SewageWaterRequestHeaderOutputDto RequestHeader = new SewageWaterRequestHeaderOutputDto()
+            SewageWaterRequestDetailHeaderOutputDto RequestHeader = new SewageWaterRequestDetailHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
@@ -40,7 +40,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 TotalUnit = RequestData.Sum(i => i.TotalUnit),
                 CustomerCount = (RequestData is not null && RequestData.Any()) ? RequestData.Count() : 0,
             };
-            var result = new ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestDetailDataOutputDto>
+            var result = new ReportOutput<SewageWaterRequestDetailHeaderOutputDto, SewageWaterRequestDetailDataOutputDto>
                 (reportTitle,
                 RequestHeader,
                 RequestData);

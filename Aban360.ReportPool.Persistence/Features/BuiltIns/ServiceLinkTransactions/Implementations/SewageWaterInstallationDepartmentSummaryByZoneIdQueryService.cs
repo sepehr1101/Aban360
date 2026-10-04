@@ -18,14 +18,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
         }
 
-        public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>> Get(SewageWaterInstallationInputDto input)
+        public async Task<ReportOutput<SewageWaterInstallationSummaryHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>> Get(SewageWaterInstallationInputDto input)
         {
             string ZoneTitle = nameof(ZoneTitle);
             string query = GetGroupedQuery(input.IsWater, InstallOrRequestOrInstallDepartmentEnum.InstallDepartment, false, ZoneTitle, null);
             string reportTitle = (input.IsWater ? ReportLiterals.WaterInstallationDepartmentSummary : ReportLiterals.SewageInstallationDepartmentSummary) + ReportLiterals.ByZone;
 
             IEnumerable<SewageWaterInstallationSummaryDataOutputDto> installationData = await _sqlReportConnection.QueryAsync<SewageWaterInstallationSummaryDataOutputDto>(query, input);
-            SewageWaterInstallationHeaderOutputDto installationHeader = new SewageWaterInstallationHeaderOutputDto()
+            SewageWaterInstallationSummaryHeaderOutputDto installationHeader = new SewageWaterInstallationSummaryHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
@@ -35,13 +35,25 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 RecordCount = installationData is not null && installationData.Any() ? installationData.Count() : 0,
                 Title = reportTitle,
 
-                CustomerCount = installationData.Sum(i => i.CustomerCount),
-                SumCommercialUnit = installationData.Sum(i => i.CommercialUnit),
-                SumDomesticUnit = installationData.Sum(i => i.DomesticUnit),
-                SumOtherUnit = installationData.Sum(i => i.OtherUnit),
-                TotalUnit = installationData.Sum(i => i.TotalUnit),
+                CustomerCount = installationData?.Sum(i => i.CustomerCount) ?? 0,
+                SumCommercialUnit = installationData?.Sum(i => i.CommercialUnit) ?? 0,
+                SumDomesticUnit = installationData?.Sum(i => i.DomesticUnit) ?? 0,
+                SumOtherUnit = installationData?.Sum(i => i.OtherUnit) ?? 0,
+                TotalUnit = installationData?.Sum(i => i.TotalUnit) ?? 0,
+
+                UnSpecified = installationData?.Sum(i => i.UnSpecified) ?? 0,
+                Field0_5 = installationData?.Sum(i => i.Field0_5) ?? 0,
+                Field0_75 = installationData?.Sum(i => i.Field0_75) ?? 0,
+                Field1 = installationData?.Sum(i => i.Field1) ?? 0,
+                Field1_2 = installationData?.Sum(i => i.Field1_2) ?? 0,
+                Field1_5 = installationData?.Sum(i => i.Field1_5) ?? 0,
+                Field2 = installationData?.Sum(i => i.Field2) ?? 0,
+                Field3 = installationData?.Sum(i => i.Field3) ?? 0,
+                Field4 = installationData?.Sum(i => i.Field4) ?? 0,
+                Field5 = installationData?.Sum(i => i.Field5) ?? 0,
+                MoreThan6 = installationData?.Sum(i => i.MoreThan6) ?? 0,
             };
-            var result = new ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>
+            var result = new ReportOutput<SewageWaterInstallationSummaryHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>
                 (reportTitle,
                 installationHeader,
                 installationData);

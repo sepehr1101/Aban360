@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 {
     public interface IWithoutSewageRequestSummaryByZoneQueryService
     {
-        Task<ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryDataOutputDto>> Get(WithoutSewageRequestInputDto input);
+        Task<ReportOutput<WithoutSewageRequestSummaryHeaderOutputDto, WithoutSewageRequestSummaryDataOutputDto>> Get(WithoutSewageRequestInputDto input);
     }
 }

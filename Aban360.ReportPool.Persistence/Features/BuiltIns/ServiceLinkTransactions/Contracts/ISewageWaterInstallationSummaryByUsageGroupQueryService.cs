@@ -6,6 +6,6 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 {
     public interface ISewageWaterInstallationSummaryByUsageGroupQueryService
     {
-        Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>> Get(SewageWaterInstallationByUsageGroupInputDto input);
+        Task<ReportOutput<SewageWaterInstallationSummaryHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>> Get(SewageWaterInstallationByUsageGroupInputDto input);
     }
 }

@@ -2,7 +2,6 @@
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
-using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactions.Contracts;
@@ -25,7 +24,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationDetailDataOutputDto>> Handle(SewageWaterInstallationInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<SewageWaterInstallationDetailHeaderOutputDto, SewageWaterInstallationDetailDataOutputDto>> Handle(SewageWaterInstallationInputDto input, CancellationToken cancellationToken)
         {
             var validatioResult = await _validator.ValidateAsync(input, cancellationToken);
             if (!validatioResult.IsValid)

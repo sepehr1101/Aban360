@@ -25,7 +25,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryWithStringCodeDataOutputDto>> Handle(SewageWaterRequestWithStringCodeInputDto input, CancellationToken cancellationToken)
+        public async Task<ReportOutput<SewageWaterRequestSummaryHeaderOutputDto, SewageWaterRequestSummaryWithStringCodeDataOutputDto>> Handle(SewageWaterRequestWithStringCodeInputDto input, CancellationToken cancellationToken)
         {
             await Validate(input,cancellationToken);
 

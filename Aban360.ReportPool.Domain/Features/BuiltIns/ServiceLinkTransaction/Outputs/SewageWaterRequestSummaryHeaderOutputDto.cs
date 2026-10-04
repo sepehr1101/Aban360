@@ -1,6 +1,6 @@
 ﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
 {
-    public record SewageWaterRequestHeaderOutputDto
+    public record SewageWaterRequestSummaryHeaderOutputDto
     {
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
@@ -15,5 +15,17 @@
         public int SumCommercialUnit { get; set; }
         public int SumOtherUnit { get; set; }
         public int TotalUnit { get; set; }
+
+        public int UnSpecified { get; set; }
+        public int Field0_5 { get; set; }
+        public int Field0_75 { get; set; }
+        public int Field1 { get; set; }
+        public int Field1_2 { get; set; }
+        public int Field1_5 { get; set; }
+        public int Field2 { get; set; }
+        public int Field3 { get; set; }
+        public int Field4 { get; set; }
+        public int Field5 { get; set; }
+        public int MoreThan6 { get; set; }
     }
 }
