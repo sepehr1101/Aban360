@@ -4,8 +4,8 @@ namespace Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Contr
 {
     public interface IOtherExpensesItemsQueryService
     {
-        Task<IEnumerable<OtherExpensesItemsGetDto>> Get();
-        Task<OtherExpensesItemsGetDto> Get(int id);
-        Task<OtherExpensesItemsGetDto> GetByItemId(int id);
+        Task<IEnumerable<OtherExpensesItemsDataDto>> Get();
+        Task<OtherExpensesItemsDataDto> Get(int id);
+        Task<OtherExpensesItemsDataDto> Get(OtherExpensesItemsGetDto inputDto);
     }
 }

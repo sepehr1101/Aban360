@@ -14,9 +14,9 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
             _otherExpensesItemsQueryService.NotNull(nameof(otherExpensesItemsQueryService));
         }
 
-        public async Task<IEnumerable<OtherExpensesItemsGetDto>> Handle(CancellationToken cancellationToken)
+        public async Task<IEnumerable<OtherExpensesItemsDataDto>> Handle(CancellationToken cancellationToken)
         {
-            IEnumerable<OtherExpensesItemsGetDto> data = await _otherExpensesItemsQueryService.Get();
+            IEnumerable<OtherExpensesItemsDataDto> data = await _otherExpensesItemsQueryService.Get();
             return data;
         }
     }

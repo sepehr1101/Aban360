@@ -59,28 +59,28 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
 
         [HttpPost]
         [Route("get/{id}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsGetDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsDataDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
         {
-            OtherExpensesItemsGetDto data = await _otherExpensesItemsGetByIdaHandler.Handle(id, cancellationToken);
+            OtherExpensesItemsDataDto data = await _otherExpensesItemsGetByIdaHandler.Handle(id, cancellationToken);
             return Ok(data);
         }
 
         [HttpPost]
-        [Route("get-itemId/{id}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsGetDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetByItemId(int id, CancellationToken cancellationToken)
+        [Route("get/{billId}/{itemId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsDataDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByItemId(string billId, int itemId, CancellationToken cancellationToken)
         {
-            OtherExpensesItemsGetDto data = await _otherExpensesItemsGetByItemIdHandler.Handle(id, cancellationToken);
+            OtherExpensesItemsDataDto data = await _otherExpensesItemsGetByItemIdHandler.Handle(billId, itemId, cancellationToken);
             return Ok(data);
         }
 
         [HttpPost]
         [Route("get")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<OtherExpensesItemsGetDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<OtherExpensesItemsDataDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            IEnumerable<OtherExpensesItemsGetDto> data = await _otherExpensesItemsGetAllHandler.Handle(cancellationToken);
+            IEnumerable<OtherExpensesItemsDataDto> data = await _otherExpensesItemsGetAllHandler.Handle(cancellationToken);
             return Ok(data);
         }
     }

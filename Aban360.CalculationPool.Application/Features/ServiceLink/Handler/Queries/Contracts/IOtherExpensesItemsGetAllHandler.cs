@@ -4,6 +4,6 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
 {
     public interface IOtherExpensesItemsGetAllHandler
     {
-        Task<IEnumerable<OtherExpensesItemsGetDto>> Handle(CancellationToken cancellationToken);
+        Task<IEnumerable<OtherExpensesItemsDataDto>> Handle(CancellationToken cancellationToken);
     }
 }
