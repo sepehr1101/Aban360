@@ -21,10 +21,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         {
         }
 
-        public async Task<CustomerInfoByBillIdOutputDto> Get(string billId)
+        public async Task<CustomerInfoByBillIdOutputDto?> Get(string billId, bool hasException)
         {
             string query = GetCustomerInfoByBillIdQuery();
-            CustomerInfoByBillIdOutputDto customerInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerInfoByBillIdOutputDto>(query, new { billId });
+            CustomerInfoByBillIdOutputDto? customerInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<CustomerInfoByBillIdOutputDto>(query, new { billId });
+            if (customerInfo is null && hasException)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
+            }
             return customerInfo;
         }
         public async Task<BillIdReppar> Get(CustomerInfoByZoneAndCustomerNumberInputDto input)

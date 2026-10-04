@@ -33,8 +33,8 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
             OtherExpensesItemsDataDto data = new()
             {
                 Id = 1,
-                ItemId = itemId,
-                ItemTitle = itemId.ToString(),
+                ServiceId = itemId,
+                ServiceTitle = itemId.ToString(),
                 Amount = 10000,
                 InsertDateTime = DateTime.Now,
                 RemoveDateTime = null,

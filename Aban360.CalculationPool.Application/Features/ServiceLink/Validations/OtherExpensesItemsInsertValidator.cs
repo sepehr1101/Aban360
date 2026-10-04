@@ -9,7 +9,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Validations
     {
         public OtherExpensesItemsInsertValidator()
         {
-            RuleFor(i => i.ItemId)
+            RuleFor(i => i.ServiceId)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
