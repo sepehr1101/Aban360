@@ -29,10 +29,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WithoutSewageRequestHeaderOutputDto, ReportOutput<WithoutSewageRequestSummaryByZoneGroupedDataOutputDto, WithoutSewageRequestSummaryByZoneGroupedDataOutputDto>>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WithoutSewageRequestSummaryHeaderOutputDto, ReportOutput<WithoutSewageRequestSummaryByZoneGroupedDataOutputDto, WithoutSewageRequestSummaryByZoneGroupedDataOutputDto>>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(WithoutSewageRequestInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<WithoutSewageRequestHeaderOutputDto, ReportOutput<WithoutSewageRequestSummaryByZoneGroupedDataOutputDto, WithoutSewageRequestSummaryByZoneGroupedDataOutputDto>> result = await _withoutSewageRequestSummaryByZoneGroupedHandler.Handle(input, cancellationToken);
+            ReportOutput<WithoutSewageRequestSummaryHeaderOutputDto, ReportOutput<WithoutSewageRequestSummaryByZoneGroupedDataOutputDto, WithoutSewageRequestSummaryByZoneGroupedDataOutputDto>> result = await _withoutSewageRequestSummaryByZoneGroupedHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -51,7 +51,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetStiReport(WithoutSewageRequestInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 623;
-            ReportOutput<WithoutSewageRequestHeaderOutputDto, WithoutSewageRequestSummaryByZoneGroupedDataOutputDto> result = await _withoutSewageRequestSummaryByZoneGroupedHandler.HandleFlat(inputDto, cancellationToken);
+            ReportOutput<WithoutSewageRequestSummaryHeaderOutputDto, WithoutSewageRequestSummaryByZoneGroupedDataOutputDto> result = await _withoutSewageRequestSummaryByZoneGroupedHandler.HandleFlat(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }

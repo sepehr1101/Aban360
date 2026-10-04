@@ -28,10 +28,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterInstallationHeaderOutputDto, ReportOutput<SewageWaterInstallationSummaryByZoneIdDateOutputDto, SewageWaterInstallationSummaryByZoneIdDateOutputDto>>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterInstallationSummaryHeaderOutputDto, ReportOutput<SewageWaterInstallationSummaryByZoneIdDateOutputDto, SewageWaterInstallationSummaryByZoneIdDateOutputDto>>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterInstallationInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<SewageWaterInstallationHeaderOutputDto, ReportOutput<SewageWaterInstallationSummaryByZoneIdDateOutputDto, SewageWaterInstallationSummaryByZoneIdDateOutputDto>> result = await _sewageWaterInstallationSummaryByZoneIdGroupingHandler.Handle(input, cancellationToken);
+            ReportOutput<SewageWaterInstallationSummaryHeaderOutputDto, ReportOutput<SewageWaterInstallationSummaryByZoneIdDateOutputDto, SewageWaterInstallationSummaryByZoneIdDateOutputDto>> result = await _sewageWaterInstallationSummaryByZoneIdGroupingHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -50,7 +50,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetStiReport(SewageWaterInstallationInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 243;
-            ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDateOutputDto> result = await _sewageWaterInstallationSummaryByZoneIdGroupingHandler.HandleFlat(inputDto, cancellationToken);
+            ReportOutput<SewageWaterInstallationSummaryHeaderOutputDto, SewageWaterInstallationSummaryByZoneIdDateOutputDto> result = await _sewageWaterInstallationSummaryByZoneIdGroupingHandler.HandleFlat(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }

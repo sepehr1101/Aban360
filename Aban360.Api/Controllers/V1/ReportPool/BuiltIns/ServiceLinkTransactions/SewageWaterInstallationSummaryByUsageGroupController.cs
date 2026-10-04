@@ -30,10 +30,10 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterInstallationSummaryHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterInstallationByUsageGroupInputDto input, CancellationToken cancellationToken)
         {
-            ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto> result = await _sewageWaterInstallationSummaryByUsageGroupHandler.Handle(input, cancellationToken);
+            ReportOutput<SewageWaterInstallationSummaryHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto> result = await _sewageWaterInstallationSummaryByUsageGroupHandler.Handle(input, cancellationToken);
             return Ok(result);
         }
 
@@ -53,7 +53,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
         public async Task<IActionResult> GetStiReport(SewageWaterInstallationByUsageGroupInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = 241;
-            ReportOutput<SewageWaterInstallationHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto> calculationDetails = await _sewageWaterInstallationSummaryByUsageGroupHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<SewageWaterInstallationSummaryHeaderOutputDto, SewageWaterInstallationSummaryDataOutputDto> calculationDetails = await _sewageWaterInstallationSummaryByUsageGroupHandler.Handle(inputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(calculationDetails, cancellationToken, reportCode);
             return Ok(reportId);
         }

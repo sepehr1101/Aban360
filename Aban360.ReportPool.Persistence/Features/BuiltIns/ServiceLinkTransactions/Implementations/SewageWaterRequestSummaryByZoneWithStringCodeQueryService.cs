@@ -17,14 +17,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         {
         }
 
-        public async Task<ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryWithStringCodeDataOutputDto>> Get(SewageWaterRequestWithStringCodeInputDto input)
+        public async Task<ReportOutput<SewageWaterRequestSummaryHeaderOutputDto, SewageWaterRequestSummaryWithStringCodeDataOutputDto>> Get(SewageWaterRequestWithStringCodeInputDto input)
         {
             string ZoneTitle = nameof(ZoneTitle);
             string query = GetQuery(input.IsWater, input.IsZone);
             string reportTitle = input.IsWater ? ReportLiterals.WaterRequestSummary + ReportLiterals.ByZone : ReportLiterals.SewageRequestSummary + ReportLiterals.ByZone;
 
             IEnumerable<SewageWaterRequestSummaryWithStringCodeDataOutputDto> data = await _sqlReportConnection.QueryAsync<SewageWaterRequestSummaryWithStringCodeDataOutputDto>(query, input);
-            SewageWaterRequestHeaderOutputDto header = new SewageWaterRequestHeaderOutputDto()
+            SewageWaterRequestSummaryHeaderOutputDto header = new SewageWaterRequestSummaryHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
                 ToDateJalali = input.ToDateJalali,
@@ -34,13 +34,25 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 RecordCount = data is not null && data.Any() ? data.Count() : 0,
                 Title = reportTitle,
 
-                SumCommercialUnit = data.Sum(i => i.CommercialUnit),
-                SumDomesticUnit = data.Sum(i => i.DomesticUnit),
-                SumOtherUnit = data.Sum(i => i.OtherUnit),
-                TotalUnit = data.Sum(i => i.TotalUnit),
-                CustomerCount = data.Sum(i => i.CustomerCount),
+                SumCommercialUnit = data?.Sum(i => i.CommercialUnit) ?? 0,
+                SumDomesticUnit = data?.Sum(i => i.DomesticUnit) ?? 0,
+                SumOtherUnit = data?.Sum(i => i.OtherUnit) ?? 0,
+                TotalUnit = data?.Sum(i => i.TotalUnit) ?? 0,
+                CustomerCount = data?.Sum(i => i.CustomerCount) ?? 0,
+
+                UnSpecified = data?.Sum(i => i.UnSpecified) ?? 0,
+                Field0_5 = data?.Sum(i => i.Field0_5) ?? 0,
+                Field0_75 = data?.Sum(i => i.Field0_75) ?? 0,
+                Field1 = data?.Sum(i => i.Field1) ?? 0,
+                Field1_2 = data?.Sum(i => i.Field1_2) ?? 0,
+                Field1_5 = data?.Sum(i => i.Field1_5) ?? 0,
+                Field2 = data?.Sum(i => i.Field2) ?? 0,
+                Field3 = data?.Sum(i => i.Field3) ?? 0,
+                Field4 = data?.Sum(i => i.Field4) ?? 0,
+                Field5 = data?.Sum(i => i.Field5) ?? 0,
+                MoreThan6 = data?.Sum(i => i.MoreThan6) ?? 0,
             };
-            var result = new ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestSummaryWithStringCodeDataOutputDto>(reportTitle, header, data);
+            var result = new ReportOutput<SewageWaterRequestSummaryHeaderOutputDto, SewageWaterRequestSummaryWithStringCodeDataOutputDto>(reportTitle, header, data);
             return result;
         }
         private string GetQuery(bool isWater, bool isZone)

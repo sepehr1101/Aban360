@@ -1,5 +1,4 @@
 ﻿using Aban360.Common.BaseEntities;
-using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs;
 
@@ -7,6 +6,6 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
 {
     public interface ISewageWaterRequestDetailHandler
     {
-        Task<ReportOutput<SewageWaterRequestHeaderOutputDto, SewageWaterRequestDetailDataOutputDto>> Handle(SewageWaterRequestInputDto input, CancellationToken cancellationToken);
+        Task<ReportOutput<SewageWaterRequestDetailHeaderOutputDto, SewageWaterRequestDetailDataOutputDto>> Handle(SewageWaterRequestInputDto input, CancellationToken cancellationToken);
     }
 }
