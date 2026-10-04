@@ -1,5 +1,6 @@
 ﻿using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Literals;
+using Aban360.Common.Authentication;
 using Microsoft.Extensions.Options;
 
 namespace Aban360.BrdigeApi.Extensions
@@ -8,6 +9,8 @@ namespace Aban360.BrdigeApi.Extensions
     {
         internal static IServiceCollection AddCustomHttpClients(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddSingleton<IEsbTokenProvider, EsbTokenProvider>();
+            services.AddTransient<EsbAuthenticationHandler>();
             services.AddOpenKm(configuration);
             return services;
         }
@@ -21,7 +24,7 @@ namespace Aban360.BrdigeApi.Extensions
                     throw new InvalidOperationException(ExceptionLiterals.InvalidConfiguration(nameof(OpenKmOptions), nameof(OpenKmOptions.BaseUrl)));
                 }
                 httpClient.BaseAddress = new Uri(options.Value.BaseUrl);
-            });
+            }).AddHttpMessageHandler<EsbAuthenticationHandler>();
         }
     }
 }

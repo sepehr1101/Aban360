@@ -33,5 +33,12 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
                 .Include(r=>r.ReadingBound)
                 .ToListAsync();
         }
+
+        public async Task<ICollection<ReadingBlock>> GetByBoundId(int boundId)
+        {
+            return await _readingBlocks.
+                Where(readingBlock => readingBlock.ReadingBoundId == boundId)
+                .ToListAsync();
+        }
     }
 }
