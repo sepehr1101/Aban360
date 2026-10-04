@@ -64,7 +64,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.AutoReading.Queries
         {
             try
             {
-                int reportCode = 800;
+                int reportCode = 2800;
                 FlowMeterReportGetDto result = await _flowMeterReportGetHandler.Handle(inputDto, cancellationToken);
                 JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode);
                 return Ok(reportId);
