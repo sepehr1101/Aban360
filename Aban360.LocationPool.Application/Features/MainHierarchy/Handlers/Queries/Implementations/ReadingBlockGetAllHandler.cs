@@ -22,10 +22,10 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
             _readingBlockQeryService.NotNull(nameof(readingBlockQeryService));
         }
 
-        public async Task<ICollection<ReadingBlockGetDto>> Handle(CancellationToken cancellationToken)
+        public async Task<ICollection<ReadingBlockGetDto>> Handle(int readingBoundId, CancellationToken cancellationToken)
         {
-            ICollection<ReadingBlock> readingBound = await _readingBlockQeryService.Get();
-            return _mapper.Map<ICollection<ReadingBlockGetDto>>(readingBound);
+            ICollection<ReadingBlock> readingBlocks = await _readingBlockQeryService.GetByBoundId(readingBoundId);
+            return _mapper.Map<ICollection<ReadingBlockGetDto>>(readingBlocks);
         }
     }
 }

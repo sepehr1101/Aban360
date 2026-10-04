@@ -24,12 +24,12 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Queries
         }
 
         [HttpGet, HttpPost]
-        [Route("all")]
+        [Route("all/{readingBoundId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ReadingBlockGetDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll(int readingBoundId,CancellationToken cancellationToken)
         {
-            ICollection<ReadingBlockGetDto> readingBlock = await _readingBlockGetAllHandler.Handle(cancellationToken);
-            return Ok(readingBlock);
+            ICollection<ReadingBlockGetDto> readingBlocks = await _readingBlockGetAllHandler.Handle(readingBoundId,cancellationToken);
+            return Ok(readingBlocks);
         }
     }
 }
