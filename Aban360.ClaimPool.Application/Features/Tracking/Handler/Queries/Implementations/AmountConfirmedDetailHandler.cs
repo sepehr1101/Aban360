@@ -59,7 +59,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber, true)).FirstOrDefault();
             MoshtrakServiceDto sData = MoshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
             IEnumerable<NumericDictionary> s = MoshtrakService.GetServicesSelectedDto(sData, trackingInfo.ServiceGroupId);
-           
+
             IEnumerable<InstallmentRequestDataOutputDto> installmentsInfo = await _ghestQueryService.Get(trackingInfo.TrackNumber.ToString(), trackingInfo.ZoneId);
             IEnumerable<OfferingAmountOutputDto> offeringsInfo = await _kartQueryService.GetByTrackNumber(ReportLiterals.Karten75, trackingInfo.TrackNumber.ToString(), trackingInfo.ZoneId);
             if (!offeringsInfo.Any())
@@ -67,7 +67,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 offeringsInfo = await _kartQueryService.GetByTrackNumber(ReportLiterals.Kart, trackingInfo.TrackNumber.ToString(), trackingInfo.ZoneId);
             }
 
-            AmountConfirmedOutputDto result = GetOutput(trackingInfo, offeringsInfo, installmentsInfo);
+            AmountConfirmedOutputDto result = GetOutput(trackingInfo, offeringsInfo, installmentsInfo, s);
             return result;
         }
         private AmountConfirmedOutputDto GetOutput(TrackingOutputDto trackingInfo, IEnumerable<OfferingAmountOutputDto> offerings, IEnumerable<InstallmentRequestDataOutputDto> installmentsInfo, IEnumerable<NumericDictionary> s)
