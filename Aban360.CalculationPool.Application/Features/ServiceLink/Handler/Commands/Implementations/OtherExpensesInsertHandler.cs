@@ -180,7 +180,11 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         {
             if (_manualServiceIds.Contains(inputDto.Offering))
             {
-                OtherExpensesItemsDataDto otherExpensesItemsInfo = await _otherExpensesItemsQueryService.Get(new OtherExpensesItemsGetDto(memberInfo.ZoneId, memberInfo.UsageId, (int)inputDto.Offering));
+                OtherExpensesItemsDataDto? otherExpensesItemsInfo = await _otherExpensesItemsQueryService.Get(new OtherExpensesItemsGetDto(memberInfo.ZoneId, memberInfo.UsageId, (int)inputDto.Offering), false);
+                if (otherExpensesItemsInfo is null)
+                {
+                    throw new InvalidBillCommandException(ExceptionLiterals.NotFoundAmount);
+                }
                 if (inputDto.Amount != otherExpensesItemsInfo.Amount)
                 {
                     throw new InvalidBillCommandException(ExceptionLiterals.InvalidAmount);

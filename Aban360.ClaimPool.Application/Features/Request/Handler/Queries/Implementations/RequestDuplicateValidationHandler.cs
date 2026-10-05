@@ -57,7 +57,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             MoshtrakSearchTypeEnum moshtrakSearchType = 0;
             if (inputDto.ValidationType == TrackingDuplicateValidationTypeEnum.ByNationalCode)
             {
-                if (inputDto.NeighbourBillId is not null)
+                if (!string.IsNullOrWhiteSpace(inputDto.NeighbourBillId))
                 {
                     ZoneIdAndCustomerNumber neighbourZoneInfo = await _commonMemberQueryService.Get(inputDto.NeighbourBillId);
                     MemberInfoGetDto neighbourInfo = await _commonMemberQueryService.Get(neighbourZoneInfo);

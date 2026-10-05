@@ -4,12 +4,12 @@
     {
         public int ZoneId { get; set; }
         public int UsageId { get; set; }
-        public int ItemId { get; set; }
-        public OtherExpensesItemsGetDto(int zoneId,int usageId,int itemId)
+        public int ServiceId { get; set; }
+        public OtherExpensesItemsGetDto(int zoneId, int usageId, int seviceId)
         {
-            ZoneId=zoneId;
-            UsageId=usageId;
-            ItemId=itemId;
+            ZoneId = zoneId;
+            UsageId = usageId;
+            ServiceId = seviceId;
         }
         public OtherExpensesItemsGetDto()
         {
