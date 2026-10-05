@@ -313,6 +313,7 @@
         public static string InvalidInsertZarib => "خطا در ایجاد ظریب";
         public static string InvalidUpdateZarib => " خطا در ویرایش ظریب ";
         public static string InvalidDuplicateUsageGroup => "خطا در گروه کاربری تکراری";
+        public static string InvalidUsageInfo => "خطا در اطلاعات کاربری";
         public static string InvalidInsertSmsType => "خطا در ایجاد نوع پیامک";
         public static string InvalidInsertSmsStateGroup => "خطا در ایجاد گروه پیامک";
         public static string InvalidInsertDuplicateSmsType => "نوع پیامک تکراری است";

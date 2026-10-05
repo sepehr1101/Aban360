@@ -9,10 +9,11 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.C
         Task Handle(CustomerEstateUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
         Task Handle(CustomerTechnicalUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
         Task Handle(CustomerMobileUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
-        Task Handle(CustomerBranchTypeUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellation);
+        Task Handle(CustomerNecessaryInfoToUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellation);
         Task Handle(CustomerHouseholdUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
         Task Handle(SubscriptionAssignmentInputUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
         Task Handle(CustomerDeletionStateUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
         Task Handle(MeterInstallationUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
+        Task Handle(CustomerBranchTypeUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
     }
 }
