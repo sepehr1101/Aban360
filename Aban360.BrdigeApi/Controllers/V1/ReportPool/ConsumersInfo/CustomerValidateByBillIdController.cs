@@ -22,7 +22,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerBillIdValidateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Validate(SearchInput input, CancellationToken cancellationToken)
         {
-            CustomerBillIdValidateDto customerInfo = await _customerInfoByBillIdHandler.Handle(input, cancellationToken);
+            CustomerBillIdValidateDto customerInfo = await _customerInfoByBillIdHandler.Handle(input, CurrentUser, cancellationToken);
             return Ok(customerInfo);
         }
     }

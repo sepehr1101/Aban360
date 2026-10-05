@@ -85,7 +85,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         Id , 
                         ZoneId , 
                         ZoneTitle , 
-                        BillId , 
+                        TRIM(BillId) BillId ,
                         WaterDebt , 
                         CommandDateTime , 
                         CommandBy , 
@@ -114,8 +114,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             return @$"Select 
                         d.Id , 
                         d.ZoneId , 
-                        d.ZoneTitle , 
-                        d.BillId , 
+                        d.ZoneTitle ,
+                        TRIM(d.BillId) BillId , 
                         d.WaterDebt , 
                         d.CommandDateTime , 
                         d.CommandBy , 
@@ -153,7 +153,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         Id , 
                         ZoneId , 
                         ZoneTitle , 
-                        BillId , 
+                        TRIM(BillId) BillId , 
                         WaterDebt , 
                         CommandDateTime , 
                         CommandBy , 
@@ -187,8 +187,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             return @$"Select
                         Id , 
                         ZoneId , 
-                        ZoneTitle , 
-                        BillId , 
+                        ZoneTitle ,
+                        TRIM(BillId) BillId ,
                         WaterDebt , 
                         CommandDateTime , 
                         CommandBy , 
@@ -273,7 +273,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
             string datePropertyCondition = isRegisterDate ? " CommandDateTime " : " ResultDateTime ";
             return $@"Select 
                     	Id,
-						BillId,
+                        TRIM(BillId) BillId ,
                     	ZoneId,
                     	ZoneTitle,
                     	WaterDebt,

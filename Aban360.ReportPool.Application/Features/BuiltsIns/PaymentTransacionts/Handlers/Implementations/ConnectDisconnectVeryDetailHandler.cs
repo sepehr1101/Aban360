@@ -28,12 +28,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 
         public async Task<ReportOutput<ConnectDisconnectVeryDetailHeaderOutputDto, ConnectDisconnectVeryDetailDataOutputDto>> Handle(ConnectDisconnectVeryDetailInputDto inputDto, CancellationToken cancellationToken)
         {
-            var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
-            if (!validationResult.IsValid)
-            {
-                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomValidationException(message);
-            }
+            await InputValidate(inputDto, cancellationToken);
 
             IEnumerable<ConnectDisconnectVeryDetailDataOutputDto> data = await _connectDisconnectQueryService.Get(inputDto);
             ConnectDisconnectVeryDetailHeaderOutputDto header = new()
@@ -45,6 +40,15 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                 CustomerCount = data?.Count() ?? 0,
             };
             return new ReportOutput<ConnectDisconnectVeryDetailHeaderOutputDto, ConnectDisconnectVeryDetailDataOutputDto>(_title, header, data);
+        }
+        public async Task InputValidate(ConnectDisconnectVeryDetailInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomValidationException(message);
+            }
         }
     }
 }
