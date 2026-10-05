@@ -12,7 +12,7 @@ namespace Aban360.Common.Db.Services
 {
     public interface ICommonMemberQueryService
     {
-        Task<ZoneIdAndCustomerNumber> Get(string billId);
+        Task<ZoneIdAndCustomerNumber?> Get(string billId, bool hasException = true);
         Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> GetFromClient(ZoneIdsAndReadingNumber input, bool hasException);
         Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> Get(IEnumerable<string> billId, IDbConnection connection, IDbTransaction transction);
         Task<MemberInfoGetDto> Get(ZoneIdAndCustomerNumber input);
@@ -26,11 +26,11 @@ namespace Aban360.Common.Db.Services
         {
         }
 
-        public async Task<ZoneIdAndCustomerNumber> Get(string billId)
+        public async Task<ZoneIdAndCustomerNumber?> Get(string billId, bool hasException = true)
         {
             string query = GetZoneIdAndCustomerNumberQuery();
-            ZoneIdAndCustomerNumber result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumber>(query, new { billId });
-            if (result == null || result.ZoneId <= 0)
+            ZoneIdAndCustomerNumber? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<ZoneIdAndCustomerNumber>(query, new { billId });
+            if ((result == null || result.ZoneId <= 0) && hasException)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
             }
@@ -360,7 +360,7 @@ namespace Aban360.Common.Db.Services
         {
             return $@"Select * From #TempCustomerNumbers t";
         }
-     
+
         private string GetLastMeterValidQuery()
         {
             return @"Select Id

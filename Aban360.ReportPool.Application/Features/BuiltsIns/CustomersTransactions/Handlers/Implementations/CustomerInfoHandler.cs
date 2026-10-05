@@ -26,7 +26,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransaction
 
         public async Task<CustomerInfoByBillIdOutputDto> Handle(SearchInput input, CancellationToken cancellationToken)
         {
-            CustomerInfoByBillIdOutputDto customerInfo = await _customerInfoQueryService.Get(input.Input, false);
+            CustomerInfoByBillIdOutputDto customerInfo = await _customerInfoQueryService.Get(input.Input, true);
             return customerInfo;
         }
         public async Task<BillIdReppar> Handle(CustomerInfoByZoneAndCustomerNumberInputDto input, CancellationToken cancellationToken)
