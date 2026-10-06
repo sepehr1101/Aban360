@@ -38,6 +38,7 @@
         public static string InvalidFridayDate => "روز انتخابی، جمعه است";
         public static string InvalidOfficialHolidayDate => "روز انتخابی، تعطیل است";
         public static string InvalidAmount => "مبلغ نامعتبر است.";
+        public static string NotFoundAmount => "مبلغ یافت نشد.";
         public static string InvalidOffDate => "ارزیاب در روز انتخابی مرخصی است";
         public static string InvalidPreviousBillsDataToGenerateContro(string billId) => $"اطلاعات قرائت قبلی برای مشترک:{billId} یافت نشد. خطا در ویرایش جدول کنتور";
         public static string InvalidPreviousDate => "تاریخ ارزیابی باید از امروز بزرگتر باشد.";
@@ -312,6 +313,7 @@
         public static string InvalidInsertZarib => "خطا در ایجاد ظریب";
         public static string InvalidUpdateZarib => " خطا در ویرایش ظریب ";
         public static string InvalidDuplicateUsageGroup => "خطا در گروه کاربری تکراری";
+        public static string InvalidUsageInfo => "خطا در اطلاعات کاربری";
         public static string InvalidInsertSmsType => "خطا در ایجاد نوع پیامک";
         public static string InvalidInsertSmsStateGroup => "خطا در ایجاد گروه پیامک";
         public static string InvalidInsertDuplicateSmsType => "نوع پیامک تکراری است";

@@ -7,6 +7,7 @@
         Commercial = 2,
         DomesticCommercial = 3,
 
+        Garden = 25,
         Residence = 34,
     }
 }

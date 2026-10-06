@@ -45,7 +45,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IValidator<MeterReadingFileCreateDto> _validator;
         private readonly IPreviousAverageHandler _previousAverageHandler;
         private readonly IBedBesQueryService _bedBesQueryService;
-        private int[] _domesticUnits = { 1, 3 };
+        private int[] _domesticUnits = { (int)UsageEnum.Domestic, (int)UsageEnum.DomesticCommercial, (int)UsageEnum.Garden, (int)UsageEnum.Residence };
         const int _conditionByConsumption = 99_999_999;
         const int _paymentDeadline = 7;
         const double _maxAmount = 999_999_999_999;

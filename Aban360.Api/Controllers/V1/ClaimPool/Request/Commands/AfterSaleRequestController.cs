@@ -46,7 +46,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         {
             int userName = UserService.GetUserCode(CurrentUser.Username);
             var (moshtrakInfo, assessmentSetTimeDto, trackId) = await _requestAfterSaleHandler.Handle(inputDto, userName, cancellationToken);
-            string text = string.Format(SmsTemplates.RequestRegister, moshtrakInfo.TrackNumber);
+            string text = string.Format(SmsTemplates.RequestRegister, moshtrakInfo.TrackNumber, Environment.NewLine);
             if (inputDto.HasSms)
             {
                 _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(moshtrakInfo.NotificationMobile, text, trackId));
@@ -73,7 +73,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         }
 
         [HttpGet]
-        [Route("is-duplicate/new/{billId}")]
+        [Route("is-duplicate/a-s/{billId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TrackingDuplicateValidationOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> IsDuplicateAfterSaleRequestFromQuery(string billId, CancellationToken cancellationToken)
         {

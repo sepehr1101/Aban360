@@ -18,24 +18,24 @@ namespace Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Imple
         public async Task<IEnumerable<OtherExpensesItemsDataDto>> Get()
         {
             string query = GetAllQuery();
-            IEnumerable<OtherExpensesItemsDataDto> result = await _sqlReportConnection.QueryAsync<OtherExpensesItemsDataDto>(query);
+            IEnumerable<OtherExpensesItemsDataDto> result = await _sqlConnection.QueryAsync<OtherExpensesItemsDataDto>(query);
             return result;
         }
         public async Task<OtherExpensesItemsDataDto> Get(int id)
         {
             string query = GetByIdQuery();
-            OtherExpensesItemsDataDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<OtherExpensesItemsDataDto>(query, new { id });
+            OtherExpensesItemsDataDto? result = await _sqlConnection.QueryFirstOrDefaultAsync<OtherExpensesItemsDataDto>(query, new { id });
             if (result == null)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidId);
             }
             return result;
         }
-        public async Task<OtherExpensesItemsDataDto> Get(OtherExpensesItemsGetDto inputDto)
+        public async Task<OtherExpensesItemsDataDto?> Get(OtherExpensesItemsGetDto inputDto, bool hasException)
         {
-            string query = GetByIdQuery();
-            OtherExpensesItemsDataDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<OtherExpensesItemsDataDto>(query, inputDto);
-            if (result == null)
+            string query = GetByCustomerInfoQuery();
+            OtherExpensesItemsDataDto? result = await _sqlConnection.QueryFirstOrDefaultAsync<OtherExpensesItemsDataDto>(query, inputDto);
+            if (result is null && hasException)
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidId);
             }
@@ -44,11 +44,63 @@ namespace Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Imple
 
         private string GetAllQuery()
         {
-            return $@"";
+            return $@"Select 
+                    	Id,
+                    	ServiceId,
+                    	ServiceTitle,
+                    	ZoneId,
+                    	ZoneTitle,
+                    	UsageId,
+                    	UsageTitle,
+                    	Amount,
+                    	InsertBy,
+                    	InsertDateTime,
+                    	RemoveBy,
+                    	RemoveDateTime
+                    From Aban360.CalculationPool.OtherExpensesItmes
+                    Where RemoveBy IS NULL";
         }
         private string GetByIdQuery()
         {
-            return $@"";
+            return $@"Select 
+                    	Id,
+                    	ServiceId,
+                    	ServiceTitle,
+                    	ZoneId,
+                    	ZoneTitle,
+                    	UsageId,
+                    	UsageTitle,
+                    	Amount,
+                    	InsertBy,
+                    	InsertDateTime,
+                    	RemoveBy,
+                    	RemoveDateTime
+                    From Aban360.CalculationPool.OtherExpensesItmes
+                    Where 
+                        Id = @Id AND
+                        RemoveBy IS NULL";
+        }
+        private string GetByCustomerInfoQuery()
+        {
+            return $@"Select 
+                    	Id,
+                    	ServiceId,
+                    	ServiceTitle,
+                    	ZoneId,
+                    	ZoneTitle,
+                    	UsageId,
+                    	UsageTitle,
+                    	Amount,
+                    	InsertBy,
+                    	InsertDateTime,
+                    	RemoveBy,
+                    	RemoveDateTime
+                    From Aban360.CalculationPool.OtherExpensesItmes
+                    Where 
+                       RemoveBy IS NULL AND
+	                   ZoneId = @ZoneId AND
+	                   UsageId = @UsageId AND
+	                   ServiceId = @ServiceId ";
         }
     }
 }

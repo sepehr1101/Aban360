@@ -6,6 +6,6 @@ namespace Aban360.CalculationPool.Persistence.Features.ServiceLink.Qeuries.Contr
     {
         Task<IEnumerable<OtherExpensesItemsDataDto>> Get();
         Task<OtherExpensesItemsDataDto> Get(int id);
-        Task<OtherExpensesItemsDataDto> Get(OtherExpensesItemsGetDto inputDto);
+        Task<OtherExpensesItemsDataDto?> Get(OtherExpensesItemsGetDto inputDto, bool hasException);
     }
 }
