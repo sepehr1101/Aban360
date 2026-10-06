@@ -41,7 +41,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         const int _conditionPayableAmount = 10000;
         const int _paymentDeadline = 7;
         const int _malfunctionMeterStateId = (int)CounterStateCodeEnum.Malfunction;
-        private int[] _domesticUnits = { (int)UsageEnum.Domestic, (int)UsageEnum.DomesticCommercial };
+        private int[] _domesticUnits = { (int)UsageEnum.Domestic, (int)UsageEnum.DomesticCommercial, (int)UsageEnum.Garden, (int)UsageEnum.Residence };
 
         public MeterReadingDetailUpdateHandler(
             IMeterFlowQueryService meterFlowQueryService,

@@ -166,7 +166,7 @@ namespace Aban360.Common.Literals
         {
             get
             {
-                return @"آبفا استان اصفهان    درخواست شما تایید شد. کد پیگیری:  {0}";
+                return @"آبفا استان اصفهان{1}درخواست شما تایید شد. کد پیگیری: {0}";
             }
         }
         public static string NewRequestTimeSetAssessment

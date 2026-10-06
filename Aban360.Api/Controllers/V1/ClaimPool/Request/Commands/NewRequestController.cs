@@ -46,7 +46,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         {
             int userCode = UserService.GetUserCode(CurrentUser.Username);
             var (moshtrakInfo, assessmentSetTimeOutputDto, trackId) = await _requestNewBranchHandler.Handle(inputDto, userCode, cancellationToken);
-            string text = string.Format(SmsTemplates.RequestRegister, moshtrakInfo.TrackNumber);
+            string text = string.Format(SmsTemplates.RequestRegister, moshtrakInfo.TrackNumber, Environment.NewLine);
             if (inputDto.HasSms)
             {
                 _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(moshtrakInfo.NotificationMobile, text, trackId));
@@ -71,11 +71,11 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             TrackingDuplicateValidationOutputDto result = await _requestDuplicateValidation.Handle(totalValidation, cancellationToken);
             return Ok(result);
         }
-        
+
         [HttpGet]
         [Route("is-duplicate/new/{neighbourBillId}/{nationalCode}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TrackingDuplicateValidationOutputDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> IsDuplicateNewRequestFromQuery(string neighbourBillId,string nationalCode, CancellationToken cancellationToken)
+        public async Task<IActionResult> IsDuplicateNewRequestFromQuery(string neighbourBillId, string nationalCode, CancellationToken cancellationToken)
         {
             NewTrackingDuplicateValidationInputDto inputDto = new(neighbourBillId, nationalCode);
             TrackingDuplicateValidationInputDto totalValidation = new(null, inputDto.NeighbourBillId, inputDto.NationalCode, TrackingDuplicateValidationTypeEnum.ByNationalCode);

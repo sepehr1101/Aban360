@@ -46,7 +46,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ClaimPool.Requests
         {
             int userCode = UserService.GetUserCode(CurrentUser.Username);
             var (moshtrakInfo, assessmentSetTimeOutputDto, trackId) = await _requestNewBranchHandler.Handle(inputDto, userCode, cancellationToken);
-            string text = string.Format(SmsTemplates.RequestRegister, moshtrakInfo.TrackNumber);
+            string text = string.Format(SmsTemplates.RequestRegister, moshtrakInfo.TrackNumber, Environment.NewLine);
             if (inputDto.HasSms)
             {
                 _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(moshtrakInfo.NotificationMobile, text, trackId));
@@ -54,11 +54,11 @@ namespace Aban360.BrdigeApi.Controllers.V1.ClaimPool.Requests
             NewRequestOutputDto outputDto;
             if (assessmentSetTimeOutputDto is not null)
             {
-                SetAssessmentTimeOutputDto assessmentTimeSmsOutputDto = GetAssessmentTimeOutputDto(hasCustomerSms: true, hasAssessmentSms:true, assessmentSetTimeOutputDto);
+                SetAssessmentTimeOutputDto assessmentTimeSmsOutputDto = GetAssessmentTimeOutputDto(hasCustomerSms: true, hasAssessmentSms: true, assessmentSetTimeOutputDto);
                 outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null, assessmentTimeSmsOutputDto.HasCustomerSms, assessmentTimeSmsOutputDto.CustomerMessage, assessmentTimeSmsOutputDto.HasAssessmentSms, assessmentTimeSmsOutputDto.AssessmentMessage, assessmentDateJalali: assessmentSetTimeOutputDto.AssessmentDateJalai, assessmentName: assessmentSetTimeOutputDto.AssessmentName);
                 return Ok(outputDto);
             }
-            outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null, false, null, false, null,null,null);
+            outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null, false, null, false, null, null, null);
             return Ok(outputDto);
         }
 
