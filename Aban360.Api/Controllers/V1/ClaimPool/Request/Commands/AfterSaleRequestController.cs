@@ -73,7 +73,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         }
 
         [HttpGet]
-        [Route("is-duplicate/new/{billId}")]
+        [Route("is-duplicate/a-s/{billId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TrackingDuplicateValidationOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> IsDuplicateAfterSaleRequestFromQuery(string billId, CancellationToken cancellationToken)
         {
