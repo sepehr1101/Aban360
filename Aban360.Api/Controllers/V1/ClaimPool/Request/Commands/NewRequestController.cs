@@ -108,7 +108,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             {
                 _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(result.MobileNumber, customerText, result.TrackId));
             }
-            return new SetAssessmentTimeOutputDto(hasAssessmentSms, hasCustomerSms, hasAssessmentSms ? assessmentText : null, hasCustomerSms ? customerText : null);
+            return new SetAssessmentTimeOutputDto(result.TrackNumber, hasAssessmentSms, hasCustomerSms, hasAssessmentSms ? assessmentText : null, hasCustomerSms ? customerText : null);
 
         }
     }
