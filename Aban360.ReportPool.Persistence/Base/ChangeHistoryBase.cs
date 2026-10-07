@@ -82,7 +82,6 @@ namespace Aban360.ReportPool.Persistence.Base
                         c.ZoneTitle,
                         c.CustomerNumber";
         }
-
         internal string GetGroupedQuery()
         {
             return $@"";

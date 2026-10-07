@@ -436,7 +436,8 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                         (@FromReadingNumber IS NUll OR
                         @ToReadingNumber IS NULL OR
                         mr.ReadingNumber  BETWEEN @FromReadingNumber AND @ToReadingNumber) AND
-                        mr.RemovedByUserId Is NUll";
+                        mr.RemovedByUserId Is NUll AND
+                        mr.ExcludedCauseId IN @ExcludedCauseIds";
         }
         private string GetUpdatedReportQuery()
         {

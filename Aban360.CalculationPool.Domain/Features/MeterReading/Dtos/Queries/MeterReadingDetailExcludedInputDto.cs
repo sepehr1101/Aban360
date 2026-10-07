@@ -7,5 +7,6 @@
         public string ToExcludeDateJalali { get; set; }
         public string? FromReadingNumber { get; set; }
         public string? ToReadingNumber { get; set; }
+        public IEnumerable<int> ExcludedCauseIds { get; set; }
     }
 }
