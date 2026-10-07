@@ -35,6 +35,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         {
             var (moshtrakSearch, moshtrakSearchType, regionAndZoneInfo) = await GetMoshtrakDto(inputDto);
             MoshtrakOutputDto? moshtrakInfo = moshtrakSearch is not null ? (await _moshtrakQueryService.GetValid(moshtrakSearch, moshtrakSearchType, false)).OrderBy(m => m.IsRegistered).ThenByDescending(m => m.RequestDateJalali).FirstOrDefault() : null;
+            if (moshtrakInfo is not null && moshtrakInfo.NeighbourBillId != inputDto.BillId)
+            {
+                moshtrakInfo = null;
+            }
             TrackingOutputDto? latestTrackingInfo = await _trackingQueryService.GetLatest(moshtrakInfo?.TrackNumber ?? 0, false);
             TrackingOutputDto? firstTrackingInfo = await _trackingQueryService.GetFirstStep(moshtrakInfo?.TrackNumber ?? 0, false);
             NumericDictionary? requestOrigin = RequestOrigin.GetRequestOrigin(firstTrackingInfo?.RequestOriginId ?? 0);
