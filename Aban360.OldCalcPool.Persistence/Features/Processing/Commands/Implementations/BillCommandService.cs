@@ -429,7 +429,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	b.town ZoneId,
                     	z.C2 ZoneTitle,
                     	b.radif CustomerNumber,
-                    	IIF(m.bill_id IS NOT NULL, m.bill_id,'') BillId,
+                    	IIF(TRIM(m.bill_id) IS NOT NULL,TRIM(m.bill_id),'') BillId,
                     	b.eshtrak ReadingNumber,
                     	b.pri_no PreviousNumber,
                     	b.today_no NextNumber,
@@ -515,7 +515,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	rc.Title,
                     	b.noe_va,
                     	0 IsSettlement,
-                        1 OldDbDel ,
+                        0 OldDbDel ,
                         0 OldDbSerial,
                         0 SewageV,
                         0 HouseholdCount

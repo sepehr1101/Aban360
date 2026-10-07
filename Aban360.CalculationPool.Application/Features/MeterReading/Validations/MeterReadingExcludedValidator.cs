@@ -21,6 +21,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Validations
                .NotNull().WithMessage(ExceptionLiterals.NotNull)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
 
+            RuleFor(t => t.ExcludedCauseIds)
+               .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+
         }
     }
 }
