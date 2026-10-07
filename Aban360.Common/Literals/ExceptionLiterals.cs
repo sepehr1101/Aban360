@@ -209,6 +209,7 @@
         public static string InvalidSaveReturn => "خطا در ذخیره برگشتی";
         public static string InvalidConfirmedReturn => "خطا در ذخیره تایید برگشتی";
         public static string InvalidDeleteConfirmedReturn => "قبض برگشتی تایید شده. امکان حذف وجود ندارد.";
+        public static string InvlaidReturnCauseWithReturnType => "علت برگشتی با نوع برگشتی مطابقت ندارد.";
         public static string InvalidReturn(string returnCauseTitle) => $@" در 4 سال اخیر، قبض برگشتی {returnCauseTitle} صادر شده";
 
 

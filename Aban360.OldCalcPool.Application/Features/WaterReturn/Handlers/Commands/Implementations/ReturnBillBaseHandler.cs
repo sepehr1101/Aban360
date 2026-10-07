@@ -914,5 +914,14 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             ReturnBillDateIntervalDto dateInterval = new((int)previousValues.ZoneId, (int)previousValues.CustomerNumber, previousValues.PreviousDateJalali, previousValues.CurrentDateJalali);
             int count = await _autoBackQueryService.GetCountByDateInterval(dateInterval);
         }
+        public async Task ReturnCauseValidate(bool isPartial, int returnCauseId)
+        {
+            bool isLatestMeterValid = !isPartial;
+            IEnumerable<NumericDictionary> validReturnCauseIds = await _billReturnCauseQueryService.Get(isLatestMeterValid);
+            if (!validReturnCauseIds.Select(v => v.Id).Contains(returnCauseId))
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvlaidReturnCauseWithReturnType);
+            }
+        }
     }
 }
