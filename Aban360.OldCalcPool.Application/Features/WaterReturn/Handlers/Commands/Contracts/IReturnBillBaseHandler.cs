@@ -23,6 +23,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         void AmountValidate(decimal repairSumItems, decimal previousSumItems);
         Task<CustomerInfoOutputDto> RealDateValidate(IAppUser appUser, string billId, string fromDateJalali, string toDateJalali);
         Task<float> GetConsumptionAverage(string fromDateJalali, string toDateJalali, ReturnedBillCalculationTypeEnum calculationType, float? userInput, CustomerInfoOutputDto customerInfo, int returnCauseId);
+        Task ReturnCauseValidate(bool isPartial, int returnCauseId);
         bool IsDomestic(int customerNumber);
     }
 }

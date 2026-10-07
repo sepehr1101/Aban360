@@ -37,6 +37,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
 
             return result;
         }
+        public async Task<IEnumerable<NumericDictionary>> Get(bool IsLastMeterValid)
+        {
+            string query = GetLastMeterByDictionaryQuery();
+            IEnumerable<NumericDictionary> result = await _sqlReportConnection.QueryAsync<NumericDictionary>(query, new { IsLastMeterValid });
+
+            return result;
+        }
         public async Task<IEnumerable<NumericDictionary>> GetByDictionary()
         {
             string query = GetAllQueryByDictionary();
@@ -84,14 +91,24 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
                         IsPartial
                     From [Db70].dbo.BillReturnCause
                     Where 
-                        RemoveDateTime IS NULL 
+                        RemoveDateTime IS NULL AND
                         IsLastMeterValid = 1";
+        }
+        private string GetLastMeterByDictionaryQuery()
+        {
+            return @"Select 
+                        Code Id,
+                        Title
+                    From [Db70].dbo.BillReturnCause
+                    Where 
+                        RemoveDateTime IS NULL AND
+                        IsLastMeterValid = @IsLastMeterValid";
         }
         private string GetAllQueryByDictionary()
         {
             return @"Select 
                         Code Id,
-                        Title,
+                        Title
                     From [Db70].dbo.BillReturnCause
                     Where
                         RemoveDateTime IS NULL /*AND

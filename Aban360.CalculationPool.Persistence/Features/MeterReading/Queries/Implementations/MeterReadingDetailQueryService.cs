@@ -410,7 +410,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                     	mr.TavizDateJalali,
                     	mr.MeterDiameterId,
                     	t5.C2 MeterDiameterTitle,
-                        1 IsEditable
+                        IIF(mf.MeterFlowStepId >= 5,0,1) IsEditable
                     From Atlas.dbo.MeterReadingDetail mr
                     Left Join CustomerWarehouse.dbo.Clients c
                     	 ON mr.ZoneId=c.ZoneId AND mr.CustomerNumber=c.CustomerNumber
@@ -428,6 +428,13 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                     	ON mr.MeterDiameterId=t5.C0
 					Join [Db70].dbo.CounterVaziat cv
 						ON mr.CurrentCounterStateCode=cv.MoshtarakinId
+                    Outer Apply
+					(
+						Select Top 1 *
+						From Atlas.dbo.MeterFlow mf	
+						Where mf.FirstFlowId = mr.FlowImportedId
+						Order By mf.MeterFlowStepId Desc
+					)mf
                     Where 
                     	c.ToDayJalali IS NULL AND
                     	mr.ExcludedByUserId IS NOT NUll AND

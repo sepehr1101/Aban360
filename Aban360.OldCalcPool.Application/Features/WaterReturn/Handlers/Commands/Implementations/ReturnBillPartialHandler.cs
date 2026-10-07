@@ -237,6 +237,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private async Task<CustomerInfoOutputDto> Validate(ReturnBillPartialInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             await _returnBillBaseHandler.PartialValidate(input, cancellationToken);
+            await _returnBillBaseHandler.ReturnCauseValidate(isPartial: true, input.ReturnCauseId);
             CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.RealDateValidate(appUser, input.BillId, input.FromDateJalali, input.ToDateJalali);
             if (ValidateDomesticBurstPieConsumptionAverage(input, customerInfo.UsageId))
             {
