@@ -66,12 +66,14 @@ namespace Aban360.MeterPool.Application.Features.AutoReading.Handlers.Queries.Im
             result.UltraSonicReadAllReportModelList ??= new List<UltraSonicReadingGetDto>();
 
             ConsumerSummaryDto customerInfo= await _consumerSummaryGetHandler.Handle(SupportedBillId, cancellationToken);
+            result.ReportHeader = new FlowMeterReportHeader();
             result.ReportHeader.ReportDateJalali = DateTime.Now.ToShortPersianDateString();
             result.ReportHeader.BillId = customerInfo.BillId;
             result.ReportHeader.Address = customerInfo.Address;
             result.ReportHeader.Firstname = customerInfo.FirstName;
             result.ReportHeader.Surname = customerInfo.Surname;
             result.ReportHeader.UsageTitle = customerInfo.UsageSell;
+            result.ReportHeader.Title = "آنالیز قرائت اولتراسونیک";
 
             return result;
         }

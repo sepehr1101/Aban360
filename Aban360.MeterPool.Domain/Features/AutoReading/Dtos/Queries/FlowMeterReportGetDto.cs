@@ -4,9 +4,8 @@ using System.Text.Json.Serialization;
 namespace Aban360.MeterPool.Domain.Features.AutoReading.Dtos.Queries
 {
     public record FlowMeterReportGetDto
-    {
-        [JsonRequired]
-        public FlowMeterReportHeader ReportHeader { get; set; } 
+    {        
+        public FlowMeterReportHeader? ReportHeader { get; set; } 
 
         // The provider has not supplied a populated sample for this report type yet.
         [JsonRequired]
@@ -22,5 +21,6 @@ namespace Aban360.MeterPool.Domain.Features.AutoReading.Dtos.Queries
         public string Surname { get; set; }=default!;
         public string UsageTitle { get; set; } = default!;
         public string Address { get; set; } = default!;
+        public string Title { get; set; }
     }
 }
