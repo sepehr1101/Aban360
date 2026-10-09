@@ -111,5 +111,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
+        
+        [HttpGet, HttpPost]
+        [Route("update-empty-unit")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerEmptyUnitUpdateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateEmptyUnit([FromBody] CustomerEmptyUnitUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(inputDto);
+        }
     }
 }
