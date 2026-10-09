@@ -116,6 +116,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
                 throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
             }
         }
+        public async Task Update(CustomerEmptyUnitUpdateDto updateDto, string dbName)
+        {
+            string command = GetUpdateEmptyUnitCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
         public async Task UpdateBedbes(ZoneIdAndCustomerNumber inputDto, long amount, string dbName)
         {
             string command = GetUpdateBedBesCommand(dbName);
@@ -406,7 +415,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 						town=@zoneId AND
 						radif=@customerNumber ";
         }
-         private string GetUpdateMeterInstallationDateCommand(string dbName)
+        private string GetUpdateMeterInstallationDateCommand(string dbName)
         {
             return @$"UPDATE [{dbName}].dbo.members
                      SET 
@@ -438,6 +447,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
 					Where 
 						radif = @customerNumber AND
 						town = @zoneId";
+        }
+        private string GetUpdateEmptyUnitCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET Khali_s = @EmptyUnit
+                     WHERE 
+                        id = @id AND
+						TRIM(bill_id) = @billId AND
+						town = @zoneId AND
+						radif = @customerNumber ";
         }
     }
 
