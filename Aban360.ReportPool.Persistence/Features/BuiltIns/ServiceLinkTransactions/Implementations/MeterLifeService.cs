@@ -152,14 +152,21 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         }
         private string GetFromMeterLifeQuery()
         {
-            return @"Select *
-                    From CustomerWarehouse.dbo.MeterLife
+            return @"Select 
+                        m.*,
+                        c.WaterDiameterId,
+                        c.WaterDiameterTitle
+                    From CustomerWarehouse.dbo.MeterLife m
+                    Join CustomerWarehouse.dbo.Clients c	
+                    	ON m.CustomerNumber=c.CustomerNumber and m.ZoneId=c.ZoneId
                     Where 
-                    	ZoneId IN @zoneIds AND
-                    	UsageId IN @usageIds AND
+                        c.ToDayJalali IS NULL AND
+                    	m.ZoneId IN @zoneIds AND
+                    	m.UsageId IN @usageIds AND
 	                    (@FromLifeInDay IS NULL OR
 	                    @ToLifeInDay IS NULL OR
-	                   (LifeInDay>@FromLifeInDay and LifeInDay<=@toLifeInDay))";
+	                   (m.LifeInDay>@FromLifeInDay and m.LifeInDay<=@toLifeInDay))
+                    Order By c.ZoneTitle ASC";
         }
         private string GetTruncateQuery()
         {

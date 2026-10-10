@@ -3,6 +3,7 @@ using Aban360.Api.Filters;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Contracts;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
@@ -16,11 +17,13 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
     {
         private readonly IReturnBillPartialHandler _billPartialHandler;
         private readonly IReturnBillFullHandler _billFullHandler;
+        private readonly IReturnBillHandler _billHandler;
         private readonly IReturnBillByConfirmedNumberGetHandler _billByConfirmedNumberGetHandler;
         private readonly IReportGenerator _reportGenerator;
         public ReturnBillController(
             IReturnBillPartialHandler billPartialHandler,
             IReturnBillFullHandler billFullHandler,
+            IReturnBillHandler billHandler,
             IReturnBillByConfirmedNumberGetHandler billByConfirmedNumberGetHandler,
             IReportGenerator reportGenerator)
         {
@@ -30,11 +33,24 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
             _billFullHandler = billFullHandler;
             _billFullHandler.NotNull(nameof(billFullHandler));
 
+            _billHandler = billHandler;
+            _billHandler.NotNull(nameof(billHandler));
+
             _billByConfirmedNumberGetHandler = billByConfirmedNumberGetHandler;
             _billByConfirmedNumberGetHandler.NotNull(nameof(billByConfirmedNumberGetHandler));
 
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(reportGenerator));
+        }
+
+        [HttpPost]
+        [Route("both")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
+        [TypeFilter(typeof(EndpointAuthorizationFilter))]
+        public async Task<IActionResult> ReturnBoth([FromBody] ReturnBillInputDto input, CancellationToken cancellationToken)
+        {
+            FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billHandler.Handle(input, CurrentUser, cancellationToken);
+            return Ok(result);
         }
 
         [HttpPost]
@@ -63,7 +79,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         [AllowAnonymous]
         public async Task<IActionResult> GetFullStiReport(ReturnBillFullInputDto input, CancellationToken cancellationToken)
         {
-            int reportCode = 2000;
+            int reportCode = (int)StiReportCodeLiterals.ReturnBill;
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billFullHandler.Handle(input, CurrentUser, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode);
             return Ok(reportId);
@@ -75,7 +91,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         [AllowAnonymous]
         public async Task<IActionResult> GetPartialStiReport(ReturnBillPartialInputDto input, CancellationToken cancellationToken)
         {
-            int reportCode = 2000;
+            int reportCode = (int)StiReportCodeLiterals.ReturnBill;
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billPartialHandler.Handle(input, CurrentUser, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode);
             return Ok(reportId);
@@ -87,7 +103,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         [AllowAnonymous]
         public async Task<IActionResult> GetStiReport(ReturnBillStiInputDto input, CancellationToken cancellationToken)
         {
-            int reportCode = 2000;
+            int reportCode = (int)StiReportCodeLiterals.ReturnBill;
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billByConfirmedNumberGetHandler.Handle(input.ConfirmedNumber, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
             return Ok(reportId);

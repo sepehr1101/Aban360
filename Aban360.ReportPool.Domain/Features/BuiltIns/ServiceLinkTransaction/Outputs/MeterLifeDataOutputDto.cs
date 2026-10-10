@@ -11,5 +11,7 @@
         public string UsageTitle { get; set; }
         public int LifeInDay { get; set; }
         public string LifeText { get; set; }
+        public int WaterDiameterId { get; set; }
+        public string WaterDiameterTitle { get; set; }
     }
 }

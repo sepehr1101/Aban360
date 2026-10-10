@@ -57,6 +57,7 @@
         public static string BillIdNotFound => "شناسه قبض یافت نشد";
         public static string InvalidBillId => "شناسه قبض معتبر نیست";
         public static string InvalidReadingNumber => "شماره اشتراک معتبر نیست";
+        public static string InvalidDuplicateReadingNumber => "شماره اشتراک تکراری است";
         public static string InvalidMoreThan1ReadingNumber => "بیش از یک مشترک با شماره اشتراک وارد شده یافت شده است.";
         public static string NotFoundBillId(string billId) => $"شناسه قبض:{billId} معتبر نیست";
         public static string InvalidCustomerNumber => "ردیف یافت نشد";
@@ -85,6 +86,7 @@
         public static string InvalidDuration => "مدت زمان محاسبه نامعتبر";
         public static string InvalidZeroServiceSelected => "حداقل یک درخواست انتخاب کنید.";
         public static string InvalidZoneTitle => "ناحیه یافت نشد!";
+        public static string InvalidEmptyUnitForNonDomesticUnit => "مقدار خالی از سکنه برای مشترک غیرمسکونی نامعتبر است.";
         public static string InvalidNotEqualMeterNumberInWithoutConsumption => "در وضعیت -بدون مصرف- رقم قبلی و فعلی باید یکی باشد.";
         public static string InvalidBedBesPreviousNumberAndDate(string billId) => $"آخرین تاریخ قرائت و رقم کنتور برای شناسه قبض{billId} قابل جستجو نیست.";
         public static string InvalidBedBesPreviousNumberAndDateAndInstallationDate(string billId) => $"علاوه بر آخرین تاریخ قرائت و رقم کنتور، تاریخ نصب انشعاب برای شناسه قبض{billId} قابل جستجو نیست.";
@@ -93,6 +95,7 @@
         public static string InvalidToCalculateConsumptioAverage => "خطا در محاسبه متوسط مصرف";
         public static string InvlaidStringLength => "طول رشته نامعتبر است.";
         public static string InvalidEmailFormat => "فرمت ایمیل نامعتبر است.";
+        public static string InvalidDiscountUnits => "خطا در تعداد آحاد مشترک";
         public static string MobileNumberFormat => "شماره موبایل باید با 09 شروع شده و شامل 11 رقم باشد.";
         public static string PhoneNumberFormat => "شماره تلفن باید شامل 8 یا 11 رقم باشد.";
         public static string NationalCodeFormat => "کد ملی باید ۱۰ رقم باشد.";
@@ -198,6 +201,7 @@
 
 
         //ReturnedBill
+        public static string InvalidFullReturnByUserInput => "امکان برگشتی کامل با داده ورودی نیست.";
         public static string InvalidReturnLessThan1401 => " برگشتی برای قبوض کوچک تر از 1401 امکان پذیر نیست.";
         public static string InvalidBillIdToReturn => "تعداد قبوض قابل برگشتی در جدول جدید، مغایرت دارد.";
         public static string NotFoundBillsToReturned => "قبضی برای برگشتی یافت نشد.";
