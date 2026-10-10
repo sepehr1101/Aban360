@@ -5,7 +5,6 @@ using Aban360.Common.Extensions;
 using Aban360.MeterPool.Application.Features.AutoReading.Exceptions;
 using Aban360.MeterPool.Application.Features.AutoReading.Handlers.Queries.Contracts;
 using Aban360.MeterPool.Domain.Features.AutoReading.Dtos.Queries;
-using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -66,7 +65,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.AutoReading.Queries
             {
                 int reportCode = 2800;
                 FlowMeterReportGetDto result = await _flowMeterReportGetHandler.Handle(inputDto, cancellationToken);
-                JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode);
+                JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
                 return Ok(reportId);
             }
             catch (NonUltrasonicMeterException exception)

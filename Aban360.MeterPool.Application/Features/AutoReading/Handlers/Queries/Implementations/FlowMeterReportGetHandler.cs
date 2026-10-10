@@ -8,6 +8,9 @@ using FluentValidation;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 using System.Text.Json;
+using DNTPersianUtils.Core;
+using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 
 namespace Aban360.MeterPool.Application.Features.AutoReading.Handlers.Queries.Implementations
 {
@@ -19,11 +22,13 @@ namespace Aban360.MeterPool.Application.Features.AutoReading.Handlers.Queries.Im
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly AutoReadingOptions _options;
         private readonly IValidator<FlowMeterReportInputDto> _validator;
+        private readonly IConsumerSummaryGetHandler _consumerSummaryGetHandler; 
 
         public FlowMeterReportGetHandler(
             IHttpClientFactory httpClientFactory,
             IOptions<AutoReadingOptions> options,
-            IValidator<FlowMeterReportInputDto> validator)
+            IValidator<FlowMeterReportInputDto> validator,
+            IConsumerSummaryGetHandler consumerSummaryGetHandler)
         {
             _httpClientFactory = httpClientFactory;
             _httpClientFactory.NotNull(nameof(httpClientFactory));
@@ -31,6 +36,9 @@ namespace Aban360.MeterPool.Application.Features.AutoReading.Handlers.Queries.Im
             _options = options.Value;
             _validator = validator;
             _validator.NotNull(nameof(validator));
+
+            _consumerSummaryGetHandler = consumerSummaryGetHandler;
+            _consumerSummaryGetHandler.NotNull(nameof(_consumerSummaryGetHandler));
         }
 
         public async Task<FlowMeterReportGetDto> Handle(FlowMeterReportInputDto inputDto, CancellationToken cancellationToken)
@@ -56,6 +64,17 @@ namespace Aban360.MeterPool.Application.Features.AutoReading.Handlers.Queries.Im
                 ?? throw new JsonException("پاسخ سرویس قرائت خودکار معتبر نیست.");
             result.ReadAllReportModelList ??= new List<JsonElement>();
             result.UltraSonicReadAllReportModelList ??= new List<UltraSonicReadingGetDto>();
+
+            ConsumerSummaryDto customerInfo= await _consumerSummaryGetHandler.Handle(SupportedBillId, cancellationToken);
+            result.ReportHeader = new FlowMeterReportHeader();
+            result.ReportHeader.ReportDateJalali = DateTime.Now.ToShortPersianDateString();
+            result.ReportHeader.BillId = customerInfo.BillId;
+            result.ReportHeader.Address = customerInfo.Address;
+            result.ReportHeader.Firstname = customerInfo.FirstName;
+            result.ReportHeader.Surname = customerInfo.Surname;
+            result.ReportHeader.UsageTitle = customerInfo.UsageSell;
+            result.ReportHeader.Title = "آنالیز قرائت اولتراسونیک";
+
             return result;
         }
     }

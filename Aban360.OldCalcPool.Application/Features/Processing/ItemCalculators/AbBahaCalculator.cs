@@ -11,7 +11,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IAbBahaCalculator
     {
-        TariffItemResult Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds, out double villageMultiplier);
+        TariffItemResult Calculate(ConsumptionInfo consumptionInfo, NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds, out double villageMultiplier);
         TariffItemResult CalculateDiscount(ConsumptionPartialInfo consumptionPartialInfo, ZaribGetDto zarib, bool isVillageCalculation, double monthlyConsumption, CustomerInfoOutputDto customerInfo, NerkhGetDto nerkh, int olgoo, TariffItemResult calculateAbBahaOutputDto, int finalDomesticUnit);
     }
 
@@ -43,7 +43,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         (long, long) _11000_550000 = (11000, 550000);
         (long, long) _14300_715000 = (14300, 715000);
 
-        public TariffItemResult Calculate(NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds, out double villageMultiplier)
+        public TariffItemResult Calculate(ConsumptionInfo consumptionInfo, NerkhGetDto nerkh, NerkhGetDto nerkh1403, CustomerInfoOutputDto customerInfo, MeterInfoOutputDto meterInfo, ZaribGetDto zarib, AbAzadFormulaDto abAzad8And39, ConsumptionPartialInfo consumptionPartialInfo, string currentDateJalali, bool isVillageCalculation, double monthlyConsumption, int _olgoo, [Optional] int? c, [Optional] IEnumerable<int> tagIds, out double villageMultiplier)
         {
             double duration = consumptionPartialInfo.Duration;
             decimal multiplierAbBaha = GetMultiplier(zarib, _olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
@@ -167,7 +167,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 //case 2: is construction
                 if (IsConstruction(customerInfo))
                 {
-                    (double, double) abBahaAmountConstruction = CalcFormula(abAzad8And39.AllowedFormula, abAzad8And39.DisallowedFormula, monthlyConsumption, _olgoo, c, multiplierAbBaha, 1, 1, 1, customerInfo, consumptionPartialInfo, tagIds);
+                    (double, double) abBahaAmountConstruction = CalcFormula(consumptionInfo,abAzad8And39.AllowedFormula, abAzad8And39.DisallowedFormula, monthlyConsumption, _olgoo, c, multiplierAbBaha, 1, 1, 1, customerInfo, consumptionPartialInfo, tagIds);
                     return new TariffItemResult(abBahaAmountConstruction.Item1, abBahaAmountConstruction.Item2);
                 }
 
@@ -178,7 +178,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
                 decimal allowedKModifier = isVillage && isDomestic ? (decimal)_villageAllowedMultiplier : 1M;
                 decimal disAllowedKModifier = isVillage && isDomestic ? (decimal)_villageDisallowedMultiplier : 1M;
-                (double, double) abBahaAmount = CalcFormula(nerkh.AllowedFormula, nerkh.DisallowedFormula, monthlyConsumption, _olgoo, c, multiplierAbBaha, k1, allowedKModifier, disAllowedKModifier, customerInfo, consumptionPartialInfo, tagIds);
+                (double, double) abBahaAmount = CalcFormula(consumptionInfo, nerkh.AllowedFormula, nerkh.DisallowedFormula, monthlyConsumption, _olgoo, c, multiplierAbBaha, k1, allowedKModifier, disAllowedKModifier, customerInfo, consumptionPartialInfo, tagIds);
                 return new TariffItemResult(abBahaAmount.Item1, abBahaAmount.Item2);
             }
         }
@@ -439,9 +439,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             double value = Eval<double>(formula, parameters);
             return value;
         }
-        private (double, double) CalcFormula(string allowedFormula, string disallowedFormula, double monthlyAverageConsumption, int olgoo, int? c, decimal zoneMultiplier, decimal zoneMultipler2, decimal allowedKModifier, decimal disAllowedKModifier, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, [Optional] IEnumerable<int> tagIds)
+        private (double, double) CalcFormula(ConsumptionInfo consumptionInfo ,string allowedFormula, string disallowedFormula, double monthlyAverageConsumption, int olgoo, int? c, decimal zoneMultiplier, decimal zoneMultipler2, decimal allowedKModifier, decimal disAllowedKModifier, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, [Optional] IEnumerable<int> tagIds)
         {
-            double t = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.DomesticUnitForHousehold : customerInfo.UnitAll);
+            double t = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? consumptionInfo.FinalDomesticUnit : customerInfo.UnitAll);
             if (IsConstruction(customerInfo.BranchType) && IsPureDomestic(customerInfo.UsageId))
             {
                 t = customerInfo.DomesticUnit <= 1 ? 1 : customerInfo.DomesticUnit;

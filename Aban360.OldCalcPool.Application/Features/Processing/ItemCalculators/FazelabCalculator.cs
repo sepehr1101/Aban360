@@ -15,7 +15,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IFazelabCalculator
     {
-        TariffItemResult Calculate(NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier);
+        TariffItemResult Calculate(ConsumptionInfo consumptionInfo,NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier);
         TariffItemResult CalculateDiscount(NerkhGetDto nerkh, TariffItemResult fazelabCalculationResult , double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo);
     }
 
@@ -29,7 +29,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const double _villageAllowedMultiplier = 0.5;
         const double _villageDisallowedMultiplier = 0.65;
 
-        public TariffItemResult Calculate(NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier)
+        public TariffItemResult Calculate(ConsumptionInfo consumptionInfo, NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier)
         {
             if (date2.IsLtEq(date_1405_03_15) || isAbonman)
             {
@@ -161,7 +161,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 decimal allowedKModifier = isVillage && isDomestic ? (decimal)_villageAllowedMultiplier : 1M;
                 decimal disAllowedKModifier = isVillage && isDomestic ? (decimal)_villageDisallowedMultiplier : 1M;
 
-                (double, double) values = CalcFormula(nerkh, monthlyConsumption.Value, s.Value, c, zoneMultiplier: multiplierAbBaha, zoneMultiplier2:k1, duration, allowedKModifier, disAllowedKModifier, customerInfo, consumptionPartialInfo);
+                (double, double) values = CalcFormula(consumptionInfo, nerkh, monthlyConsumption.Value, s.Value, c, zoneMultiplier: multiplierAbBaha, zoneMultiplier2:k1, duration, allowedKModifier, disAllowedKModifier, customerInfo, consumptionPartialInfo);
                 return new TariffItemResult(values.Item1, values.Item2);
             }
         }
@@ -272,9 +272,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             return !isAbonman && IsDomesticCategory(usageId) ? 0.7 : 1;
         }
-        private (double, double) CalcFormula(NerkhGetDto nerkh, double monthlyAverageConsumption, int olgoo, int? c, decimal zoneMultiplier, decimal zoneMultiplier2, int duration, decimal allowedKModifier, decimal disAllowedKModifier, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, [Optional] IEnumerable<int> tagIds)
+        private (double, double) CalcFormula(ConsumptionInfo consumptionInfo, NerkhGetDto nerkh, double monthlyAverageConsumption, int olgoo, int? c, decimal zoneMultiplier, decimal zoneMultiplier2, int duration, decimal allowedKModifier, decimal disAllowedKModifier, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo, [Optional] IEnumerable<int> tagIds)
         {
-            double t = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? customerInfo.DomesticUnitForHousehold : customerInfo.UnitAll);
+            double t = (double)(IsDomesticWithoutUnspecified(customerInfo.UsageId) ? consumptionInfo.FinalDomesticUnit : customerInfo.UnitAll);
             if (IsConstruction(customerInfo.BranchType) && IsPureDomestic(customerInfo.UsageId))
             {
                 t = customerInfo.DomesticUnit <= 1 ? 1 : customerInfo.DomesticUnit;
