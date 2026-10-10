@@ -31,7 +31,27 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
         }
         public int DomesticUnitForHousehold
         {
-            get { return HouseholdNumber > 1 ? HouseholdNumber : (DomesticUnit - EmptyUnit) > 1 ? (DomesticUnit - EmptyUnit) : 1; }
+            get
+            {
+                if (HouseholdNumber == 0)
+                {
+                    return 0;
+                }
+                if(string.IsNullOrEmpty(HouseholdDate))
+                {
+                    return 0;
+                }
+                DateOnly? householdDateTmp = HouseholdDate.ToGregorianDateOnly();
+                if (!householdDateTmp.HasValue)
+                {
+                    return 0;
+                }
+                if (householdDateTmp.Value.AddYears(1) < DateOnly.FromDateTime(DateAndTime.Now))
+                {
+                    return 0;
+                }
+                return HouseholdNumber > 1 ? HouseholdNumber : (DomesticUnit - EmptyUnit) > 1 ? (DomesticUnit - EmptyUnit) : 1; 
+            }
         }
         public int EmptyUnit { get; set; }
         public string WaterInstallationDateJalali { get; set; } = default!;
@@ -81,9 +101,10 @@ namespace Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output
             }
             else
             {
+                HouseholdNumber = 0;
                 tmpHouseholdNumber = 0;
             }
-            HouseholdNumber = tmpHouseholdNumber;
+            //HouseholdNumber = tmpHouseholdNumber;
             ReadingNumber = input.CustomerInfo.ReadingNumber ?? string.Empty;
             VillageId = input.CustomerInfo.VillageId;
             IsSpecial = input.CustomerInfo.IsSpecial;
