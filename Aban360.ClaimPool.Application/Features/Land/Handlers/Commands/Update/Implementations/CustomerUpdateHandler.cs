@@ -17,10 +17,10 @@ using Aban360.Common.ApplicationUser;
 using Aban360.Common.Db.Constants.Literals;
 using Microsoft.AspNetCore.Http;
 using Aban360.ClaimPool.Domain.Constants;
-using System.Threading;
 using Aban360.ReportPool.Domain.Base;
-using Aban360.ClaimPool.Application.Features.Land.Validations;
-using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
+using System.Runtime.InteropServices;
+using Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Validations;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementationsu
 {
@@ -42,6 +42,8 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         private readonly IValidator<CustomerBranchTypeUpdateInputDto> _customerBranchTypeUpdateValidator;
         private readonly IValidator<CustomerEmptyUnitUpdateInputDto> _customerEmptyUnitUpdateValidator;
         static int[] _allowedToSetConstructionType = { 0, 1 };
+        static int[] _domesticUsages = { (int)UsageEnum.Domestic, (int)UsageEnum.DomesticCommercial };
+        static int[] _discountTypeIds = { (int)BranchTypeEnum.KomiteEmdad, (int)BranchTypeEnum.Behzisti };
         private string _currentDateJalali = DateTime.Now.ToShortPersianDateString();
         private int _constructionId = 4;
         public CustomerUpdateHandler(
@@ -115,7 +117,12 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         public async Task Handle(CustomerUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await InputValidate(inputDto, cancellationToken);
-            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id, inputDto.ReadingNumber);
+            EmptyUnitValidate(inputDto.UsageSellId, inputDto.EmptyUnit);
+            if (_discountTypeIds.Contains(inputDto.BranchTypeId))
+            {
+                DiscountValidate(inputDto.DomesticUnit, inputDto.CommertialUnit, inputDto.OtherUnit, inputDto.UsageSellId);
+            }
             CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, memberInfo);
             string opLogText = string.Format(OpLogLiterals.CustomerFullUpdateOpLog, inputDto.BillId);
 
@@ -179,7 +186,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         {
             await InputValidate(inputDto, cancellationToken);
 
-            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id, inputDto.ReadingNumber);
             SubscriptionAssignmentUpdateDto updateDto = new(inputDto.Id, inputDto.ZoneId, inputDto.CustomerNumber, inputDto.BillId, inputDto.ReadingNumber ?? string.Empty, inputDto.Address ?? string.Empty, inputDto.PostalCode ?? string.Empty);
             string opLogText = string.Format(OpLogLiterals.SubscriptionAssignmentUpdate, inputDto.BillId);
             await ExecSql(updateDto, appUser, opLogText);
@@ -214,10 +221,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateBranchType);
             }
-            if (memberInfo.UsageId != (int)UsageEnum.Domestic || memberInfo.DomesticUnit != 1)
-            {
-                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUsageInfo);
-            }
+            DiscountValidate(memberInfo.DomesticUnit, memberInfo.CommercialUnit, memberInfo.OtherUnit, memberInfo.UsageId);
             CustomerBranchTypeUpdateDto updateDto = new(inputDto.Id, inputDto.ZoneId, inputDto.CustomerNumber, inputDto.BillId, inputDto.BranchTypId);
             string opLogText = string.Format(OpLogLiterals.CustomerBranchTypeUpdateOpLog, inputDto.BillId);
             await ExecSql(updateDto, appUser, opLogText);
@@ -227,6 +231,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             await InputValidate(inputDto, cancellationToken);
 
             MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            EmptyUnitValidate(memberInfo.UsageId, inputDto.EmptyUnit);
             CustomerEmptyUnitUpdateDto updateDto = new(inputDto.Id, inputDto.ZoneId, inputDto.CustomerNumber, inputDto.BillId, inputDto.EmptyUnit);
             string opLogText = string.Format(OpLogLiterals.CustomerEmptyUnitUpdateOpLog, inputDto.BillId);
             await ExecSql(updateDto, appUser, opLogText);
@@ -563,7 +568,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                 GuildId = inputDto.GuildId
             };
         }
-        private async Task<MemberInfoGetDto> ValidateAndGetMemberInfo(IAppUser appUser, string billId, int id)
+        private async Task<MemberInfoGetDto> ValidateAndGetMemberInfo(IAppUser appUser, string billId, int id, [Optional] string? readingNumber)
         {
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(billId);
             MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
@@ -573,7 +578,25 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
             {
                 throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidId);
             }
+            if (!string.IsNullOrWhiteSpace(readingNumber))
+            {
+                await DuplicateReadingNumberValidate(memberInfo.ZoneId, readingNumber, billId);
+            }
+
             return memberInfo;
+        }
+        private async Task DuplicateReadingNumberValidate(int zoneId, string readingNumber, string billId)
+        {
+            IEnumerable<ZoneIdAndCustomerNumberAndBillId> readingNumbersInfo = await _commonMemberQueryService.GetFromClient(new ZoneIdsAndReadingNumber(new List<int> { zoneId }, readingNumber), false);
+            if ((readingNumbersInfo?.Count() ?? 0) > 1)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateReadingNumber);
+            }
+            ZoneIdAndCustomerNumberAndBillId? firstCustomerInfo = readingNumbersInfo?.FirstOrDefault();
+            if ((readingNumbersInfo?.Count() ?? 0) == 1 && (firstCustomerInfo?.BillId ?? string.Empty) != billId)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateReadingNumber);
+            }
         }
         private string DateValidation(string? inputDate, bool hasException)
         {
@@ -584,6 +607,24 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
                     inputDate.Trim();
             }
             return string.IsNullOrWhiteSpace(inputDate) ? string.Empty : inputDate.Trim();
+        }
+        private void EmptyUnitValidate(int usageId, int emptyUnit)
+        {
+            if (!_domesticUsages.Contains(usageId) && emptyUnit > 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidEmptyUnitForNonDomesticUnit);
+            }
+        }
+        private void DiscountValidate(int domesticUnit, int commercialUnit, int otherUnit, int usageId)
+        {
+            if (domesticUnit != 1 || commercialUnit != 0 || otherUnit != 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDiscountUnits);
+            }
+            if (!_domesticUsages.Contains(usageId))
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUsageInfo);
+            }
         }
         private async Task InputValidate(CustomerMobileUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
