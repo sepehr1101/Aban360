@@ -201,6 +201,7 @@
 
 
         //ReturnedBill
+        public static string InvalidFullReturnByUserInput => "امکان برگشتی کامل با داده ورودی نیست.";
         public static string InvalidReturnLessThan1401 => " برگشتی برای قبوض کوچک تر از 1401 امکان پذیر نیست.";
         public static string InvalidBillIdToReturn => "تعداد قبوض قابل برگشتی در جدول جدید، مغایرت دارد.";
         public static string NotFoundBillsToReturned => "قبضی برای برگشتی یافت نشد.";

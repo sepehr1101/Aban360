@@ -54,7 +54,7 @@
         public static string NerkhInsertOpLog => @"نرخ کاربری ایجاد شد.کاربری:{0}  فرمول:{1}  از تاریخ:{2}  تا تاریخ:{3}";
         public static string NerkhUpdateOpLog => @"نرخ کاربری ویرایش شد.کاربری از {0} به {1} / فرمول از {2} به {3}  /  از تاریخ {4} به {5}  / تا تاریخ {6} به {7}";
         public static string SInsertOpLog => @"الگو(S) ایجاد شد. الگو:{0}  ناحیه:{1}   از تاریخ:{2}   تا تاریخ:{3}";
-        public static string SUpdateOpLog => @"الگو() ویرایش شد. الگو: از {0} به {1}  /  ناحیه: از {2} به {3}  /  از تاریخ: از {4} به {5}  /  تا تاریخ: از {6} به {7}";
+        public static string SUpdateOpLog => @"الگو(S) ویرایش شد. الگو: از {0} به {1}  /  ناحیه: از {2} به {3}  /  از تاریخ: از {4} به {5}  /  تا تاریخ: از {6} به {7}";
         public static string SDeleteOpLog => @"الگو(S) حذف شد. شناسه:{0}  الگو:{1}  ناحیه:{2}   از تاریخ:{3}   تا تاریخ:{4}";
         public static string ZaribCInsertOpLog => @"ظریبC ایجاد شد. C:{0}  از تاریخ:{1}   تا تاریخ:{2}";
         public static string ZaribCUpdateOpLog => @"ظریبC ویرایش شد. C: از {0} به {1}  /  از تاریخ: {2} به {3}  /  تا تاریخ: {4} به {5}";

@@ -75,7 +75,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
 						ON t51.C0=s.town
                     Where 
                     	s.FromDate>=@fromDate And
-                    	s.ToDate<=@toDate ";
+                    	s.ToDate<=@toDate 
+                     Order By s.ToDate desc,Id Desc";
         }
         private string GetQueryByFromToZoneId()
         {
@@ -92,7 +93,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Implementations
                     Where 
                     	s.ToDate>=@toDate And
                         s.Town=@zoneId
-                    Order By s.ToDate desc";
+                    Order By s.ToDate desc,Id Desc";
         }
         private string GetAllQuery()
         {

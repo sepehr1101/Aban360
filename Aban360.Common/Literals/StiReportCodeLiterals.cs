@@ -15,5 +15,7 @@
         WaterIncomeDiscountDetail = 2570,
         WaterIncomeDiscountSummary = 2571,
         WaterIncomeDiscountUsageGroup = 2572,
+
+        ReturnBill = 2000,
     }
 }

@@ -37,10 +37,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
 
             return result;
         }
-        public async Task<IEnumerable<NumericDictionary>> Get(bool IsLastMeterValid)
+        public async Task<IEnumerable<NumericDictionary>> Get(bool isLastMeterValid)
         {
             string query = GetLastMeterByDictionaryQuery();
-            IEnumerable<NumericDictionary> result = await _sqlReportConnection.QueryAsync<NumericDictionary>(query, new { IsLastMeterValid });
+            IEnumerable<NumericDictionary> result = await _sqlReportConnection.QueryAsync<NumericDictionary>(query, new { isLastMeterValid });
 
             return result;
         }
