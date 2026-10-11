@@ -13,7 +13,8 @@
         public int BlockCount { get; set; }
         public int CustomerCount { get; set; }
         public int Year { get; set; }
-        public int PeriodId { get; set; }
+        public int ReadingPeriodTypeId { get; set; }
+        public int ReadingPeriodId { get; set; }
         public Guid InsertBy { get; set; }
         public DateTime InsertDateTime { get; set; }
         public Guid? RemoveBy { get; set; }

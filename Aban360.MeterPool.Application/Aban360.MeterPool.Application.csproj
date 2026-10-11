@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Aban360.ReportPool.Domain\Aban360.ReportPool.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Reading\Handlers\Commands\Contracts\" />
+  </ItemGroup>
+
 </Project>

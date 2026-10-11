@@ -3,13 +3,11 @@
     public record DetailGetDto
     {
         public Guid Id { get; set; }
-        public int OnOffloadTypeId__ { get; set; }
         public Guid TrackingId { get; set; }
         public long TrackNumber { get; set; }
         public string BillId { get; set; } = null!;
         public int CustomerNumber { get; set; }
         public string ReadingNumber { get; set; } = null!;
-        public string QeraatCode__ { get; set; } = null!;
         public string FirstName { get; set; } = null!;
         public string SureName { get; set; } = null!;
         public string Address { get; set; } = null!;
@@ -28,7 +26,6 @@
         public int? PreCounterStateCode { get; set; }
         public string? BodySerial { get; set; }
         public string MeterInstallationDateJalali { get; set; } = null!;
-        public DateTime ImportDateTime__ { get; set; }
         public string? ChangeDateJalali { get; set; }
         public int? ChangeNumber { get; set; }
         public int? ContractualCapacity { get; set; }
@@ -56,8 +53,7 @@
         public string? GisAccuracy { get; set; }
         public int? ImageCount { get; set; }
         public int? CurrentConsumption { get; set; }
-        public int? EslahType__ { get; set; }
-        public double? NewRate__ { get; set; }
+        public double? CurrentConsumptionAverage{ get; set; }
         public int? DateDifference { get; set; }
         public bool? CounterNumberShown { get; set; }
         public bool? ExcludedForBazdid { get; set; }
@@ -78,7 +74,7 @@
         public string? OldReadingNumber { get; set; }
         public string? OldCustomerNumber { get; set; }
         public string? MobilesNumber { get; set; }
-        public long Balance__ { get; set; }
+        public long WaterDebt { get; set; }
         public Guid? ModifierUserId { get; set; }
         public int? GuildId { get; set; }
         public string? SiphonInstallationDateJalali { get; set; }

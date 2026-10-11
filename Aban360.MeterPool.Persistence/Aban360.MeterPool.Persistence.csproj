@@ -22,8 +22,4 @@
     <ProjectReference Include="..\Aban360.MeterPool.Domain\Aban360.MeterPool.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Reading\Commands\" />
-  </ItemGroup>
-
 </Project>
