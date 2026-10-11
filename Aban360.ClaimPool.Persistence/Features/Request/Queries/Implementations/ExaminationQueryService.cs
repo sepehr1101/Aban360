@@ -18,7 +18,11 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
         public async Task<AssessmentGetDto> Get(int code)
         {
             string query = GetSingleQuery();
-            AssessmentGetDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<AssessmentGetDto>(query, new { code });
+            AssessmentGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<AssessmentGetDto>(query, new { code });
+            if (result is null)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.NotFoundAssessment);
+            }
             return result;
         }
         public async Task<AssessmentDataOutputDto> Get(Guid id)
