@@ -26,6 +26,13 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
                     .Where(r => r.Id == id)
                     .SingleAsync();
         }
+        public async Task<ICollection<ReadingBound>> GetByZoneId(int zoneId)
+        {
+            return await _readingBounds
+                .Include(r => r.Zone)
+                .Where(r => r.ZoneId == zoneId)
+                .ToListAsync();
+        }
 
         public async Task<ICollection<ReadingBound>> Get()
         {
