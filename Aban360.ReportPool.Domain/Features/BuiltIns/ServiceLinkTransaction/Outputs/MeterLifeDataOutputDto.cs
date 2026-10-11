@@ -1,4 +1,6 @@
-﻿namespace Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
+﻿using Aban360.ClaimPool.Domain.Features.Metering.Entities;
+
+namespace Aban360.ReportPool.Domain.Features.BuiltIns.ServiceLinkTransaction.Outputs
 {
     public record MeterLifeDataOutputDto
     {
