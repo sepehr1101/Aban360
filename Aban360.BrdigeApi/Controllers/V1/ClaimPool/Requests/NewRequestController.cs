@@ -54,7 +54,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ClaimPool.Requests
             NewRequestOutputDto outputDto;
             if (assessmentSetTimeOutputDto is not null)
             {
-                SetAssessmentTimeOutputDto assessmentTimeSmsOutputDto = GetAssessmentTimeOutputDto(hasCustomerSms: true, hasAssessmentSms: true, assessmentSetTimeOutputDto);
+                SetAssessmentTimeOutputDto assessmentTimeSmsOutputDto = GetAssessmentTimeOutputDto(moshtrakInfo.TrackNumber, hasCustomerSms: true, hasAssessmentSms: true, assessmentSetTimeOutputDto);
                 outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null, assessmentTimeSmsOutputDto.HasCustomerSms, assessmentTimeSmsOutputDto.CustomerMessage, assessmentTimeSmsOutputDto.HasAssessmentSms, assessmentTimeSmsOutputDto.AssessmentMessage, assessmentDateJalali: assessmentSetTimeOutputDto.AssessmentDateJalai, assessmentName: assessmentSetTimeOutputDto.AssessmentName);
                 return Ok(outputDto);
             }
@@ -72,7 +72,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ClaimPool.Requests
             return Ok(result);
         }
 
-        private SetAssessmentTimeOutputDto GetAssessmentTimeOutputDto(bool hasCustomerSms, bool hasAssessmentSms, SetAssessmentTimeDataOutputDto result)
+        private SetAssessmentTimeOutputDto GetAssessmentTimeOutputDto(int trackNumber, bool hasCustomerSms, bool hasAssessmentSms, SetAssessmentTimeDataOutputDto result)
         {
             string customerText = string.Format(SmsTemplates.RequestTimeSet, result.AssessmentName, result.AssessmentMobileNumber, result.AssessmentDateJalai, result.TrackNumber);
             string assessmentText = result.ServiceGroupId == 1 ?
@@ -86,8 +86,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ClaimPool.Requests
             {
                 _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(result.MobileNumber, customerText, result.TrackId));
             }
-            return new SetAssessmentTimeOutputDto(hasAssessmentSms, hasCustomerSms, hasAssessmentSms ? assessmentText : null, hasCustomerSms ? customerText : null);
-
+            return new SetAssessmentTimeOutputDto(trackNumber, hasAssessmentSms, hasCustomerSms, hasAssessmentSms ? assessmentText : null, hasCustomerSms ? customerText : null);
         }
     }
 }
