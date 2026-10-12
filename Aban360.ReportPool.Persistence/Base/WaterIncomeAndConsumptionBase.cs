@@ -183,7 +183,9 @@ namespace Aban360.ReportPool.Persistence.Base
 							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount-b.EmptyCount)<=0 THEN 1
 							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount-EmptyCount)>0 THEN (b.OtherCount+b.CommercialCount+b.DomesticCount-EmptyCount)
 							    Else 0 
-						    END UnitC                            
+						    END UnitC--,
+                            --(SUM(Consumption) OVER (PARTITION BY CustomerNumber, ZoneId)) SumConsumption,
+							--(SUM(Duration) OVER (PARTITION BY CustomerNumber, ZoneId)) SumDuration,
                     From [CustomerWarehouse].dbo.Bills b
 					--Join [CustomerWarehouse].dbo.Clients c
 						--ON b.ZoneId=c.ZoneId and b.CustomerNumber=c.CustomerNumber
