@@ -132,6 +132,7 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.I
         {
             await InputValidate(inputDto, cancellationToken);
             MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            EmptyUnitValidate(inputDto.UsageSellId, inputDto.EmptyUnit);
             string opLogText = string.Format(OpLogLiterals.CustomerEstateUpdateOpLog, inputDto.BillId);
 
             await ExecSql(inputDto, appUser, opLogText);

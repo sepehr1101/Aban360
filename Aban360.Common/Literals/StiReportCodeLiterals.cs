@@ -2,6 +2,8 @@
 {
     public enum StiReportCodeLiterals : int
     {
+        ReturnBill = 2000,
+
         ConnectServiceLink = 2070,
         DisconnectServiceLink = 2071,
         JudicialNoticeServiceLink = 2120,
@@ -16,6 +18,7 @@
         WaterIncomeDiscountSummary = 2571,
         WaterIncomeDiscountUsageGroup = 2572,
 
-        ReturnBill = 2000,
+
+        MeterReadingExcluded = 2580,
     }
 }
