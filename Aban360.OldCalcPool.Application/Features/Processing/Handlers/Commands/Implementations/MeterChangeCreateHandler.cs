@@ -138,7 +138,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 throw new CustomValidationException(message);
             }
             DateTime currentDateGregorian = DateTime.Now;
-            string meterChangeGregorian = ConvertDate.JalaliToGregorian(inputDto.MeterChangeDateJalali);
+            string meterChangeGregorian = ConvertDate.JalaliToGregorian(inputDto.MeterChangeDateJalali, true);
 
             if (meterChangeGregorian.Length != 10)
                 throw new InvalidDateException(meterChangeGregorian);

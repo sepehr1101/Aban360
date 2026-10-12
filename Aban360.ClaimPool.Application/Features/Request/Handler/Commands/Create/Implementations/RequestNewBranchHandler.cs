@@ -322,7 +322,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AssessmentName = assessmentData.FullName,
                 ZoneId = zoneId,
                 AssessmentDateJalali = assessmentDateJalali,
-                AssessmentGregorianDateTime = ConvertDate.JalaliToDateTime(assessmentDateJalali),
+                AssessmentGregorianDateTime = ConvertDate.JalaliToDateTime(assessmentDateJalali, true),
                 ResultId = null,
                 Description = null,
                 TrackId = trackingInsertSetTimeDto.TrackId,

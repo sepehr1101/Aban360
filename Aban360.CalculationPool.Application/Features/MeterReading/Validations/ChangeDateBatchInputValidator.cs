@@ -30,12 +30,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Validations
         }
         private bool CheckDateJalali(string dateJalali)
         {
-            string date = ConvertDate.JalaliToGregorian(dateJalali);
+            string date = ConvertDate.JalaliToGregorian(dateJalali, true);
             if (date == ExceptionLiterals.Incalculable)
             {
                 return false;
             }
-            DateTime dateTime = ConvertDate.JalaliToDateTime(dateJalali);
+            DateTime dateTime = ConvertDate.JalaliToDateTime(dateJalali, true).Value;
             if (dateTime.CompareTo(DateTime.Now) > 0 || dateTime.CompareTo(DateTime.Now.AddDays(-5)) < 0)
             {
                 return false;

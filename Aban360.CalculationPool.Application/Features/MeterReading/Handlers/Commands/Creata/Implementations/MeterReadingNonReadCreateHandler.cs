@@ -59,7 +59,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         {
             await InputValidate(input, cancellationToken);
             string fileName = $"{ReportLiterals.NonRead}-{Guid.NewGuid()}";
-            string dateJalaliCondition = ConvertDate.JalaliToDateTime(input.CurrentDateJalali).AddDays(_maxDayCondition).ToShortPersianDateString();
+            string dateJalaliCondition = ConvertDate.JalaliToDateTime(input.CurrentDateJalali, true).Value.AddDays(_maxDayCondition).ToShortPersianDateString();
 
             IEnumerable<BillLatestListDataOutputDto> latestBills = await _billQueryService.GetLatestForNonRead(new BillLatestListInputDto(input.ZoneId, input.FromReadingNumber, input.ToReadingNumber), dateJalaliCondition);
             if (!latestBills.Any())

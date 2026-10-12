@@ -130,7 +130,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private DateTime FridayValidation(string date)
         {
-            DateTime _date = ConvertDate.JalaliToDateTime(date);
+            DateTime _date = ConvertDate.JalaliToDateTime(date, true).Value;
             if (_date.DayOfWeek == DayOfWeek.Friday)
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidFridayDate);
@@ -186,7 +186,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AssessmentName = assessmentData.FullName,
                 ZoneId = latestTrackingInfo.ZoneId,
                 AssessmentDateJalali = inputDto.AssessmentDateJalali,
-                AssessmentGregorianDateTime = ConvertDate.JalaliToDateTime(inputDto.AssessmentDateJalali),
+                AssessmentGregorianDateTime = ConvertDate.JalaliToDateTime(inputDto.AssessmentDateJalali, true),
                 ResultId = null,
                 Description = null,
                 TrackId = newTrackId,

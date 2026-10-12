@@ -64,7 +64,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 SmsCount = inputDto.SmsCount,
                 SmsTemplateId = inputDto.SmsTemplateId,
                 InsertBy = appUser.UserId,
-                DueDateTime = ConvertDate.JalaliToDateTime(inputDto.DueDateJalali),
+                DueDateTime = ConvertDate.JalaliToDateTime(inputDto.DueDateJalali, true).Value,
             };
         }
     }
