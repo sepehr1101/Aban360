@@ -6,12 +6,14 @@
         public int ZoneId { get; set; }
         public int CustomerNumber { get; set; }
         public int TypeCode { get; set; }
-        public BillsOldDbDelUpdateDto(int id, int zoneId, int customerNumber, int typCode)
+        public bool OldDbDel { get; set; }
+        public BillsOldDbDelUpdateDto(int id, int zoneId, int customerNumber, int typCode, bool oldDbDel)
         {
             Id = id;
             ZoneId = zoneId;
             CustomerNumber = customerNumber;
             TypeCode = typCode;
+            OldDbDel = oldDbDel;
         }
         public BillsOldDbDelUpdateDto()
         {

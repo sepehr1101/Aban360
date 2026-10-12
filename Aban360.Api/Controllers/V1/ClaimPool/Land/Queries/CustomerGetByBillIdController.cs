@@ -22,7 +22,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromBody] SearchInput inputDto, CancellationToken cancellationToken)
         {
-            SubscriptionGetDto result = await _customerGetByBillIdHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            SubscriptionGetDto result = await _customerGetByBillIdHandler.Handle(inputDto.Input, CurrentUser, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("get-to-update/{billId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionGetDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByQuery(string billId, CancellationToken cancellationToken)
+        {
+            SubscriptionGetDto result = await _customerGetByBillIdHandler.Handle(billId, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

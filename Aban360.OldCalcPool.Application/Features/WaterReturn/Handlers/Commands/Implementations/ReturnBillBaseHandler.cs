@@ -45,7 +45,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IValidator<ReturnBillPartialInputDto> _returnPartialValidator;
         private string _invalidReturnLesstThan1401 = "1401/01/01";
         private static string _title = "برگشتی";
-        const string _type = "5";
+        static string _type = ReportLiterals.RepairTypeCode;
         const int _operator = 666;
         public ReturnBillBaseHandler(
             IHttpContextAccessor contextAccessor,

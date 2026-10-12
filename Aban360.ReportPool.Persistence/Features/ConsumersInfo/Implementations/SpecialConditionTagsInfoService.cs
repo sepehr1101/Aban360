@@ -17,15 +17,15 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
             //string branchHistoryQuery = GetSpecialConditionTagsSummayDtoQuery();
             string branchHistoryQuery = GetSpecialConditionTagsSummaryDtoWithClientDbQuery();
             string waterMeterTagsQuery = GetWaterMeterTagsDtoQuery();
-            string individualTagsQuery = GetIndividualTagsDtoQuery();
+            string individualTagsQuery = GetWaterTag();
 
             SpecialConditionTagsInfoDto result = await _sqlReportConnection.QueryFirstOrDefaultAsync<SpecialConditionTagsInfoDto>(branchHistoryQuery, new { billId });
             if (result == null)
                 throw new InvalidIdException();
 
             // result.tagsInfoDtos = await _sqlReportConnection.QueryAsync<TagsInfoDto>(waterMeterTagsQuery, new { billId });
-            // result.tagsInfoDtos.Concat(await _sqlReportConnection.QueryAsync<TagsInfoDto>(individualTagsQuery,new { billId }));
-            result.tagsInfoDtos=new List<TagsInfoDto>();
+            result.tagsInfoDtos = await _sqlReportConnection.QueryAsync<TagsInfoDto>(individualTagsQuery, new { billId });
+            //result.tagsInfoDtos = new List<TagsInfoDto>();
 
             return result;
         }
@@ -46,7 +46,7 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
 						c.ToDayJalali is null";
 
         }
-         private string GetSpecialConditionTagsSummayDtoQuery()
+        private string GetSpecialConditionTagsSummayDtoQuery()
         {
             return @"select top(1)
                     	h.Title as 'HandoverTitle',--without relation
@@ -76,20 +76,18 @@ namespace Aban360.ReportPool.Persistence.Features.ConsumersInfo.Implementations
                     join ClaimPool.WaterMeterTag wt on w.Id=wt.WaterMeterId
                     join ClaimPool.WaterMeterTagDefinition wtd on wtd.Id=wt.WaterMeterTagDefinitionId
                          where w.BillId=@billId";
-        
+
         }
-        private string GetIndividualTagsDtoQuery()
+        private string GetWaterTag()
         {
-            return @"select
-                    	itd.Id,
-						itd.Title
-                    from ClaimPool.WaterMeter w 
-					join ClaimPool.Estate e on w.EstateId=e.Id
-					join ClaimPool.IndividualEstate ie on e.Id=ie.EstateId
-					join ClaimPool.Individual i on ie.IndividualId=i.Id
-					join ClaimPool.IndividualTag it on it.IndividualId=i.Id
-					join ClaimPool.IndividualTagDefinition itd on it.IndividualTagDefinitionId=itd.Id
-                         where w.BillId=@billId";
+            return @"Select 
+                        bt.Id,
+                	    bt.TagTitle Title
+                    FROM [CustomerWarehouse].dbo.BillIdTags bt
+                    Where
+                       	bt.BillId=@billId AND
+                        ( bt.ExpireDateJalali IS NULL OR LEN(bt.ExpireDateJalali)=0 OR [CustomerWarehouse].dbo.PersianToMiladi(bt.ExpireDateJalali)>GETDATE() ) AND
+                       	bt.DeleteDateTime IS NULL";
         }
     }
 }
