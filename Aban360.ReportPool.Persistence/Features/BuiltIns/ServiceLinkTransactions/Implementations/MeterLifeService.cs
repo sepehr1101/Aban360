@@ -30,8 +30,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             IEnumerable<MeterLifeDataOutputDto> data = await _sqlReportConnection.QueryAsync<MeterLifeDataOutputDto>(query, input);
             MeterLifeHeaderOutputDto header = new MeterLifeHeaderOutputDto()
             {
-                FromLifeInDay = input.FromLifeInDay/365 ?? 0,
-                ToLifeInDay = input.ToLifeInDay/365 ?? 0,
+                FromLifeInDay = input.FromLifeInDay / 365 ?? 0,
+                ToLifeInDay = input.ToLifeInDay / 365 ?? 0,
 
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
                 RecordCount = data.Count(),
@@ -77,9 +77,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         public async Task Insert(IEnumerable<MeterLifeCalculationOutputDto> input)
         {
             var dataTable = GetDataTable(input);
-            using SqlConnection sqlConnection = new (_sqlReportConnection.ConnectionString);
+            using SqlConnection sqlConnection = new(_sqlReportConnection.ConnectionString);
             await sqlConnection.OpenAsync();
-            using SqlBulkCopy bulkCopy = new (sqlConnection);
+            using SqlBulkCopy bulkCopy = new(sqlConnection);
             bulkCopy.DestinationTableName = "[CustomerWarehouse].dbo.MeterLife";
 
             bulkCopy.ColumnMappings.Add("ZoneId", "ZoneId");
@@ -91,7 +91,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             bulkCopy.ColumnMappings.Add("UsageTitle", "UsageTitle");
             bulkCopy.ColumnMappings.Add("LifeInDay", "LifeInDay");
             bulkCopy.ColumnMappings.Add("LifeText", "LifeText");
-
+            bulkCopy.ColumnMappings.Add("WaterDiameterId", "WaterDiameterId");
+            bulkCopy.ColumnMappings.Add("WaterDiameterTitle", "WaterDiameterTitle"); 
+                                                
             bulkCopy.BatchSize = 10000;
             bulkCopy.BulkCopyTimeout = 0;
 
@@ -110,6 +112,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             table.Columns.Add("UsageTitle", typeof(string));
             table.Columns.Add("LifeInDay", typeof(int));
             table.Columns.Add("LifeText", typeof(string));
+            table.Columns.Add("WaterDiameterId", typeof(int));
+            table.Columns.Add("WaterDiameterTitle", typeof(string));
 
             foreach (var x in input)
             {
@@ -117,7 +121,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                     x.ZoneId, x.ZoneTitle,
                     x.CustomerNumber, x.BillId,
                     x.BranchTypeId, x.UsageId, x.UsageTitle,
-                    x.LifeInDay, x.LifeText
+                    x.LifeInDay, x.LifeText,
+                    x.WaterDiameterId, x.WaterDiameterTitle
                 );
             }
 
@@ -135,7 +140,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                         c.UsageId,
                         c.UsageTitle,
                         c.WaterInstallDate AS WaterInstallationDateJalali,
-                        m.LatestChangeDateJalali
+                        m.LatestChangeDateJalali,
+						c.WaterDiameterId,
+						c.WaterDiameterTitle
                     FROM CustomerWarehouse.dbo.Clients c
                     OUTER APPLY
                     (
@@ -152,21 +159,15 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
         }
         private string GetFromMeterLifeQuery()
         {
-            return @"Select 
-                        m.*,
-                        c.WaterDiameterId,
-                        c.WaterDiameterTitle
+            return @"Select m.*
                     From CustomerWarehouse.dbo.MeterLife m
-                    Join CustomerWarehouse.dbo.Clients c	
-                    	ON m.CustomerNumber=c.CustomerNumber and m.ZoneId=c.ZoneId
                     Where 
-                        c.ToDayJalali IS NULL AND
                     	m.ZoneId IN @zoneIds AND
                     	m.UsageId IN @usageIds AND
 	                    (@FromLifeInDay IS NULL OR
 	                    @ToLifeInDay IS NULL OR
 	                   (m.LifeInDay>@FromLifeInDay and m.LifeInDay<=@toLifeInDay))
-                    Order By c.ZoneTitle ASC";
+                    Order By m.ZoneTitle ASC";
         }
         private string GetTruncateQuery()
         {

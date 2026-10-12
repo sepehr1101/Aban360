@@ -4,6 +4,6 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queri
 {
     public interface IReadingBoundGetAllHandler
     {
-        Task<ICollection<ReadingBoundGetDto>> Handle( CancellationToken cancellationToken);
+        Task<ICollection<ReadingBoundGetDto>> Handle(CancellationToken cancellationToken);
     }
 }

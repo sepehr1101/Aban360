@@ -26,14 +26,19 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
                     .Where(r => r.Id == id)
                     .SingleAsync();
         }
-
         public async Task<ICollection<ReadingBlock>> Get()
         {
             return await _readingBlocks
-                .Include(r=>r.ReadingBound)
+                .Include(r => r.ReadingBound)
                 .ToListAsync();
         }
-
+        public async Task<ICollection<ReadingBlock>> Get(IEnumerable<int> ids)
+        {
+            return await _readingBlocks
+                .Include(r => r.ReadingBound)
+                .Where(r => ids.Contains(r.Id))
+                .ToListAsync();
+        }
         public async Task<ICollection<ReadingBlock>> GetByBoundId(int boundId)
         {
             return await _readingBlocks.

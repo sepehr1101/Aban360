@@ -1,6 +1,6 @@
 using Aban360.MeterPool.Domain.Features.Reading;
 
-namespace Aban360.MeterPool.Application.Features.Reading
+namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Queries.Contracts
 {
     public interface ILoad
     {

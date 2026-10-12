@@ -6,6 +6,7 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contra
     {
         Task<ReadingBlock> Get(short id);
         Task<ICollection<ReadingBlock>> Get();
+        Task<ICollection<ReadingBlock>> Get(IEnumerable<int> ids);
         Task<ICollection<ReadingBlock>> GetByBoundId(int boundId);
     }
 }
