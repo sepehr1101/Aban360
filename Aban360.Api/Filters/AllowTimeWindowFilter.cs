@@ -10,7 +10,7 @@
 
     public class AllowTimeWindowFilter : Attribute, IAsyncActionFilter
     {
-        private readonly TimeSpan _start = new TimeSpan(15, 0, 0); // 15:00
+        private readonly TimeSpan _start = new TimeSpan(13, 0, 0); // 13:00
         private readonly TimeSpan _end = new TimeSpan(7, 0, 0);    // 07:00
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -18,7 +18,7 @@
             var now = DateTime.Now.TimeOfDay;
 
             bool isAllowed =
-                (now >= _start) ||     // از 15:00 تا 23:59
+                (now >= _start) ||     // از 13:00 تا 23:59
                 (now <= _end);         // از 00:00 تا 07:00
 
             if (!isAllowed)
