@@ -60,6 +60,15 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
                 throw new ReturnedBillException(ExceptionLiterals.InvalidConfirmedReturn);
             }
         }
+        public async Task Delete(RepairByInfoDeleteDto input,string dbName)
+        {
+            string query = DeleteByInfoQuery(dbName);
+            int recordEffected=await _connection.ExecuteAsync(query, input, _transaction);
+            if (recordEffected <= 0)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidRepairRemove);
+            }
+        }
         public async Task Delete(RepairDeleteDto input)
         {
             ZoneIdAndBargeGetDto zoneIdAndBarge = await GetZoneIdAndBarege(input.Id);
@@ -162,6 +171,15 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Command.Implemen
                     Where
                         town=@zoneId AND  
                         barge=@barge";
+        }
+        private string DeleteByInfoQuery(string dbName)
+        {
+            return @$"USE [{dbName}]
+                    Delete From [{dbName}].dbo.REPAIR
+                    Where
+                        town = @zoneId AND  
+                        radif = @CustomerNumber AND
+                        Id = @Id";
         }
         private string GetZoneIdAndBargeQuery()
         {

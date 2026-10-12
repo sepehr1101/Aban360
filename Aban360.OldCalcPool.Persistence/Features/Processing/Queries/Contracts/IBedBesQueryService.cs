@@ -16,6 +16,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
         Task<IEnumerable<BillsCanRemoveOutputDto>> GetToRemove(RemovedBillSearchDto input);
         Task<RemoveBillDataInputDto> GetToRemove(RemoveBillGetDto input);
         Task<IEnumerable<BillsCanReturnOutputDto>> GetToReturned(ReturnBillSearchDto input);
+        Task<IEnumerable<ReturnedBillsOutputDto>> Returned(int zoneId);
         Task<IEnumerable<BillsCanRemoveOutputDto>> Get(BillToReturnInputDto input);
         Task<ReportOutput<ManualBillHeaderOutputDto, ManualBillDataOutputDto>> Get(ManualBillInputDto input);
         Task<float> GetPreviousBill(int zoneId, int customerNumber, string dateJalali);

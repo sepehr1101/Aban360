@@ -6,6 +6,6 @@ namespace Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts
 {
     public interface ICustomerGetByBillIdHandler
     {
-        Task<SubscriptionGetDto> Handle(SearchInput inputDto, IAppUser appUser, CancellationToken cancellationToken);
+        Task<SubscriptionGetDto> Handle(string billId, IAppUser appUser, CancellationToken cancellationToken);
     }
 }

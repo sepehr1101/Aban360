@@ -125,8 +125,8 @@ namespace Aban360.Common.Db.Services
         public async Task<IEnumerable<OpLogDataDto>> Get(OpLogGetDto input)
         {
             string query = GetFromToDateQuery();
-            DateTime fromDate = ConvertDate.JalaliToDateTime(input.FromDateJalali);
-            DateTime toDate = ConvertDate.JalaliToDateTime(input.ToDateJalali);
+            DateTime fromDate = ConvertDate.JalaliToDateTime(input.FromDateJalali,true).Value;
+            DateTime toDate = ConvertDate.JalaliToDateTime(input.ToDateJalali,true).Value;
             IEnumerable<OpLogDataDto> datas = await _sqlReportConnection.QueryAsync<OpLogDataDto>(query, new { fromDate, toDate });
             datas.ForEach(d => d.RegisterDateJalali = d.RegisterDateTime.ToShortPersianDateString());
 

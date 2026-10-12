@@ -99,7 +99,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             IEnumerable<BedBesWithDelOutputDto> bedBesIds = await _bedBesQueryService.GetByDateInterval(new ZoneCustomerFromToDateDto((int)repairInfo.Town, (int)repairInfo.Radif, repairInfo.PriDate, repairInfo.TodayDate), zoneDbName);
             IEnumerable<BedBesUpdateDelDto> bedBesUpdateDelDto = bedBesIds.Select(s => new BedBesUpdateDelDto((int)repairInfo.Town, s.Id, true));
             BillFindReturnedInputDto returnedValues = new(memberInfo.ZoneId, memberInfo.CustomerNumber, (int)repairInfo.PriNo, (int)repairInfo.TodayNo, repairInfo.PriDate, repairInfo.TodayDate);
-            IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn = await _billQueryService.GetReturnedId(returnedValues);
+            IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn = await GetBillsToReturn(returnedValues);
+
+
             if ((billsIdToReturn?.Count() ?? 0) != (bedBesUpdateDelDto?.Count() ?? 0))
             {
                 throw new ReturnedBillException(ExceptionLiterals.InvalidBillIdToReturn);
@@ -461,6 +463,20 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = new(_title, header, data);
             return result;
+        }
+        private async Task<IEnumerable<BillsOldDbDelUpdateDto>> GetBillsToReturn(BillFindReturnedInputDto returnedValues)
+        {
+            IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn = await _billQueryService.GetReturnedId(returnedValues);
+            if (billsIdToReturn.Where(b => b.OldDbDel == true).Any())
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidBillIdToReturn);
+            }
+            foreach (var item in billsIdToReturn)
+            {
+                item.OldDbDel = true;
+            }
+
+            return billsIdToReturn;
         }
     }
 }

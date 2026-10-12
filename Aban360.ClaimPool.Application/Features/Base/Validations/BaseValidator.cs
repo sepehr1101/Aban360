@@ -51,7 +51,7 @@ namespace Aban360.ClaimPool.Application.Features.Base.Validations
             {
                 return true;
             }
-            string gregorianData = ConvertDate.JalaliToGregorian(input);
+            string gregorianData = ConvertDate.JalaliToGregorian(input, true);
             if (gregorianData == ExceptionLiterals.Incalculable)
             {
                 return false;

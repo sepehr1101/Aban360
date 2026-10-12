@@ -45,6 +45,15 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 throw new ReturnedBillException(ExceptionLiterals.InvalidSaveReturn);
             }
         }
+        public async Task Delete(BillRemoveByIdDto input)
+        {
+            string command = GetDeleteByIdCommand();
+            int recordCount = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordCount != 1)
+            {
+                throw new InvalidBillCommandException(Exceptionliterals.InvalidRemoveBill);
+            }
+        }
         public async Task Delete(RemoveBillDto input)
         {
             string command = GetDeleteByDetailCommand();
@@ -415,6 +424,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     	NextDay=@CurrentDateJalali AND
                     	NextNumber=@CurrentNumber ";
         }
+        private string GetDeleteByIdCommand()
+        {
+            return $@"Delete [CustomerWarehouse].dbo.Bills
+                    Where 
+                    	ZoneId = @ZoneId AND
+                    	CustomerNumber = @CustomerNumber AND
+                    	Id = @Id";
+        }
         private string GetDeleteByCustomerNumberCommand()
         {
             return $@"Delete [CustomerWarehouse].dbo.Bills
@@ -539,7 +556,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         private string GetUpdateOldDbDelCommand()
         {
             return $@"Update CustomerWarehouse.dbo.Bills 
-                    Set OldDbDel = 1
+                    Set OldDbDel = @OldDbDel
                     Where 
                         ZoneId = @ZoneId AND 
                         CustomerNumber = @CustomerNumber AND 

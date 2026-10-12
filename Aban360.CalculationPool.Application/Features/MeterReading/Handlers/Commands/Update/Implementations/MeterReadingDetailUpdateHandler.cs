@@ -385,6 +385,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 throw new ReadingException(ExceptionLiterals.InvalidContractualCapacity);
             }
+            if (string.IsNullOrWhiteSpace(previousMeterDetailDto.PreviousDateJalali))
+            {
+                throw new ReadingException(ExceptionLiterals.PreviousDateIsInvalid);
+            }
         }
         private async Task<AbBahaCalculationDetails> CalcAbBahaTariff(MeterReadingDetailUpdateDto meterReadingDetailUpdate, MeterReadingDetailDataOutputDto previousMeterDetailDto, CommonDto.CustomerInfoGetDto customerInfo, CancellationToken cancellationToken)
         {

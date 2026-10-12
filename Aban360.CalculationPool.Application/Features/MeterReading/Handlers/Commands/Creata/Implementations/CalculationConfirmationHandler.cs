@@ -298,7 +298,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 }
                 else
                 {
-                    DateTime previousRegisterDate = ConvertDate.JalaliToDateTime(previousBills.RegisterDateJalali);
+                    DateTime previousRegisterDate = ConvertDate.JalaliToDateTime(previousBills.RegisterDateJalali, true).Value;
                     if (item.DateBed.CompareTo(previousRegisterDate.AddDays(5).ToShortPersianDateString()) < 0)//تاریخ صدور قبض
                     {
                         MeterReadingDetailExcludedDto excludeDto = new(item.Id, appUser.UserId, currentDateTime, ExcludedCauseEnum.DuplicateBill5, ReportLiterals.DuplicateBill5);

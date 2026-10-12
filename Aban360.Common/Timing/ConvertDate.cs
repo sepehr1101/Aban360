@@ -5,15 +5,18 @@ namespace Aban360.Common.Timing
 {
     public static class ConvertDate
     {
-        public static string JalaliToGregorian(string dateJalali)
+        public static string JalaliToGregorian(string dateJalali, bool hasException)
         {
             DateOnly? dateGregorian = dateJalali.ToGregorianDateOnly();
             if (dateGregorian.HasValue && DateValidation(dateJalali))
             {
                 return dateGregorian.Value.ToString("yyyy-MM-dd");
             }
-
-            return ExceptionLiterals.Incalculable;
+            if (hasException)
+            {
+                return ExceptionLiterals.Incalculable;
+            }
+            return string.Empty;
         }
         public static DateTime GregorianStringToDateTime(string dateGregorian)
         {
@@ -60,15 +63,19 @@ namespace Aban360.Common.Timing
 
             return ExceptionLiterals.Incalculable;
         }
-        public static DateTime JalaliToDateTime(string date)
+        public static DateTime? JalaliToDateTime(string date, bool hasException)
         {
-            string gregorianDate = ConvertDate.JalaliToGregorian(date);
+            string gregorianDate = ConvertDate.JalaliToGregorian(date, hasException);
+            if (string.IsNullOrWhiteSpace(gregorianDate))
+            {
+                return null;
+            }
             string[] partsDate = gregorianDate.Split('-');
             int year = int.Parse(partsDate[0]);
             int month = int.Parse(partsDate[1]);
             int day = int.Parse(partsDate[2]);
 
-             return new DateTime(year, month, day);
+            return new DateTime(year, month, day);
         }
     }
 }
