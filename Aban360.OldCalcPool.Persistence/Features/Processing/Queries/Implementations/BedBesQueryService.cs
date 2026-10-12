@@ -111,6 +111,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             }
             return result;
         }
+        public async Task<IEnumerable<ReturnedBillsOutputDto>> Returned(int zoneId)
+        {
+            string dbName = GetDbName(zoneId);
+            string query = GetReturnedBedBesDateLockQuery(dbName);
+            IEnumerable<ReturnedBillsOutputDto> result = await _sqlReportConnection.QueryAsync<ReturnedBillsOutputDto>(query, new { zoneId });
+            return result;
+        }
         public async Task<IEnumerable<BillsCanRemoveOutputDto>> Get(BillToReturnInputDto input)
         {
             //string dbName = GetDbName(input.ZoneId);
@@ -491,6 +498,47 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	b.town=@ZoneId AND
                     	b.radif=@CustomerNumber
                     ORDER BY b.date_bed DESC, b.id DESC";
+        }
+        private string GetReturnedBedBesDateLockQuery(string dbName)
+        {
+            return @$"SELECT 
+                    	r.id,
+                    	r.town as ZoneId,
+						t51.C2 as ZoneTitle,
+                    	r.radif as CustomerNumber,
+						TRIM(m.name) + ' ' + TRIM(m.family) FullName,
+						TRIM(m.address) Address,
+                    	r.pri_no as PreviousNumber, 
+                    	r.today_no as CurrentNumber,
+                    	r.pri_date as PreviousDateJalali,
+                    	r.today_date as CurrentDateJalali,
+                    	r.date_bed as RegisterDateJalali,
+                    	r.masraf as Consumption,
+                    	r.rate as MonthlyConsumption,
+                    	r.pard as Payable,
+                    	r.baha as SumItems,
+                    	r.mamor as AgentCode,
+                    	TRIM(m.bill_id) as BillId,
+                    	t41.C1 as UsageTitle,
+                    	t7.C1 as BranchTypeTitle,
+                    	m.fix_mas as ContractualCapacity,
+                    	r.tedad_mas as DomesticUnit,
+                    	r.tedad_tej as CommercialUnit,
+                    	r.tedad_vahd as OtherUnit,
+                    	r.ted_khane as HouseholdNumber
+                    FROM [{dbName}].dbo.REPAIR r
+					Left JOIN [{dbName}].dbo.members m
+						ON r.town=m.town AND r.radif=m.radif
+                    Join [{dbName}].dbo.variab v
+						ON r.town=v.town AND r.date_bed collate Persian_100_CI_AI>=v.date_check
+                    JOIN [Db70].dbo.T41 t41 
+                    	ON r.cod_enshab=t41.C0
+                    JOIN [Db70].dbo.T7 t7 
+                    	ON r.noe_va=t7.C0
+					JOIN [Db70].dbo.T51 t51
+						ON r.town=t51.c0
+                    WHERE r.town = @ZoneId
+                    ORDER BY r.radif DESC,r.date_bed Desc";
         }
         private string GetBedBesToRemove(string dbName)
         {

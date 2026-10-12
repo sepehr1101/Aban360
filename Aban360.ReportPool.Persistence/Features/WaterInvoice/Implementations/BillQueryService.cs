@@ -69,7 +69,18 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
         {
             string query = GetBillsIdReturnedQuery();
             IEnumerable<BillsOldDbDelUpdateDto> result = await _sqlReportConnection.QueryAsync<BillsOldDbDelUpdateDto>(query, inputDto);
+
             return result;
+        }
+        public async Task<BillsOldDbDelUpdateDto> GetReturnedBill(BillFindReturnedInputDto inputDto, string type)
+        {
+            string query = GetRepairReturnedQuery(Convert.ToInt32(type));
+            IEnumerable<BillsOldDbDelUpdateDto> result = await _sqlReportConnection.QueryAsync<BillsOldDbDelUpdateDto>(query, inputDto);
+			if ((result?.Count() ?? 0) != 1)
+			{
+                throw new InvalidBillIdException(ExceptionLiterals.NotFoundRepairInBills);
+            }
+			return result.FirstOrDefault() ;
         }
 
         private string GetItemsByBillIdQuery()
@@ -412,13 +423,14 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						rn=1 AND
 						RegisterDateJalali<@dateJalali";
         }
-		private string GetBillsIdReturnedQuery()
-		{
-			return $@"Select 
+        private string GetBillsIdReturnedQuery()
+        {
+            return $@"Select 
 						Id ,
 						ZoneId ,
 						CustomerNumber,
-						TypeCode
+						TypeCode,
+						OldDbDel
 					From CustomerWarehouse.dbo.Bills
 					Where 
 						ZoneId = @ZoneId AND
@@ -427,8 +439,26 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						NextNumber  <= @CurrentNumber AND
 						PreviousDay >= @PreviousDateJalali AND
 						NextDay <= @CurrentDateJalali AND
-						OldDbDel <> 1 AND
+						--OldDbDel <> 1 AND
 						TypeCode IN (1,7,8)";
-		}
+        }
+        private string GetRepairReturnedQuery(int type)
+        {
+            return $@"Select 
+						Id ,
+						ZoneId ,
+						CustomerNumber,
+						TypeCode,
+						OldDbDel
+					From CustomerWarehouse.dbo.Bills
+					Where 
+						ZoneId = @ZoneId AND
+						CustomerNumber = @CustomerNumber AND
+						PreviousNumber >= @PreviousNumber AND
+						NextNumber  <= @CurrentNumber AND
+						PreviousDay >= @PreviousDateJalali AND
+						NextDay <= @CurrentDateJalali AND
+						TypeCode = {type}";
+        }
     }
 }

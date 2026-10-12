@@ -135,6 +135,9 @@
         public static string ConfilictBetweenCounterNumberAndCounteState => $"رقم کنتور با وضعیت کنتور مغایرت دارد";
         public static string InvalidId => "شناسه نامعتبر است.";
         public static string InvalidConfirmedNumber => "شناسه تایید نامعتبر است.";
+        public static string InvalidRepairId => "شناسه برگشتی نامعتبر است.";
+        public static string NotFoundRepairInBills => "مطابق برگشتی در لیست قبض یافت نشد.";
+        public static string InvalidRepairRemove => "خطا در حذف برگشتی";
         public static string MessageException(string message) => $"خطا : {message}";
 
 
@@ -204,6 +207,7 @@
         public static string InvalidFullReturnByUserInput => "امکان برگشتی کامل با داده ورودی نیست.";
         public static string InvalidReturnLessThan1401 => " برگشتی برای قبوض کوچک تر از 1401 امکان پذیر نیست.";
         public static string InvalidBillIdToReturn => "تعداد قبوض قابل برگشتی در جدول جدید، مغایرت دارد.";
+        public static string InvalidReturnedBill => "خطا در پیمایش قبوض برگشت شده.";
         public static string NotFoundBillsToReturned => "قبضی برای برگشتی یافت نشد.";
         public static string CantReturn => "برگشتی در بازه تاریخی وارد شده امکان پذیر نیست.";
         public static string RepairAmountMoreThanBedBesAmount => "مبلغ برگشتی از مبلغ قبوض بیشتر است.";

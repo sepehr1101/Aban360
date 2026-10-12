@@ -35,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
         {
             int reportCode = (int)StiReportCodeLiterals.MeterReadingExcluded;
             ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutputDto> result = await _excludedGetHandler.Handle(inputDto, CurrentUser, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode,true);
             return Ok(reportId);
         }
     }

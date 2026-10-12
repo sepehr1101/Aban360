@@ -38,7 +38,13 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             IEnumerable<MeterReadingDetailExcludedDataOutputDto> data = await _meterReadingDetailQueryService.Get(inputDto);
             MeterReadingDetailExcludedHeaderOutptuDto header = new()
             {
+                FromExcludeDateJalali=inputDto.FromExcludeDateJalali,
+                ToExcludeDateJalali=inputDto.ToExcludeDateJalali,
+                FromReadingNumber=inputDto.FromReadingNumber,
+                ToReadingNumber=inputDto.ToReadingNumber,
+
                 RecordCount = data?.Count() ?? 0,
+                CustomerCount = data?.Count() ?? 0,
                 Title = _title
             };
 

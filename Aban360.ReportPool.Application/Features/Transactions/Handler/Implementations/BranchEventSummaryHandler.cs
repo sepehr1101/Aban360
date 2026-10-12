@@ -86,7 +86,7 @@ namespace Aban360.ReportPool.Application.Features.Transactions.Handler.Implement
             ICollection<BranchEventSummaryDataOutputDto> data = input.ReportData.Where(r => r.RegisterDateJalali.CompareTo(fromDate) >= 0).ToList();
             BranchEventSummaryDataOutputDto? previousFromDateData = input.ReportData.Where(r => r.RegisterDateJalali.CompareTo(fromDate) < 0).OrderByDescending(r => r.RegisterDateJalali).FirstOrDefault();
 
-            string dateOnly = ConvertDate.JalaliToGregorian(fromDate);
+            string dateOnly = ConvertDate.JalaliToGregorian(fromDate, true);
             DateTime datetime = ConvertDate.GregorianStringToDateTime(dateOnly);
             string yesterdayDateJalali = datetime.AddDays(-1).ToShortPersianDateString();
 
