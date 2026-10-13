@@ -1,4 +1,5 @@
-﻿using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Queries;
 
 namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts
@@ -6,7 +7,7 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contract
     public interface IRepairQueryService
     {
         Task<RepairGetDto> Get(int id);
-        Task<RepairGetDto> Get(int id, int zoneId, bool hasException);
+        Task<RepairGetDto> Get(ZoneIdAndCustomerNumber inputDto, int id, bool hasException);
         Task<RepairGetDto> GetByConfirmNumber(int confirmedNumber);
         Task<IEnumerable<RepairGetDto>> Get(string billId);
         Task<int> GetRepairCount(ZoneIdAndCustomerNumberOutputDto input, int jalaseNumber);

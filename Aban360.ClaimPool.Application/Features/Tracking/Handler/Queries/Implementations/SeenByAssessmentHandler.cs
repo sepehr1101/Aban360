@@ -20,12 +20,14 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IExaminationQueryService _examinationQueryService;
+        private readonly IMoshtrakService _moshtrakService;
         private static int _currentStatusCode = (int)RequestStatusEnum.SeenByExaminer;
         public SeenByAssessmentHandler(
             ICommonZoneService zoneService,
             IMoshtrakQueryService moshtrakQueryService,
             ITrackingQueryService trackingQueryService,
-            IExaminationQueryService examinationQueryService)
+            IExaminationQueryService examinationQueryService,
+            IMoshtrakService moshtrakService)
         {
             _zoneService = zoneService;
             _zoneService.NotNull(nameof(zoneService));
@@ -38,6 +40,9 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
 
             _examinationQueryService = examinationQueryService;
             _examinationQueryService.NotNull(nameof(examinationQueryService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
         }
 
         public async Task<SeenByAssessmentOutputDto> Handle(Guid id, IAppUser appUser, CancellationToken cancellationToken)
@@ -49,8 +54,8 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber, true)).FirstOrDefault();
-            MoshtrakServiceDto sData = MoshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
-            IEnumerable<NumericDictionary> s = MoshtrakService.GetServicesSelectedDto(sData, trackingInfo.ServiceGroupId);
+            MoshtrakServiceDto sData = _moshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
+            IEnumerable<NumericDictionary> s = await _moshtrakService.GetServicesSelectedDto(sData, trackingInfo.ServiceGroupId);
             AssessmentDataOutputDto assessmentInfo = await _examinationQueryService.Get(trackingInfo.TrackNumber, trackingInfo.InsertDateTimeGregorian, true);
 
             SeenByAssessmentOutputDto result = GetOutput(moshtrakInfo, assessmentInfo, s);

@@ -2,13 +2,31 @@
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Constants.Literals;
+using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
 {
-    public static class MoshtrakService
+    public interface IMoshtrakService
     {
-        public static MoshtrakServiceDto GetServicesSelected(ICollection<int> servicesSelected)
+        MoshtrakServiceDto GetServicesSelected(ICollection<int> servicesSelected);
+        Task<ICollection<int>> GetServicesSelected(MoshtrakServiceDto inputDto, int serviceGroupId);
+        Task<IEnumerable<SelectionDto>> GetMoshtrakCompanyServiceDto(MoshtrakServiceDto input, int serviceGroupId);
+        Task<IEnumerable<NumericDictionary>> GetServicesSelectedDto(MoshtrakServiceDto input, int serviceGroupId);
+        MoshtrakServiceDto GetMoshtrakServiceDto(MoshtrakOutputDto moshtrakInfo);
+        MoshtrakServiceDto GetMoshtrakServiceDto(MoshtrakCreateDto moshtrakInfo);
+    }
+    internal class MoshtrakService : IMoshtrakService
+    {
+        private readonly IT9QueryService _requestService;
+        public MoshtrakService(IT9QueryService requestService)
+        {
+            _requestService = requestService;
+            _requestService.NotNull(nameof(requestService));
+        }
+
+        public MoshtrakServiceDto GetServicesSelected(ICollection<int> servicesSelected)
         {
             return new MoshtrakServiceDto()//todo: s1,s2?
             {
@@ -61,7 +79,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 s48 = servicesSelected.Contains((int)CompanyServiceEnum.Saier) ? 1 : 0,
             };
         }
-        public static ICollection<int> GetServicesSelected(MoshtrakServiceDto inputDto, int serviceGroupId)
+        public async Task<ICollection<int>> GetServicesSelected(MoshtrakServiceDto inputDto, int serviceGroupId)
         {
             bool isSaleRequest = serviceGroupId == 1;
             ICollection<int> servicesSelected = new List<int>();//todo: s1,s2
@@ -105,9 +123,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             if (inputDto.s47 == 1) servicesSelected.Add((int)CompanyServiceEnum.Peymayesh);
             if (inputDto.s48 == 1) servicesSelected.Add((int)CompanyServiceEnum.Saier);
 
-            return servicesSelected;
+            IEnumerable<NumericDictionary> groupServices = await _requestService.GetByTypeId(serviceGroupId);
+            return servicesSelected.Where(i => groupServices.Select(g => g.Id).Contains(i)).ToList();
         }
-        public static IEnumerable<SelectionDto> GetMoshtrakCompanyServiceDto(MoshtrakServiceDto input, int serviceGroupId)
+        public async Task<IEnumerable<SelectionDto>> GetMoshtrakCompanyServiceDto(MoshtrakServiceDto input, int serviceGroupId)
         {
             bool isSaleRequest = serviceGroupId == 1;
             ICollection<SelectionDto> companyService = new List<SelectionDto>();
@@ -156,9 +175,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             companyService.Add(new SelectionDto((int)CompanyServiceEnum.Peymayesh, CompanySeviceLiterals.Peymayesh, input.HasPeymayesh));
             companyService.Add(new SelectionDto((int)CompanyServiceEnum.Saier, CompanySeviceLiterals.Saier, input.HasSaier));
 
-            return companyService;
+            IEnumerable<NumericDictionary> groupServices = await _requestService.GetByTypeId(serviceGroupId);
+            return companyService.Where(i => groupServices.Select(g => g.Id).Contains(i.Id)).ToList();
         }
-        public static IEnumerable<NumericDictionary> GetServicesSelectedDto(MoshtrakServiceDto input, int serviceGroupId)
+        public async Task<IEnumerable<NumericDictionary>> GetServicesSelectedDto(MoshtrakServiceDto input, int serviceGroupId)
         {
             bool isSaleRequest = serviceGroupId == 1;
             ICollection<NumericDictionary> companyServiceSelected = new List<NumericDictionary>();
@@ -281,9 +301,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             if (input.HasSaier)
                 companyServiceSelected.Add(new NumericDictionary((int)CompanyServiceEnum.Saier, CompanySeviceLiterals.Saier));
 
-            return companyServiceSelected;
+            IEnumerable<NumericDictionary> groupServices = await _requestService.GetByTypeId(serviceGroupId);
+            return companyServiceSelected.Where(i => groupServices.Select(g => g.Id).Contains(i.Id)).ToList();
         }
-        public static MoshtrakServiceDto GetMoshtrakServiceDto(MoshtrakOutputDto moshtrakInfo)
+        public MoshtrakServiceDto GetMoshtrakServiceDto(MoshtrakOutputDto moshtrakInfo)
         {
             return new MoshtrakServiceDto()
             {
@@ -336,7 +357,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 s48 = moshtrakInfo.s48,
             };
         }
-        public static MoshtrakServiceDto GetMoshtrakServiceDto(MoshtrakCreateDto moshtrakInfo)
+        public MoshtrakServiceDto GetMoshtrakServiceDto(MoshtrakCreateDto moshtrakInfo)
         {
             return new MoshtrakServiceDto()
             {
@@ -389,5 +410,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 s48 = moshtrakInfo.s48,
             };
         }
+
     }
 }

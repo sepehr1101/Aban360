@@ -25,6 +25,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IExaminationScheduleQueryService _examinationScheduleQueryService;
         private readonly IExaminationQueryService _examinationQueryService;
+        private readonly IMoshtrakService _moshtrakService;
         private static int _requestOrigin = 12;
         private static int _afterSaleRequestType = 2;
         private static int _saleRequestType = 1;
@@ -41,6 +42,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             ICommonMemberQueryService commonMemberQueryService,
             IExaminationScheduleQueryService examinationScheduleQueryService,
             IExaminationQueryService examinationQueryService,
+            IMoshtrakService moshtrakService,
             IConfiguration configuration)
             : base(configuration)
         {
@@ -53,12 +55,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
 
-
             _examinationScheduleQueryService = examinationScheduleQueryService;
             _examinationScheduleQueryService.NotNull(nameof(examinationScheduleQueryService));
 
             _examinationQueryService = examinationQueryService;
             _examinationQueryService.NotNull(nameof(examinationQueryService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
         }
 
         public async Task<SetAssessmentTimeDataOutputDto> Handle(SetReAssessmentTimeInputDto inputDto, int userCode, CancellationToken cancellationToken)
@@ -75,7 +79,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private async Task<SetAssessmentTimeDataOutputDto> GetOutputDto(MoshtrakOutputDto moshtrakInfo, AssessmentInsertDto? assessmentInsert, TrackingOutputDto latestTrackingInfo)
         {
-            IEnumerable<NumericDictionary> moshtrakServiceSelected = MoshtrakService.GetServicesSelectedDto(MoshtrakService.GetMoshtrakServiceDto(moshtrakInfo), latestTrackingInfo.ServiceGroupId);
+            IEnumerable<NumericDictionary> moshtrakServiceSelected = await _moshtrakService.GetServicesSelectedDto(_moshtrakService.GetMoshtrakServiceDto(moshtrakInfo), latestTrackingInfo.ServiceGroupId);
             string serviceSelected = string.Join(",", moshtrakServiceSelected.Select(m => m.Title));
 
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(latestTrackingInfo.TrackNumber);

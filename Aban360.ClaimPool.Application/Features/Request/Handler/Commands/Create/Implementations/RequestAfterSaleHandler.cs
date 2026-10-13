@@ -26,6 +26,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IExaminationScheduleQueryService _examinationScheduleQueryService;
         private readonly IExaminationQueryService _examinationQueryService;
+        private readonly IMoshtrakService _moshtrakService;
         private readonly IValidator<RequestAfterSaleInputDto> _validator;
         static int _afterSaleRequestServiceId = 2;
         static int _setAssessmentTimeStatusId = 10;
@@ -38,6 +39,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
            IMoshtrakQueryService moshtrakQueryService,
            IExaminationScheduleQueryService examinationScheduleQueryService,
            IExaminationQueryService examinationQueryService,
+            IMoshtrakService moshtrakService,
            IValidator<RequestAfterSaleInputDto> validator,
            IConfiguration configuration)
            : base(configuration)
@@ -57,6 +59,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _examinationQueryService = examinationQueryService;
             _examinationQueryService.NotNull(nameof(examinationQueryService));
 
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
@@ -69,7 +74,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             var (moshtrakCreateDto, assessmentTimeInsertDto, trackId) = await ExecSql(input, memberInfo, userName, assessmentCode, assessmentDateJalali);
             SetAssessmentTimeDataOutputDto? assessmentTimeDto = assessmentTimeInsertDto is not null ?
-                   GetAssessmentTimeOutputDto(moshtrakCreateDto, assessmentTimeInsertDto, trackId) :
+                  await GetAssessmentTimeOutputDto(moshtrakCreateDto, assessmentTimeInsertDto, trackId) :
                    null;
             return (moshtrakCreateDto, assessmentTimeDto, trackId);
         }
@@ -178,7 +183,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private MoshtrakCreateDto GetMoshtrackCreateDto(RequestAfterSaleInputDto inputDto, MemberInfoGetDto memberInfo, int trackNumber)//todo
         {
-            MoshtrakServiceDto serviceSelected = MoshtrakService.GetServicesSelected(inputDto.SelectedServices);
+            MoshtrakServiceDto serviceSelected = _moshtrakService.GetServicesSelected(inputDto.SelectedServices);
             SelectedServiceValidate(serviceSelected);
             return new MoshtrakCreateDto()
             {
@@ -277,9 +282,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 s48 = serviceSelected.s48,
             };
         }
-        private void SelectedServiceValidate(MoshtrakServiceDto serviceSelected)
+        private async Task SelectedServiceValidate(MoshtrakServiceDto serviceSelected)
         {
-            ICollection<int> selectedItems = MoshtrakService.GetServicesSelected(serviceSelected, _afterSaleRequestServiceId);
+            ICollection<int> selectedItems = await _moshtrakService.GetServicesSelected(serviceSelected, _afterSaleRequestServiceId);
             if (!selectedItems.Any())
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidZeroServiceSelected);
@@ -341,9 +346,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AllInJson = body
             };
         }
-        private SetAssessmentTimeDataOutputDto GetAssessmentTimeOutputDto(MoshtrakCreateDto moshtrakInsertDto, AssessmentInsertDto assessmentInsertDto, Guid trackId)
+        private async Task<SetAssessmentTimeDataOutputDto> GetAssessmentTimeOutputDto(MoshtrakCreateDto moshtrakInsertDto, AssessmentInsertDto assessmentInsertDto, Guid trackId)
         {
-            IEnumerable<NumericDictionary> moshtrakServiceSelected = MoshtrakService.GetServicesSelectedDto(MoshtrakService.GetMoshtrakServiceDto(moshtrakInsertDto), moshtrakInsertDto.ServiceGroupId);
+            IEnumerable<NumericDictionary> moshtrakServiceSelected = await _moshtrakService.GetServicesSelectedDto(_moshtrakService.GetMoshtrakServiceDto(moshtrakInsertDto), moshtrakInsertDto.ServiceGroupId);
             string serviceSelected = string.Join(",", moshtrakServiceSelected.Select(m => m.Title));
 
             return new SetAssessmentTimeDataOutputDto()

@@ -32,6 +32,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IT15QueryService _discountTypeQueryService;
+        private readonly IMoshtrakService _moshtrakService;
         private static int _saleServiceId = 1;
         private static int _afterSaleServiceId = 2;
         private static int _kartTypeId = 2;
@@ -47,6 +48,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             IMoshtrakQueryService moshtrakQueryService,
             ICommonMemberQueryService commonMemberQueryService,
             IT15QueryService discountTypeQueryService,
+            IMoshtrakService moshtrakService,
             IConfiguration configuration)
         : base(configuration)
         {
@@ -67,6 +69,9 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
 
             _discountTypeQueryService = discountTypeQueryService;
             _discountTypeQueryService.NotNull(nameof(discountTypeQueryService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
         }
 
         public async Task<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> Handle(TrackNumberWithDescriptionInputDto inputDto, int userCode, CancellationToken cancellationToken)
@@ -159,7 +164,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 Block = moshtrakInfo.BlockId,
                 HasWaterArticle11 = false,//todo
                 HasSewageArticle11 = false,//todo
-                CompanyServiceIds = MoshtrakService.GetServicesSelected(moshtrakServiceSelected, _afterSaleServiceId),
+                CompanyServiceIds = await _moshtrakService.GetServicesSelected(moshtrakServiceSelected, _afterSaleServiceId),
                 PreviousData = previousInfo,
                 CurrentData = currentInfo,
             };
