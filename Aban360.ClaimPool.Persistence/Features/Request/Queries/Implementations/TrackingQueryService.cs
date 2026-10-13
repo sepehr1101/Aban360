@@ -41,6 +41,20 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             }
             return result;
         }
+        public async Task<TrackingOutputDto> GetLatest(int trackNumber,int statusId, bool hasException = true)
+        {
+            string query = GetLatestAssessmentResultByTrackNumberQuery();
+            TrackingOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<TrackingOutputDto>(query, new { trackNumber, statusId });
+            if (hasException && result is null)
+            {
+                throw new InvalidTrackNumberException(ExceptionLiterals.InvalidTrackNumber);
+            }
+            if (result is not null)
+            {
+                result.StringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
+            }
+            return result;
+        }
         public async Task<TrackingOutputDto> Get(Guid trackId)
         {
             string query = GetByTrackIdQuery();
@@ -189,6 +203,41 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 					Join Db70.dbo.T46 t46
 						ON t51.C1=t46.C0
                     Where t.TrackNumber=@TrackNumber 
+					Order By t.DateAndTime Desc";
+        }
+        private string GetLatestAssessmentResultByTrackNumberQuery()
+        {
+            return $@"Select Top 1
+                    	t.TrackID,
+                    	t.TrackNumber,
+                        t.BillID,
+						t46.C0 RegionId,
+						t46.C2 RegionTitle,
+                    	t.ZoneID, 
+						t51.C2 ZoneTitle,
+                    	t.DateTimeJalali InsertDateJalali,
+                    	t.ServiceGroup_FK ServiceGroupId,
+                    	sg.Title ServiceGroupTitle,
+                    	t.Status StatusId,
+                    	s.Description StatusTitle,
+                    	t.InserrtedBy ,
+                    	t.Description,
+                    	t.NotificationMobile,
+                    	t.NeighbourBillId,
+						t.Caller,
+						t.RequestOrigin RequestOriginId
+                    From AbAndFazelab.dbo.Tracking t
+                    Join AbAndFazelab.dbo.Status s
+                    	ON t.Status=s.StatusID
+                    Join AbAndFazelab.dbo.ServiceGroup sg
+                    	ON t.ServiceGroup_FK=sg.Id
+					Join Db70.dbo.T51 t51
+						ON t.ZoneID=t51.C0
+					Join Db70.dbo.T46 t46
+						ON t51.C1=t46.C0
+                    Where 
+                        t.TrackNumber=@TrackNumber AND
+                        t.Status = @statusId
 					Order By t.DateAndTime Desc";
         }
         private string GetTwoLatestByTrackNumberQuery()

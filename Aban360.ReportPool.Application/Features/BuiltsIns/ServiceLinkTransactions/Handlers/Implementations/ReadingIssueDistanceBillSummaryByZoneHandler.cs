@@ -53,7 +53,11 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 sumDistance += r.AverageAll;
 
             });
-            float sumAverage = (sumDistance / result.ReportData.Count());
+            float sumAverage = 0;
+            if (sumDistance != 0 && result.ReportData.Count() != 0)
+            {
+                sumAverage = sumDistance / result.ReportData.Count();
+            }
             int sumRoundAverage = (int)Math.Round(sumAverage);
             result.ReportHeader.AverageAll = sumAverage;
             result.ReportHeader.AverageAllText = CalculationDistanceDate.ConvertDayToDate(sumRoundAverage);
