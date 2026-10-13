@@ -22,6 +22,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IExaminationQueryService _examinationQueryService;
+        private readonly IMoshtrakService _moshtrakService;
         private static int _currentStatusCode = (int)RequestStatusEnum.ExamineTimeSet;
         public ExamineTimeSetDetailHandler(
             ICommonZoneService zoneService,
@@ -52,8 +53,8 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             }
 
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber, true)).FirstOrDefault();
-            MoshtrakServiceDto sData = MoshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
-            IEnumerable<NumericDictionary> s = MoshtrakService.GetServicesSelectedDto(sData, trackingInfo.ServiceGroupId);
+            MoshtrakServiceDto sData = _moshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
+            IEnumerable<NumericDictionary> s = await _moshtrakService.GetServicesSelectedDto(sData, trackingInfo.ServiceGroupId);
             AssessmentDataOutputDto assessmentInfo = await _examinationQueryService.GetByTrackId(id, true);
 
             ExamineTimeSetOutputDto result = GetOutput(trackingInfo, moshtrakInfo, assessmentInfo, s);

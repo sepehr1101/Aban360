@@ -20,10 +20,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly ICommonZoneService _commonZoneService;
+        private readonly IMoshtrakService _moshtrakService;
         public DisplayRequestByTrackIdHandler(
             IMoshtrakQueryService moshtrakQueryService,
             ITrackingQueryService trackingQueryService,
-            ICommonZoneService commonZoneService)
+            ICommonZoneService commonZoneService,
+            IMoshtrakService moshtrakService)
         {
             _moshtrakQueryService = moshtrakQueryService;
             _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
@@ -33,6 +35,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             _commonZoneService = commonZoneService;
             _commonZoneService.NotNull(nameof(commonZoneService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
         }
 
         public async Task<MoshtrakDataOutputDto> Handle(Guid trackId, IAppUser appUser, CancellationToken cancellationToken)
@@ -43,7 +48,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             await _commonZoneService.IsUserInZone(appUser, trackingInfo.ZoneId);
 
             MoshtrakServiceDto sData = GetSDto(moshtrakInfo);
-            IEnumerable<SelectionDto> companyServices = MoshtrakService.GetMoshtrakCompanyServiceDto(sData, trackingInfo.ServiceGroupId);
+            IEnumerable<SelectionDto> companyServices =await _moshtrakService.GetMoshtrakCompanyServiceDto(sData, trackingInfo.ServiceGroupId);
 
             MoshtrakDataOutputDto moshtrakData = GetMoshtrakData(moshtrakInfo, companyServices, trackingInfo);
             return moshtrakData;

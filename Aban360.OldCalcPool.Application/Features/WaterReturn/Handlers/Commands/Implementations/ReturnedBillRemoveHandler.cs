@@ -33,6 +33,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
     internal sealed class ReturnedBillRemoveHandler : AbstractBaseConnection, IReturnedBillRemoveHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IVariabService _variabService;
         private readonly IRepairQueryService _repairQueryService;
         private readonly IBedBesQueryService _bedBesQueryService;
         private readonly IBillQueryService _billQueryService;
@@ -41,6 +42,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IValidator<WaterReturedRemoveInputDto> _validator;
         public ReturnedBillRemoveHandler(
             IHttpContextAccessor contextAccessor,
+            IVariabService variabService,
             IRepairQueryService repairQueryService,
             IBedBesQueryService bedBesQueryService,
             IBillQueryService billQueryService,
@@ -52,6 +54,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
+
+            _variabService = variabService;
+            _variabService.NotNull(nameof(variabService));
 
             _repairQueryService = repairQueryService;
             _repairQueryService.NotNull(nameof(repairQueryService));
@@ -75,8 +80,14 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
         public async Task Handle(WaterReturedRemoveInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            string billId = await Validate(inputDto, appUser, cancellationToken);
-            RepairGetDto repairInfo = await _repairQueryService.Get(inputDto.Id, inputDto.ZoneId, true);
+            ZoneIdAndCustomerNumber customerBasicInfo = new(inputDto.ZoneId, inputDto.CustomerNumber);
+            string billId = await Validate(inputDto, customerBasicInfo, appUser, cancellationToken);
+            RepairGetDto repairInfo = await _repairQueryService.Get(customerBasicInfo, inputDto.Id, true);
+            bool isDateValid = await _variabService.IsOperationValid((int)repairInfo.Town, repairInfo.DateBed);
+            if (!isDateValid)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidRemoveReturnedAfterLockDate);
+            }
             IEnumerable<BedBesCreateDto> bedBesInfoList = await _bedBesQueryService.Get(new ZoneCustomerFromToDateDto((int)repairInfo.Town, (int)repairInfo.Radif, repairInfo.PriDate, repairInfo.TodayDate));
             if (bedBesInfoList.Where(b => b.Del == false).Any())
             {
@@ -86,7 +97,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             IEnumerable<BedBesUpdateDelDto> bedBesDelUpdateDto = bedBesInfoList.Select(b => new BedBesUpdateDelDto((int)b.Town, b.Id, false)).ToList();
             RepairByInfoDeleteDto repairDeleteDto = new(repairInfo.Id, (int)repairInfo.Town, (int)repairInfo.Radif);
             BillFindReturnedInputDto billFindReturnDto = new((int)repairInfo.Town, (int)repairInfo.Radif, (int)repairInfo.PriNo, (int)repairInfo.TodayNo, repairInfo.PriDate, repairInfo.TodayDate);
-            IEnumerable<BillsOldDbDelUpdateDto> billsDelUpdateDto = await GetBillToUpdate(billFindReturnDto);
+            IEnumerable<BillsOldDbDelUpdateDto> billsDelUpdateDto = await GetBillToUpdate(billFindReturnDto, bedBesDelUpdateDto?.Count() ?? 0);
             BillsOldDbDelUpdateDto repairInbillInfo = await _billQueryService.GetReturnedBill(billFindReturnDto, ReportLiterals.RepairTypeCode);
             BillRemoveByIdDto billRemoveByIdDto = new(repairInbillInfo.Id, repairInbillInfo.ZoneId, repairInbillInfo.CustomerNumber);
 
@@ -110,6 +121,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                     HRepairCommandService hRepairCommandService = new(connection, transaction);
                     WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
                     MembersCommandService membersCommandService = new(connection, transaction);
+                    AutoBackCommandService autoBackCommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
                     await bedBesCommandService.UpdateDel(bedBesDelUpdateDto, dbName);
@@ -119,6 +131,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                     await membersCommandService.UpdateBedbes(new ZoneIdAndCustomerNumber(hRepairInsertDto.ZoneId, hRepairInsertDto.CustomerNumber), -1 * amount, DateTime.Now.ToShortPersianDateString(), dbName);
                     await billCommandService.UpdateOldDbDel(billsDelUpdateDto);
                     await billCommandService.Delete(billRemoveByIdDto);
+                    await autoBackCommandService.UpdateIsDeleted(hRepairInsertDto.MinutesNumber, ReportLiterals.Atlas);
                     string opLogText = string.Format(OpLogLiterals.BillReturnedDeletedOpLog, hRepairInsertDto.Id, hRepairId);
                     await opLogCommandService.Insert(opLogText, appUser);
 
@@ -126,10 +139,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 }
             }
         }
-        private async Task<IEnumerable<BillsOldDbDelUpdateDto>> GetBillToUpdate(BillFindReturnedInputDto billFindRepairDto)
+        private async Task<IEnumerable<BillsOldDbDelUpdateDto>> GetBillToUpdate(BillFindReturnedInputDto billFindRepairDto, int returnedBillsCount)
         {
             IEnumerable<BillsOldDbDelUpdateDto> billsInfoList = await _billQueryService.GetReturnedId(billFindRepairDto);
-            if (billsInfoList.Where(b => b.OldDbDel == false).Any())
+            if (billsInfoList.Where(b => b.OldDbDel == false).Any() || (billsInfoList?.Count() ?? 0) != returnedBillsCount)
             {
                 throw new ReturnedBillException(ExceptionLiterals.InvalidReturnedBill);
             }
@@ -139,11 +152,11 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             }
             return billsInfoList;
         }
-        public async Task<string> Validate(WaterReturedRemoveInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<string> Validate(WaterReturedRemoveInputDto inputDto, ZoneIdAndCustomerNumber customerBasicInfo, IAppUser appUser, CancellationToken cancellationToken)
         {
             await InputValidte(inputDto, cancellationToken);
             await _commonZoneService.IsUserInZone(appUser, inputDto.ZoneId);
-            MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(inputDto.ZoneId, inputDto.CustomerNumber));
+            MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(customerBasicInfo);
             if (memberInfo.BillId != inputDto.BillId)
             {
                 throw new ReturnedBillException(ExceptionLiterals.InvalidBillId);

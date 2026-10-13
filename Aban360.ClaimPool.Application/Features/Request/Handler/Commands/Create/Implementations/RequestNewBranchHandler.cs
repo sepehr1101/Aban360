@@ -26,6 +26,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IExaminationScheduleQueryService _examinationScheduleQueryService;
         private readonly IExaminationQueryService _examinationQueryService;
+        private readonly IMoshtrakService _moshtrakService;
         private readonly IValidator<RequestNewBranchInputDto> _validator;
         static string _insertWayTitle = "رایاب";
         static int _requestOrigin = 12;
@@ -39,6 +40,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             IMoshtrakQueryService moshtrakQueryService,
             IExaminationScheduleQueryService examinationScheduleQueryService,
             IExaminationQueryService examinationQueryService,
+            IMoshtrakService moshtrakService,
             IValidator<RequestNewBranchInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
@@ -57,6 +59,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             _examinationQueryService = examinationQueryService;
             _examinationQueryService.NotNull(nameof(examinationQueryService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -79,7 +84,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             var (moshtrakCreateDto, assessmentInsertDto, trackId) = await ExecSql(inputDto, userName, assessmentDateJalali, assessmentCode);
             SetAssessmentTimeDataOutputDto? assessmentTimeDto = assessmentInsertDto is not null ?
-                GetAssessmentTimeOutputDto(moshtrakCreateDto, neighbourMemeberInfo, assessmentInsertDto, trackId) :
+               await GetAssessmentTimeOutputDto(moshtrakCreateDto, neighbourMemeberInfo, assessmentInsertDto, trackId) :
                 null;
             return (moshtrakCreateDto, assessmentTimeDto, trackId);
         }
@@ -92,10 +97,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 throw new CustomValidationException(message);
             }
         }
-        private MoshtrakCreateDto GetMoshtrackCreateDto(RequestNewBranchInputDto inputDto, int trackNumber, int zoneId)
+        private async Task<MoshtrakCreateDto> GetMoshtrackCreateDto(RequestNewBranchInputDto inputDto, int trackNumber, int zoneId)
         {
-            MoshtrakServiceDto serviceSelected = MoshtrakService.GetServicesSelected(inputDto.SelectedServices);
-            SelectedServiceValidate(serviceSelected);
+            MoshtrakServiceDto serviceSelected = _moshtrakService.GetServicesSelected(inputDto.SelectedServices);
+            await SelectedServiceValidate(serviceSelected);
             return new MoshtrakCreateDto()
             {
                 TrackNumber = trackNumber,
@@ -193,9 +198,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 s48 = serviceSelected.s48,
             };
         }
-        private void SelectedServiceValidate(MoshtrakServiceDto serviceSelected)
+        private async Task SelectedServiceValidate(MoshtrakServiceDto serviceSelected)
         {
-            ICollection<int> selectedItems = MoshtrakService.GetServicesSelected(serviceSelected, _newRequestServiceId);
+            ICollection<int> selectedItems = await _moshtrakService.GetServicesSelected(serviceSelected, _newRequestServiceId);
             if (!selectedItems.Any())
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidZeroServiceSelected);
@@ -238,7 +243,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                     ExaminationCommandService examinationCommandService = new(connection, transaction);
 
                     int trackNumber = (int)(await t0CommandService.GetTrackNumber());
-                    moshtrakInsertDto = GetMoshtrackCreateDto(inputDto, trackNumber, inputDto.ZoneId);
+                    moshtrakInsertDto = await GetMoshtrackCreateDto(inputDto, trackNumber, inputDto.ZoneId);
                     TrackingInsertDto trackingSetRequestInsertDto = GetTrackingCreateDto(inputDto, userName, trackNumber, inputDto.ZoneId);
                     trackId = trackingSetRequestInsertDto.TrackId;
 
@@ -348,9 +353,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AllInJson = body
             };
         }
-        private SetAssessmentTimeDataOutputDto GetAssessmentTimeOutputDto(MoshtrakCreateDto moshtrakInsertDto, MemberInfoGetDto neighbourMemeberInfo, AssessmentInsertDto assessmentInsertDto, Guid trackId)
+        private async Task<SetAssessmentTimeDataOutputDto> GetAssessmentTimeOutputDto(MoshtrakCreateDto moshtrakInsertDto, MemberInfoGetDto neighbourMemeberInfo, AssessmentInsertDto assessmentInsertDto, Guid trackId)
         {
-            IEnumerable<NumericDictionary> moshtrakServiceSelected = MoshtrakService.GetServicesSelectedDto(GetMoshtrakServiceDto(moshtrakInsertDto), moshtrakInsertDto.ServiceGroupId);
+            IEnumerable<NumericDictionary> moshtrakServiceSelected = await _moshtrakService.GetServicesSelectedDto(_moshtrakService.GetMoshtrakServiceDto(moshtrakInsertDto), moshtrakInsertDto.ServiceGroupId);
             string serviceSelected = string.Join(",", moshtrakServiceSelected.Select(m => m.Title));
 
             return new SetAssessmentTimeDataOutputDto()
@@ -369,59 +374,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 AssessmentCode = assessmentInsertDto.AssessmentCode,
                 AssessmentMobileNumber = assessmentInsertDto.AssessmentMobile,
                 AssessmentDateJalai = assessmentInsertDto.AssessmentDateJalali,
-            };
-        }
-        private MoshtrakServiceDto GetMoshtrakServiceDto(MoshtrakCreateDto moshtrakInfo)
-        {
-            return new MoshtrakServiceDto()
-            {
-                s0 = moshtrakInfo.s0,
-                s1 = moshtrakInfo.s1,
-                s2 = moshtrakInfo.s2,
-                s3 = moshtrakInfo.s3,
-                s4 = moshtrakInfo.s4,
-                s5 = moshtrakInfo.s5,
-                s8 = moshtrakInfo.s8,
-                s9 = moshtrakInfo.s9,
-                s10 = moshtrakInfo.s10,
-                s11 = moshtrakInfo.s11,
-                s12 = moshtrakInfo.s12,
-                s13 = moshtrakInfo.s13,
-                s14 = moshtrakInfo.s14,
-                s15 = moshtrakInfo.s15,
-                s16 = moshtrakInfo.s16,
-                s17 = moshtrakInfo.s17,
-                s18 = moshtrakInfo.s18,
-                s19 = moshtrakInfo.s19,
-                s20 = moshtrakInfo.s20,
-                s21 = moshtrakInfo.s21,
-                s22 = moshtrakInfo.s22,
-                s23 = moshtrakInfo.s23,
-                s24 = moshtrakInfo.s24,
-                s25 = moshtrakInfo.s25,
-                s26 = moshtrakInfo.s26,
-                s27 = moshtrakInfo.s27,
-                s28 = moshtrakInfo.s28,
-                s29 = moshtrakInfo.s29,
-                s30 = moshtrakInfo.s30,
-                s31 = moshtrakInfo.s31,
-                s32 = moshtrakInfo.s32,
-                s33 = moshtrakInfo.s33,
-                s34 = moshtrakInfo.s34,
-                s35 = moshtrakInfo.s35,
-                s36 = moshtrakInfo.s36,
-                s37 = moshtrakInfo.s37,
-                s38 = moshtrakInfo.s38,
-                s39 = moshtrakInfo.s39,
-                s40 = moshtrakInfo.s40,
-                s41 = moshtrakInfo.s41,
-                s42 = moshtrakInfo.s42,
-                s43 = moshtrakInfo.s43,
-                s44 = moshtrakInfo.s44,
-                s45 = moshtrakInfo.s45,
-                s46 = moshtrakInfo.s46,
-                s47 = moshtrakInfo.s47,
-                s48 = moshtrakInfo.s48,
             };
         }
     }
