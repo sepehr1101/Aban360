@@ -46,7 +46,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
         [HttpPost]
         [Route("both")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReturnBillOutputDto>), StatusCodes.Status200OK)]
-        //[TypeFilter(typeof(EndpointAuthorizationFilter))]
+        [TypeFilter(typeof(EndpointAuthorizationFilter))]
         public async Task<IActionResult> ReturnBoth([FromBody] ReturnBillInputDto input, CancellationToken cancellationToken)
         {
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = await _billHandler.Handle(input, CurrentUser, cancellationToken);
