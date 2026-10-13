@@ -43,6 +43,8 @@
         public bool IsNonPermanent { get; set; }
         public int HouseValue { get; set; }
 
+        public string? BlockId { get; set; }
+        public bool HasBroker { get; set; }
         public ICollection<int> SelectedServices { get; set; }
     }
 }

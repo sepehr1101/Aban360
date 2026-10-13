@@ -41,6 +41,8 @@
         public string? Description { get; set; }
         public bool IsNonPermanent { get; set; }
         public int HouseValue { get; set; }
+        public string BlockId { get; set; }
+        public int BrokerId { get; set; }
 
         public int s0 { get; set; }
         public int s1 { get; set; }
