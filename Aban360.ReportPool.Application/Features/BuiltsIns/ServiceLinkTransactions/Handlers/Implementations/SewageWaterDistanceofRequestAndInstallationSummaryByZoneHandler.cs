@@ -46,7 +46,12 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 float weight = item.CustomerCount * item.DistanceAverage;
                 sumDistance += weight;
             }
-            float averageDistance = (float)Math.Round(sumDistance / result.ReportHeader.CustomerCount, 2);
+            float averageDistance = 0; 
+            if (sumDistance != 0 && result.ReportHeader.CustomerCount != 0)
+            {
+                averageDistance = (float)Math.Round(sumDistance / result.ReportHeader.CustomerCount, 2);
+            }
+
             int allZoneRound = (int)Math.Round(averageDistance);
             result.ReportHeader.AverageDistanceNumber = averageDistance;
             result.ReportHeader.AverageDistance = CalculationDistanceDate.ConvertDayToDate(allZoneRound);

@@ -21,6 +21,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly IMoshtrakQueryService _moshtrackQueryService;
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IAssessmentGetByZoneIdHandler _assessmentGetByZoneIdHandler;
+        private readonly IMoshtrakService _moshtrakService;
         public ToSetAssessmentTimeGetByTrackIdHandler(
             ICommonZoneService zoneService,
             IMoshtrakQueryService moshtrackQueryService,
@@ -48,7 +49,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             IEnumerable<StringDictionary> assessmentsList = await _assessmentGetByZoneIdHandler.Handle(appUser, cancellationToken);
 
             MoshtrakServiceDto moshtrakServiceDto = GetMoshtrakService(moshtrakInfo);
-            IEnumerable<NumericDictionary> serviceSelected = MoshtrakService.GetServicesSelectedDto(moshtrakServiceDto, trackingInfo.ServiceGroupId);
+            IEnumerable<NumericDictionary> serviceSelected = await _moshtrakService.GetServicesSelectedDto(moshtrakServiceDto, trackingInfo.ServiceGroupId);
 
             ToSetAssessmentTimeGetDto result = new()
             {

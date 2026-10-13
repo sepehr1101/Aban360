@@ -21,6 +21,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IExaminationQueryService _assessmentQueryService;
         private readonly IT64QueryService _t64QueryService;
+        private readonly IMoshtrakService _moshtrakService;
         private readonly IValidator<AssessmentResultInputDto> _validator;
         private static int _setAssessmentResultStatus = 110;
         private static int _seenByAssessmentStatus = 150;
@@ -31,6 +32,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             IMoshtrakQueryService moshtrakQueryService,
             IExaminationQueryService assessmentQueryService,
             IT64QueryService t64QueryService,
+            IMoshtrakService moshtrakService,
             IValidator<AssessmentResultInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
@@ -46,6 +48,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             _t64QueryService = t64QueryService;
             _t64QueryService.NotNull(nameof(t64QueryService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -97,7 +102,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private MoshtrkUpdateDto GetMoshtrackUpdateDto(AssessmentResultInputDto inputDto)
         {
-            MoshtrakServiceDto serviceSelected = MoshtrakService.GetServicesSelected(inputDto.SelectedServices);
+            MoshtrakServiceDto serviceSelected = _moshtrakService.GetServicesSelected(inputDto.SelectedServices);
 
             return new MoshtrkUpdateDto()
             {

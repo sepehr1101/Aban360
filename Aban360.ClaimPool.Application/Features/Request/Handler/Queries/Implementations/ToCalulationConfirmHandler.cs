@@ -21,11 +21,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IExaminationQueryService _assessmentQueryService;
         private readonly ICommonZoneService _commonZoneService;
+        private readonly IMoshtrakService _moshtrakService;
         public ToCalulationConfirmHandler(
             IMoshtrakQueryService moshtrakQueryService,
             ITrackingQueryService trackingQueryService,
             IExaminationQueryService assessmentQueryService,
-            ICommonZoneService commonZoneService)
+            ICommonZoneService commonZoneService,
+            IMoshtrakService moshtrakService)
         {
             _moshtrakQueryService = moshtrakQueryService;
             _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
@@ -38,6 +40,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             _commonZoneService = commonZoneService;
             _commonZoneService.NotNull(nameof(commonZoneService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
         }
 
         public async Task<ToCalculationConfirmGetDto> Handle(Guid trackId, IAppUser appUser, CancellationToken cancellationToken)
@@ -48,64 +53,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             AssessmentDataOutputDto assessmentInfo = await _assessmentQueryService.GetByTrackId(trackId, true);
             await _commonZoneService.IsUserInZone(appUser, trackingInfo.ZoneId);
 
-            MoshtrakServiceDto sData = GetSDto(moshtrakInfo);
-            IEnumerable<SelectionDto> companyServices = MoshtrakService.GetMoshtrakCompanyServiceDto(sData, trackingInfo.ServiceGroupId);
+            MoshtrakServiceDto sData = _moshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
+            IEnumerable<SelectionDto> companyServices = await _moshtrakService.GetMoshtrakCompanyServiceDto(sData, trackingInfo.ServiceGroupId);
 
             ToCalculationConfirmGetDto moshtrakData = GetData(moshtrakInfo, companyServices, trackingInfo, assessmentInfo);
             return moshtrakData;
-        }
-        private MoshtrakServiceDto GetSDto(MoshtrakOutputDto input)
-        {
-            return new MoshtrakServiceDto()
-            {
-                s0 = input.s0,
-                s1 = input.s1,
-                s2 = input.s2,
-                s3 = input.s3,
-                s4 = input.s4,
-                s5 = input.s5,
-                s8 = input.s8,
-                s9 = input.s9,
-                s10 = input.s10,
-                s11 = input.s11,
-                s12 = input.s12,
-                s13 = input.s13,
-                s14 = input.s14,
-                s15 = input.s15,
-                s16 = input.s16,
-                s17 = input.s17,
-                s18 = input.s18,
-                s19 = input.s19,
-                s20 = input.s20,
-                s21 = input.s21,
-                s22 = input.s22,
-                s23 = input.s23,
-                s24 = input.s24,
-                s25 = input.s25,
-                s26 = input.s26,
-                s27 = input.s27,
-                s28 = input.s28,
-                s29 = input.s29,
-                s30 = input.s30,
-                s31 = input.s31,
-                s32 = input.s32,
-                s33 = input.s33,
-                s34 = input.s34,
-                s35 = input.s35,
-                s36 = input.s36,
-                s37 = input.s37,
-                s38 = input.s38,
-                s39 = input.s39,
-                s40 = input.s40,
-                s41 = input.s41,
-                s42 = input.s42,
-                s43 = input.s43,
-                s44 = input.s44,
-                s45 = input.s45,
-                s46 = input.s46,
-                s47 = input.s47,
-                s48 = input.s48,
-            };
         }
         private ToCalculationConfirmGetDto GetData(MoshtrakOutputDto moshtrakInfo, IEnumerable<SelectionDto> companyServices, TrackingOutputDto trackingInfo, AssessmentDataOutputDto assessmentInfo)
         {
@@ -114,6 +66,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 ZoneId = moshtrakInfo.ZoneId,
                 ZoneTitle = moshtrakInfo.ZoneTitle,
                 CustomerNumber = moshtrakInfo.CustomerNumber,
+                BillId = trackingInfo.BillId ?? string.Empty,
                 ReadingNumber = moshtrakInfo.ReadingNumber,
                 FirstName = moshtrakInfo.FirstName,
                 Surname = moshtrakInfo.Surname,

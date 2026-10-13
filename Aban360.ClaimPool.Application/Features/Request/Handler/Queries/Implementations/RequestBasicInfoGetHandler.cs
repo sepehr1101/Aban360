@@ -15,10 +15,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ICommonZoneService _commonZoneService;
+        private readonly IMoshtrakService _moshtrakService;
         public RequestBasicInfoGetHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
-            ICommonZoneService commonZoneService)
+            ICommonZoneService commonZoneService,
+            IMoshtrakService moshtrakService)
         {
             _trackingQueryService = trackingQueryService;
             _trackingQueryService.NotNull(nameof(trackingQueryService));
@@ -37,7 +39,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             RequestBasicInfoGetDto basicInfo = await _moshtrakQueryService.GetBasicInfo(trackNumber, latestTrackingInfo.ZoneId);
             MoshtrakServiceDto moshtrakServiceDto = GetMoshtrakService(basicInfo);
-            IEnumerable<SelectionDto> ServiceSelected = MoshtrakService.GetMoshtrakCompanyServiceDto(moshtrakServiceDto, latestTrackingInfo.ServiceGroupId);
+            IEnumerable<SelectionDto> ServiceSelected = await _moshtrakService.GetMoshtrakCompanyServiceDto(moshtrakServiceDto, latestTrackingInfo.ServiceGroupId);
             return GetResult(basicInfo, ServiceSelected);
 
         }

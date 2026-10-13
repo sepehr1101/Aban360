@@ -7,6 +7,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
+using Aban360.Common.BaseEntities;
 
 namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implementations
 {
@@ -20,15 +21,15 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
         public async Task<RepairGetDto> Get(int id)
         {
             string dbName = ReportLiterals.Atlas;
-            string query = GetQuery(dbName);
+            string query = GetQuery(dbName, false);
             RepairGetDto repair = await _sqlReportConnection.QueryFirstOrDefaultAsync<RepairGetDto>(query, new { id });
             return repair;
         }
-        public async Task<RepairGetDto> Get(int id, int zoneId,bool hasException)
+        public async Task<RepairGetDto> Get(ZoneIdAndCustomerNumber inputDto, int id, bool hasException)
         {
-            string dbName = GetDbName(zoneId);
-            string query = GetQuery(dbName);
-            RepairGetDto? repair = await _sqlReportConnection.QueryFirstOrDefaultAsync<RepairGetDto>(query, new { id });
+            string dbName = GetDbName(inputDto.ZoneId);
+            string query = GetQuery(dbName, true);
+            RepairGetDto? repair = await _sqlReportConnection.QueryFirstOrDefaultAsync<RepairGetDto>(query, new { id, inputDto.ZoneId, inputDto.CustomerNumber });
             if (repair is null)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.InvalidRepairId);
@@ -83,8 +84,9 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
 
             return customerNumber;
         }
-        private string GetQuery(string dbName)
+        private string GetQuery(string dbName, bool hasCustomerInfoCondition)
         {
+            string condition = hasCustomerInfoCondition ? " AND town = @ZoneId AND radif = @CustomerNumber" : string.Empty;
             return @$"Select 
                         Id,
                         town AS Town,
@@ -159,7 +161,9 @@ namespace Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Implemen
                         date_sbt AS DateSbt,
                         Avarez AS Avarez
                     From [{dbName}].dbo.REPAIR
-                    Where Id=@Id";
+                    Where 
+                        Id = @Id
+                        {condition}";
         }
         private string GetByConfirmNumberQuery()
         {
