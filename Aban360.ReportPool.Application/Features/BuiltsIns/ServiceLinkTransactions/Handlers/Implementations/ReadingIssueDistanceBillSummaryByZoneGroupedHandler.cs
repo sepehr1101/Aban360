@@ -165,7 +165,12 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 sumAllRegionDistance += sumDistance;
                 
             }
-            float averageDistance = sumAllRegionDistance / result.ReportHeader.BillCount;
+            float averageDistance = 0;
+            if (sumAllRegionDistance != 0 && result.ReportHeader.BillCount != 0)
+            {
+                averageDistance = sumAllRegionDistance / result.ReportHeader.BillCount;
+            }
+
             int allZoneRound=(int)Math.Round(averageDistance);
             result.ReportHeader.AverageAll = averageDistance;
             result.ReportHeader.AverageAllText = CalculationDistanceDate.ConvertDayToDate(allZoneRound);

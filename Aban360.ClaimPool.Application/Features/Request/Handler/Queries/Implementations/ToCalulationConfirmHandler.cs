@@ -21,6 +21,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IExaminationQueryService _assessmentQueryService;
         private readonly ICommonZoneService _commonZoneService;
+        private static int _assessmentResultId = (int)RequestStatusEnum.SetExaminationResult;
         public ToCalulationConfirmHandler(
             IMoshtrakQueryService moshtrakQueryService,
             ITrackingQueryService trackingQueryService,
@@ -45,7 +46,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             TrackingOutputDto trackingInfo = await _trackingQueryService.Get(trackId);
             MoshtrakGetDto moshtrackSearch = new(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(moshtrackSearch, MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
-            AssessmentDataOutputDto assessmentInfo = await _assessmentQueryService.GetByTrackId(trackId, true);
+
+            TrackingOutputDto latestAssessmentResult = await _trackingQueryService.GetLatest(trackingInfo.TrackNumber, _assessmentResultId, true);
+            AssessmentDataOutputDto assessmentInfo = await _assessmentQueryService.GetByTrackId(latestAssessmentResult.TrackId, true);
             await _commonZoneService.IsUserInZone(appUser, trackingInfo.ZoneId);
 
             MoshtrakServiceDto sData = GetSDto(moshtrakInfo);

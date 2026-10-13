@@ -46,7 +46,11 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransacti
                 distances.Add(calcDistance.HasError ? 0 : calcDistance.Distance);
             });
 
-            int averageDistance = (int)distances.Sum() / (result.ReportHeader.RecordCount <= 0 ? 1 : result.ReportHeader.RecordCount);
+            int averageDistance = 0;
+            if ((int)distances.Sum() != 0 && result.ReportHeader.RecordCount!=0)
+            {
+                averageDistance = (int)distances.Sum() / result.ReportHeader.RecordCount;
+            }
             result.ReportHeader.AverageDistance = ConvertDayToDate(averageDistance);
             result.ReportHeader.MaxDistance = ConvertDayToDate(distances.MaxValue());
             result.ReportHeader.MinDistance = ConvertDayToDate(distances.MinValue());
