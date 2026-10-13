@@ -16,6 +16,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly IMoshtrakService _moshtrakService;
         public RequestDuplicateValidationHandler(
             IMoshtrakQueryService moshtrakQueryService,
             ITrackingQueryService trackingQueryService,
@@ -49,7 +50,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 MoshtrakServiceDto moshtrakServiceDto = GetMoshtrakService(moshtrakInfo);
                 serviceSelected = latestTrackingInfo is null ?
                     new List<NumericDictionary>() :
-                    MoshtrakService.GetServicesSelectedDto(moshtrakServiceDto, latestTrackingInfo.ServiceGroupId);
+                    await _moshtrakService.GetServicesSelectedDto(moshtrakServiceDto, latestTrackingInfo.ServiceGroupId);
             }
 
             return GetResultDto(inputDto, serviceSelected, moshtrakInfo, latestTrackingInfo, firstTrackingInfo, requestOrigin, regionAndZoneInfo);

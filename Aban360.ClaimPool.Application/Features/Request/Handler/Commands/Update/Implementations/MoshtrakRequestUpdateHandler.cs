@@ -14,12 +14,17 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
 {
     internal sealed class MoshtrakRequestUpdateHandler : AbstractBaseConnection, IMoshtrakRequestUpdateHandler
     {
+        private readonly IMoshtrakService _moshtrakService;
         private readonly IValidator<MoshtrakUpdateInputDto> _validator;
         public MoshtrakRequestUpdateHandler(
             IValidator<MoshtrakUpdateInputDto> validator,
+            IMoshtrakService moshtrakService,
             IConfiguration configuration)
             : base(configuration)
         {
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
@@ -67,7 +72,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
         }
         private MoshtrakUpdateInfoDto GetUpdateDto(MoshtrakUpdateInputDto inputDto)
         {
-            MoshtrakServiceDto serviceSelected = MoshtrakService.GetServicesSelected(inputDto.SelectedServices);
+            MoshtrakServiceDto serviceSelected = _moshtrakService.GetServicesSelected(inputDto.SelectedServices);
 
             return new MoshtrakUpdateInfoDto()
             {

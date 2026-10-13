@@ -17,16 +17,21 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
     internal sealed class SwapRequestTypeHandler : AbstractBaseConnection, ISwapRequestTypeHandler
     {
         private readonly ITrackingQueryService _trackingQueryService;
+        private readonly IMoshtrakService _moshtrakService;
         static int[] _allowedStatusId = { 0, 10, 20, 65 };
         static string _newRequest = "انشعاب جدید";
         static string _afterSaleRequest = "پس از فروش";
         public SwapRequestTypeHandler(
             ITrackingQueryService trackingQueryService,
+            IMoshtrakService moshtrakService,
             IConfiguration configuration)
             : base(configuration)
         {
             _trackingQueryService = trackingQueryService;
             _trackingQueryService.NotNull(nameof(trackingQueryService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
         }
 
         public async Task<SwapRequestTypeOutputDto> Handle(SwapRequestTypeInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
@@ -73,7 +78,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
         }
         private MoshtrakServicesUpdateDto GetMoshtrakServicesDto(SwapRequestTypeInputDto inputDto)
         {
-            MoshtrakServiceDto moshtrakServices = MoshtrakService.GetServicesSelected(inputDto.SelectedServices);
+            MoshtrakServiceDto moshtrakServices =  _moshtrakService.GetServicesSelected(inputDto.SelectedServices);
 
             return new MoshtrakServicesUpdateDto()
             {

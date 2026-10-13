@@ -23,13 +23,15 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IKartQueryService _kartQueryService;
         private readonly IGhestQueryService _ghestQueryService;
+        private readonly IMoshtrakService _moshtrakService;
         private static int _currentStatusCode = (int)RequestStatusEnum.AmountIsConfirmed;
         public AmountConfirmedDetailHandler(
             ICommonZoneService zoneService,
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,
             IKartQueryService kartQueryService,
-            IGhestQueryService ghestQueryService)
+            IGhestQueryService ghestQueryService,
+            IMoshtrakService moshtrakService)
         {
             _zoneService = zoneService;
             _zoneService.NotNull(nameof(zoneService));
@@ -45,6 +47,9 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
 
             _ghestQueryService = ghestQueryService;
             _ghestQueryService.NotNull(nameof(ghestQueryService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
         }
 
         public async Task<AmountConfirmedOutputDto> Handle(Guid id, IAppUser appUser, CancellationToken cancellationToken)
@@ -57,8 +62,8 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             }
 
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber, true)).FirstOrDefault();
-            MoshtrakServiceDto sData = MoshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
-            IEnumerable<NumericDictionary> s = MoshtrakService.GetServicesSelectedDto(sData, trackingInfo.ServiceGroupId);
+            MoshtrakServiceDto sData = _moshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
+            IEnumerable<NumericDictionary> s = await _moshtrakService.GetServicesSelectedDto(sData, trackingInfo.ServiceGroupId);
 
             IEnumerable<InstallmentRequestDataOutputDto> installmentsInfo = await _ghestQueryService.Get(trackingInfo.TrackNumber.ToString(), trackingInfo.ZoneId);
             IEnumerable<OfferingAmountOutputDto> offeringsInfo = await _kartQueryService.GetByTrackNumber(ReportLiterals.Karten75, trackingInfo.TrackNumber.ToString(), trackingInfo.ZoneId);

@@ -7,6 +7,7 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; }
         public int CustomerNumber { get; set; }
+        public string? BillId { get; set; }
         public string? ReadingNumber { get; set; }
         public string? FirstName { get; set; }
         public string? Surname { get; set; }

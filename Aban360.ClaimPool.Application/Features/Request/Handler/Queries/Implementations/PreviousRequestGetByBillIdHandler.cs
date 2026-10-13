@@ -13,15 +13,20 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
     {
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly IMoshtrakService _moshtrakService;
         public PreviousRequestGetByBillIdHandler(
             IMoshtrakQueryService moshtrakQueryService,
-            ICommonMemberQueryService commonMemberQueryService)
+            ICommonMemberQueryService commonMemberQueryService,
+            IMoshtrakService moshtrakService)
         {
             _moshtrakQueryService = moshtrakQueryService;
             _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
 
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+          
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
         }
 
         public async Task<IEnumerable<PreviousRequestDataOutputDto>> Handle(string billId, CancellationToken cancellationToken)
@@ -29,14 +34,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(billId);
             IEnumerable<PreviousRequestGetDto> previousRequest = await _moshtrakQueryService.GetAllRequestByCustomerNumber(zoneIdAndCustomerNumber);
             ICollection<PreviousRequestDataOutputDto> result = new List<PreviousRequestDataOutputDto>();
-            previousRequest.ForEach(pr =>
+            foreach (var item in previousRequest)
             {
-                MoshtrakServiceDto sDto = GetMoshtrakDto(pr);
-                IEnumerable<SelectionDto> companyService = MoshtrakService.GetMoshtrakCompanyServiceDto(sDto, pr.ServiceGroupId);
+                MoshtrakServiceDto sDto = GetMoshtrakDto(item);
+                IEnumerable<SelectionDto> companyService = await _moshtrakService.GetMoshtrakCompanyServiceDto(sDto, item.ServiceGroupId);
                 IEnumerable<string> companyServiceTitles = companyService.Where(c => c.IsSelected).Select(c => c.Title);
-                PreviousRequestDataOutputDto outPut = GeOutput(pr, string.Join(", ", companyServiceTitles));
+                PreviousRequestDataOutputDto outPut = GeOutput(item, string.Join(", ", companyServiceTitles));
                 result.Add(outPut);
-            });
+            }
             return result;
         }
         private MoshtrakServiceDto GetMoshtrakDto(PreviousRequestGetDto input)

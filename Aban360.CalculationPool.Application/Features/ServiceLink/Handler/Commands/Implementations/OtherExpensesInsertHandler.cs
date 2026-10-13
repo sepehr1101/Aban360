@@ -35,6 +35,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         private readonly IModifyTypeQueryService _modifyTypeQueryService;
         private readonly IT100QueryService _t100QueryService;
         private readonly IOtherExpensesItemsQueryService _otherExpensesItemsQueryService;
+        private readonly IMoshtrakService _moshtrakService;
         private readonly IValidator<OtherExpensesInsertInputDto> _validator;
         private readonly OtherExpensesEnum[] _manualServiceIds = { OtherExpensesEnum.ConnectDisconnect, OtherExpensesEnum.MeterTest };
         private string _currentDateJalali = DateTime.Now.ToShortPersianDateString();
@@ -56,6 +57,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
             IModifyTypeQueryService modifyTypeQueryService,
             IT100QueryService t100QueryService,
             IOtherExpensesItemsQueryService otherExpensesItemsQueryService,
+            IMoshtrakService moshtrakService,
             IValidator<OtherExpensesInsertInputDto> validator,
             IConfiguration configuration)
                 : base(configuration)
@@ -83,6 +85,9 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
 
             _otherExpensesItemsQueryService = otherExpensesItemsQueryService;
             _otherExpensesItemsQueryService.NotNull(nameof(otherExpensesItemsQueryService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -193,7 +198,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         }
         private MoshtrakCreateDto GetMoshtrackCreateDto(OtherExpensesInsertInputDto inputDto, MemberInfoGetDto memberInfo, int trackNumber)//todo
         {
-            MoshtrakServiceDto serviceSelected = MoshtrakService.GetServicesSelected(new List<int> { (int)inputDto.Offering });
+            MoshtrakServiceDto serviceSelected = _moshtrakService.GetServicesSelected(new List<int> { (int)inputDto.Offering });
             return new MoshtrakCreateDto()
             {
                 TrackNumber = trackNumber,

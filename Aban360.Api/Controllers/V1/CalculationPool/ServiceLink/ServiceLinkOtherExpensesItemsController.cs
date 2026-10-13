@@ -48,7 +48,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
             return Ok(inputDto);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("remove/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Remove(int id, CancellationToken cancellationToken)
@@ -57,7 +57,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
             return Ok(id);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("get/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsDataDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
@@ -66,7 +66,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
             return Ok(data);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("get/{billId}/{itemId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsDataDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetByItemId(string billId, int itemId, CancellationToken cancellationToken)
@@ -75,7 +75,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
             return Ok(data);
         }
 
-        [HttpPost]
+        [HttpPost, HttpGet]
         [Route("get")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<OtherExpensesItemsDataDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
