@@ -30,8 +30,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                 FromReadingNumber = input.FromReadingNumber,
                 ToReadingNumber = input.ToReadingNumber,
                 ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
-                RecordCount = RequestData.CountValue(),
-                CustomerCount = RequestData.CountValue(),
+                RecordCount = RequestData?.Count() ?? 0,
+                CustomerCount = RequestData?.Sum(i => i.CustomerCount) ?? 0,
                 Title = reportTitle,
 
                 SumCommercialUnit = RequestData.Sum(i => i.CommercialUnit),
@@ -52,7 +52,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
                         From [CustomerWarehouse].dbo.Clients c
                         Where			
                             c.PhysicalWaterInstallDateJalali BETWEEN @FromDateJalali AND @ToDateJalali AND	                    
-                            --c.ZoneId IN @zoneIds AND
+                            c.ZoneId IN @zoneIds AND
                             c.UsageId IN @usageIds AND
                             (
                                 @fromReadingNumber IS NULL OR 

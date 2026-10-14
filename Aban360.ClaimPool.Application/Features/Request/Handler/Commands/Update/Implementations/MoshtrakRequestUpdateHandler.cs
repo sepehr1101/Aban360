@@ -33,10 +33,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
         {
             await Validate(inputDto, cancellationToken);
             MoshtrakUpdateInfoDto moshtrakUpdateDto = GetUpdateDto(inputDto);
-            await SqlCommands(moshtrakUpdateDto);
+            await ExecSql(moshtrakUpdateDto);
         }
 
-        private async Task SqlCommands(MoshtrakUpdateInfoDto moshtrakUpdateDto)
+        private async Task ExecSql(MoshtrakUpdateInfoDto moshtrakUpdateDto)
         {
             string dbName = GetDbName(moshtrakUpdateDto.ZoneId);
             using (IDbConnection connection = _sqlReportConnection)
@@ -113,7 +113,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
                 Description = inputDto.Description,
                 IsSpecial = inputDto.IsSpecial,
                 ReadingNumber = inputDto.ReadingNumber,
-
+                BlockId = inputDto.BlockId ?? string.Empty,
+                BrokerId = inputDto.HasBroker ? 1 : 0,
 
                 s0 = serviceSelected.s0,
                 s1 = serviceSelected.s1,

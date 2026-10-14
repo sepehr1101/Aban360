@@ -278,6 +278,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 							edareh_k=@IsSpecial,
 							C99=@NotificationMobile,
 							sharh=@Description,
+							BLOCK_COD=@BlockId,
+							Kargozari=@BrokerId,
 							s0=@s0,
 							s1=@s1,
 							s2=@s2,
