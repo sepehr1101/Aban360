@@ -19,7 +19,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         private readonly IRequestBasicInfoGetHandler _requestBasicInfoGetHandler;
         private readonly IToSetAssessmentTimeGetByTrackIdHandler _toSetAssessmentTimeGetHandler;
         private readonly IToSetReAssessmentTimeGetByTrackIdHandler _toSetReAssessmentTimeGetHandler;
-        private readonly IToCalulationConfirmHandler _toSetCalulationHandler; 
+        private readonly IToCalulationConfirmHandler _toSetCalulationHandler;
         public RequestBranchQueryController(
             IKartableRequestGetAllHandler requestKartableGetAllHandler,
             IDisplayRequestHandler displayRequestHandler,
@@ -70,7 +70,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpPost, HttpGet]
         [Route("display/{trackId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DisplayRequestByTrackId(Guid trackId, CancellationToken cancellationToken)
@@ -79,7 +79,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpPost, HttpGet]
         [Route("basic-info/{trackNumber}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<RequestBasicInfoDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetBasicInfo(int trackNumber, CancellationToken cancellationToken)
@@ -114,7 +114,5 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
             ToCalculationConfirmGetDto result = await _toSetCalulationHandler.Handle(trackId, CurrentUser, cancellationToken);
             return Ok(result);
         }
-
-        //amount-confirm
     }
 }
