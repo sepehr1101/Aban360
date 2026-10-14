@@ -1,4 +1,6 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Contexts.Contracts;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
@@ -34,10 +36,17 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
         }
         public async Task<ICollection<ReadingBlock>> Get(IEnumerable<int> ids)
         {
-            return await _readingBlocks
+            ICollection<ReadingBlock> blocks = await _readingBlocks
                 .Include(r => r.ReadingBound)
                 .Where(r => ids.Contains(r.Id))
                 .ToListAsync();
+
+            if ((blocks?.Count() ?? 0) != (ids?.Count() ?? 0))
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.NotfoundReadingBlocksInfo);
+            }
+
+            return blocks;
         }
         public async Task<ICollection<ReadingBlock>> GetByBoundId(int boundId)
         {

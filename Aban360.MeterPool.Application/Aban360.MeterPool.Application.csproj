@@ -19,6 +19,7 @@
     <ProjectReference Include="..\Aban360.MeterPool.Persistence\Aban360.MeterPool.Persistence.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.Application\Aban360.ReportPool.Application.csproj" />
     <ProjectReference Include="..\Aban360.ReportPool.Domain\Aban360.ReportPool.Domain.csproj" />
+    <ProjectReference Include="..\Aban360.UserPool.Application\Aban360.UserPool.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>

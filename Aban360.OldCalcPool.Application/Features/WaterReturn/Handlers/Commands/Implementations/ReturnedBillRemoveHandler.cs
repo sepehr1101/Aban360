@@ -101,7 +101,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             BillsOldDbDelUpdateDto repairInbillInfo = await _billQueryService.GetReturnedBill(billFindReturnDto, ReportLiterals.RepairTypeCode);
             BillRemoveByIdDto billRemoveByIdDto = new(repairInbillInfo.Id, repairInbillInfo.ZoneId, repairInbillInfo.CustomerNumber);
 
-            await ExecSql(hRepairInsertDto, bedBesDelUpdateDto, repairDeleteDto, billsDelUpdateDto, billRemoveByIdDto, (long)repairInfo.Jam, billId, appUser);
+            await ExecSql(hRepairInsertDto, bedBesDelUpdateDto, repairDeleteDto, billsDelUpdateDto, billRemoveByIdDto, (long)repairInfo.Baha, billId, appUser);
         }
         private async Task ExecSql(HRepairByRepairIdInsertDto hRepairInsertDto, IEnumerable<BedBesUpdateDelDto> bedBesDelUpdateDto, RepairByInfoDeleteDto repairDeleteDto, IEnumerable<BillsOldDbDelUpdateDto> billsDelUpdateDto, BillRemoveByIdDto billRemoveByIdDto, long amount, string billId, IAppUser appUser)
         {

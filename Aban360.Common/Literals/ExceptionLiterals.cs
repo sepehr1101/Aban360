@@ -199,6 +199,13 @@
         public static string InvalidDuplicateGenerateBill(int invalidCount) => @$"در مدت محاسبه تا تایید برای {invalidCount} شناسه قبض، تراکنش انجام شده. ";
         public static string InvalidPreviousBillInfo(string billId) => $@"اطلاعات آخرین قبض برای مشترک:{billId} یافت نشد.";
 
+        //Reading
+        public static string InvalidReadingBoundWithReadingBlock => "بلوک انتخابی مطعلق به محدوده جاری نیست.";
+        public static string InvalidReadigBlockCount => "تعداد بلوک های انتخاب شده ناصحیح است.";
+        public static string NotfoundReadingBlocksInfo => "خطا در اطلاعات بلوک های انتخاب شده ";
+
+
+
         //RemovedBill
         public static string NotFoundBillsToRemoved => "قبضی برای ابطال یافت نشد.";
 

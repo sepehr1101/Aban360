@@ -1,4 +1,6 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Contexts.Contracts;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
@@ -21,10 +23,15 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
 
         public async Task<ReadingBound> Get(int id)
         {
-            return await _readingBounds
+            ReadingBound? readingBound= await _readingBounds
                     .Include(r => r.Zone)
                     .Where(r => r.Id == id)
                     .SingleAsync();
+            if (readingBound is null)
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.InvalidId);
+            }
+            return readingBound;
         }
         public async Task<ICollection<ReadingBound>> GetByZoneId(int zoneId)
         {
