@@ -8,5 +8,6 @@
         public const string Map = nameof(Map);
         public const string CollectBills = nameof(CollectBills);
         public const string AutoReading = nameof(AutoReading);
+        public const string Sms = nameof(Sms);
     }
 }

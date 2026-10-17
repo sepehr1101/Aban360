@@ -37,5 +37,7 @@
         public long Item18 { get; set; }
         public int BillUnit { get; set; }
         public int TotalUnit { get; set; }
+        public double ConsumerUnits { get; set; } // آحاد مصرف کننده
+        public double ReadingDailyAverage { get; set; } //متوسط روز قرائت
     }
 }
