@@ -121,7 +121,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 AssessmentDateJalali = assessmentInfo?.AssessmentDateJalali ?? null,
                 AssessmentMobile = assessmentInfo?.AssessmentMobile ?? null,
                 AssessmentName = assessmentInfo?.AssessmentName ?? null,
-                CompanyServiceItems = companyServices
+                SelectedServices = companyServices
             };
         }
     }
