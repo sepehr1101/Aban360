@@ -38,7 +38,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     	TRIM(c.FirstName) AS FirstName,
                     	TRIM(c.SureName) AS Surname,
                     	TRIM(c.Address) AS Address,
-                    	c.UsageTitle2 AS UsageTitle,
+                    	c.UsageTitle AS UsageTitle,
                     	c.WaterDiameterTitle AS MeterDiameterTitle,
                         c.MainSiphonTitle AS SiphonDiameterTitle,
                     	c.ZoneTitle,
