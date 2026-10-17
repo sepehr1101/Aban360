@@ -13,7 +13,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Validations
                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                .NotNull().WithMessage(ExceptionLiterals.NotNull);
             
-            RuleFor(e => e.ReadingBlockIds)
+            RuleFor(e => e.ReadingBlockInfo)
                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                .NotNull().WithMessage(ExceptionLiterals.NotNull);
             

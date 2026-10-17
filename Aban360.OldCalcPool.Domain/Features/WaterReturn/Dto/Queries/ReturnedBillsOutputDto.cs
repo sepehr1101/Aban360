@@ -19,6 +19,11 @@
         public long SumItems { get; set; }
         public long Discount { get; set; }
         public int AgentCode { get; set; }
+        public int MinutesNumber { get; set; }
+        public int BillCount { get; set; }
+        public int Duration { get; set; }
+        public int ReturnCauseId { get; set; }
+        public string ReturnCauseTitle{ get; set; }
 
         public string BillId { get; set; }
         public string UsageTitle { get; set; }
