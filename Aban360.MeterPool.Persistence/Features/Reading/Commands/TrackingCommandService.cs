@@ -20,9 +20,8 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
             _transaction.NotNull(nameof(transaction));
         }
 
-        public async Task Insert(IEnumerable<TrackingGetDto> input)
+        public async Task Insert(IEnumerable<TrackingInsertDto> input)
         {
-            ArgumentNullException.ThrowIfNull(input);
             var dataTable = ToDataTable(input);
             if (dataTable.Rows.Count == 0)
                 return;
@@ -40,7 +39,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
             await bulkCopy.WriteToServerAsync(dataTable);
         }
 
-        private static DataTable ToDataTable(IEnumerable<TrackingGetDto> input)
+        private static DataTable ToDataTable(IEnumerable<TrackingInsertDto> input)
         {
             var table = new DataTable();
             table.Columns.Add("Id", typeof(Guid));

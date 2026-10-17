@@ -9,5 +9,6 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts
         Task<ICollection<UserRole>> GetIncludeRoles(Guid userId);
         Task<ICollection<UserRole>> Get(string roleTitle);
         Task<ICollection<UserQueryDto>> Get(int roleId);
+        Task<ICollection<UserQueryDto>> GetByDefaultZone(int roleId, int zoneId);
     }
 }

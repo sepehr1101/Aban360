@@ -12,6 +12,8 @@
         public static string Karten75 { get { return "karten75"; } }
         public static string Kart { get { return "kart"; } }
 
+        public static int ReadingRoleId { get { return 13; } }//Todo: changeId
+
         public static string RepairTypeCode { get { return "5"; } }
         public static string ReturnFull { get { return "کامل"; } }
         public static string ReturnPartial { get { return "محاسبه مجدد"; } }

@@ -105,6 +105,8 @@
         public static string OpenKmRemoveFileOpLog => @"فایل بایگانی الکترونیک حذف شد. شناسه فایل:{0}  دایرکتوری:{1}";
         public static string OpenKmAddFileOpLog => @"فایل بایگانی الکترونیک ایجاد شد. شناسه فایل:{0}  عنوان:{1}";
 
+        public static string MeterReadingInsertOpLog => @"صدور لیست دسته ای انجام شد. شناسه دسته:{}";
+
 
     }
 }
