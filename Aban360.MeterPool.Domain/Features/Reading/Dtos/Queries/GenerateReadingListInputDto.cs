@@ -1,6 +1,6 @@
 ﻿namespace Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries
 {
-    public record ReadingCreateDto
+    public record GenerateReadingListInputDto
     {
         public int ReadingBoundId { get; set; }
         public IEnumerable<PerReadingBlockInfoDto> ReadingBlockInfo { get; set; }

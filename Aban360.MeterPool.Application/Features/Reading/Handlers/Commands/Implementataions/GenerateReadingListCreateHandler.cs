@@ -9,9 +9,11 @@ using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 using Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts;
+using Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Contracts;
 using Aban360.MeterPool.Domain.Constants;
 using Aban360.MeterPool.Domain.Features.Reading.Dtos.Commands;
 using Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries;
+using Aban360.MeterPool.Persistence.Features.Manegement.Queries.Contracts;
 using Aban360.MeterPool.Persistence.Features.Reading.Commands;
 using Aban360.MeterPool.Persistence.Features.Reading.Queries.Contracts;
 using Aban360.ReportPool.Domain.Base;
@@ -25,10 +27,6 @@ using System.Data;
 
 namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Implementataions
 {
-    public interface IGenerateReadingListCreateHandler
-    {
-        Task Handle(ReadingCreateDto inputDto, IAppUser appUser, CancellationToken cancellationToken);
-    }
     internal sealed class GenerateReadingListCreateHandler : AbstractBaseConnection, IGenerateReadingListCreateHandler
     {
         private readonly IHttpContextAccessor _contextAccessor;
@@ -39,7 +37,9 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
         private readonly IReadingCustomerDetailInfoQueryService _readingCustomerDetailInfoQueryService;
         private readonly IUserRoleQueryService _userRoleQueryService;
         private readonly ITrackNumberService _trackNumberService;
-        private readonly IValidator<ReadingCreateDto> _validator;
+        private readonly IReadingPeriodTypeQueryService _readingPeriodTypeQueryService;
+        private readonly IReadingPeriodQueryService _readingPeriodQueryService;
+        private readonly IValidator<GenerateReadingListInputDto> _validator;
         private static DateTime _currentDateTime = DateTime.Now;
         private static string _currentDateJalali = _currentDateTime.ToShortPersianDateString();
         private static int _createPathStepId = (int)ReadingFlowStepEnum.CreatePath;
@@ -52,7 +52,9 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             IReadingCustomerDetailInfoQueryService readingCustomerDetailInfoQueryService,
             IUserRoleQueryService userRoleQueryService,
             ITrackNumberService trackNumberService,
-            IValidator<ReadingCreateDto> validator,
+            IReadingPeriodTypeQueryService readingPeriodTypeQueryService,
+            IReadingPeriodQueryService readingPeriodQueryService,
+            IValidator<GenerateReadingListInputDto> validator,
             IConfiguration configuration)
                 : base(configuration)
         {
@@ -80,17 +82,25 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             _trackNumberService = trackNumberService;
             _trackNumberService.NotNull(nameof(trackNumberService));
 
+            _readingPeriodQueryService = readingPeriodQueryService;
+            _readingPeriodQueryService.NotNull(nameof(readingPeriodQueryService));
+
+            _readingPeriodTypeQueryService = readingPeriodTypeQueryService;
+            _readingPeriodTypeQueryService.NotNull(nameof(readingPeriodTypeQueryService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task Handle(ReadingCreateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<GenerateReadingListOutputDto> Handle(GenerateReadingListInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await Validate(inputDto, appUser, cancellationToken);
             var (newBoundDto, newBlockList, newTrackingList, newDetailList) = await GetBlocksInsert(inputDto, appUser);
             string opLogText = string.Format(OpLogLiterals.MeterReadingInsertOpLog, newBoundDto.Id);
             await ExecSql(newBoundDto, newBlockList, newTrackingList, newDetailList, opLogText, appUser);
 
+            GenerateReadingListOutputDto result = await GetResult(inputDto, newBoundDto, newBlockList?.Count() ?? 0);
+            return result;
         }
         private async Task ExecSql(BoundInsertDto newBoundDto, IEnumerable<BlockInsertDto> newBlockList, IEnumerable<TrackingInsertDto> newTrackingList, IEnumerable<DetailInsertDto> newDetailList, string opLogText, IAppUser appUser)
         {
@@ -119,7 +129,19 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 }
             }
         }
-        private async Task<(BoundInsertDto, IEnumerable<BlockInsertDto>, IEnumerable<TrackingInsertDto>, IEnumerable<DetailInsertDto>)> GetBlocksInsert(ReadingCreateDto inputDto, IAppUser appUser)//, BoundInsertDto newBoundDto)
+        private async Task<GenerateReadingListOutputDto> GetResult(GenerateReadingListInputDto inputDto, BoundInsertDto newBoundDto, int blockCount)
+        {
+            return new GenerateReadingListOutputDto()
+            {
+                ZoneTitle = newBoundDto.ZoneTitle,
+                BlockCount = blockCount,
+                Year = inputDto.Year,
+                ReadingPeriodTypeTitle = (await _readingPeriodTypeQueryService.Get((short)inputDto.ReadingPeriodTypeId)).Title,
+                ReadingPeriodTitle = (await _readingPeriodQueryService.Get((short)inputDto.ReadingPeriodId)).Title,
+                CustomerCount = newBoundDto.CustomerCount,
+            };
+        }
+        private async Task<(BoundInsertDto, IEnumerable<BlockInsertDto>, IEnumerable<TrackingInsertDto>, IEnumerable<DetailInsertDto>)> GetBlocksInsert(GenerateReadingListInputDto inputDto, IAppUser appUser)//, BoundInsertDto newBoundDto)
         {
             int stepOrder = 0;
             int overallCustomerCount = 0;
@@ -159,7 +181,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
 
             return (newBoundDto, newBlockList, newTrackingList, newDetailList);
         }
-        private async Task<BoundInsertDto> GetBoundInsert(ReadingCreateDto inputDto, Guid Id, IAppUser appUser)
+        private async Task<BoundInsertDto> GetBoundInsert(GenerateReadingListInputDto inputDto, Guid Id, IAppUser appUser)
         {
             ReadingBound readingBoundInfo = await _readingBoundQueryService.Get(inputDto.ReadingBoundId);
             NumericDictionary zoneInfo = await _zoneQueryService.Get(readingBoundInfo.ZoneId, true);
@@ -182,7 +204,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 InsertDateTime = _currentDateTime,
             };
         }
-        private async Task Validate(ReadingCreateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        private async Task Validate(GenerateReadingListInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await InputValidate(inputDto, cancellationToken);
             await ZoneValidate(inputDto, appUser);
@@ -228,7 +250,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
 
             return currentReaderInfo;
         }
-        private async Task InputValidate(ReadingCreateDto inputDto, CancellationToken cancellationToken)
+        private async Task InputValidate(GenerateReadingListInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -237,7 +259,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 throw new CustomValidationException(message);
             }
         }
-        private async Task ZoneValidate(ReadingCreateDto inputDto, IAppUser appUser)
+        private async Task ZoneValidate(GenerateReadingListInputDto inputDto, IAppUser appUser)
         {
             ReadingBound readingBoundInfo = await _readingBoundQueryService.Get(inputDto.ReadingBoundId);
             ICollection<ReadingBlock> readingBlocksInfo = await _readingBlockQeryService.Get(inputDto.ReadingBlockInfo.Select(r => r.ReadingBlockId));

@@ -20,6 +20,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         private readonly IToSetAssessmentTimeGetByTrackIdHandler _toSetAssessmentTimeGetHandler;
         private readonly IToSetReAssessmentTimeGetByTrackIdHandler _toSetReAssessmentTimeGetHandler;
         private readonly IToCalulationConfirmHandler _toSetCalulationHandler;
+        private readonly IReadingBlockListGetHandler _readingBlockListGetHandler;
+        private readonly IKitCodeDictionaryGetHandler _kitCodeDictionaryGetHandler;
         public RequestBranchQueryController(
             IKartableRequestGetAllHandler requestKartableGetAllHandler,
             IDisplayRequestHandler displayRequestHandler,
@@ -27,7 +29,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
             IRequestBasicInfoGetHandler requestBasicInfoGetHandler,
             IToSetAssessmentTimeGetByTrackIdHandler toSetAssessmentTimeGetHandler,
             IToSetReAssessmentTimeGetByTrackIdHandler toSetReAssessmentTimeGetHandler,
-            IToCalulationConfirmHandler toSetCalulationHandler)
+            IToCalulationConfirmHandler toSetCalulationHandler,
+            IReadingBlockListGetHandler readingBlockListGetHandler,
+            IKitCodeDictionaryGetHandler kitCodeDictionaryGetHandler)
         {
             _requestKartableGetAllHandler = requestKartableGetAllHandler;
             _requestKartableGetAllHandler.NotNull(nameof(requestKartableGetAllHandler));
@@ -49,6 +53,12 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
 
             _toSetCalulationHandler = toSetCalulationHandler;
             _toSetCalulationHandler.NotNull(nameof(toSetCalulationHandler));
+
+            _readingBlockListGetHandler = readingBlockListGetHandler;
+            _readingBlockListGetHandler.NotNull(nameof(readingBlockListGetHandler));
+
+            _kitCodeDictionaryGetHandler = kitCodeDictionaryGetHandler;
+            _kitCodeDictionaryGetHandler.NotNull(nameof(kitCodeDictionaryGetHandler));
         }
 
 
@@ -66,7 +76,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DisplayRequest([FromBody] ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken)
         {
-            MoshtrakDataOutputDto result = await _displayRequestHandler.Handle(inputDto, cancellationToken);
+            MoshtrakDataOutputDto result = await _displayRequestHandler.Handle(inputDto.TrackNumber, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("display/{trackNumber}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakDataOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> DisplayRequest(int trackNumber, CancellationToken cancellationToken)
+        {
+            MoshtrakDataOutputDto result = await _displayRequestHandler.Handle(trackNumber, cancellationToken);
             return Ok(result);
         }
 
@@ -112,6 +131,24 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         public async Task<IActionResult> GetSetCalculationInfo(Guid trackId, CancellationToken cancellationToken)
         {
             ToCalculationConfirmGetDto result = await _toSetCalulationHandler.Handle(trackId, CurrentUser, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("block-dictionary")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<StringDictionary>>), StatusCodes.Status200OK)]
+        public IActionResult GetBlocksDictionary(CancellationToken cancellationToken)
+        {
+            IEnumerable<StringDictionary> result = _readingBlockListGetHandler.Handle(cancellationToken);
+            return Ok(result);
+        }
+        
+        [HttpGet]
+        [Route("kit-dictionary")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
+        public IActionResult GetKitsDictionary(CancellationToken cancellationToken)
+        {
+            IEnumerable<NumericDictionary> result = _kitCodeDictionaryGetHandler.Handle(cancellationToken);
             return Ok(result);
         }
     }
