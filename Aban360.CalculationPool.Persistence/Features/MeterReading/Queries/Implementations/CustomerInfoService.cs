@@ -19,7 +19,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
         {
         }
 
-
+        //ToDo: SingleQuery Betweens: IBedBesQuery(OldCalc),ICommonMembers(Common)
         private async Task<ZoneIdAndCustomerNumberGetDto> GetZoneIdAndCustomerNumber(string billId)
         {
             string query = GetZoneIdAndCustomerNumberQuery();

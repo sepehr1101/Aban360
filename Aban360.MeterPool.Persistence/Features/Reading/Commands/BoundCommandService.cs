@@ -1,5 +1,8 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Reflection;
@@ -20,6 +23,15 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
             _transaction.NotNull(nameof(transaction));
         }
 
+        public async Task Insert(BoundInsertDto input)
+        {
+            string command = GetInsertCommand();
+            int recordEffected = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordEffected != 1)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalicZoneIdWithBlock);
+            }
+        }
         public async Task Insert(IEnumerable<BoundInsertDto> input)
         {
             var dataTable = ToDataTable(input);
@@ -76,6 +88,26 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
 
             return table;
         }
+        private string GetInsertCommand()
+        {
+            return $@"Insert Into Atlas.reading.Bound
+                    (
+                    	Id, ReadingBoundId, ReadingBoundTitle, ZoneId, ZoneTitle,
+                    	FromReadingNumber, ToReadingNumber, IsValidated, BlockCount, CustomerCount,
+                    	Year, ReadingPeriodTypeId, ReadingPeriodId,
+                    	InsertBy, InsertDateTime
+                    )
+                    Values
+                    (	
+                        @Id, @ReadingBoundId, @ReadingBoundTitle, @ZoneId, @ZoneTitle,
+                    	@FromR@eadingNumber, @ToReadingNumber, @IsValidated, @BlockCount, @CustomerCount,
+                    	@Year, @ReadingPeriodTypeId, @ReadingPeriodId,
+                    	@InsertBy, @InsertDateTime
+                    );
+
+                    Select SCOPE_IDENTITY();";
+        }
+
     }
 
 }

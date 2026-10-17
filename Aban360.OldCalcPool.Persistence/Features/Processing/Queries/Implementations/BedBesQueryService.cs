@@ -525,7 +525,12 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	r.tedad_mas as DomesticUnit,
                     	r.tedad_tej as CommercialUnit,
                     	r.tedad_vahd as OtherUnit,
-                    	r.ted_khane as HouseholdNumber
+                    	r.ted_khane as HouseholdNumber,
+						r.modat Duration,
+						r.elat ReturnCauseId,
+						rc.Title ReturnCauseTitle,
+						r.jalase_no MinutesNumber,
+						r.ted_ghabs BillCount
                     FROM [{dbName}].dbo.REPAIR r
 					Left JOIN [{dbName}].dbo.members m
 						ON r.town=m.town AND r.radif=m.radif
@@ -537,6 +542,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     	ON r.noe_va=t7.C0
 					JOIN [Db70].dbo.T51 t51
 						ON r.town=t51.c0
+					JOIN [Db70].dbo.BillReturnCause rc
+						ON r.elat=rc.Id
                     WHERE r.town = @ZoneId
                     ORDER BY r.radif DESC,r.date_bed Desc";
         }

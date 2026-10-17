@@ -4,6 +4,7 @@ using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queries.C
 using Aban360.CalculationPool.Domain.Features.ServiceLink;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
@@ -48,13 +49,13 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
             return Ok(inputDto);
         }
 
-        [HttpGet]
-        [Route("remove/{id}")]
-        [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Remove(int id, CancellationToken cancellationToken)
+        [HttpPost]
+        [Route("remove")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsRemoveInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Remove([FromBody] OtherExpensesItemsRemoveInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _otherExpensesItemsRemoveHandler.Handle(id, CurrentUser, cancellationToken);
-            return Ok(id);
+            await _otherExpensesItemsRemoveHandler.Handle(inputDto.Id, CurrentUser, cancellationToken);
+            return Ok(inputDto);
         }
 
         [HttpGet]
