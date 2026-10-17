@@ -2,7 +2,7 @@
 {
     public record BoundInsertDto
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } 
         public int ReadingBoundId { get; set; }
         public string ReadingBoundTitle { get; set; } = null!;
         public int ZoneId { get; set; }

@@ -2,6 +2,52 @@
 {
     public static class ExceptionLiterals
     {
+        public static string FirstName { get { return "نام"; } }
+        public static string Surname { get { return "نام خانوادگی"; } }
+        public static string FatherName { get { return "نام پدر"; } }
+        public static string BillId { get { return "شناسه قبض"; } }
+        public static string CustomerNumber { get { return "ردیف"; } }
+        public static string Region { get { return "منطقه"; } }
+        public static string Zone { get { return "ناحیه"; } }
+        public static string Usage { get { return "کاربری"; } }
+        public static string BranchType { get { return "نوع واگذاری"; } }
+        public static string MobileNumber { get { return "شماره موبایل"; } }
+        public static string PhoneNumber { get { return "شماره تلفن"; } }
+        public static string NotificationNumber { get { return "شماره اطلاع رسانی"; } }
+        public static string NationalCode { get { return "کد ملی"; } }
+        public static string NeighbourBillId { get { return "شناسه قبض همسایه"; } }
+        public static string TrackNumber { get { return "شماره پیگیری"; } }
+        public static string DeleteionState { get { return "وضعیت انشعاب"; } }
+        public static string CounterState { get { return "وضعیت قرائت"; } }
+        public static string CertificateNumber { get { return "شماره شناسنامه"; } }
+        public static string CommercialUnit { get { return "آحاد تجاری"; } }
+        public static string DomesticUnit { get { return "آحاد مسکونی"; } }
+        public static string OtherUnit { get { return "آحاد سایر"; } }
+        public static string CommercialImprovement { get { return "اعیانی مسکونی"; } }
+        public static string DomesticImprovement { get { return "اعیانی تجاری"; } }
+        public static string OtherImprovement { get { return "اعیانی سایر"; } }
+        public static string OverallImprovement { get { return "اعیانی کل"; } }
+        public static string Premises { get { return "عرصه"; } }
+        public static string HouseValue { get { return "ارزش ملک"; } }
+        public static string Siphon100 { get { return "سیفون 100"; } }
+        public static string Siphon125 { get { return "سیفون 125"; } }
+        public static string Siphon150 { get { return "سیفون 150"; } }
+        public static string Siphon200 { get { return "سیفون 200"; } }
+        public static string Siphon5 { get { return "سیفون 5"; } }
+        public static string Siphon6 { get { return "سیفون 6"; } }
+        public static string Siphon7 { get { return "سیفون 7"; } }
+        public static string Siphon8 { get { return "سیفون 8"; } }
+        public static string MainSiphon { get { return "سیفون اصلی"; } }
+        public static string MasterSiphon { get { return "سیفون اصلی"; } }
+        public static string CommonSiphon { get { return "سیفون مشترک"; } }
+        public static string PostalCode { get { return "کدپستی"; } }
+        public static string Address { get { return "آدرس"; } }
+        public static string ContractualCapacity { get { return "ظرفیت قراردادی"; } }
+        public static string DiscountType { get { return "نوع تخفیف"; } }
+        public static string DiscountCount { get { return "تعداد تخفیف"; } }
+        public static string MeterDiameter { get { return "قطر کنتور"; } }
+
+
         public static string WaterBillMinDate { get { return "1401/01/01"; } }
         public static string Date1403_01_01 { get { return "1403/01/01"; } }
         public static string ArgumentIsNull_1 { get { return "آرگومان ارائه شده NULL است. نام آرگومان"; } }
@@ -200,6 +246,7 @@
         public static string InvalidPreviousBillInfo(string billId) => $@"اطلاعات آخرین قبض برای مشترک:{billId} یافت نشد.";
 
         //Reading
+        public static string InvalidReadingBoundWithReaderZoneId => "مامور قرائت انتخاب شده متعلق به ناحیه جاری نیست. ";
         public static string InvalidReadingBoundWithReadingBlock => "بلوک انتخابی مطعلق به محدوده جاری نیست.";
         public static string InvalidReadigBlockCount => "تعداد بلوک های انتخاب شده ناصحیح است.";
         public static string NotfoundReadingBlocksInfo => "خطا در اطلاعات بلوک های انتخاب شده ";

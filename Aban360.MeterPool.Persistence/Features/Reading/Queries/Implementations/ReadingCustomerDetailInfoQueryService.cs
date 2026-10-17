@@ -46,8 +46,6 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
 						b.town BillZoneId,
 						b.radif BillCustomerNumber,
 						b.date_bed BillRegisterDateJalali,
-						b.today_date BillCurrentDateJalali,
-						b.today_no BillCurrentNumber,
 						r.elat BillReturnCauseId,
 						b.del IsBillReturned,
 						b.cod_vas BillCounterStateCode,
@@ -120,8 +118,8 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
 						m.pelak Plaque,
 						m.edareh_k AS IsSpecial,
 						m.hasf DeletionStateId,
-						m.noe_va AS UseStateId,
-						t7.C1 UseStateTitle,
+						m.noe_va AS BranchTypeId,
+						t7.C1 BranchTypeTitle,
 						m.master_sif AS MainSiphon,
 						m.sif_1 AS Siphon100,
 						m.sif_2 AS Siphon125,
@@ -159,8 +157,8 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
 					    m.EJUCA as VirtualCategoryId,
 						
 						--Bill Info
-						 ISNULL(lf.BillPreviousDateJalali,m.inst_ab) BillPreviousDateJalali,
-						 ISNULL(lf.BillPreviousNumber,0) BillPreviousNumber,
+						 ISNULL(lf.BillPreviousDateJalali,m.inst_ab) BillDateJalali,
+						 ISNULL(lf.BillPreviousNumber,0) BillNumber,
 						 ISNULL(lf.BillCounterStateCode,0) BillCounterStateCode,
 						 ISNULL(lf.BillCounterStateTitle, N'عادی') BillCounterStateTitle,
 						 ISNULL(lf.BillConsumptionAverage,0) BillConsumptionAverage,
@@ -168,10 +166,10 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
 						 ISNULL(lf.BillRegisterDateJalali,m.inst_ab) BillRegisterDateJalali,
 					
 						--Taviz Info
-						tv.taviz_date as TavizDateJalali,
-						tv.elat as TavizCause,
-						tv.date_sabt as TavizRegisterDateJalali,
-						tv.taviz_no as TavizNumber
+						tv.taviz_date as ChangeDateJalali,
+						tv.elat as ChangeCause,
+						tv.date_sabt as ChangeRegisterDateJalali,
+						tv.taviz_no as ChangeNumber
 					From CustomersInfo m
 					Left Join LastInfo lf
 						ON m.town=lf.BillZoneId AND m.radif=lf.BillCustomerNumber

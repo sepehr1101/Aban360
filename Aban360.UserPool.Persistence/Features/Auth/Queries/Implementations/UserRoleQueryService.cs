@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
+using Aban360.UserPool.Persistence.Constants.Enums;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -62,6 +63,32 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                      MobileConfirmed = ur.User.MobileConfirmed,
                      HasTwoStepVerification = ur.User.HasTwoStepVerification,
                      IsLocked = ur.User.LockTimespan.HasValue
+                 })
+                 .ToListAsync();
+        }
+        public async Task<ICollection<UserQueryDto>> GetByDefaultZone(int roleId, int zoneId)
+        {
+            return await _userRoles
+                 .Include(ur => ur.Role)
+                 .Include(ur => ur.User)
+                 .ThenInclude(user => user.UserClaims)
+                 .Where(ur =>
+                    ur.RoleId == roleId &&
+                    ur.Role.ValidTo == null &&
+                    ur.User.ValidTo == null &&
+                    ur.ValidTo == null &&
+                    ur.User.UserClaims.Any(user => user.ValidTo == null && user.ClaimTypeId == ClaimType.DefaultZoneId && user.ClaimValue==zoneId.ToString()))
+                 .Select(ur => new UserQueryDto()
+                 {
+                     Id = ur.User.Id,
+                     FullName = ur.User.FullName,
+                     DisplayName = ur.User.DisplayName,
+                     Username = ur.User.Username,
+                     Mobile = ur.User.Mobile,
+                     MobileConfirmed = ur.User.MobileConfirmed,
+                     HasTwoStepVerification = ur.User.HasTwoStepVerification,
+                     IsLocked = ur.User.LockTimespan.HasValue,
+                     DefaultZoneId=ur.User.UserClaims.Where(userClaims=>userClaims.ClaimTypeId== ClaimType.DefaultZoneId && userClaims.ClaimValue == zoneId.ToString()).FirstOrDefault().ClaimValue
                  })
                  .ToListAsync();
         }

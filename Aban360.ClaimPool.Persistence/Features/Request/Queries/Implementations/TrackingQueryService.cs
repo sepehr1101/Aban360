@@ -41,7 +41,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             }
             return result;
         }
-        public async Task<TrackingOutputDto> GetLatest(int trackNumber,int statusId, bool hasException = true)
+        public async Task<TrackingOutputDto?> GetLatest(int trackNumber,int statusId, bool hasException = true)
         {
             string query = GetLatestAssessmentResultByTrackNumberQuery();
             TrackingOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<TrackingOutputDto>(query, new { trackNumber, statusId });
