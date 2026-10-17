@@ -1,4 +1,5 @@
-﻿using Aban360.BlobPool.Domain.Providers.Dto;
+using Aban360.NotificationPool.Application.Features.Sms;
+using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.Common.Authentication;
 using Aban360.MeterPool.Domain.Features.AutoReading.Dtos.Queries;
@@ -17,6 +18,7 @@ namespace Aban360.Api.Extensions
             services.AddEsbAuthentication(configuration);
             services.AddApiSettings(configuration);
             services.AddOpenKm(configuration);
+            services.Configure<SmsOptions>(configuration.GetSection(SmsOptions.SectionName));
             services.AddGeo(configuration);
             services.AddMaaher(configuration);
             services.AddMap(configuration);

@@ -1,4 +1,5 @@
-﻿using Aban360.Api.Exceptions;
+﻿using Aban360.NotificationPool.Application.Features.Sms;
+using Aban360.Api.Exceptions;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.CalculationPool.Domain.Features.Bill.Entities;
 using Aban360.Common.Authentication;
@@ -17,6 +18,7 @@ namespace Aban360.Api.Extensions
             services.AddSingleton<IEsbTokenProvider, EsbTokenProvider>();
             services.AddTransient<EsbAuthenticationHandler>();
             services.AddOpenKm(configuration);
+            services.AddSms();
             services.AddGeo(configuration);
             services.AddMaaher(configuration);
             services.AddMap(configuration);
@@ -42,6 +44,21 @@ namespace Aban360.Api.Extensions
             }).AddHttpMessageHandler<EsbAuthenticationHandler>();
         }
 
+        private static void AddSms(this IServiceCollection services)
+        {
+            services.AddHttpClient(HttpClientNames.Sms, (sp, httpClient) =>
+            {
+                SmsOptions options = sp.GetRequiredService<IOptions<SmsOptions>>().Value;
+                if (!Uri.TryCreate(options.Url.TrimEnd('/') + "/", UriKind.Absolute, out Uri? baseUri)
+                    || (baseUri.Scheme != Uri.UriSchemeHttps && baseUri.Scheme != Uri.UriSchemeHttp))
+                    throw new InvalidOperationException(ExceptionLiterals.InvalidConfiguration(nameof(SmsOptions), nameof(SmsOptions.Url)));
+                if (string.IsNullOrWhiteSpace(options.Sender))
+                    throw new InvalidOperationException(ExceptionLiterals.InvalidConfiguration(nameof(SmsOptions), nameof(SmsOptions.Sender)));
+                if (string.IsNullOrWhiteSpace(options.ApiKey))
+                    throw new InvalidOperationException(ExceptionLiterals.InvalidConfiguration(nameof(SmsOptions), nameof(SmsOptions.ApiKey)));
+                httpClient.BaseAddress = baseUri;
+            });
+        }
         private static void AddOpenKm(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpClient(HttpClientNames.Kaj, (sp, httpClient) =>

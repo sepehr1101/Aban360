@@ -38,6 +38,8 @@ namespace Aban360.ReportPool.Persistence.Base
             //todo: rename "RegisterDay" to "PhysicalSewageInstallDateJalali"
             return @$"use CustomerWarehouse
 					Select
+                        (SUM(Consumption) OVER (PARTITION BY CustomerNumber, ZoneId)) SumConsumption,
+						(SUM(Duration) OVER (PARTITION BY CustomerNumber, ZoneId)) SumDuration,
         				t46.C2 RegionTitle,
 						b.ZoneTitle,
 						TRIM(b.BillId) as BillId,
@@ -93,6 +95,9 @@ namespace Aban360.ReportPool.Persistence.Base
                     	On t51.C1=t46.C0
 					Where 
 						--c.ToDayJalali is null AND
+                        ROUND(SUM(BillUnit*Duration/IIF(SumDuration<=0,1,SumDuration)),1) ConsumerUnits, --آحاد مصرف کننده
+                    	(SUM(Consumption)*30)/( (SUM(IIF(Duration<=0,1,Duration))/(SUM(IIF(BillC<=0,1,BillC)))*SUM(IIF(UnitC<=0,1,UnitC)))) as ConsumptionAverage,-- متوسط مصرف
+						SUM(Duration)/SUM(IIF(BillC<=0,1,BillC)) ReadingDailyAverage, -- روز قرائت
 						(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
 						(@fromConsumption IS NULL OR
 						@toConsumption IS NULL OR
@@ -183,7 +188,9 @@ namespace Aban360.ReportPool.Persistence.Base
 							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount-b.EmptyCount)<=0 THEN 1
 							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount-EmptyCount)>0 THEN (b.OtherCount+b.CommercialCount+b.DomesticCount-EmptyCount)
 							    Else 0 
-						    END UnitC                            
+						    END UnitC--,
+                            --(SUM(Consumption) OVER (PARTITION BY CustomerNumber, ZoneId)) SumConsumption,
+							--(SUM(Duration) OVER (PARTITION BY CustomerNumber, ZoneId)) SumDuration,
                     From [CustomerWarehouse].dbo.Bills b
 					--Join [CustomerWarehouse].dbo.Clients c
 						--ON b.ZoneId=c.ZoneId and b.CustomerNumber=c.CustomerNumber

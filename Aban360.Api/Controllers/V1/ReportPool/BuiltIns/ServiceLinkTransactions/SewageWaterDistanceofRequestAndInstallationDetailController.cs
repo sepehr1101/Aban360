@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("raw")]
-        [AllowTimeWindowFilter]
+        //[AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SewageWaterDistanceHeaderOutputDto, SewageWaterDistanceDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SewageWaterDistanceofRequestAndInstallationInputDto input,CancellationToken cancellationToken)
         {
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost, HttpGet]
         [Route("excel/{connectionId}")]
-        [AllowTimeWindowFilter]
+        //[AllowTimeWindowFilter]
         public async Task<IActionResult> GetExcel(string connectionId, SewageWaterDistanceofRequestAndInstallationInputDto inputDto, CancellationToken cancellationToken)
         {
             string reportName = GetTitle(inputDto.IsWater,inputDto.IsInstallation);
@@ -50,7 +50,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
 
         [HttpPost]
         [Route("sti")]
-        [AllowTimeWindowFilter]
+        //[AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStiReport(SewageWaterDistanceofRequestAndInstallationInputDto inputDto, CancellationToken cancellationToken)
         {

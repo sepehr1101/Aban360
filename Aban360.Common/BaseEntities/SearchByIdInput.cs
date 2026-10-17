@@ -5,4 +5,9 @@
         public int Id { get; set; } = default!;
 
     }
+    public record ZoneIdWrapper
+    {
+        public int ZoneId { get; set; } = default!;
+
+    }
 }

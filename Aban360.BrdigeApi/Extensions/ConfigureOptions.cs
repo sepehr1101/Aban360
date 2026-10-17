@@ -1,4 +1,5 @@
-﻿using Aban360.UserPool.Domain.Constants;
+using Aban360.NotificationPool.Application.Features.Sms;
+using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Authentication;
@@ -12,6 +13,7 @@ namespace Aban360.BrdigeApi.Extensions
             AddBearerTokens(services, configuration);
             AddApiSettings(services, configuration);
             AddOpenKm(services, configuration);
+            services.Configure<SmsOptions>(configuration.GetSection(SmsOptions.SectionName));
             AddEsbAuthentication(services, configuration);
         }
         private static void AddBearerTokens(IServiceCollection services, IConfiguration configuration)
