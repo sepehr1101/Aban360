@@ -49,7 +49,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             Validation(installments, latestTrackingInfo, moshtrakInfo.CustomerNumber);
 
             TrackingInsertDuplicateDto trackingInsertDuplicateDto = new(latestTrackingInfo.TrackNumber, _calculationConfirmedStatus, inputDto.Description, userCode, _requestOrigin, true, false);
-            //TrackingInsertDto trackingInsertDto = GetTrackingCreateDto(inputDto, latestTrackingInfo, userCode);
             await ExecuteSqlCommand(trackingInsertDuplicateDto);
         }
         private TrackingInsertDto GetTrackingCreateDto(SetCalculationRequestInputDto inputDto, TrackingOutputDto latestTrackingInfo, int userCode)

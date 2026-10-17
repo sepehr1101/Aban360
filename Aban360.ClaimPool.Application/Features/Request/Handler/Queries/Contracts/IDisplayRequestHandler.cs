@@ -1,10 +1,9 @@
 ﻿using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
-using Aban360.Common.BaseEntities;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts
 {
     public interface IDisplayRequestHandler
     {
-        Task<MoshtrakDataOutputDto> Handle(ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken);
+        Task<MoshtrakDataOutputDto> Handle(int trackNumber, CancellationToken cancellationToken);
     }
 }

@@ -9,6 +9,7 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
@@ -56,7 +57,18 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> Calculate([FromBody] TrackNumberWithDescriptionInputDto inputDto, CancellationToken cancellationToken)
         {
             int userCode = UserService.GetUserCode(CurrentUser.Username);
-            ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await _calculationRequestHandler.Handle(inputDto, userCode, cancellationToken);
+            ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await _calculationRequestHandler.Handle(inputDto.TrackNumber, userCode, cancellationToken);
+            return Ok(result);
+        }
+
+
+        [HttpPost]
+        [Route("calculation/{trackNumber}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CalculateByTrackNumber(int trackNumber, CancellationToken cancellationToken)
+        {
+            int userCode = UserService.GetUserCode(CurrentUser.Username);
+            ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await _calculationRequestHandler.Handle(trackNumber, userCode, cancellationToken);
             return Ok(result);
         }
 
@@ -94,6 +106,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> CalculationDisplay([FromBody] SearchNumericInput inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await _calculationRequestDisplayHandler.Handle(inputDto.Input, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpGet, HttpPost]
+        [Route("calculation-display/{trackNumber}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CalculationDisplayByTrackNumber(int trackNumber, CancellationToken cancellationToken)
+        {
+            ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await _calculationRequestDisplayHandler.Handle(trackNumber, cancellationToken);
             return Ok(result);
         }
 
