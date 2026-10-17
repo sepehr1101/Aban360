@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace Aban360.MeterPool.Application.Features.Reading.Validations
 {
-    public class GenerateReadingListValidator : BaseValidator<ReadingCreateDto>
+    public class GenerateReadingListValidator : BaseValidator<GenerateReadingListInputDto>
     {
         public GenerateReadingListValidator()
         {

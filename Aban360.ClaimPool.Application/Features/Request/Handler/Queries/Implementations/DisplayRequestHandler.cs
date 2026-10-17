@@ -5,7 +5,6 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.BaseEntities;
-using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using FluentValidation;
 
@@ -36,12 +35,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<MoshtrakDataOutputDto> Handle(ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken)
+        public async Task<MoshtrakDataOutputDto> Handle(int trackNumber, CancellationToken cancellationToken)
         {
-            await Validation(inputDto, cancellationToken);
-
-            TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
-            MoshtrakGetDto moshtrackSearch = new(trackingInfo.ZoneId, null, null, inputDto.TrackNumber);
+            TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(trackNumber);
+            MoshtrakGetDto moshtrackSearch = new(trackingInfo.ZoneId, null, null, trackNumber);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(moshtrackSearch, MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
 
             MoshtrakServiceDto sData = GetSDto(moshtrakInfo);
@@ -49,15 +46,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             MoshtrakDataOutputDto moshtrakData = GetMoshtrakData(moshtrakInfo, companyServices, trackingInfo);
             return moshtrakData;
-        }
-        private async Task Validation(ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken)
-        {
-            var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
-            if (!validationResult.IsValid)
-            {
-                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomValidationException(message);
-            }
         }
         private MoshtrakServiceDto GetSDto(MoshtrakOutputDto input)
         {

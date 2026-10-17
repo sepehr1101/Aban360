@@ -22,8 +22,4 @@
     <ProjectReference Include="..\Aban360.UserPool.Application\Aban360.UserPool.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Reading\Handlers\Commands\Contracts\" />
-  </ItemGroup>
-
 </Project>
