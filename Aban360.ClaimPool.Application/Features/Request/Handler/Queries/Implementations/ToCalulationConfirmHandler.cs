@@ -52,8 +52,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             MoshtrakGetDto moshtrackSearch = new(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(moshtrackSearch, MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
 
-            TrackingOutputDto latestAssessmentResult = await _trackingQueryService.GetLatest(trackingInfo.TrackNumber, _assessmentResultId, true);
-            AssessmentDataOutputDto assessmentInfo = await _assessmentQueryService.GetByTrackId(latestAssessmentResult.TrackId, true);
+            TrackingOutputDto? latestAssessmentResult = await _trackingQueryService.GetLatest(trackingInfo.TrackNumber, _assessmentResultId, false);
+            AssessmentDataOutputDto? assessmentInfo = latestAssessmentResult is null ? null : await _assessmentQueryService.GetByTrackId(latestAssessmentResult.TrackId, true);
             await _commonZoneService.IsUserInZone(appUser, trackingInfo.ZoneId);
 
             MoshtrakServiceDto sData = _moshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
@@ -62,7 +62,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             ToCalculationConfirmGetDto moshtrakData = GetData(moshtrakInfo, companyServices, trackingInfo, assessmentInfo);
             return moshtrakData;
         }
-        private ToCalculationConfirmGetDto GetData(MoshtrakOutputDto moshtrakInfo, IEnumerable<SelectionDto> companyServices, TrackingOutputDto trackingInfo, AssessmentDataOutputDto assessmentInfo)
+        private ToCalculationConfirmGetDto GetData(MoshtrakOutputDto moshtrakInfo, IEnumerable<SelectionDto> companyServices, TrackingOutputDto trackingInfo, AssessmentDataOutputDto? assessmentInfo)
         {
             return new ToCalculationConfirmGetDto()
             {
@@ -117,10 +117,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 BrokerId = moshtrakInfo.BrokerId,
                 ServiceGroupTitle = trackingInfo.ServiceGroupTitle,
                 ServiceGroupId = trackingInfo.ServiceGroupId,
-                AssessmentCode = assessmentInfo.AssessmentCode,
-                AssessmentDateJalali = assessmentInfo.AssessmentDateJalali,
-                AssessmentMobile = assessmentInfo.AssessmentMobile,
-                AssessmentName = assessmentInfo.AssessmentName,
+                AssessmentCode = assessmentInfo?.AssessmentCode ?? null,
+                AssessmentDateJalali = assessmentInfo?.AssessmentDateJalali ?? null,
+                AssessmentMobile = assessmentInfo?.AssessmentMobile ?? null,
+                AssessmentName = assessmentInfo?.AssessmentName ?? null,
                 CompanyServiceItems = companyServices
             };
         }

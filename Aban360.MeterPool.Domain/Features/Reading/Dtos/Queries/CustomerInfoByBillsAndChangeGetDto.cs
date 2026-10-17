@@ -39,9 +39,9 @@
         public string HousePlate { get; set; }
         public bool IsSpecial { get; set; }
         public int DeletionStateId { get; set; }
-        public string UseStateTitle { get; set; }//different update
-        public int UseStateId { get; set; }
-        public string MainSiphon { get; set; }
+        public string BranchTypeTitle { get; set; }//different update
+        public int BranchTypeId { get; set; }
+        public int MainSiphon { get; set; }
         public int Siphon100 { get; set; }
         public int Siphon125 { get; set; }
         public int Siphon150 { get; set; }
@@ -76,8 +76,8 @@
         public int? VirtualCategoryId { get; set; }
 
         //Bills Info
-        public string BillPreviousDateJalali { get; set; }
-        public int? BillPreviousNumber { get; set; }
+        public string BillDateJalali { get; set; }
+        public int? BillNumber { get; set; }
         public float? BillConsumptionAverage { get; set; }
         public float? BillConsumption { get; set; }
         public int? BillCounterStateCode { get; set; }
@@ -86,9 +86,9 @@
     
 
         //MeterChange Info
-        public string? TavizDateJalali { get; set; }
-        public string? TavizCause { get; set; }
-        public string? TavizRegisterDateJalali { get; set; }
-        public int? TavizNumber { get; set; }
+        public string? ChangeDateJalali { get; set; }
+        public string? ChangeCause { get; set; }
+        public string? ChangeRegisterDateJalali { get; set; }
+        public int? ChangeNumber { get; set; }
     }
 }

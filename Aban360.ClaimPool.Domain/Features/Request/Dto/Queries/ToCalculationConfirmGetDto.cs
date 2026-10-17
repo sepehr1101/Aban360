@@ -58,10 +58,10 @@ namespace Aban360.ClaimPool.Domain.Features.Request.Dto.Queries
         public int? ServiceGroupId { get; set; }
         public string? ServiceGroupTitle { get; set; }
 
-        public int AssessmentCode { get; set; }
-        public string AssessmentName { get; set; }
-        public string AssessmentMobile { get; set; }
-        public string AssessmentDateJalali { get; set; }
+        public int? AssessmentCode { get; set; }
+        public string? AssessmentName { get; set; }
+        public string? AssessmentMobile { get; set; }
+        public string? AssessmentDateJalali { get; set; }
 
         public IEnumerable<SelectionDto> CompanyServiceItems { get; set; }
     }
