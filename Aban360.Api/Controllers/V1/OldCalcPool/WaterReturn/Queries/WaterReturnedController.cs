@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Contracts;
@@ -24,12 +25,12 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries
             _returnedBillRemoveHandler.NotNull(nameof(returnedBillRemoveHandler));
         }
 
-        [HttpPost, HttpGet]
-        [Route("confirmed/{zoneId}")]
+        [HttpPost]
+        [Route("confirmed")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ReturnedBillsOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetConfirmed(int zoneId, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetConfirmed([FromBody] ZoneIdWrapper zoneIdWrapper, CancellationToken cancellationToken)
         {
-            IEnumerable<ReturnedBillsOutputDto> result = await _returnedAfterDateLockHandler.Handle(zoneId, CurrentUser, cancellationToken);
+            IEnumerable<ReturnedBillsOutputDto> result = await _returnedAfterDateLockHandler.Handle(zoneIdWrapper.ZoneId, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
