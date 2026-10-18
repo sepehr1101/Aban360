@@ -235,7 +235,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
         }
         private async Task<ICollection<UserQueryDto>> ReadersValidateAngGet(IEnumerable<PerReadingBlockInfoDto> selectedBlocksInfo, int zoneId)
         {
-            ICollection<UserQueryDto> readerUserList = await _userRoleQueryService.GetByDefaultZone(ReportLiterals.ReadingRoleId, zoneId);
+            ICollection<UserQueryDto> readerUserList = await _userRoleQueryService.GetByDefaultZone(ReportLiterals.ReaderRoleId, zoneId);
             ICollection<UserQueryDto> currentReaderInfo = new List<UserQueryDto>();
             foreach (var reader in selectedBlocksInfo)
             {

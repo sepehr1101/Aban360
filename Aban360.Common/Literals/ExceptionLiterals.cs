@@ -250,6 +250,8 @@
         public static string InvalidReadingBoundWithReadingBlock => "بلوک انتخابی مطعلق به محدوده جاری نیست.";
         public static string InvalidReadigBlockCount => "تعداد بلوک های انتخاب شده ناصحیح است.";
         public static string NotfoundReadingBlocksInfo => "خطا در اطلاعات بلوک های انتخاب شده ";
+        public static string NotFoundCurrentUserByReaderRole => "نقش مامور قرائت ندارید.";
+        public static string InvalidTrackingUpdateRecord => "خطا در ویرایش جدول درخواست ها";
 
 
 
