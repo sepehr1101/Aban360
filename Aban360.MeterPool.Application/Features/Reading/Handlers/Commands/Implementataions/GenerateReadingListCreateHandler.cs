@@ -104,7 +104,6 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
         }
         private async Task ExecSql(BoundInsertDto newBoundDto, IEnumerable<BlockInsertDto> newBlockList, IEnumerable<TrackingInsertDto> newTrackingList, IEnumerable<DetailInsertDto> newDetailList, string opLogText, IAppUser appUser)
         {
-
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -161,9 +160,8 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 ICollection<UserQueryDto> readersInfo = await ReadersValidateAngGet(inputDto.ReadingBlockInfo, newBoundDto.ZoneId);
                 PerReadingBlockInfoDto perReadingBlockInfo = inputDto.ReadingBlockInfo.Where(p => p.ReadingBlockId == item.Id).FirstOrDefault();
                 UserQueryDto currentReaderInfo = readersInfo.Where(r => r.Username == perReadingBlockInfo.ReaderCode.ToString()).FirstOrDefault();
-                IEnumerable<int> trackNumbers = await _trackNumberService.GetTrackNumbers(customerCount);
+                int trackNumber = await _trackNumberService.GetNewTrackNumber();
 
-                int trackNumber = trackNumbers?.ElementAt(stepOrder) ?? 0;
                 TrackingInsertDto newTrackingInfo = GetTrackingInsert(newBoundDto, newBlockInfo, item, currentReaderInfo, trackNumber, customerCount);//todo: completer overalCustomerCount
                 foreach (var perCustomer in customersInfo)//Detail List
                 {
@@ -172,6 +170,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 }
 
                 newBlockList.Add(newBlockInfo);
+                newTrackingList.Add(newTrackingInfo);
             }
             newBoundDto.CustomerCount = overallCustomerCount;
             foreach (var item in newTrackingList)
@@ -280,7 +279,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 ToReadingNumber = readingBlockInfo.ToReadingNumber,
                 CustomerCount = customerCount,
                 OrderDigit = stepOrder,
-                OrderPersian = $"{stepOrder}-{stepOrder.ToPersianNumbers()}",
+                OrderPersian = $"{stepOrder}-{stepOrder.NumberToText(language:Language.Persian)}",
             };
         }
         private DetailInsertDto GetDetail(CustomerInfoByBillsAndChangeGetDto customerInfo, TrackingInsertDto newTrackingInfo)

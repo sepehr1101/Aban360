@@ -35,7 +35,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
             int latestTrackNumber = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(getQuery);
 
             ICollection<int> trackNumbers = new List<int>();
-            for (int i = count; i == 0; i--)
+            for (int i = count; i > 0; i--)
             {
                 trackNumbers.Add(latestTrackNumber - i);
             }
@@ -54,7 +54,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
         }
         private string GetTrackNumberQuery()
         {
-            return @"Select TrackNumber [Atlas].Reading.TrackNumber;";
+            return @"Select TrackNumber From [Atlas].Reading.TrackNumber;";
         }
 
 

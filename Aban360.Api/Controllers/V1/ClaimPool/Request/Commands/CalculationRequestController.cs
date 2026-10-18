@@ -62,7 +62,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         }
 
 
-        [HttpPost]
+        [HttpGet]
         [Route("calculation/{trackNumber}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CalculateByTrackNumber(int trackNumber, CancellationToken cancellationToken)

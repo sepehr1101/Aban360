@@ -22,7 +22,6 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
 
         public async Task Insert(IEnumerable<DetailInsertDto> input)
         {
-            ArgumentNullException.ThrowIfNull(input);
             var dataTable = ToDataTable(input);
             if (dataTable.Rows.Count == 0)
                 return;
@@ -44,7 +43,6 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
         {
             var table = new DataTable();
             table.Columns.Add("Id", typeof(Guid));
-            table.Columns.Add("OnOffloadTypeId__", typeof(int));
             table.Columns.Add("TrackingId", typeof(Guid));
             table.Columns.Add("TrackNumber", typeof(long));
             table.Columns.Add("BillId", typeof(string));

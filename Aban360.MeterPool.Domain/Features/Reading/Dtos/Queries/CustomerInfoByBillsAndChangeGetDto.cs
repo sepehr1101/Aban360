@@ -82,7 +82,7 @@
         public float? BillConsumption { get; set; }
         public int? BillCounterStateCode { get; set; }
         public string? BillCounterStateTitle { get; set; }
-        public double? BillRegisterDateJalali { get; set; }
+        public string? BillRegisterDateJalali { get; set; }
     
 
         //MeterChange Info
