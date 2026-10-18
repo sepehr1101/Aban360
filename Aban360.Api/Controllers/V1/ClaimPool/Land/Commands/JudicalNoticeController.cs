@@ -44,7 +44,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         {
             int reportCode = (int)StiReportCodeLiterals.JudicialNoticeServiceLink;
             FlatReportOutput<JudicalNoticeCommandHeaderOutputDto, JudicalNoticeCommandDataOutputDto> result = await _judicalNoticeCommandHandler.Handle(inputDto, CurrentUser, cancellationToken);
-            _jobClient.Enqueue(() => _smsHandler.Send(result.ReportData.CustomerMobileNumber, result.ReportHeader.Message, Guid.NewGuid()));
+            _jobClient.Enqueue(() => _smsHandler.SendNew(result.ReportData.CustomerMobileNumber, result.ReportHeader.Message, Guid.NewGuid()));
 
             JsonReportId jsonReport = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
             return Ok(jsonReport);

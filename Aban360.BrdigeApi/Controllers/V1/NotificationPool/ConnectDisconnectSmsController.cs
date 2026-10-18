@@ -41,7 +41,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.NotificationPool
             Validate(input);
             var customerInfo = await _customerInfoHandler.Handle(input.BillId, cancellationToken);
             string text = string.Format(SmsTemplates.ServiceLinkConnected, customerInfo.ZoneTitle, customerInfo.FullName, input.BillId, input.When, "-", Environment.NewLine);
-            _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text, Guid.NewGuid()));
+            _jobClient.Enqueue(() => _smsHandler.SendNew(customerInfo.MobileNumber, text, Guid.NewGuid()));
             return Ok(input);
         }
 
@@ -53,7 +53,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.NotificationPool
             Validate(input);
             var customerInfo = await _customerInfoHandler.Handle(input.BillId, cancellationToken);
             string text = string.Format(SmsTemplates.ServiceLinkDisconnected, customerInfo.ZoneTitle, customerInfo.FullName, input.BillId, input.When, "-", Environment.NewLine);
-            _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text, Guid.NewGuid()));
+            _jobClient.Enqueue(() => _smsHandler.SendNew(customerInfo.MobileNumber, text, Guid.NewGuid()));
             return Ok(input);
         }
 
@@ -65,7 +65,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.NotificationPool
             Validate(input);
             var customerInfo = await _customerInfoHandler.Handle(input.BillId, cancellationToken);
             string text = string.Format(SmsTemplates.ServiceLinkConnectAlert, customerInfo.ZoneTitle, customerInfo.FullName, input.BillId, input.Hour, "-", Environment.NewLine);
-            _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text, Guid.NewGuid()));
+            _jobClient.Enqueue(() => _smsHandler.SendNew(customerInfo.MobileNumber, text, Guid.NewGuid()));
             return Ok(input);
         }
 
@@ -77,7 +77,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.NotificationPool
             Validate(input);
             var customerInfo = await _customerInfoHandler.Handle(input.BillId, cancellationToken);
             string text = string.Format(SmsTemplates.ServiceLinkDisconnectAlert, customerInfo.ZoneTitle, customerInfo.FullName, input.BillId, input.Why, input.Hour, "-", "-", Environment.NewLine);
-            _jobClient.Enqueue(() => _smsHandler.Send(customerInfo.MobileNumber, text, Guid.NewGuid()));
+            _jobClient.Enqueue(() => _smsHandler.SendNew(customerInfo.MobileNumber, text, Guid.NewGuid()));
             return Ok(input);
         }
 

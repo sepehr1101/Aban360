@@ -1,10 +1,11 @@
-﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Dapper;
 using Aban360.SystemPool.Domain.Contants;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Input;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Output;
 using Aban360.SystemPool.Persistence.Features.Logging.Queries.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
+using System.Globalization;
 
 namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Implementations
 {
@@ -15,7 +16,7 @@ namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Implementation
         { 
         }
 
-        public async Task<IEnumerable<LoggingOutputDto>> Get(LoggingInputByDateTimeDto input)
+        public async Task<IEnumerable<LoggingOutputDto>> Get(LoggingInputByDateTimeDto input, CancellationToken cancellationToken = default)
         {
             string loggingQueryString = GetLoggingQuery(input.LogLevel);
             var @params = new
@@ -24,15 +25,30 @@ namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Implementation
                 toDateTime = input.ToDateTime,
                 logLevel = input.LogLevel.ToString()
             };
-            IEnumerable<LoggingOutputDto> result = await _sqlConnection.QueryAsync<LoggingOutputDto>(loggingQueryString, @params);
-            return result;
+            using var connection = _sqlConnection;
+            var command = new CommandDefinition(loggingQueryString, @params, cancellationToken: cancellationToken);
+            var rows = await connection.QueryAsync<LoggingRow>(command);
+            var calendar = new PersianCalendar();
+            return rows.Select(row => new LoggingOutputDto
+            {
+                DateJalali = string.Format(CultureInfo.InvariantCulture, "{0:0000}/{1:00}/{2:00}",
+                    calendar.GetYear(row.TimeStamp), calendar.GetMonth(row.TimeStamp), calendar.GetDayOfMonth(row.TimeStamp)),
+                Time = row.TimeStamp.ToString("HH:mm", CultureInfo.InvariantCulture),
+                LogLevel = row.LogLevel,
+                Message = row.Message,
+                Exception = row.Exception,
+                Properties = row.Properties
+            }).ToList();
+        }
+        private sealed record LoggingRow : LoggingOutputDto
+        {
+            public DateTime TimeStamp { get; set; }
         }
         private string GetLoggingQuery(LogLevelEnum logLevel)
         {
             string logLevelQueryPart = logLevel == LogLevelEnum.None ? "" : " AND l.Level=@logLevel";
             return @$"Select top 10000
-                        Format(l.TimeStamp ,'yyyy/MM/dd', 'fa-IR') as DateJalali,
-                        Format(l.TimeStamp,'HH:mm','fa-IR') as Time,
+                        l.TimeStamp,
                     	l.Level as LogLevel,
                     	l.Message ,
                     	l.Exception,
@@ -40,7 +56,8 @@ namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Implementation
                     From [Aban360].dbo.Logs l
                     Where 
                     	l.TimeStamp BETWEEN @fromDateTime AND @toDateTime
-                    	{logLevelQueryPart}";
+                        {logLevelQueryPart}
+                    Order By l.TimeStamp DESC";
         }
     }
 }

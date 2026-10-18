@@ -49,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             string text = string.Format(SmsTemplates.RequestRegister, moshtrakInfo.TrackNumber, Environment.NewLine);
             if (inputDto.HasSms)
             {
-                _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(moshtrakInfo.NotificationMobile, text, trackId));
+                _backgroundJobClient.Enqueue(() => _smsOldHandler.SendNew(moshtrakInfo.NotificationMobile, text, trackId));
             }
             NewRequestOutputDto outputDto;
             if (assessmentSetTimeDto is not null)
@@ -89,11 +89,11 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
                 string.Format(SmsTemplates.AfterSaleRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.BillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber);
             if (hasAssessmentSms)
             {
-                _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(result.AssessmentMobileNumber, assessmentText, result.TrackId));
+                _backgroundJobClient.Enqueue(() => _smsOldHandler.SendNew(result.AssessmentMobileNumber, assessmentText, result.TrackId));
             }
             if (hasCustomerSms)
             {
-                _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(result.MobileNumber, customerText, result.TrackId));
+                _backgroundJobClient.Enqueue(() => _smsOldHandler.SendNew(result.MobileNumber, customerText, result.TrackId));
             }
             return new SetAssessmentTimeOutputDto(result.TrackNumber, hasAssessmentSms, hasCustomerSms, hasAssessmentSms ? assessmentText : null, hasCustomerSms ? customerText : null);
 
