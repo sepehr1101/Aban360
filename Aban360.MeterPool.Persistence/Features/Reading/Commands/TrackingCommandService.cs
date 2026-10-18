@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Extensions;
 using Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries;
 using Microsoft.Data.SqlClient;
+using NetTopologySuite.Index.HPRtree;
 using System.Data;
 using System.Reflection;
 
@@ -80,24 +81,51 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
             table.Columns.Add("DisplayDebt", typeof(bool));
             table.Columns.Add("DisplayIcons", typeof(bool));
 
-            var properties = typeof(TrackingGetDto).GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Where(p => p.CanRead)
-                .ToDictionary(p => p.Name, StringComparer.OrdinalIgnoreCase);
-
             foreach (var item in input)
             {
                 var row = table.NewRow();
-                foreach (DataColumn column in table.Columns)
-                {
-                    if (!properties.TryGetValue(column.ColumnName, out var property))
-                        throw new InvalidOperationException($"Property '{column.ColumnName}' was not found on TrackingGetDto.");
-                    row[column.ColumnName] = property.GetValue(item) ?? DBNull.Value;
-                }
+
+                row["Id"] = item.Id;
+                row["BlockId"] = item.BlockId;
+                row["TrackNumber"] = item.TrackNumber;
+                row["TbReadingProgramId"] = item.TbReadingProgramId ?? (object)DBNull.Value;
+                row["ZoneId"] = item.ZoneId;
+                row["ZoneTitle"] = item.ZoneTitle;
+                row["FlowStepId"] = item.FlowStepId;
+                row["FromReadingNumber"] = item.FromReadingNumber;
+                row["ToReadingNumber"] = item.ToReadingNumber;
+                row["ListNumber"] = (object?)item.ListNumber ?? DBNull.Value;
+                row["InsertBy"] = item.InsertBy;
+                row["InsertDateJalali"] = item.InsertDateJalali;
+                row["InsertDateTime"] = item.InsertDateTime;
+                row["Seen"] = item.Seen;
+                row["CounterReaderCode"] = item.CounterReaderCode;
+                row["CounterReaderId"] = item.CounterReaderId;
+                row["CounterReaderName"] = item.CounterReaderName;
+                row["CounterReaderMobile"] = item.CounterReaderMobile;
+                row["IsBazdid"] = item.IsBazdid;
+                row["IsRoosta"] = (object?)item.IsRoosta ?? DBNull.Value;
+                row["FromDate"] = (object?)item.FromDate ?? DBNull.Value;
+                row["ToDate"] = (object?)item.ToDate ?? DBNull.Value;
+                row["OverallCustomerCount"] = item.OverallCustomerCount;
+                row["ItemCustomerCount"] = item.ItemCustomerCount;
+                row["ProvisionallyPercent"] = item.ProvisionallyPercent;
+                row["ImagePercent"] = item.ImagePercent;
+                row["HasPreNumber"] = item.HasPreNumber;
+                row["DisplayBillId"] = item.DisplayBillId;
+                row["DisplayCustomerNumber"] = item.DisplayCustomerNumber;
+                row["Description"] = (object?)item.Description ?? DBNull.Value;
+                row["X"] = (object?)item.X ?? DBNull.Value;
+                row["Y"] = (object?)item.Y ?? DBNull.Value;
+                row["DisplayPreDate"] = (object?)item.DisplayPreDate ?? DBNull.Value;
+                row["DisplayMobile"] = (object?)item.DisplayMobile ?? DBNull.Value;
+                row["HasImage"] = (object?)item.HasImage ?? DBNull.Value;
+                row["DisplayDebt"] = (object?)item.DisplayDebt ?? DBNull.Value;
+                row["DisplayIcons"] = (object?)item.DisplayIcons ?? DBNull.Value; 
+                
                 table.Rows.Add(row);
             }
-
             return table;
         }
     }
-
 }

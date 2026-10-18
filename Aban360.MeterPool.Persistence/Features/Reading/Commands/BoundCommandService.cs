@@ -100,7 +100,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
                     Values
                     (	
                         @Id, @ReadingBoundId, @ReadingBoundTitle, @ZoneId, @ZoneTitle,
-                    	@FromR@eadingNumber, @ToReadingNumber, @IsValidated, @BlockCount, @CustomerCount,
+                    	@FromReadingNumber, @ToReadingNumber, @IsValidated, @BlockCount, @CustomerCount,
                     	@Year, @ReadingPeriodTypeId, @ReadingPeriodId,
                     	@InsertBy, @InsertDateTime
                     );
