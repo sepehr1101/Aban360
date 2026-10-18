@@ -78,11 +78,12 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             IEnumerable<Guid> trackingIds = trackingInfo.Select(t => t.Id).ToList();
             IEnumerable<DetailGetDto> detailInfo = await _detailQueryService.GetByTrackIds(trackingIds);
 
+            TrackingSeenUpdateDto trackingSeenUpdateDto = new(trackingInfo.Select(t => t.BlockId).Distinct().ToList(), true);
             TrackingDuplicateInsertDto trackingDuplicateInsertDto = new(trackingIds, _downloadByReadigFlowStepId,appUser.UserId);
-            await ExecSql(trackingDuplicateInsertDto);
+            await ExecSql(trackingDuplicateInsertDto,trackingSeenUpdateDto);
             return await GetResult(trackingInfo, detailInfo, readerInfo);
         }
-        private async Task ExecSql(TrackingDuplicateInsertDto trackingDuplicateInsertDto)
+        private async Task ExecSql(TrackingDuplicateInsertDto trackingDuplicateInsertDto, TrackingSeenUpdateDto trackingSeenUpdateDto)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -94,6 +95,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 {
                     TrackingCommandService trackingCommandService = new(connection, transaction);
 
+                    await trackingCommandService.UpdateSeen(trackingSeenUpdateDto);
                     await trackingCommandService.InsertDuplicate(trackingDuplicateInsertDto);
 
                     transaction.Commit();

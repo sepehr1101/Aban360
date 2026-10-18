@@ -40,6 +40,15 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
 
             await bulkCopy.WriteToServerAsync(dataTable);
         }
+        public async Task UpdateSeen(TrackingSeenUpdateDto input)
+        {
+            string command = GetUpdateSeenCommand();
+            int recordEffected = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordEffected != (input.BlockIds?.Count() ?? 0))
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidTrackingUpdateRecord);
+            }
+        }
         public async Task InsertDuplicate(TrackingDuplicateInsertDto input)
         {
             string command = GetInsertDuplicateCommand();
@@ -180,6 +189,12 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
                     	DisplayIcons
                     From [Atlas].reading.Tracking
                     Where Id IN @TrackingIds";
+        }
+        private string GetUpdateSeenCommand()
+        {
+            return $@"Update [Atlas].reading.Tracking
+                    Set Seen = @Seen
+                    Where BlockId IN @BlockIds ";
         }
     }
 }
