@@ -69,7 +69,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
 					LEFT Join  [{dbName}].dbo.bed_bes b
 						ON m.town=b.town AND m.radif=b.radif 
 					Left Join [{dbName}].dbo.REPAIR r
-						On b.town=r.town And b.radif=r.radif And b.pri_date>=r.pri_date And b.today_date<=r.today_date
+						On b.town=r.town And b.radif=r.radif And b.pri_date >= r.pri_date And b.today_date <= r.today_date
 					),
 					AllNotNUllBillInfo As (
 					    Select 

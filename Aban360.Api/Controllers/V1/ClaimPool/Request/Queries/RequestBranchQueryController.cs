@@ -80,7 +80,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
             return Ok(result);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("display/{trackNumber}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DisplayRequest(int trackNumber, CancellationToken cancellationToken)
