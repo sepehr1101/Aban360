@@ -1,9 +1,10 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries;
+using Dapper;
 using Microsoft.Data.SqlClient;
-using NetTopologySuite.Index.HPRtree;
 using System.Data;
-using System.Reflection;
 
 namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
 {
@@ -38,6 +39,15 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
                 bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
 
             await bulkCopy.WriteToServerAsync(dataTable);
+        }
+        public async Task InsertDuplicate(TrackingDuplicateInsertDto input)
+        {
+            string command = GetInsertDuplicateCommand();
+            int recordEffected = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordEffected != (input.TrackingIds?.Count() ?? 0))
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidTrackingUpdateRecord);
+            }
         }
 
         private static DataTable ToDataTable(IEnumerable<TrackingInsertDto> input)
@@ -121,11 +131,55 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
                 row["DisplayMobile"] = (object?)item.DisplayMobile ?? DBNull.Value;
                 row["HasImage"] = (object?)item.HasImage ?? DBNull.Value;
                 row["DisplayDebt"] = (object?)item.DisplayDebt ?? DBNull.Value;
-                row["DisplayIcons"] = (object?)item.DisplayIcons ?? DBNull.Value; 
-                
+                row["DisplayIcons"] = (object?)item.DisplayIcons ?? DBNull.Value;
+
                 table.Rows.Add(row);
             }
             return table;
+        }
+        private string GetInsertDuplicateCommand()
+        {
+            return $@"Insert Into [Atlas].reading.Tracking
+                    Select 
+                    	NEWID(),
+                    	BlockId ,
+                    	TrackNumber ,
+                    	TbReadingProgramId,
+                    	ZoneId ,
+                    	ZoneTitle ,
+                    	@FlowStepId FlowStepId ,
+                    	FromReadingNumber ,
+                    	ToReadingNumber ,
+                    	ListNumber ,
+                    	@InsertBy InsertBy ,
+                    	@InsertDateJalali InsertDateJalali ,
+                    	@InsertDateTime InsertDateTime ,
+                    	Seen ,
+                    	CounterReaderCode ,
+                    	CounterReaderId ,
+                    	CounterReaderName ,
+                    	CounterReaderMobile ,
+                    	IsBazdid ,
+                    	IsRoosta,
+                    	FromDate,
+                    	ToDate,
+                    	OverallCustomerCount,
+                    	ItemCustomerCount,
+                    	ProvisionallyPercent,
+                    	ImagePercent,
+                    	HasPreNumber,
+                    	DisplayBillId,
+                    	DisplayCustomerNumber,
+                    	Description,
+                    	X,
+                    	Y,
+                    	DisplayPreDate,
+                    	DisplayMobile,
+                    	HasImage,
+                    	DisplayDebt,
+                    	DisplayIcons
+                    From [Atlas].reading.Tracking
+                    Where Id IN @TrackingIds";
         }
     }
 }
