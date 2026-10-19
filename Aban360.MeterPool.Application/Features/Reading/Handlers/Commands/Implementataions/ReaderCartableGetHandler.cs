@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
+﻿using Aban360.ClaimPool.Domain.Features.Land.Entities;
+using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
@@ -12,13 +13,16 @@ using Aban360.MeterPool.Persistence.Features.Reading.Commands;
 using Aban360.MeterPool.Persistence.Features.Reading.Queries.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
+using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implementations;
 using Aban360.ReportPool.Domain.Base;
+using Guild = Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Threading;
 
 namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Implementataions
 {
@@ -32,6 +36,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
         private readonly IT7QueryService _branchTypeQueryService;
         private readonly IDeletionStateQueryService _deletionStateQueryService;
         private readonly ICounterStateQueryService _counterStateQueryService;
+        private readonly Guild.IGuildQueryService _guildQueryService;
         private static int _createPathFlowStepId = (int)ReadingFlowStepEnum.CreatePath;
         private static int _downloadByReadigFlowStepId = (int)ReadingFlowStepEnum.DownloadByReader;
         private static int _readerRoleId = ReportLiterals.ReaderRoleId;
@@ -42,6 +47,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             IUserQueryService userQueryService,
             IT41QueryService usageQueryService,
             IT7QueryService branchTypeQueryService,
+            Guild.IGuildQueryService guildQueryService,
             IDeletionStateQueryService deletionStateQueryService,
             ICounterStateQueryService counterStateQueryService,
             IConfiguration configuration)
@@ -64,6 +70,9 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
 
             _branchTypeQueryService = branchTypeQueryService;
             _branchTypeQueryService.NotNull(nameof(branchTypeQueryService));
+
+            _guildQueryService = guildQueryService;
+            _guildQueryService.NotNull(nameof(guildQueryService));
 
             _deletionStateQueryService = deletionStateQueryService;
             _deletionStateQueryService.NotNull(nameof(deletionStateQueryService));
@@ -163,10 +172,12 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                     Address = d.Address,
                     Plaque = d.Plaque,
                     UsageId = d.UsageId,
+                    UsageTitle = d.UsageTitle,
                     DomesticUnit = d.DomesticUnit,
                     CommercialUnit = d.CommercialUnit,
                     OtherUnit = d.OtherUnit,
                     MeterDiameterId = d.MeterDiameterId,
+                    MeterDiameterTitle = d.MeterDiameterTitle,
                     SiphonDiameterId = d.SiphonDiameterId,
                     PostalCode = d.PostalCode,
                     PreNumber = d.PreNumber,
@@ -241,6 +252,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             IEnumerable<NumericDictionary> branchTypeList = await _branchTypeQueryService.Get();
             IEnumerable<NumericDictionary> deletionStateList = await _deletionStateQueryService.Get();
             IEnumerable<CounterStateCodeDto> counterStateList = await _counterStateQueryService.Get();
+            IEnumerable<NumericDictionary> guildDictionary = await _guildQueryService.Get();
 
             ReaderCartableOutputDto result = new()
             {
@@ -249,7 +261,8 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 Usages = usageList,
                 BranchTypes = branchTypeList,
                 DeletionStates = deletionStateList,
-                CounterStates = counterStateList.Select(c => new NumericDictionary(c.Id, c.Title)).ToList()
+                CounterStates = counterStateList.Select(c => new NumericDictionary(c.Id, c.Title)).ToList(),
+                Guilds = guildDictionary,
             };
             return result;
         }

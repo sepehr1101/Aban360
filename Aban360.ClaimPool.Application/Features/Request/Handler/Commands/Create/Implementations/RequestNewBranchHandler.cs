@@ -121,7 +121,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 NationalCode = inputDto.NationalCode,
                 FirstName = inputDto.FirstName,
                 Surname = inputDto.Surname,
-                FatherName = inputDto.FatherName,
+                FatherName = inputDto.FatherName ?? string.Empty,
                 Premises = 0,
                 ImprovementCommertial = 0,
                 ImprovementDomestic = 0,
