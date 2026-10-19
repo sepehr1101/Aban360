@@ -10,5 +10,6 @@ namespace Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries
         public IEnumerable<NumericDictionary> DeletionStates { get; set; }
         public IEnumerable<NumericDictionary> CounterStates { get; set; }
         public IEnumerable<NumericDictionary> BranchTypes { get; set; }
+        public IEnumerable<NumericDictionary> Guilds { get; set; }
     }
 }

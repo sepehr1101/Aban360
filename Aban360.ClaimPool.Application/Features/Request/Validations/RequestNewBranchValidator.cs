@@ -18,10 +18,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
                 .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
                 .Length(3, 25).WithMessage(ExceptionLiterals.Between3And25);
 
-            RuleFor(f => f.FatherName)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .Length(3, 15).WithMessage(ExceptionLiterals.InvlaidStringLength);
-
             RuleFor(f => f.PhoneNumber)
                 .Must(IsValidPhoneNumber).WithMessage(ExceptionLiterals.PhoneNumberFormat);
 

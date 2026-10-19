@@ -27,7 +27,7 @@ namespace Aban360.ClaimPool.Application.Features.Base.Validations
             || ((input.Length == 8 || input.Length == 11) && IsDigit(input));
         protected virtual bool IsValidNationalCode(string input) =>
             !string.IsNullOrEmpty(input) &&
-            input.Length == 10 &&
+            (input.Length == 10 || input.Length == 11) &&
             IsDigit(input);
         protected virtual bool IsValidNullableNationalCode(string? input) =>
             string.IsNullOrWhiteSpace(input) ||
