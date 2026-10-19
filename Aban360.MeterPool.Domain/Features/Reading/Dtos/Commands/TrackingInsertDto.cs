@@ -3,6 +3,7 @@
     public record TrackingInsertDto
     {
         public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid FirstId { get { return Id; } }
         public Guid BlockId { get; set; }
         public long TrackNumber { get; set; }
         public Guid? TbReadingProgramId { get; set; }

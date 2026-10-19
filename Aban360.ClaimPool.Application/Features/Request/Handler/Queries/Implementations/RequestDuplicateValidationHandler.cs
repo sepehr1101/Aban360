@@ -20,7 +20,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         public RequestDuplicateValidationHandler(
             IMoshtrakQueryService moshtrakQueryService,
             ITrackingQueryService trackingQueryService,
-            ICommonMemberQueryService commonMemberQueryService)
+            ICommonMemberQueryService commonMemberQueryService,
+            IMoshtrakService moshtrakService)
         {
             _moshtrakQueryService = moshtrakQueryService;
             _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
@@ -30,16 +31,16 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
         }
 
         public async Task<TrackingDuplicateValidationOutputDto> Handle(TrackingDuplicateValidationInputDto inputDto, CancellationToken cancellationToken)
         {
             var (moshtrakSearch, moshtrakSearchType, regionAndZoneInfo) = await GetMoshtrakDto(inputDto);
             MoshtrakOutputDto? moshtrakInfo = moshtrakSearch is not null ? (await _moshtrakQueryService.GetValid(moshtrakSearch, moshtrakSearchType, false)).OrderBy(m => m.IsRegistered).ThenByDescending(m => m.RequestDateJalali).FirstOrDefault() : null;
-            if (moshtrakInfo is not null && moshtrakInfo.NeighbourBillId != inputDto.BillId)
-            {
-                moshtrakInfo = null;
-            }
+
             TrackingOutputDto? latestTrackingInfo = await _trackingQueryService.GetLatest(moshtrakInfo?.TrackNumber ?? 0, false);
             TrackingOutputDto? firstTrackingInfo = await _trackingQueryService.GetFirstStep(moshtrakInfo?.TrackNumber ?? 0, false);
             NumericDictionary? requestOrigin = RequestOrigin.GetRequestOrigin(firstTrackingInfo?.RequestOriginId ?? 0);
@@ -48,6 +49,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             if (moshtrakInfo is not null)
             {
                 MoshtrakServiceDto moshtrakServiceDto = GetMoshtrakService(moshtrakInfo);
+
                 serviceSelected = latestTrackingInfo is null ?
                     new List<NumericDictionary>() :
                     await _moshtrakService.GetServicesSelectedDto(moshtrakServiceDto, latestTrackingInfo.ServiceGroupId);

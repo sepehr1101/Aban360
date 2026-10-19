@@ -3,6 +3,7 @@
     public record TrackingGetDto
     {
         public Guid Id { get; set; }
+        public Guid FirstId { get; set; }
         public Guid BlockId { get; set; }
         public long TrackNumber { get; set; }
         public Guid? TbReadingProgramId { get; set; }

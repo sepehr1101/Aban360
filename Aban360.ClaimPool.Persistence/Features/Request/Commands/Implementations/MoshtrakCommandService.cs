@@ -280,6 +280,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 							sharh=@Description,
 							BLOCK_COD=@BlockId,
 							Kargozari=@BrokerId,
+							Kit_Code=@KitId,
 							s0=@s0,
 							s1=@s1,
 							s2=@s2,

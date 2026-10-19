@@ -36,6 +36,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
         {
             return $@"Select 
 						Id,
+						FirstId,
 						BlockId ,
 						TrackNumber ,
 						TbReadingProgramId,
@@ -78,6 +79,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
         {
             return $@"Select 
 						Id,
+						FirstId,
 						BlockId ,
 						TrackNumber ,
 						TbReadingProgramId,
@@ -121,6 +123,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
         {
             return $@"Select  
 						Id,
+						FirstId,
 						BlockId ,
 						TrackNumber ,
 						TbReadingProgramId,
@@ -160,10 +163,11 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
 					From [Atlas].Reading.Tracking
 					Where 
 						CounterReaderId = @ReaderId AND
-						FlowStepId = @FlowStepId
+						FlowStepId = @FlowStepId AND
+						Seen = 0
 					Order By 
 						TrackNumber Asc,
-						InsertDateTime Asc";
+						InsertDateTime Asc ";
         }
     }
 }

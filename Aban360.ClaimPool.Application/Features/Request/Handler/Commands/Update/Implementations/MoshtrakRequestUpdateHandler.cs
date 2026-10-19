@@ -115,6 +115,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
                 ReadingNumber = inputDto.ReadingNumber,
                 BlockId = inputDto.BlockId ?? string.Empty,
                 BrokerId = inputDto.HasBroker ? 1 : 0,
+                KitId = inputDto.KitId ?? 0,
 
                 s0 = serviceSelected.s0,
                 s1 = serviceSelected.s1,
