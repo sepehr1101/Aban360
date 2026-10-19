@@ -161,11 +161,11 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
                 string.Format(SmsTemplates.AfterSaleRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.BillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber);
             if (hasAssessmentSms)
             {
-                _backgroudJobClient.Enqueue(() => _smsOldHandler.Send(result.AssessmentMobileNumber, assessmentText, result.TrackId));
+                _backgroudJobClient.Enqueue(() => _smsOldHandler.SendNew(result.AssessmentMobileNumber, assessmentText, result.TrackId));
             }
             if (hasCustomerSms)
             {
-                _backgroudJobClient.Enqueue(() => _smsOldHandler.Send(result.MobileNumber, customerText, result.TrackId));
+                _backgroudJobClient.Enqueue(() => _smsOldHandler.SendNew(result.MobileNumber, customerText, result.TrackId));
             }
             return new SetAssessmentTimeOutputDto(result.TrackNumber, hasAssessmentSms, hasCustomerSms, hasAssessmentSms ? assessmentText : null, hasCustomerSms ? customerText : null);
 

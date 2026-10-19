@@ -88,7 +88,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 
             string mobileNumber = result.ReportData?.FirstOrDefault()?.MobileNumber ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(mobileNumber))
-                _jobClient.Enqueue(() => _smsHandler.Send(mobileNumber, result.ReportHeader.MessageText, Guid.NewGuid()));
+                _jobClient.Enqueue(() => _smsHandler.SendNew(mobileNumber, result.ReportHeader.MessageText, Guid.NewGuid()));
 
             return Ok(reportId);
         }
@@ -104,7 +104,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
 
             string mobileNumber = result.ReportData?.FirstOrDefault()?.MobileNumber ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(mobileNumber))
-                _jobClient.Enqueue(() => _smsHandler.Send(mobileNumber, result.ReportHeader.MessageText, Guid.NewGuid()));
+                _jobClient.Enqueue(() => _smsHandler.SendNew(mobileNumber, result.ReportHeader.MessageText, Guid.NewGuid()));
 
             return Ok(reportId);
         }
@@ -116,7 +116,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         {
             ConnectDisconnectSetResultOutputDto result = await _connectDisconnectSetResultHandler.Handle(input, true, CurrentUser, cancellationToken);
             if (result.IsSend && !string.IsNullOrWhiteSpace(result.MobileNumber))
-                _jobClient.Enqueue(() => _smsHandler.Send(result.MobileNumber, result.Message, Guid.NewGuid()));
+                _jobClient.Enqueue(() => _smsHandler.SendNew(result.MobileNumber, result.Message, Guid.NewGuid()));
 
             return Ok(successfullyDone);
         }
@@ -128,7 +128,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         {
             ConnectDisconnectSetResultOutputDto result = await _connectDisconnectSetResultHandler.Handle(input, false, CurrentUser, cancellationToken);
             if (result.IsSend && !string.IsNullOrWhiteSpace(result.MobileNumber))
-                _jobClient.Enqueue(() => _smsHandler.Send(result.MobileNumber, result.Message, Guid.NewGuid()));
+                _jobClient.Enqueue(() => _smsHandler.SendNew(result.MobileNumber, result.Message, Guid.NewGuid()));
 
             return Ok(successfullyDone);
         }

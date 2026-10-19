@@ -5,6 +5,6 @@ namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Contracts
 {
     public interface ILoggingGetByDateTimeQueryService
     {
-        Task<IEnumerable<LoggingOutputDto>> Get(LoggingInputByDateTimeDto input);
+        Task<IEnumerable<LoggingOutputDto>> Get(LoggingInputByDateTimeDto input, CancellationToken cancellationToken = default);
     }
 }

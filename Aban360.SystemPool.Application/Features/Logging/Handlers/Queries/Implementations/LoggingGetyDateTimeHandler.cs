@@ -34,7 +34,7 @@ namespace Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Imple
             DateTime fromDateTime = DateTime.ParseExact(fromDateTimeString, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
             DateTime toDateTime = DateTime.ParseExact(toDateTimeString, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
 
-            IEnumerable<LoggingOutputDto> result = await _loggingGetByDateTimeService.Get(new LoggingInputByDateTimeDto(fromDateTime, toDateTime, inputDto.LogLevel));
+            IEnumerable<LoggingOutputDto> result = await _loggingGetByDateTimeService.Get(new LoggingInputByDateTimeDto(fromDateTime, toDateTime, inputDto.LogLevel), cancellationToken);
             return result;
         }
     }

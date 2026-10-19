@@ -8,9 +8,9 @@ namespace Aban360.NotificationPool.Application.Features.Sms
 {
     public interface ISmsOldHandler
     {
-        Task Send(string mobile, string text, Guid trackingId);
+        Task SendNew(string mobile, string text, Guid trackingId);
         Task Send(string mobile, string text, Guid trackingId = default, SmsMessageType messageType = SmsMessageType.Notification);
-        Task SendOld(string mobile, string text, [Optional] Guid trackingId);
+        Task Send(string mobile, string text, [Optional] Guid trackingId);
     }
 
     internal sealed class SmsOldHandler : ISmsOldHandler
@@ -28,9 +28,20 @@ namespace Aban360.NotificationPool.Application.Features.Sms
             _options = options.Value;
             _options.NotNull(nameof(_options));
         }
-        public Task Send(string mobile, string text, Guid trackingId)
+        public async Task SendNew(string mobile, string text, Guid trackingId)
         {
-            return Send(mobile, text, trackingId, SmsMessageType.Notification);
+            using HttpClient httpClient = _httpClientFactory.CreateClient("172");
+
+            // Build query string manually
+            string encodedMobile = Uri.EscapeDataString(mobile);
+            string encodedText = Uri.EscapeDataString(text);
+            string url = $"http://172.18.12.14:100/CRM/Sms/SendManual?key=dontYouKnowJesusLovesYouAll&mobile={encodedMobile}&text={encodedText}&trackingId={trackingId}";
+
+            // Send GET request
+            using HttpResponseMessage response = await httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            //return Send(mobile, text, trackingId, SmsMessageType.Notification);
         }
 
         public async Task Send(string mobile, string text, Guid trackingId = default, SmsMessageType messageType = SmsMessageType.Notification)
@@ -58,7 +69,7 @@ namespace Aban360.NotificationPool.Application.Features.Sms
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task SendOld(string mobile, string text, [Optional] Guid trackingId)
+        public async Task Send(string mobile, string text, [Optional] Guid trackingId)
         {
             using HttpClient httpClient = _httpClientFactory.CreateClient("172");
 

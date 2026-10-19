@@ -47,7 +47,7 @@ namespace Aban360.Api.Controllers.V1.NotificationPool.Commands
             var customerInfo = await _customerInfoHandler.Handle(input.BillId, cancellationToken);
             string text = await GetText(billIdInput, cancellationToken);
             string mobile = string.IsNullOrWhiteSpace(input.Mobile) ? customerInfo.MobileNumber : input.Mobile;
-            _jobClient.Enqueue(() => _smsHandler.Send(mobile, text, Guid.NewGuid()));
+            _jobClient.Enqueue(() => _smsHandler.SendNew(mobile, text, Guid.NewGuid()));
             return Ok(input);
         }
         private async Task<string> GetText(SearchInput input, CancellationToken cancellationToken)

@@ -52,7 +52,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking.Queries
         {
             TrackingSmsDataOutputDto result = await _smsByQueueIdHandler.Handle(input.Input, cancellationToken);
             result.TrackId = result.TrackId is null ? Guid.Empty : result.TrackId;
-            _backgroundJobClient.Enqueue(() => _smsOldHandler.Send(result.Receiver, result.Message, result.TrackId.Value));
+            _backgroundJobClient.Enqueue(() => _smsOldHandler.SendNew(result.Receiver, result.Message, result.TrackId.Value));
             return Ok(result);
         }
     }
