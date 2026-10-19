@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Literals;
 using Aban360.ReportPool.Application.Features.Base.Validations;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
+using DNTPersianUtils.Core;
 using FluentValidation;
 
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Validations
@@ -23,5 +24,21 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                                                                                                  input.ToDateJalali)).ErrorMessage);
 
         }
+        //public (bool IsValid, string ErrorMessage) DateValidate(string FromDateJalali, string ToDateJalali)
+        //{
+        //    if (FromDateJalali.CompareTo(ExceptionLiterals.WaterBillMinDate) < 0)
+        //        return (false, ExceptionLiterals.FromDateMoreThanDate(ExceptionLiterals.WaterBillMinDate));
+
+        //    if (!string.IsNullOrWhiteSpace(FromDateJalali) && FromDateJalali.Length != 10)
+        //        return (false, ExceptionLiterals.Equal10);
+
+        //    if (ToDateJalali.CompareTo((DateTime.Now.AddDays(-1).ToShortPersianDateString())) > 0)
+        //        return (false, ExceptionLiterals.ToDateLessThanDate(DateTime.Now.ToShortPersianDateString()));
+
+        //    if (!string.IsNullOrWhiteSpace(ToDateJalali) && ToDateJalali.Length != 10)
+        //        return (false, ExceptionLiterals.Equal10);
+
+        //    return (true, "");
+        //}
     }
 }

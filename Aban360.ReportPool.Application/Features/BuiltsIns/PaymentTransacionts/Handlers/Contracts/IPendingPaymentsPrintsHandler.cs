@@ -6,6 +6,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 {
     public interface IPendingPaymentsPrintsHandler
     {
+        Task InputValidate(PendingPaymentsInputDto input, CancellationToken cancellationToken);
         Task<ReportOutput<PendingPaymentsPrintstHeaderOutputDto, PendingPaymentPrintsDataOutputDto>> Handle(PendingPaymentsInputDto input, CancellationToken cancellationToken);
     }
 }
