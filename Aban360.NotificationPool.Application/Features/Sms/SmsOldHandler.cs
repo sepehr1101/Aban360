@@ -40,6 +40,7 @@ namespace Aban360.NotificationPool.Application.Features.Sms
             // Send GET request
             using HttpResponseMessage response = await httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
+
             //return Send(mobile, text, trackingId, SmsMessageType.Notification);
         }
 
