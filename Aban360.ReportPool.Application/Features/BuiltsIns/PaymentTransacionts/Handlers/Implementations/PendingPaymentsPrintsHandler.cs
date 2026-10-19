@@ -35,12 +35,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
 
         public async Task<ReportOutput<PendingPaymentsPrintstHeaderOutputDto, PendingPaymentPrintsDataOutputDto>> Handle(PendingPaymentsInputDto input, CancellationToken cancellationToken)
         {
-            var validationResult = await _validator.ValidateAsync(input, cancellationToken);
-            if (!validationResult.IsValid)
-            {
-                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
-                throw new CustomValidationException(message);
-            }
+            await InputValidate(input, cancellationToken);
 
             ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto> pendingPayments = await _pendingPaymentsQueryService.GetInfo(input);
             if (!pendingPayments.ReportData.Any())
@@ -49,6 +44,15 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
             }
 
             return GetResult(pendingPayments, input);
+        }
+        public async Task InputValidate(PendingPaymentsInputDto input, CancellationToken cancellationToken)
+        {
+            var validationResult = await _validator.ValidateAsync(input, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomValidationException(message);
+            }
         }
         private ReportOutput<PendingPaymentsPrintstHeaderOutputDto, PendingPaymentPrintsDataOutputDto> GetResult(ReportOutput<PendingPaymentsHeaderOutputDto, PendingPaymentsDataOutputDto> pendingPayments, PendingPaymentsInputDto input)
         {

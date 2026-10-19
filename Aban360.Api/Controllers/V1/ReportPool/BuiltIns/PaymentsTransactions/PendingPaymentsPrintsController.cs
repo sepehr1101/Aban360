@@ -1,11 +1,15 @@
 ﻿using Aban360.Api.Cronjobs;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
+using DNTPersianUtils.Core;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
@@ -30,6 +34,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, PendingPaymentsInputDto inputDto, CancellationToken cancellationToken)
         {
+            await _pendingPaymentsPrintsHandler.InputValidate(inputDto, cancellationToken);
             await _reportGenerator.FireAndInform(inputDto, cancellationToken, _pendingPaymentsPrintsHandler.Handle, CurrentUser, ReportLiterals.PendingPaymentsDetail, connectionId);
             return Ok(inputDto);
         }
