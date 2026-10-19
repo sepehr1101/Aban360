@@ -43,6 +43,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("installment-display/{trackNumber}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> DisplayInstallmentByQuery(int trackNumber, CancellationToken cancellationToken)
+        {
+            ReportOutput<InstallmentRequestHeaderOutputDto, InstallmentRequestDataOutputDto> result = await _installmentDisplayHandler.Handle(trackNumber, cancellationToken);
+            return Ok(result);
+        }
+
         [HttpPost]
         [Route("installment-display-sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
