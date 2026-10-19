@@ -26,7 +26,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             ICommonZoneService zoneService,
             IMoshtrakQueryService moshtrackQueryService,
             ITrackingQueryService trackingQueryService,
-            IAssessmentGetByZoneIdHandler assessmentGetByZoneIdHandler)
+            IAssessmentGetByZoneIdHandler assessmentGetByZoneIdHandler,
+            IMoshtrakService moshtrakService)
         {
             _zoneService = zoneService;
             _zoneService.NotNull(nameof(zoneService));
@@ -39,6 +40,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             _assessmentGetByZoneIdHandler = assessmentGetByZoneIdHandler;
             _assessmentGetByZoneIdHandler.NotNull(nameof(assessmentGetByZoneIdHandler));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
         }
 
         public async Task<ToSetAssessmentTimeGetDto> Handle(Guid trackId, IAppUser appUser, CancellationToken cancellationToken)
