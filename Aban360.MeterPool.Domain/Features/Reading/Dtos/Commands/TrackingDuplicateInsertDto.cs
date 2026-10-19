@@ -4,6 +4,7 @@ namespace Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries
 {
     public record TrackingDuplicateInsertDto
     {
+        public Guid Id { get; set; } = Guid.NewGuid();
         public IEnumerable<Guid> TrackingIds { get; set; }
         public int FlowStepId { get; set; }
         public DateTime InsertDateTime { get; set; } = DateTime.Now;

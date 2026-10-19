@@ -1,9 +1,11 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -22,7 +24,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IExaminationQueryService _assessmentQueryService;
         private readonly IT64QueryService _t64QueryService;
         private readonly IMoshtrakService _moshtrakService;
+        private readonly IReadingBlockListGetHandler _readingBlockListGetHandler;
         private readonly IValidator<AssessmentResultInputDto> _validator;
+        static int[] _zoneIdsMustBlock = { 131301, 131302, 131303, 131304, 131305, 131811 };
         private static int _setAssessmentResultStatus = 110;
         private static int _seenByAssessmentStatus = 150;
         private static int _setAssessmentTimeStatus = 10;
@@ -33,6 +37,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             IExaminationQueryService assessmentQueryService,
             IT64QueryService t64QueryService,
             IMoshtrakService moshtrakService,
+            IReadingBlockListGetHandler readingBlockListGetHandler,
             IValidator<AssessmentResultInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
@@ -51,6 +56,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             _moshtrakService = moshtrakService;
             _moshtrakService.NotNull(nameof(moshtrakService));
+
+            _readingBlockListGetHandler = readingBlockListGetHandler;
+            _readingBlockListGetHandler.NotNull(nameof(readingBlockListGetHandler));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -259,6 +267,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             if (inputDto.BlockId == "-" || inputDto.BlockId == "ندارد")
             {
                 inputDto.BlockId = string.Empty;
+            }
+
+            if (!_zoneIdsMustBlock.Contains(inputDto.ZoneId) && !string.IsNullOrWhiteSpace(inputDto.BlockId))
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidBlockForThisZone);
             }
         }
         private async Task<bool> GetIsSucces(int statusId)

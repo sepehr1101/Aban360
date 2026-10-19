@@ -36,6 +36,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
         {
             return $@"Select 
 						Id,
+						FirstId,
 						BlockId ,
 						TrackNumber ,
 						TbReadingProgramId,
@@ -78,6 +79,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
         {
             return $@"Select 
 						Id,
+						FirstId,
 						BlockId ,
 						TrackNumber ,
 						TbReadingProgramId,
@@ -121,6 +123,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
         {
             return $@"Select  
 						Id,
+						FirstId,
 						BlockId ,
 						TrackNumber ,
 						TbReadingProgramId,

@@ -13,11 +13,14 @@
         public string Address { get; set; } = null!;
         public string Plaque { get; set; } = null!;
         public int UsageId { get; set; }
+        public string UsageTitle { get; set; }
         public int DomesticUnit { get; set; }
         public int CommercialUnit { get; set; }
         public int OtherUnit { get; set; }
         public int? MeterDiameterId { get; set; }
+        public string? MeterDiameterTitle { get; set; }
         public int? SiphonDiameterId { get; set; }
+        public string? SiphonDiameterTitle { get; set; }
         public string? PostalCode { get; set; }
         public int? PreNumber { get; set; }
         public string? PreDateJalali { get; set; }

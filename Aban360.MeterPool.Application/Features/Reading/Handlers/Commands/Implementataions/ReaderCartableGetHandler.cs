@@ -15,6 +15,8 @@ using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
+using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
@@ -25,7 +27,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
         private readonly IBlockQueryService _blockQueryService;
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IDetailQueryService _detailQueryService;
-        private readonly IUserGetSingleQueryHandler _userGetSingleQueryHandler;
+        private readonly IUserQueryService _userQueryService;
         private readonly IT41QueryService _usageQueryService;
         private readonly IT7QueryService _branchTypeQueryService;
         private readonly IDeletionStateQueryService _deletionStateQueryService;
@@ -37,7 +39,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             IBlockQueryService blockQueryService,
             ITrackingQueryService trackingQueryService,
             IDetailQueryService detailQueryService,
-            IUserGetSingleQueryHandler userGetSingleQueryHandler,
+            IUserQueryService userQueryService,
             IT41QueryService usageQueryService,
             IT7QueryService branchTypeQueryService,
             IDeletionStateQueryService deletionStateQueryService,
@@ -54,8 +56,8 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             _detailQueryService = detailQueryService;
             _detailQueryService.NotNull(nameof(detailQueryService));
 
-            _userGetSingleQueryHandler = userGetSingleQueryHandler;
-            _userGetSingleQueryHandler.NotNull(nameof(userGetSingleQueryHandler));
+            _userQueryService = userQueryService;
+            _userQueryService.NotNull(nameof(userQueryService));
 
             _usageQueryService = usageQueryService;
             _usageQueryService.NotNull(nameof(usageQueryService));
@@ -72,16 +74,16 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
 
         public async Task<ReaderCartableOutputDto> Handle(IAppUser appUser, CancellationToken cancellationToken)
         {
-            UserDisplayDto readerInfo = await Validate(appUser, cancellationToken);
+            User readerInfo = await Validate(appUser, cancellationToken);
 
             IEnumerable<TrackingGetDto> trackingInfo = await _trackingQueryService.Get(appUser.UserId, _createPathFlowStepId);
             IEnumerable<Guid> trackingIds = trackingInfo.Select(t => t.Id).ToList();
             IEnumerable<DetailGetDto> detailInfo = await _detailQueryService.GetByTrackIds(trackingIds);
 
             TrackingSeenUpdateDto trackingSeenUpdateDto = new(trackingInfo.Select(t => t.BlockId).Distinct().ToList(), true);
-            TrackingDuplicateInsertDto trackingDuplicateInsertDto = new(trackingIds, _downloadByReadigFlowStepId,appUser.UserId);
-            await ExecSql(trackingDuplicateInsertDto,trackingSeenUpdateDto);
-            return await GetResult(trackingInfo, detailInfo, readerInfo);
+            TrackingDuplicateInsertDto trackingDuplicateInsertDto = new(trackingIds, _downloadByReadigFlowStepId, appUser.UserId);
+            await ExecSql(trackingDuplicateInsertDto, trackingSeenUpdateDto);
+            return await GetResult(trackingInfo, detailInfo);
         }
         private async Task ExecSql(TrackingDuplicateInsertDto trackingDuplicateInsertDto, TrackingSeenUpdateDto trackingSeenUpdateDto)
         {
@@ -102,7 +104,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 }
             }
         }
-        private async Task<ReaderCartableOutputDto> GetResult(IEnumerable<TrackingGetDto> trackingInfo, IEnumerable<DetailGetDto> detailInfo, UserDisplayDto readerInfo)
+        private async Task<ReaderCartableOutputDto> GetResult(IEnumerable<TrackingGetDto> trackingInfo, IEnumerable<DetailGetDto> detailInfo)
         {
             IEnumerable<TrackingDataOutputDto> trackingData = trackingInfo
                 .Select(t => new TrackingDataOutputDto()
@@ -251,10 +253,10 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             };
             return result;
         }
-        private async Task<UserDisplayDto> Validate(IAppUser appUser, CancellationToken cancellationToken)
-        {//ToDo: user another handler to find user
-            UserDisplayDto userInfo = await _userGetSingleQueryHandler.Handle(appUser.UserId, cancellationToken);
-            if (!(userInfo?.RoleInfo?.RoleInfo?.Select(role => role.Id)?.ToList()?.Contains(_readerRoleId) ?? false))
+        private async Task<User> Validate(IAppUser appUser, CancellationToken cancellationToken)
+        {
+            User userInfo = await _userQueryService.GetByRoleInfo(appUser.UserId);
+            if (!userInfo.UserRoles.Where(role => role.RoleId == _readerRoleId).Any())
             {
                 throw new ReadingException(ExceptionLiterals.NotFoundCurrentUserByReaderRole);
             }

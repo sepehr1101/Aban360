@@ -1,6 +1,7 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.MeterPool.Domain.Constants;
 using Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -63,6 +64,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
         {
             var table = new DataTable();
             table.Columns.Add("Id", typeof(Guid));
+            table.Columns.Add("FirstId", typeof(Guid));
             table.Columns.Add("BlockId", typeof(Guid));
             table.Columns.Add("TrackNumber", typeof(long));
             table.Columns.Add("TbReadingProgramId", typeof(Guid));
@@ -105,6 +107,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
                 var row = table.NewRow();
 
                 row["Id"] = item.Id;
+                row["FirstId"] = item.FirstId;
                 row["BlockId"] = item.BlockId;
                 row["TrackNumber"] = item.TrackNumber;
                 row["TbReadingProgramId"] = item.TbReadingProgramId ?? (object)DBNull.Value;
@@ -150,7 +153,8 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
         {
             return $@"Insert Into [Atlas].reading.Tracking
                     Select 
-                    	NEWID(),
+                    	@Id Id,
+                        Id FirstId,
                     	BlockId ,
                     	TrackNumber ,
                     	TbReadingProgramId,
@@ -163,7 +167,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
                     	@InsertBy InsertBy ,
                     	@InsertDateJalali InsertDateJalali ,
                     	@InsertDateTime InsertDateTime ,
-                    	Seen ,
+                    	0 Seen ,
                     	CounterReaderCode ,
                     	CounterReaderId ,
                     	CounterReaderName ,
@@ -188,7 +192,9 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
                     	DisplayDebt,
                     	DisplayIcons
                     From [Atlas].reading.Tracking
-                    Where Id IN @TrackingIds";
+                    Where 
+                        Id IN @TrackingIds AND
+                        FlowStepId = {(int)ReadingFlowStepEnum.CreatePath}";
         }
         private string GetUpdateSeenCommand()
         {
