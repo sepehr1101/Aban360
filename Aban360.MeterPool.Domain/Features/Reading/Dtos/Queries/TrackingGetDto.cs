@@ -3,6 +3,7 @@
     public record TrackingGetDto
     {
         public Guid Id { get; set; }
+        public Guid FirstId { get; set; }
         public Guid BlockId { get; set; }
         public long TrackNumber { get; set; }
         public Guid? TbReadingProgramId { get; set; }
@@ -21,6 +22,7 @@
         public string CounterReaderName { get; set; } = null!;
         public string CounterReaderMobile { get; set; } = null!;
         public bool IsBazdid { get; set; }
+
         public bool? IsRoosta { get; set; }
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }

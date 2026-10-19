@@ -91,6 +91,12 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
         {
             return await _uow.FindOrThrowAsync<User>(id);
         }
+        public async Task<User> GetByRoleInfo(Guid id)
+        {
+            return await _query
+                .Include(user=>user.UserRoles)
+                .SingleAsync(user=>user.Id== id);
+        }
         public async Task<User?> Get(string username)
         {
             return await _users

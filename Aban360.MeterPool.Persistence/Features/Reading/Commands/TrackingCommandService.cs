@@ -1,9 +1,11 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using Aban360.MeterPool.Domain.Constants;
 using Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries;
+using Dapper;
 using Microsoft.Data.SqlClient;
-using NetTopologySuite.Index.HPRtree;
 using System.Data;
-using System.Reflection;
 
 namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
 {
@@ -39,11 +41,30 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
 
             await bulkCopy.WriteToServerAsync(dataTable);
         }
+        public async Task UpdateSeen(TrackingSeenUpdateDto input)
+        {
+            string command = GetUpdateSeenCommand();
+            int recordEffected = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordEffected != (input.BlockIds?.Count() ?? 0))
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidTrackingUpdateRecord);
+            }
+        }
+        public async Task InsertDuplicate(TrackingDuplicateInsertDto input)
+        {
+            string command = GetInsertDuplicateCommand();
+            int recordEffected = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordEffected != (input.TrackingIds?.Count() ?? 0))
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidTrackingUpdateRecord);
+            }
+        }
 
         private static DataTable ToDataTable(IEnumerable<TrackingInsertDto> input)
         {
             var table = new DataTable();
             table.Columns.Add("Id", typeof(Guid));
+            table.Columns.Add("FirstId", typeof(Guid));
             table.Columns.Add("BlockId", typeof(Guid));
             table.Columns.Add("TrackNumber", typeof(long));
             table.Columns.Add("TbReadingProgramId", typeof(Guid));
@@ -86,6 +107,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
                 var row = table.NewRow();
 
                 row["Id"] = item.Id;
+                row["FirstId"] = item.FirstId;
                 row["BlockId"] = item.BlockId;
                 row["TrackNumber"] = item.TrackNumber;
                 row["TbReadingProgramId"] = item.TbReadingProgramId ?? (object)DBNull.Value;
@@ -121,11 +143,64 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
                 row["DisplayMobile"] = (object?)item.DisplayMobile ?? DBNull.Value;
                 row["HasImage"] = (object?)item.HasImage ?? DBNull.Value;
                 row["DisplayDebt"] = (object?)item.DisplayDebt ?? DBNull.Value;
-                row["DisplayIcons"] = (object?)item.DisplayIcons ?? DBNull.Value; 
-                
+                row["DisplayIcons"] = (object?)item.DisplayIcons ?? DBNull.Value;
+
                 table.Rows.Add(row);
             }
             return table;
+        }
+        private string GetInsertDuplicateCommand()
+        {
+            return $@"Insert Into [Atlas].reading.Tracking
+                    Select 
+                    	@Id Id,
+                        Id FirstId,
+                    	BlockId ,
+                    	TrackNumber ,
+                    	TbReadingProgramId,
+                    	ZoneId ,
+                    	ZoneTitle ,
+                    	@FlowStepId FlowStepId ,
+                    	FromReadingNumber ,
+                    	ToReadingNumber ,
+                    	ListNumber ,
+                    	@InsertBy InsertBy ,
+                    	@InsertDateJalali InsertDateJalali ,
+                    	@InsertDateTime InsertDateTime ,
+                    	0 Seen ,
+                    	CounterReaderCode ,
+                    	CounterReaderId ,
+                    	CounterReaderName ,
+                    	CounterReaderMobile ,
+                    	IsBazdid ,
+                    	IsRoosta,
+                    	FromDate,
+                    	ToDate,
+                    	OverallCustomerCount,
+                    	ItemCustomerCount,
+                    	ProvisionallyPercent,
+                    	ImagePercent,
+                    	HasPreNumber,
+                    	DisplayBillId,
+                    	DisplayCustomerNumber,
+                    	Description,
+                    	X,
+                    	Y,
+                    	DisplayPreDate,
+                    	DisplayMobile,
+                    	HasImage,
+                    	DisplayDebt,
+                    	DisplayIcons
+                    From [Atlas].reading.Tracking
+                    Where 
+                        Id IN @TrackingIds AND
+                        FlowStepId = {(int)ReadingFlowStepEnum.CreatePath}";
+        }
+        private string GetUpdateSeenCommand()
+        {
+            return $@"Update [Atlas].reading.Tracking
+                    Set Seen = @Seen
+                    Where BlockId IN @BlockIds ";
         }
     }
 }

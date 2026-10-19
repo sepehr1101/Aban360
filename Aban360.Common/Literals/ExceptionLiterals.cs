@@ -250,6 +250,8 @@
         public static string InvalidReadingBoundWithReadingBlock => "بلوک انتخابی مطعلق به محدوده جاری نیست.";
         public static string InvalidReadigBlockCount => "تعداد بلوک های انتخاب شده ناصحیح است.";
         public static string NotfoundReadingBlocksInfo => "خطا در اطلاعات بلوک های انتخاب شده ";
+        public static string NotFoundCurrentUserByReaderRole => "نقش مامور قرائت ندارید.";
+        public static string InvalidTrackingUpdateRecord => "خطا در ویرایش جدول درخواست ها";
 
 
 
@@ -315,6 +317,7 @@
         public static string InvalidMonthlyDuration(int normalDuration) => $"دوره اقساط باید کمتر از {normalDuration} ماه باشد.";
         public static string InvalidFewInstallmentCount(int count) => $"تعداد اقساط باید کمتر از {count} قسط باشد.";
         public static string InvalidInstallmentCount => $"تعداد اقساط نامعتبر است.";
+        public static string InvalidBlockForThisZone => $" ناحیه انتخابی نیازی به بلوک ندارد.";
 
         public static string NotFountOpenRequest => "درخواستی با وضعیت نیمه‌تمام یافت نشد.";
         public static string CantSetTime => "امکان انتساب زمانبندی ارزیابی وجود ندارد";
