@@ -10,6 +10,7 @@
         public int ZoneId { get; set; }
         public string ZoneTitle { get; set; } = null!;
         public int FlowStepId { get; set; }
+        public string FlowStepTitle { get; set; }
         public string FromReadingNumber { get; set; } = null!;
         public string ToReadingNumber { get; set; } = null!;
         public string? ListNumber { get; set; }

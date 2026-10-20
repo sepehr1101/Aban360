@@ -6,5 +6,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts
     {
         Task<CounterStateCodeDto> Get(int id, bool hasException);
         Task<IEnumerable<CounterStateCodeDto>> Get(bool isReadable = false);
+        Task<IEnumerable<CounterStateCodeDto>> GetValids();
     }
 }

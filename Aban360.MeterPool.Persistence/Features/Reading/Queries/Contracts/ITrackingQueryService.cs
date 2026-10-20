@@ -5,7 +5,9 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Contracts
     public interface ITrackingQueryService
     {
         Task<IEnumerable<TrackingGetDto>> Get();
-        Task<IEnumerable<TrackingGetDto>> Get(Guid id);
+        Task<TrackingGetDto> Get(Guid id);
+        Task<TrackingGetDto> Get(long trackNumber);
+        Task<IEnumerable<TrackingGetDto>> Get(IEnumerable<long> trackNumbers);
         Task<IEnumerable<TrackingGetDto>> Get(Guid readerId, int flowStepId);
     }
 }

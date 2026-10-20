@@ -252,6 +252,17 @@
         public static string NotfoundReadingBlocksInfo => "خطا در اطلاعات بلوک های انتخاب شده ";
         public static string NotFoundCurrentUserByReaderRole => "نقش مامور قرائت ندارید.";
         public static string InvalidTrackingUpdateRecord => "خطا در ویرایش جدول درخواست ها";
+        public static string InvalidTrackingId => "شناسه تراکنش یافت نشد.";
+        public static string InvalidDetailByCurrentTrackingFlowId(long trackNumber) => $"شماره پیگیری {trackNumber}  در وضعیت بارگیری مامور/شروع قرائت قرار ندارد. ";
+        public static string NotFoundOffLoadInput => "اطلاعات مشترک یافت نشد. شماره پیگیری:{0} شناسه قبض:{1}";
+        public static string InvalidCommonCounterStateWithPreviousGTCurrent => "در وضعیت قرائت عادی، رقم قبلی کنتور نمی‌تواند از رقم فعلی بزرگتر باشد. شماره پیگیری:{0} شناسه قبض:{1}";
+        public static string InvalidExcludedMeterReadingOffLoad => "اطلاعات مشترک خروج از لیست شده. شناسه پیگیری:{0} شناسه قبض:{1}";
+        public static string NotFoundCounterStateCode => "وضعیت کنتور نامعتبر است. شناسه پیگیری:{0} شناسه قبض:{1}";
+        public static string InvalidNullCounterStateCode => "وضعیت کنتور را وارد کنید. شناسه پیگیری:{0} شناسه قبض:{1}";
+        public static string InvalidTrackingStepFlowToFinish => "وضعیت تراکنش در حالت {0} است، امکان بارگذاری وجود ندارد.";
+        public static string InvalidFinishTrackingByUncompleteDetail => "امکان بارگذاری وجود ندارد. تعداد {0} مشترک قرائت نشده اند.";
+        public static string InvalidUpdateDetail => "خطا در ویرایش جزئیات";
+        public static string InvalidTrackingByCurrentUser => "شماره پیگیری {0} به مامور قرائت جاری تعلق ندارد.";
 
 
 
