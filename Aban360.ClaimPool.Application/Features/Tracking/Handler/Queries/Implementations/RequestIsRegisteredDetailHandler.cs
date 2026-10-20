@@ -36,6 +36,9 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
 
             _trackingQueryService = trackingQueryService;
             _trackingQueryService.NotNull(nameof(trackingQueryService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
         }
 
         public async Task<RequestIsRegisterdOutputDto> Handle(Guid id, IAppUser appUser, CancellationToken cancellationToken)
@@ -48,7 +51,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             }
 
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber, true)).FirstOrDefault();
-            MoshtrakServiceDto sData =  _moshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
+            MoshtrakServiceDto sData = _moshtrakService.GetMoshtrakServiceDto(moshtrakInfo);
             IEnumerable<NumericDictionary> s = await _moshtrakService.GetServicesSelectedDto(sData, trackingInfo.ServiceGroupId);
 
             RequestIsRegisterdOutputDto result = GetOutput(trackingInfo, moshtrakInfo, s);

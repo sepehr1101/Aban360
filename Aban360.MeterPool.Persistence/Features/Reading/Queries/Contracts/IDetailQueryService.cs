@@ -6,6 +6,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Contracts
     {
         Task<IEnumerable<DetailGetDto>> Get();
         Task<IEnumerable<DetailGetDto>> Get(Guid id);
+        Task<IEnumerable<DetailGetDto>> Get(IEnumerable<Guid> ids);
         Task<IEnumerable<DetailGetDto>> GetByTrackIds(IEnumerable<Guid> ids);
     }
 }
