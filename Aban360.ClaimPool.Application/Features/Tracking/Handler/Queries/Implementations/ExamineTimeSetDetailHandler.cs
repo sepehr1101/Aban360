@@ -28,7 +28,8 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
             ICommonZoneService zoneService,
             IMoshtrakQueryService moshtrakQueryService,
             ITrackingQueryService trackingQueryService,
-            IExaminationQueryService examinationQueryService)
+            IExaminationQueryService examinationQueryService,
+            IMoshtrakService moshtrakService)
         {
             _zoneService = zoneService;
             _zoneService.NotNull(nameof(zoneService));
@@ -41,6 +42,9 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
 
             _examinationQueryService = examinationQueryService;
             _examinationQueryService.NotNull(nameof(examinationQueryService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
         }
 
         public async Task<ExamineTimeSetOutputDto> Handle(Guid id, IAppUser appUser, CancellationToken cancellationToken)

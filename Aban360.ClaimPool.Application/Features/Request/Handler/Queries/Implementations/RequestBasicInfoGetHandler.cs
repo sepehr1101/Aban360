@@ -30,6 +30,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             _commonZoneService = commonZoneService;
             _commonZoneService.NotNull(nameof(commonZoneService));
+
+            _moshtrakService= moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
         }
 
         public async Task<RequestBasicInfoDataOutputDto> Handle(int trackNumber, IAppUser appUser, CancellationToken cancellationToken)
