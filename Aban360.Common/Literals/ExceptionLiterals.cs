@@ -246,6 +246,7 @@
         public static string InvalidPreviousBillInfo(string billId) => $@"اطلاعات آخرین قبض برای مشترک:{billId} یافت نشد.";
 
         //Reading
+        public static string InvalidReadingBoundIsValid => "محدوده صحت سنجی نشده.";
         public static string InvalidReadingBoundWithReaderZoneId => "مامور قرائت انتخاب شده متعلق به ناحیه جاری نیست. ";
         public static string InvalidReadingBoundWithReadingBlock => "بلوک انتخابی مطعلق به محدوده جاری نیست.";
         public static string InvalidReadigBlockCount => "تعداد بلوک های انتخاب شده ناصحیح است.";
@@ -263,6 +264,11 @@
         public static string InvalidFinishTrackingByUncompleteDetail => "امکان بارگذاری وجود ندارد. تعداد {0} مشترک قرائت نشده اند.";
         public static string InvalidUpdateDetail => "خطا در ویرایش جزئیات";
         public static string InvalidTrackingByCurrentUser => "شماره پیگیری {0} به مامور قرائت جاری تعلق ندارد.";
+        public static string ReadingBlockNotFound => "بلوکی یافت نشد.";
+        public static string InvalidBlocksReadingNumber => "خطا در شماره اشتراک بلوک ها";
+        public static string InvalidBlocksReadingNumberChars => "تعداد کاراکتر بلوک‌ها برابر نیست.";
+        public static string InvalidBoundAndBlockStartReadingNumber => "شماره اشتراک اولین مسیر و شروع مسیر مغایرت دارد.";
+        public static string InvalidStartReadingNumber => "خطا در شماره اشتراک. شروع مسیر جاری و پایان مسیر قبلی برابر است. نام مسیر:{0}";
 
 
 

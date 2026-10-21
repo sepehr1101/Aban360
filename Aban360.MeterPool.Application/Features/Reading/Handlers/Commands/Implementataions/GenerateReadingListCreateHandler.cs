@@ -32,7 +32,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly ICommonZoneService _commonZoneService;
         private readonly IReadingBoundQueryService _readingBoundQueryService;
-        private readonly IReadingBlockQeryService _readingBlockQeryService;
+        private readonly IReadingBlockQueryService _readingBlockQeryService;
         private readonly IT51QueryService _zoneQueryService;
         private readonly IReadingCustomerDetailInfoQueryService _readingCustomerDetailInfoQueryService;
         private readonly IUserRoleQueryService _userRoleQueryService;
@@ -47,7 +47,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             IHttpContextAccessor contextAccessor,
             ICommonZoneService commonZoneService,
             IReadingBoundQueryService readingBoundQueryService,
-            IReadingBlockQeryService readingBlockQeryService,
+            IReadingBlockQueryService readingBlockQeryService,
             IT51QueryService zoneQueryService,
             IReadingCustomerDetailInfoQueryService readingCustomerDetailInfoQueryService,
             IUserRoleQueryService userRoleQueryService,
@@ -183,6 +183,10 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
         private async Task<BoundInsertDto> GetBoundInsert(GenerateReadingListInputDto inputDto, Guid Id, IAppUser appUser)
         {
             ReadingBound readingBoundInfo = await _readingBoundQueryService.Get(inputDto.ReadingBoundId);
+            if (!readingBoundInfo.IsValid)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidReadingBoundIsValid);
+            }
             NumericDictionary zoneInfo = await _zoneQueryService.Get(readingBoundInfo.ZoneId, true);
             return new BoundInsertDto()
             {
@@ -193,7 +197,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 ZoneTitle = zoneInfo.Title,
                 FromReadingNumber = readingBoundInfo.FromReadingNumber,
                 ToReadingNumber = readingBoundInfo.ToReadingNumber,
-                IsValidated = true,
+                IsValidated = readingBoundInfo.IsValid,
                 BlockCount = inputDto.ReadingBlockInfo?.Count() ?? 0,
                 CustomerCount = 0,//compeleteAfter
                 Year = inputDto.Year,

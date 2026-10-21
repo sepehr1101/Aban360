@@ -12,15 +12,20 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
     {
         private readonly IUnitOfWork _uow;
         private readonly IReadingBoundUpdateHandler _readingBoundUpdateHandler;
+        private readonly IReadingBoundIsValidateUpdateHandler _readingBoundIsValidateUpdateHandler;
         public ReadingBoundeUpdateController(
             IUnitOfWork uow,
-            IReadingBoundUpdateHandler readingBoundUpdateHandler)
+            IReadingBoundUpdateHandler readingBoundUpdateHandler,
+            IReadingBoundIsValidateUpdateHandler readingBoundIsValidateUpdateHandler)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
 
             _readingBoundUpdateHandler = readingBoundUpdateHandler;
             _readingBoundUpdateHandler.NotNull(nameof(readingBoundUpdateHandler));
+
+            _readingBoundIsValidateUpdateHandler = readingBoundIsValidateUpdateHandler;
+            _readingBoundIsValidateUpdateHandler.NotNull(nameof(readingBoundIsValidateUpdateHandler));
         }
 
         [HttpPost, HttpPatch]
@@ -29,6 +34,27 @@ namespace Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.Commands
         public async Task<IActionResult> Update([FromBody] ReadingBoundUpdateDto updateDto, CancellationToken cancellationToken)
         {
             await _readingBoundUpdateHandler.Handle(updateDto, cancellationToken);
+            await _uow.SaveChangesAsync(cancellationToken);
+
+            return Ok(updateDto);
+        }
+
+
+        [HttpPost, HttpPatch]
+        [Route("update-isvalid")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ReadingBoundIsValidUpdateDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> IsValidUpdate([FromBody] ReadingBoundIsValidUpdateDto updateDto, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _readingBoundIsValidateUpdateHandler.Handle(updateDto, cancellationToken);
+
+            }
+            catch
+            {
+                await _uow.SaveChangesAsync(cancellationToken);
+                throw;
+            }
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);

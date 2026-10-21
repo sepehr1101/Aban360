@@ -2,7 +2,7 @@
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts
 {
-    public interface IReadingBlockQeryService
+    public interface IReadingBlockQueryService
     {
         Task<ReadingBlock> Get(short id);
         Task<ICollection<ReadingBlock>> Get();

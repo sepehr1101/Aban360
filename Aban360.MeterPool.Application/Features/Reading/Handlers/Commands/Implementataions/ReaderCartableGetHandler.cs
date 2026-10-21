@@ -101,8 +101,8 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 {
                     TrackingCommandService trackingCommandService = new(connection, transaction);
 
-                    await trackingCommandService.UpdateSeen(trackingSeenUpdateDto);
-                    await trackingCommandService.InsertDuplicate(trackingDuplicateInsertDto);
+                    //await trackingCommandService.UpdateSeen(trackingSeenUpdateDto);
+                    //await trackingCommandService.InsertDuplicate(trackingDuplicateInsertDto);
 
                     transaction.Commit();
                 }

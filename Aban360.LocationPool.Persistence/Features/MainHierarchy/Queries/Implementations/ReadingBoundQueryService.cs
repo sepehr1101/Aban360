@@ -23,7 +23,7 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
 
         public async Task<ReadingBound> Get(int id)
         {
-            ReadingBound? readingBound= await _readingBounds
+            ReadingBound? readingBound = await _readingBounds
                     .Include(r => r.Zone)
                     .Where(r => r.Id == id)
                     .SingleAsync();
@@ -37,7 +37,7 @@ namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implem
         {
             return await _readingBounds
                 .Include(r => r.Zone)
-                .Where(r => r.ZoneId == zoneId)
+                .Where(r => r.ZoneId == zoneId && r.IsValid)
                 .ToListAsync();
         }
 
