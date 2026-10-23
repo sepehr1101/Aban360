@@ -50,58 +50,96 @@ namespace Aban360.ReportPool.Persistence.Base
         {
             string dateParam = GetQueryParams(isChangeDate);
 
-            return $@";WITH CTE AS
+            return $@"
+                    ;WITH CTE AS
                     (
-                        SELECT 
-                            RN= ROW_NUMBER() OVER (PARTITION by ZoneId , CustomerNumber ORDER BY RegisterDayJalali DESC, LocalId DESC),
-                            *
-                        From [CustomerWarehouse].dbo.Clients c
-                        Where				
-                            c.ZoneId IN @zoneIds AND
+                        SELECT
+                            RN = ROW_NUMBER() OVER
                             (
-                                @fromReadingNumber IS NULL OR 
-                                @toReadingNumber IS NULL OR
-                                c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
-                            ) AND
-                            c.CustomerNumber<>0 AND
-                            c.RegisterDayJalali <= @ToDateJalali
+                                PARTITION BY c.ZoneId, c.CustomerNumber
+                                ORDER BY c.RegisterDayJalali DESC, c.LocalId DESC
+                            ),
+                            c.*
+                        FROM [CustomerWarehouse].dbo.Clients c
+                        WHERE
+                            c.ZoneId IN @zoneIds
+                            AND
+                            (
+                                @fromReadingNumber IS NULL
+                                OR @toReadingNumber IS NULL
+                                OR c.ReadingNumber BETWEEN @fromReadingNumber AND @toReadingNumber
+                            )
+                            AND c.CustomerNumber <> 0
+                            AND c.RegisterDayJalali <= @ToDateJalali
                     )
-                    Select 
-                     	mc.CustomerNumber,
-                         c.BillId,
-                     	c.ReadingNumber,
-                     	TRIM(c.FirstName) +' '+TRIM(c.SureName) AS FullName,
-                     	c.UsageTitle2 AS UsageTitle,
-                     	c.WaterDiameterTitle AS MeterDiameterTitle,
-                         c.MainSiphonTitle AS SiphonDiameterTitle,
-                     	mc.ChangeDateJalali AS MeterChangeDate,
-                     	mc.RegisterDateJalali AS WaterRegistrationDate,
-                     	TRIM(mc.BodySerial) AS BodySerial,
-                     	c.ZoneTitle AS ZoneTitle,
-                        c.ZoneId As ZoneId,
-	                    t46.C0 RegionId,
-	                    t46.C2 RegionTitle,
-                         mc.ChangeCauseTitle,
-                     	c.DomesticCount	AS DomesticUnit,
-                     	c.CommercialCount AS CommercialUnit,
-                     	c.OtherCount AS OtherUnit,
-                         (c.DomesticCount+c.CommercialCount +c.OtherCount) AS TotalUnit ,
-                     	c.ContractCapacity AS ContractualCapacity
-                    From [CustomerWarehouse].dbo.MeterChange mc
-                    Join CTE c	
-                    	  ON mc.CustomerNumber=c.CustomerNumber AND mc.ZoneId=c.ZoneId
-                    Join [Db70].dbo.T51 t51
-                    	ON c.ZoneId=t51.C0
-                    Join [Db70].dbo.T46 t46
-                    	ON t51.C1=t46.C0
-                    Where 
-                    	c.RN=1 AND
-                    	c.DeletionStateId NOT IN(1,2) AND
-                        c.UsageId IN @UsageIds AND
-                    	mc.{dateParam} BETWEEN @FromDateJalali AND @ToDateJalali 
-                    Order By
-                    	mc.RegisterDateJalali Desc,
-                    	c.RegisterDayJalali Desc";
+                    SELECT
+                        mc.CustomerNumber,
+                        c.BillId,
+                        c.ReadingNumber,
+                        TRIM(c.FirstName) + ' ' + TRIM(c.SureName) AS FullName,
+                        c.UsageTitle2 AS UsageTitle,
+                        c.WaterDiameterTitle AS MeterDiameterTitle,
+                        c.MainSiphonTitle AS SiphonDiameterTitle,
+                        mc.ChangeDateJalali AS MeterChangeDate,
+                        mc.RegisterDateJalali AS WaterRegistrationDate,
+
+                        previousBill.NextDay AS PreviousReadingDate,
+                        nextBill.NextDay AS NextReadingDate,
+
+                        TRIM(mc.BodySerial) AS BodySerial,
+                        c.ZoneTitle AS ZoneTitle,
+                        c.ZoneId AS ZoneId,
+                        t46.C0 AS RegionId,
+                        t46.C2 AS RegionTitle,
+                        mc.ChangeCauseTitle,
+                        c.DomesticCount AS DomesticUnit,
+                        c.CommercialCount AS CommercialUnit,
+                        c.OtherCount AS OtherUnit,
+                        (c.DomesticCount + c.CommercialCount + c.OtherCount) AS TotalUnit,
+                        c.ContractCapacity AS ContractualCapacity
+                    FROM [CustomerWarehouse].dbo.MeterChange mc
+                    JOIN CTE c
+                        ON mc.CustomerNumber = c.CustomerNumber
+                        AND mc.ZoneId = c.ZoneId
+                        AND c.RN = 1
+
+                    OUTER APPLY
+                    (
+                        SELECT TOP (1)
+                            b.NextDay
+                        FROM [CustomerWarehouse].dbo.Bills b
+                        WHERE
+                            b.ZoneId = mc.ZoneId
+                            AND b.CustomerNumber = mc.CustomerNumber
+                            AND b.NextDay < mc.{dateParam}
+                        ORDER BY
+                            b.NextDay DESC
+                    ) previousBill
+
+                    OUTER APPLY
+                    (
+                        SELECT TOP (1)
+                            b.NextDay
+                        FROM [CustomerWarehouse].dbo.Bills b
+                        WHERE
+                            b.ZoneId = mc.ZoneId
+                            AND b.CustomerNumber = mc.CustomerNumber
+                            AND b.NextDay > mc.{dateParam}
+                        ORDER BY
+                            b.NextDay ASC
+                    ) nextBill
+
+                    JOIN [Db70].dbo.T51 t51
+                        ON c.ZoneId = t51.C0
+                    JOIN [Db70].dbo.T46 t46
+                        ON t51.C1 = t46.C0
+                    WHERE
+                        c.DeletionStateId NOT IN (1, 2)
+                        AND c.UsageId IN @UsageIds
+                        AND mc.{dateParam} BETWEEN @FromDateJalali AND @ToDateJalali
+                    ORDER BY
+                        mc.RegisterDateJalali DESC,
+                        c.RegisterDayJalali DESC;";
         }
 
         internal string GetGroupedQuery(bool isChangeDate, string groupingFiled)

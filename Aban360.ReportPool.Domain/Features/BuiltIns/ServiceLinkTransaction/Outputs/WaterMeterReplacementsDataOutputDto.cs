@@ -22,6 +22,7 @@
         public int OtherUnit { get; set; }
         public int TotalUnit { get; set; }
         public int ContractualCapacity { get; set; }
-
+        public string? PreviousReadingDate { get; set; }
+        public string? NextReadingDate { get; set; }
     }
 }

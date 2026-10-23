@@ -95,9 +95,9 @@ namespace Aban360.ReportPool.Persistence.Base
                     	On t51.C1=t46.C0
 					Where 
 						--c.ToDayJalali is null AND
-                        ROUND(SUM(BillUnit*Duration/IIF(SumDuration<=0,1,SumDuration)),1) ConsumerUnits, --آحاد مصرف کننده
-                    	(SUM(Consumption)*30)/( (SUM(IIF(Duration<=0,1,Duration))/(SUM(IIF(BillC<=0,1,BillC)))*SUM(IIF(UnitC<=0,1,UnitC)))) as ConsumptionAverage,-- متوسط مصرف
-						SUM(Duration)/SUM(IIF(BillC<=0,1,BillC)) ReadingDailyAverage, -- روز قرائت
+                        --ROUND(SUM(BillUnit*Duration/IIF(SumDuration<=0,1,SumDuration)),1) ConsumerUnits AND --آحاد مصرف کننده
+                    	--(SUM(Consumption)*30)/( (SUM(IIF(Duration<=0,1,Duration))/(SUM(IIF(BillC<=0,1,BillC)))*SUM(IIF(UnitC<=0,1,UnitC)))) as ConsumptionAverage,-- متوسط مصرف
+						--SUM(Duration)/SUM(IIF(BillC<=0,1,BillC)) ReadingDailyAverage, -- روز قرائت
 						(b.RegisterDay BETWEEN @fromDate AND @toDate) AND
 						(@fromConsumption IS NULL OR
 						@toConsumption IS NULL OR
@@ -129,6 +129,8 @@ namespace Aban360.ReportPool.Persistence.Base
             //todo: rename "RegisterDay" to "PhysicalSewageInstallDateJalali"
             return @$";With cte as(
                     	Select
+                            (SUM(Consumption) OVER (PARTITION BY CustomerNumber, ZoneId)) SumConsumption,
+							(SUM(Duration) OVER (PARTITION BY CustomerNumber, ZoneId)) SumDuration,
 							t46.C2 RegionTitle,
 							t46.C0 RegionId,
                     		b.ZoneTitle,
@@ -138,17 +140,7 @@ namespace Aban360.ReportPool.Persistence.Base
                     		t41.C1 as UsageTitle, 
                             {usageGroup2TitleSelect}
                     		b.ReadingNumber,
-                    		(b.CommercialCount+b.DomesticCount+b.OtherCount) as BillUnitCounts,
-                            /*Case When b.UsageId IN (1,3) AND 
-							    	  b.BranchTypeId NOT IN (4) AND 
-							    	  c.PhysicalSewageInstallDateJalali>'1330/01/01' 
-							     Then b.Consumption 
-							     When b.UsageId NOT IN (1,3) AND 
-							    	  b.BranchTypeId NOT IN (4) AND 
-							    	  b.RegisterDay>'1330/01/01' 
-							     Then b.Consumption 
-						         Else 0
-						    End SewageConsumption,*/
+                    		(b.CommercialCount+b.DomesticCount+b.OtherCount) as BillUnitCounts,                            
                             0 SewageConsumption,
                     		b.Consumption,
                     		b.ConsumptionAverage,
@@ -188,12 +180,8 @@ namespace Aban360.ReportPool.Persistence.Base
 							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount-b.EmptyCount)<=0 THEN 1
 							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount-EmptyCount)>0 THEN (b.OtherCount+b.CommercialCount+b.DomesticCount-EmptyCount)
 							    Else 0 
-						    END UnitC--,
-                            --(SUM(Consumption) OVER (PARTITION BY CustomerNumber, ZoneId)) SumConsumption,
-							--(SUM(Duration) OVER (PARTITION BY CustomerNumber, ZoneId)) SumDuration,
+						    END UnitC
                     From [CustomerWarehouse].dbo.Bills b
-					--Join [CustomerWarehouse].dbo.Clients c
-						--ON b.ZoneId=c.ZoneId and b.CustomerNumber=c.CustomerNumber
                     Join [Db70].dbo.T41 t41
                     	ON b.UsageId=t41.C0
                     Join [Db70].dbo.T51 t51
@@ -216,6 +204,9 @@ namespace Aban360.ReportPool.Persistence.Base
                     		{branchTypeQuery}
                     )
                     Select
+                        ROUND(SUM(BillUnit*Duration/IIF(SumDuration<=0,1,SumDuration)),1) WaterConsumptionUnit,--آحاد مصرف آب
+                    	CAST((SUM(Consumption)*30)/( (SUM(IIF(Duration<=0,1,Duration))/(SUM(IIF(BillC<=0,1,BillC)))*SUM(IIF(UnitC<=0,1,UnitC)))) AS float) as ConsumptionAverage,
+						SUM(Duration)/SUM(IIF(BillC<=0,1,BillC)) DailyAverage,-- روز قرائت
 						MAX(RegionId) RegionId,
 						MAX(RegionTitle) RegionTitle,
                     	{SelectKey} as GroupKey,
@@ -223,8 +214,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         SUM(BillC) as BillCount,
                         COUNT(1) as TransactionCount,
                     	SUM(SewageConsumption) as SewageConsumption,
-                    	SUM(Consumption) as Consumption,
-                    	AVG(ConsumptionAverage) as ConsumptionAverage,
+                    	SUM(Consumption) as Consumption,                    	
                     	SUM(Duration) as Duration,
                     	SUM(SumItems) as SumItems,
                     	SUM(BillUnitCounts) as BillUnitCounts,

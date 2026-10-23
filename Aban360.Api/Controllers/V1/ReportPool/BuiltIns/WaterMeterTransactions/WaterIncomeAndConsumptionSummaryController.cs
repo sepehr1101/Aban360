@@ -28,8 +28,9 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
             _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("raw")]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(WaterIncomeAndConsumptionSummaryInputDto inputDto, CancellationToken cancellationToken)
         {
