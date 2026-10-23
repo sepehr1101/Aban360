@@ -9,7 +9,7 @@ namespace Aban360.LocationPool.Persistence.Migrations
     [Migration(14031110)]
     public class DbInitialDesign : Migration
     {
-        string _schema= TableSchema.Name, Id = nameof(Id), Title = nameof(Title), Hash = nameof(Hash);
+        string _schema = TableSchema.Name, Id = nameof(Id), Title = nameof(Title), Hash = nameof(Hash);
         int _31 = 31, _255 = 255, _1023 = 1023;
         public override void Up()
         {
@@ -104,6 +104,7 @@ namespace Aban360.LocationPool.Persistence.Migrations
                 .WithColumn(Title).AsString(_255).NotNullable()
                 .WithColumn("FromReadingNumber").AsAnsiString(20).NotNullable()
                 .WithColumn("ToReadingNumber").AsAnsiString(20).NotNullable()
+                .WithColumn("IsValid").AsBoolean().Nullable()
                 .WithColumn($"{nameof(TableName.Zone)}{Id}").AsInt32().NotNullable()
                    .ForeignKey(NamingHelper.Fk(TableName.Zone, table), _schema, nameof(TableName.Zone), Id);
         }

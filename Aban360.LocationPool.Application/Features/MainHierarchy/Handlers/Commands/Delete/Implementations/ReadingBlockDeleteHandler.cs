@@ -9,10 +9,10 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Comma
 {
     internal sealed class ReadingBlockDeleteHandler : IReadingBlockDeleteHandler
     {
-        private readonly IReadingBlockQeryService _readingBlockQeryService;
+        private readonly IReadingBlockQueryService _readingBlockQeryService;
         private readonly IReadingBlockCommandService _readingBlockCommandService;
         public ReadingBlockDeleteHandler(
-           IReadingBlockQeryService readingBlockQeryService,
+           IReadingBlockQueryService readingBlockQeryService,
             IReadingBlockCommandService readingBlockCommandService)
         {
             _readingBlockQeryService = readingBlockQeryService;

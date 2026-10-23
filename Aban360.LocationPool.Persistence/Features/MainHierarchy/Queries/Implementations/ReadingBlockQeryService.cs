@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implementations
 {
-    internal sealed class ReadingBlockQeryService : IReadingBlockQeryService
+    internal sealed class ReadingBlockQeryService : IReadingBlockQueryService
     {
         private readonly IUnitOfWork _uow;
         private readonly DbSet<ReadingBlock> _readingBlocks;

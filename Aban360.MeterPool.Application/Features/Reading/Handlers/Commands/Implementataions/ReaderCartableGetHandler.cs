@@ -1,5 +1,4 @@
-﻿using Aban360.ClaimPool.Domain.Features.Land.Entities;
-using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
+﻿using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
@@ -13,16 +12,12 @@ using Aban360.MeterPool.Persistence.Features.Reading.Commands;
 using Aban360.MeterPool.Persistence.Features.Reading.Queries.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
-using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Implementations;
 using Aban360.ReportPool.Domain.Base;
 using Guild = Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
-using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
-using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using System.Threading;
 
 namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Implementataions
 {
@@ -106,8 +101,8 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 {
                     TrackingCommandService trackingCommandService = new(connection, transaction);
 
-                    await trackingCommandService.UpdateSeen(trackingSeenUpdateDto);
-                    await trackingCommandService.InsertDuplicate(trackingDuplicateInsertDto);
+                    //await trackingCommandService.UpdateSeen(trackingSeenUpdateDto);
+                    //await trackingCommandService.InsertDuplicate(trackingDuplicateInsertDto);
 
                     transaction.Commit();
                 }

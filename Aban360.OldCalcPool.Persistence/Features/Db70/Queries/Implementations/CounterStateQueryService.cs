@@ -26,10 +26,16 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
 
             return result;
         }
-
         public async Task<IEnumerable<CounterStateCodeDto>> Get(bool isReadable)
         {
             string query = GetAllQuery(isReadable);
+            IEnumerable<CounterStateCodeDto> result = await _sqlReportConnection.QueryAsync<CounterStateCodeDto>(query, null);
+
+            return result;
+        }
+        public async Task<IEnumerable<CounterStateCodeDto>> GetValids()
+        {
+            string query = GetValidsQuery();
             IEnumerable<CounterStateCodeDto> result = await _sqlReportConnection.QueryAsync<CounterStateCodeDto>(query, null);
 
             return result;
@@ -42,6 +48,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
                     	Title	
                     From [Db70].dbo.CounterVaziat
                     Where MoshtarakinId=@id";
+        }
+        private string GetValidsQuery()
+        {
+            return @"Select 
+                    	MoshtarakinId as Id,
+                    	Title	
+                    From [Db70].dbo.CounterVaziat
+                    Where IsValid = 1";
         }
         private string GetAllQuery(bool isReadable)
         {

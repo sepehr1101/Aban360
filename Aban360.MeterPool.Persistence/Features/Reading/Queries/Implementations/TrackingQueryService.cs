@@ -1,4 +1,6 @@
 ﻿using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
 using Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries;
 using Aban360.MeterPool.Persistence.Features.Reading.Queries.Contracts;
 using Dapper;
@@ -19,10 +21,30 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
             IEnumerable<TrackingGetDto> result = await _sqlReportConnection.QueryAsync<TrackingGetDto>(query);
             return result;
         }
-        public async Task<IEnumerable<TrackingGetDto>> Get(Guid id)
+        public async Task<TrackingGetDto> Get(Guid id)
         {
             string query = GetByIdQuery();
-            IEnumerable<TrackingGetDto> result = await _sqlReportConnection.QueryAsync<TrackingGetDto>(query, new { id });
+            TrackingGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<TrackingGetDto>(query, new { id });
+            if (result is null)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidTrackingId);
+            }
+            return result;
+        }
+        public async Task<TrackingGetDto> Get(long trackNumber)
+        {
+            string query = GetByTrackNumberQuery();
+            TrackingGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<TrackingGetDto>(query, new { trackNumber });
+            if (result is null)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidTrackNumber);
+            }
+            return result;
+        }
+        public async Task<IEnumerable<TrackingGetDto>> Get(IEnumerable<long> trackNumbers)
+        {
+            string query = GetByTrackNumbersQuery();
+            IEnumerable<TrackingGetDto> result = await _sqlReportConnection.QueryAsync<TrackingGetDto>(query, new { trackNumbers });
             return result;
         }
         public async Task<IEnumerable<TrackingGetDto>> Get(Guid readerId, int flowStepId)
@@ -35,139 +57,247 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
         private string GetQuery()
         {
             return $@"Select 
-						Id,
-						FirstId,
-						BlockId ,
-						TrackNumber ,
-						TbReadingProgramId,
-						ZoneId ,
-						ZoneTitle ,
-						FlowStepId ,
-						FromReadingNumber ,
-						ToReadingNumber ,
-						ListNumber ,
-						InsertBy ,
-						InsertDateJalali ,
-						InsertDateTime ,
-						Seen ,
-						CounterReaderCode ,
-						CounterReaderId ,
-						CounterReaderName ,
-						CounterReaderMobile ,
-						IsBazdid ,
-						IsRoosta,
-						FromDate,
-						ToDate,
-						OverallCustomerCount,
-						ItemCustomerCount,
-						ProvisionallyPercent,
-						ImagePercent,
-						HasPreNumber,
-						DisplayBillId,
-						DisplayCustomerNumber,
-						Description,
-						X,
-						Y,
-						DisplayPreDate,
-						DisplayMobile,
-						HasImage,
-						DisplayDebt,
-						DisplayIcons
-					From [Atlas].reading.Tracking";
+						t.Id,
+						t.FirstId,
+						t.BlockId ,
+						t.TrackNumber ,
+						t.TbReadingProgramId,
+						t.ZoneId ,
+						t.ZoneTitle ,
+						t.FlowStepId ,
+						s.Title FlowStepTitle,
+						t.FromReadingNumber ,
+						t.ToReadingNumber ,
+						t.ListNumber ,
+						t.InsertBy ,
+						t.InsertDateJalali ,
+						t.InsertDateTime ,
+						t.Seen ,
+						t.CounterReaderCode ,
+						t.CounterReaderId ,
+						t.CounterReaderName ,
+						t.CounterReaderMobile ,
+						t.IsBazdid ,
+						t.IsRoosta,
+						t.FromDate,
+						t.ToDate,
+						t.OverallCustomerCount,
+						t.ItemCustomerCount,
+						t.ProvisionallyPercent,
+						t.ImagePercent,
+						t.HasPreNumber,
+						t.DisplayBillId,
+						t.DisplayCustomerNumber,
+						t.Description,
+						t.X,
+						t.Y,
+						t.DisplayPreDate,
+						t.DisplayMobile,
+						t.HasImage,
+						t.DisplayDebt,
+						t.DisplayIcons
+					From [Atlas].reading.Tracking t
+					Join [Atlas].reading.FlowStep s
+						ON t.FlowStepId=s.Id
+					Order By 
+						t.TrackNumber Asc,
+						t.InsertDateTime Asc";
         }
         private string GetByIdQuery()
         {
             return $@"Select 
-						Id,
-						FirstId,
-						BlockId ,
-						TrackNumber ,
-						TbReadingProgramId,
-						ZoneId ,
-						ZoneTitle ,
-						FlowStepId ,
-						FromReadingNumber ,
-						ToReadingNumber ,
-						ListNumber ,
-						InsertBy ,
-						InsertDateJalali ,
-						InsertDateTime ,
-						Seen ,
-						CounterReaderCode ,
-						CounterReaderId ,
-						CounterReaderName ,
-						CounterReaderMobile ,
-						IsBazdid ,
-						IsRoosta,
-						FromDate,
-						ToDate,
-						OverallCustomerCount,
-						ItemCustomerCount,
-						ProvisionallyPercent,
-						ImagePercent,
-						HasPreNumber,
-						DisplayBillId,
-						DisplayCustomerNumber,
-						Description,
-						X,
-						Y,
-						DisplayPreDate,
-						DisplayMobile,
-						HasImage,
-						DisplayDebt,
-						DisplayIcons
+						t.Id,
+						t.FirstId,
+						t.BlockId ,
+						t.TrackNumber ,
+						t.TbReadingProgramId,
+						t.ZoneId ,
+						t.ZoneTitle ,
+						t.FlowStepId ,
+						s.Title FlowStepTitle,
+						t.FromReadingNumber ,
+						t.ToReadingNumber ,
+						t.ListNumber ,
+						t.InsertBy ,
+						t.InsertDateJalali ,
+						t.InsertDateTime ,
+						t.Seen ,
+						t.CounterReaderCode ,
+						t.CounterReaderId ,
+						t.CounterReaderName ,
+						t.CounterReaderMobile ,
+						t.IsBazdid ,
+						t.IsRoosta,
+						t.FromDate,
+						t.ToDate,
+						t.OverallCustomerCount,
+						t.ItemCustomerCount,
+						t.ProvisionallyPercent,
+						t.ImagePercent,
+						t.HasPreNumber,
+						t.DisplayBillId,
+						t.DisplayCustomerNumber,
+						t.Description,
+						t.X,
+						t.Y,
+						t.DisplayPreDate,
+						t.DisplayMobile,
+						t.HasImage,
+						t.DisplayDebt,
+						t.DisplayIcons
 					From [Atlas].reading.Tracking
-					Where Id = @Id;";
+					Join [Atlas].reading.FlowStep s
+						ON t.FlowStepId=s.Id
+					Where t.Id = @Id;";
+        }
+        private string GetByTrackNumberQuery()
+        {
+            return $@"Select Top 1
+						t.Id,
+						t.FirstId,
+						t.BlockId ,
+						t.TrackNumber ,
+						t.TbReadingProgramId,
+						t.ZoneId ,
+						t.ZoneTitle ,
+						t.FlowStepId ,
+						s.Title FlowStepTitle,
+						t.FromReadingNumber ,
+						t.ToReadingNumber ,
+						t.ListNumber ,
+						t.InsertBy ,
+						t.InsertDateJalali ,
+						t.InsertDateTime ,
+						t.Seen ,
+						t.CounterReaderCode ,
+						t.CounterReaderId ,
+						t.CounterReaderName ,
+						t.CounterReaderMobile ,
+						t.IsBazdid ,
+						t.IsRoosta,
+						t.FromDate,
+						t.ToDate,
+						t.OverallCustomerCount,
+						t.ItemCustomerCount,
+						t.ProvisionallyPercent,
+						t.ImagePercent,
+						t.HasPreNumber,
+						t.DisplayBillId,
+						t.DisplayCustomerNumber,
+						t.Description,
+						t.X,
+						t.Y,
+						t.DisplayPreDate,
+						t.DisplayMobile,
+						t.HasImage,
+						t.DisplayDebt,
+						t.DisplayIcons
+					From [Atlas].reading.Tracking t
+					Join [Atlas].reading.FlowStep s
+						ON t.FlowStepId=s.Id
+					Where t.TrackNumber = @TrackNumber
+					Order By t.InsertDateTime Desc;";
+        }
+        private string GetByTrackNumbersQuery()
+        {
+            return $@"Select Top 1
+						t.Id,
+						t.FirstId,
+						t.BlockId ,
+						t.TrackNumber ,
+						t.TbReadingProgramId,
+						t.ZoneId ,
+						t.ZoneTitle ,
+						t.FlowStepId ,
+						s.Title FlowStepTitle,
+						t.FromReadingNumber ,
+						t.ToReadingNumber ,
+						t.ListNumber ,
+						t.InsertBy ,
+						t.InsertDateJalali ,
+						t.InsertDateTime ,
+						t.Seen ,
+						t.CounterReaderCode ,
+						t.CounterReaderId ,
+						t.CounterReaderName ,
+						t.CounterReaderMobile ,
+						t.IsBazdid ,
+						t.IsRoosta,
+						t.FromDate,
+						t.ToDate,
+						t.OverallCustomerCount,
+						t.ItemCustomerCount,
+						t.ProvisionallyPercent,
+						t.ImagePercent,
+						t.HasPreNumber,
+						t.DisplayBillId,
+						t.DisplayCustomerNumber,
+						t.Description,
+						t.X,
+						t.Y,
+						t.DisplayPreDate,
+						t.DisplayMobile,
+						t.HasImage,
+						t.DisplayDebt,
+						t.DisplayIcons
+					From [Atlas].reading.Tracking t
+					Join [Atlas].reading.FlowStep s
+						ON t.FlowStepId=s.Id
+					Where t.TrackNumber = @TrackNumbers
+					Order By t.InsertDateTime Desc;";
         }
         private string GetByUserIdAndStepFlowIdQuery()
         {
             return $@"Select  
-						Id,
-						FirstId,
-						BlockId ,
-						TrackNumber ,
-						TbReadingProgramId,
-						ZoneId ,
-						ZoneTitle ,
-						FlowStepId ,
-						FromReadingNumber ,
-						ToReadingNumber ,
-						ListNumber ,
-						InsertBy ,
-						InsertDateJalali ,
-						InsertDateTime ,
-						Seen ,
-						CounterReaderCode ,
-						CounterReaderId ,
-						CounterReaderName ,
-						CounterReaderMobile ,
-						IsBazdid ,
-						IsRoosta,
-						FromDate,
-						ToDate,
-						OverallCustomerCount,
-						ItemCustomerCount,
-						ProvisionallyPercent,
-						ImagePercent,
-						HasPreNumber,
-						DisplayBillId,
-						DisplayCustomerNumber,
-						Description,
-						X,
-						Y,
-						DisplayPreDate,
-						DisplayMobile,
-						HasImage,
-						DisplayDebt,
-						DisplayIcons
-					From [Atlas].Reading.Tracking
+						t.Id,
+						t.FirstId,
+						t.BlockId ,
+						t.TrackNumber ,
+						t.TbReadingProgramId,
+						t.ZoneId ,
+						t.ZoneTitle ,
+						t.FlowStepId ,
+						s.Title FlowStepTitle,
+						t.FromReadingNumber ,
+						t.ToReadingNumber ,
+						t.ListNumber ,
+						t.InsertBy ,
+						t.InsertDateJalali ,
+						t.InsertDateTime ,
+						t.Seen ,
+						t.CounterReaderCode ,
+						t.CounterReaderId ,
+						t.CounterReaderName ,
+						t.CounterReaderMobile ,
+						t.IsBazdid ,
+						t.IsRoosta,
+						t.FromDate,
+						t.ToDate,
+						t.OverallCustomerCount,
+						t.ItemCustomerCount,
+						t.ProvisionallyPercent,
+						t.ImagePercent,
+						t.HasPreNumber,
+						t.DisplayBillId,
+						t.DisplayCustomerNumber,
+						t.Description,
+						t.X,
+						t.Y,
+						t.DisplayPreDate,
+						t.DisplayMobile,
+						t.HasImage,
+						t.DisplayDebt,
+						t.DisplayIcons
+					From [Atlas].Reading.Tracking t
+					Join [Atlas].reading.FlowStep s
+						ON t.FlowStepId=s.Id
 					Where 
-						CounterReaderId = @ReaderId AND
-						FlowStepId = @FlowStepId AND
-						Seen = 0
+						t.CounterReaderId = @ReaderId AND
+						t.FlowStepId = @FlowStepId AND
+						t.Seen = 0
 					Order By 
-						TrackNumber Asc,
-						InsertDateTime Asc ";
+						t.TrackNumber Asc,
+						t.InsertDateTime Asc ";
         }
     }
 }

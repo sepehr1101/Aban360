@@ -1,5 +1,9 @@
-﻿using Aban360.Common.Extensions;
+﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using Aban360.MeterPool.Domain.Features.Reading.Dtos.Commands;
 using Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Reflection;
@@ -38,7 +42,15 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
 
             await bulkCopy.WriteToServerAsync(dataTable);
         }
-
+        public async Task Update(IEnumerable<DetailUpdateDto> input)
+        {
+            string command = GetUpdateQuery();
+            int recordEffected = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordEffected != (input?.Count() ?? 0))
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidUpdateDetail);
+            }
+        }
         private static DataTable ToDataTable(IEnumerable<DetailInsertDto> input)
         {
             var table = new DataTable();
@@ -143,5 +155,28 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
 
             return table;
         }
+        private string GetUpdateQuery()
+        {
+            return $@"Update Atlas.reading.Detail
+                    Set
+                    	CounterNumber = @CounterNumber,
+                    	LocationDateTime = @LocationDateTime,
+                    	PhoneDateTime = @PhoneDateTime,
+                    	CurrentCounterStateCode = @CurrentCounterStateCode,
+                    	Y = @Y,
+                    	X = @X,
+                    	GisAccuracy = @GisAccuracy,
+                    	CounterNumberShown = @CounterNumberShown,
+                    	Description = @Description,
+                    	AttemptCount = @AttemptCount,
+                    	IsLocked = @IsLocked,
+                    	HighLowStateId = @HighLowStateId,
+                    	OffLoadDateTime = @OffLoadDateTime,
+                    	OffloadDateJalali = @OffloadDateJalali,
+                    	OffLoadTime = @OffLoadTime,
+                    	OffLoadBy = @OffLoadBy 
+                    Where Id = @Id";
+        }
     }
 }
+

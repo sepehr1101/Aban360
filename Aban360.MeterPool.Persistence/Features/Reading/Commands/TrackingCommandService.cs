@@ -153,7 +153,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
         {
             return $@"Insert Into [Atlas].reading.Tracking
                     Select 
-                    	@Id Id,
+                    	NEWID() Id,
                         Id FirstId,
                     	BlockId ,
                     	TrackNumber ,
@@ -193,14 +193,14 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
                     	DisplayIcons
                     From [Atlas].reading.Tracking
                     Where 
-                        Id IN @TrackingIds AND
-                        FlowStepId = {(int)ReadingFlowStepEnum.CreatePath}";
+                        Id IN @TrackingIds --AND
+                        --FlowStepId = {(int)ReadingFlowStepEnum.CreatePath}";
         }
         private string GetUpdateSeenCommand()
         {
             return $@"Update [Atlas].reading.Tracking
                     Set Seen = @Seen
-                    Where BlockId IN @BlockIds ";
+                    Where BlockId IN @BlockIds AND Seen = 0";
         }
     }
 }

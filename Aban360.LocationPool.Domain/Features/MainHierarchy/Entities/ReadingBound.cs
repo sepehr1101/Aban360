@@ -12,6 +12,7 @@ public class ReadingBound
     public int ZoneId { get; set; }
     public string FromReadingNumber { get; set; } = null!;
     public string ToReadingNumber { get; set; } = null!;
+    public bool IsValid { get; set; }
 
     public virtual ICollection<ReadingBlock> ReadingBlocks { get; set; } = new List<ReadingBlock>();
 

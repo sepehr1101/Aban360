@@ -10,10 +10,10 @@ namespace Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Comma
     internal sealed class ReadingBlockUpdateHandler : IReadingBlockUpdateHandler
     {
         private readonly IMapper _mapper;
-        private readonly IReadingBlockQeryService _readingBlockQeryService;
+        private readonly IReadingBlockQueryService _readingBlockQeryService;
         public ReadingBlockUpdateHandler(
             IMapper mapper,
-           IReadingBlockQeryService readingBlockQeryService)
+           IReadingBlockQueryService readingBlockQeryService)
         {
             _mapper = mapper;
             _mapper.NotNull(nameof(mapper));
