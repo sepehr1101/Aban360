@@ -18,7 +18,7 @@
         public int SumTransactionCount { get; set; }
         public float SumSewageConsumption { get; set; }
         public int SumConsumption { get; set; }
-        public float SumConsumptionAverage { get; set; }
+        public double SumConsumptionAverage { get; set; }
         public int SumBillUnitCounts { get; set; }
         public int SumDuration { get; set; }
         public long SumItems { get; set; }

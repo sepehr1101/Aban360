@@ -67,7 +67,7 @@ namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.
                      FullName = $"{p.FirstName} {p.Surname}",
                      FatherName = p.FatherName,
                      NationalCode = p.NationalCode,
-                     UsageTitle = p.UsageSellTitle,
+                     UsageTitle = p.UsageConsumptionTitle,
                      CauseTitle = "بدهی مشترک",
                      CustomerNumber = p.CustomerNumber,
                      CustomerNumber2 = p.CustomerNumber,
