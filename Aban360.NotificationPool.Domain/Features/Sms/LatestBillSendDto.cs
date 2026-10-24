@@ -4,5 +4,12 @@
     {
         public string BillId { get; set; } = default!;
         public string? Mobile { get; set; }
+        public LatestBillSendDto(string billId)
+        {
+            BillId = billId;
+        }
+        public LatestBillSendDto()
+        {
+        }
     }
 }

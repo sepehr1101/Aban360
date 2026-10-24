@@ -5,6 +5,9 @@
         public static int RayabOperator { get { return 666; } }
         public static string HandleFlat { get { return "HandleFlat"; } }
         public static string Handle { get { return "Handle"; } }
+       
+        public static string XApiKey { get { return "x-api-key"; } }
+        public static string NowGenerateBillXApiKey { get { return "AAOiI1MTIiLCJodHRwOi8vc23NoZW"; } }
 
         public static string Atlas { get { return "Atlas"; } }
         public static string AbAndFazelab { get { return "AbAndFazelab"; } }
