@@ -8,10 +8,10 @@
         public int BillCount { get; set; }
         public int TransactionCount { get; set; }
         public float SewageConsumption { get; set; }
-        public int Consumption { get; set; }
+        public long Consumption { get; set; }
         public double ConsumptionAverage { get; set; }
         public int BillUnitCounts { get; set; }
-        public int Duration { get; set; }
+        public long Duration { get; set; }
         public long SumItems { get; set; }
         public long SumWater { get; set; }
         public long Item1 { get; set; }

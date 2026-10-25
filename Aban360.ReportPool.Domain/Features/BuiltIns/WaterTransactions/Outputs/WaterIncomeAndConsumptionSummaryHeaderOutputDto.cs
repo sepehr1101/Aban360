@@ -17,10 +17,10 @@
         public int SumBillCount { get; set; }
         public int SumTransactionCount { get; set; }
         public float SumSewageConsumption { get; set; }
-        public int SumConsumption { get; set; }
+        public long SumConsumption { get; set; }
         public double SumConsumptionAverage { get; set; }
         public int SumBillUnitCounts { get; set; }
-        public int SumDuration { get; set; }
+        public long SumDuration { get; set; }
         public long SumItems { get; set; }
         public long SumWater { get; set; }
         public long SumItem1 { get; set; }
@@ -61,10 +61,10 @@
         public int SumBillCount { get; set; }
         public int SumTransactionCount { get; set; }
         public float SumSewageConsumption { get; set; }
-        public int SumConsumption { get; set; }
+        public long SumConsumption { get; set; }
         public float SumConsumptionAverage { get; set; }
         public int SumBillUnitCounts { get; set; }
-        public int SumDuration { get; set; }
+        public long SumDuration { get; set; }
         public long SumItemsOff { get; set; }
         public long SumOffWater { get; set; }
         public long SumItemOff1 { get; set; }

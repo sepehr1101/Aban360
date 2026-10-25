@@ -2,8 +2,22 @@
 
 namespace Aban360.Common.ApplicationUser
 {
-    public class AppUser : ClaimsPrincipal, IAppUser
+    public class AppUserManual : IAppUser
     {
+        public Guid UserId { get; private set; }
+        public string Username { get; private set; }
+        public string FullName { get; private set; }
+        public ICollection<string> Roles { get; }
+        public bool IsAdmin { get; set; }
+        public AppUserManual()
+        {
+            UserId = Guid.Parse("A2DB559D-22BD-4A49-964E-29FDF88D7D8A");
+            Username = "2416256";
+            FullName = "دستیار رایاب";
+        }
+    }
+    public class AppUser : ClaimsPrincipal, IAppUser
+    {        
         public AppUser(ClaimsPrincipal principal)
             : base(principal)
         {
