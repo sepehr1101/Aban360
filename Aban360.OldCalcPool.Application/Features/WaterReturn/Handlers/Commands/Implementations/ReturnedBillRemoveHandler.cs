@@ -132,7 +132,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                     await billCommandService.UpdateOldDbDel(billsDelUpdateDto);
                     await billCommandService.Delete(billRemoveByIdDto);
                     await autoBackCommandService.UpdateIsDeleted(hRepairInsertDto.MinutesNumber, ReportLiterals.Atlas);
-                    string opLogText = string.Format(OpLogLiterals.BillReturnedDeletedOpLog, hRepairInsertDto.Id, hRepairId);
+                    string opLogText = string.Format(OpLogLiterals.BillReturnedDeletedOpLog, billId, hRepairInsertDto.Id, hRepairId);
                     await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();

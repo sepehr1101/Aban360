@@ -23,6 +23,7 @@ using Aban360.Common.Db.Constants.Literals;
 using Aban360.CalculationPool.Persistence.Features.Rule.Queries.Contracts;
 using Aban360.Common.Literals;
 using Aban360.Common.BaseEntities;
+using Aban360.Common.Exceptions;
 
 namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Implementations
 {
@@ -102,13 +103,12 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
-                    VariablesCommandService variablesCommandService = new(connection, transaction);
                     TankerCommandService tankerCommandService = new(connection, transaction);
                     BedBesCommandService bedBesCommandService = new(connection, transaction);
                     BillCommandService billCommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
-                    int customerNumber = await variablesCommandService.GetAndRenewTankerRadif();
+                    int customerNumber = await GetCustomerNumber(inputDto.ZoneId);
                     TankerInsertDto tankerInsertDto = GetTankerInsertDto(inputDto, calcResult, customerNumber, barge);
                     BedBesCreateDto bedBesInsertDto = await GetBedBesInsertDto(tankerInsertDto, calcResult);
                     calcResult.BillId = bedBesInsertDto.ShGhabs1;
@@ -157,7 +157,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private async Task<BedBesCreateDto> GetBedBesInsertDto(TankerInsertDto tankerInsertDto, TankerWaterCalculationOutputDto calcResult)
         {
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
-            string _3digitZoneId = await _t52QueryService.Get(new ZoneIdAndCustomerNumber(tankerInsertDto.ZoneId, tankerInsertDto.CustomerNumber));
+            string _3digitZoneId = await _t52QueryService.Get(tankerInsertDto.ZoneId);
             string billId = TransactionIdGenerator.GenerateBillId(tankerInsertDto.CustomerNumber.ToString(), _3digitZoneId);
             var (sumItems, jam, payable) = TransactionIdGenerator.GetAmounts(0, (long)calcResult.Final);
             string payId = TransactionIdGenerator.GeneratePaymentId((long)payable, billId, $"{CommonLiterals.WaterPayIdUniqueCode}00");
@@ -284,6 +284,19 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             inputDto.FirstName = inputDto.FirstName.Trim();
             inputDto.Surname = inputDto?.Surname?.Trim() ?? string.Empty;
             inputDto.Address = inputDto?.Address?.Trim() ?? string.Empty;
+        }
+        private async Task<int> GetCustomerNumber(int zoneId)
+        {
+            decimal bargeMotam = await _variabService.RenewBrageMotamAndGet(zoneId, false);
+            string bargeNumber = bargeMotam.ToString().PadLeft(3, '0');
+            if (zoneId.ToString().Length != 6)
+            {
+                throw new TankerException(ExceptionLiterals.InvalidZoneId);
+            }
+            string digitZoneId = zoneId.ToString().Substring(2, 4);
+
+            string customerNumber = $@"9{digitZoneId}{bargeNumber}";
+            return Convert.ToInt32(customerNumber);
         }
     }
 }

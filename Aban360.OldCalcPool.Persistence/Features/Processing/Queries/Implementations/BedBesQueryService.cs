@@ -696,8 +696,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                     WHERE
                     	town=@zoneId AND
                     	radif=@customerNumber AND
-						pri_date>= @FromDate AND today_date <=@ToDate AND
-                        cod_vas NOT IN (4,7,8) --AND
+						pri_date>= @FromDate AND today_date <=@ToDate-- AND
+                        --cod_vas NOT IN (4,7,8) --AND
                         --del=0
                     Order by date_bed";
         }
