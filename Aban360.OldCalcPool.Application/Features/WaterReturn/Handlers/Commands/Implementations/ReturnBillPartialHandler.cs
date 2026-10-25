@@ -41,9 +41,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private int _11OlgooConsumptionAverage = 34;
         private int _12OlgooConsumptionAverage = 36;
         private int _13And14OlgooConsumptionAverage = 39;
-        private int _11OlgooCAmount = 143_000;
-        private int _12OlgooCAmount = 120_120;
-        private int _13And14OlgooCAmount = 132_990;
+        private int _11OlgooCAmount = 133_242;//143_000;
+        private int _12OlgooCAmount = 133_242;//120_120;
+        private int _13And14OlgooCAmount = 133_242;// 132_990;
         private int _dayOfMonth = 30;
         private int _from4YearsAgo = -4;
         public ReturnBillPartialHandler(
@@ -205,8 +205,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             int customerConsumption = (int)bedBes.Masraf;
             int amount = _returnBillBaseHandler.IsDomestic(customerInfo.UsageId) ? domesticCAmount : c;
             float masHadr = customerConsumption - consumption;
-            //374-153.4                  221
-            float finalAmount = amount * masHadr;//15,032,862
+
+            float finalAmount = amount * masHadr;
 
             return (finalAmount, masHadr);
         }
