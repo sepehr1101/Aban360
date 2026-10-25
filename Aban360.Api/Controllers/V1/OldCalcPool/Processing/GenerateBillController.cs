@@ -1,5 +1,6 @@
 ﻿using Aban360.Api.Controllers.V1.NotificationPool.Commands;
 using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.NotificationPool.Application.Features.Sms;
@@ -10,6 +11,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Hangfire;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -83,14 +85,16 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [AllowAnonymous]
+        [HttpPost]
         [Route("now")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<NowGenerateBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> NowCalcuation(NowGenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
             try
             {
-                NowGenerateBillOutputDto handleResult = await _nowGenerateBillHandler.Handle(inputDto, CurrentUser, cancellationToken);
+                IAppUser appUser = new AppUserManual();
+                NowGenerateBillOutputDto handleResult = await _nowGenerateBillHandler.Handle(inputDto, appUser, cancellationToken);
                 HttpStatusCode statusResult = handleResult.ErrorCode switch
                 {
                     (int)NowGenerateBillErrorCodeEnum.Success => HttpStatusCode.OK,
