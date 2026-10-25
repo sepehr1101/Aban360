@@ -31,9 +31,9 @@ namespace Aban360.Common.Db.Services.Dtos
     public record LatesTavizInfo
     {
         public int CustomerNumber { get; set; }
-        public string? TavizDateJalali { get; set; }
-        public string? TavizCause { get; set; }
-        public string? TavizRegisterDateJalali { get; set; }
-        public int? TavizNumber { get; set; }
+        public string? ChangeDateJalali { get; set; }
+        public string? ChangeCause { get; set; }
+        public string? ChangeRegisterDateJalali { get; set; }
+        public int? ChangeNumber { get; set; }
     }
 }

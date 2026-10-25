@@ -23,6 +23,7 @@ using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Diagnostics;
+using Aban360.Common.Db.Services.Dtos;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Update.Implementations
 {
@@ -85,7 +86,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             MeterReadingDetailDataOutputDto previousMeterDetailDto = await _meterReadingDetailService.GetById(input.Id);
             await Validate(input, previousMeterDetailDto, cancellationToken);
 
-            CommonDto.CustomerInfoGetDto customerInfo = await _commonMemberQueryService.GetMembersBedBesTavizInfo(previousMeterDetailDto.ZoneId, previousMeterDetailDto.CustomerNumber);
+            CustomerLastInfoGetDto customerInfo = await _commonMemberQueryService.GetMembersBedBesTavizFlatInfo(previousMeterDetailDto.ZoneId, previousMeterDetailDto.CustomerNumber, true);
             AbBahaCalculationDetails abBahaResult = await CalcAbBahaTariff(input, previousMeterDetailDto, customerInfo, cancellationToken);
             MeterReadingDetailCreateDto meterReadingCreateDto = await GetMeterReadingDetailCreateDto(abBahaResult, input, previousMeterDetailDto, customerInfo, appUser);
             MeterReadingDetailDeleteDto readingDeleteDto = new(input.Id, appUser.UserId, DateTime.Now, MeterReadingDetailRemovedType.EditRecord);
@@ -184,11 +185,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 HasAttentionCounterState = _meterReadingValidateHandler.IsAttentionCounterState(updatedInfo.CurrentCounterStateCode),
             };
         }
-        private async Task<MeterReadingDetailCreateDto> GetMeterReadingDetailCreateDto(AbBahaCalculationDetails abBahaCalc, MeterReadingDetailUpdateDto input, MeterReadingDetailDataOutputDto previousMeterDetailDto, CommonDto.CustomerInfoGetDto customerInfo, IAppUser appUser)
+        private async Task<MeterReadingDetailCreateDto> GetMeterReadingDetailCreateDto(AbBahaCalculationDetails abBahaCalc, MeterReadingDetailUpdateDto input, MeterReadingDetailDataOutputDto previousMeterDetailDto, CustomerLastInfoGetDto customerInfo, IAppUser appUser)
         {
             MeterReadingDetailCreateDto meterDetailCreateDto = new MeterReadingDetailCreateDto();
 
-            var (sumItems, jam, pard) = GetAmounts(customerInfo.MembersInfo.DebtAmount ?? 0, abBahaCalc?.SumItems ?? 0);
+            var (sumItems, jam, pard) = GetAmounts(customerInfo.DebtAmount ?? 0, abBahaCalc?.SumItems ?? 0);
             string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
 
             meterDetailCreateDto.FlowImportedId = previousMeterDetailDto.FlowImportedId;
@@ -208,7 +209,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             meterDetailCreateDto.InsertDateTime = DateTime.Now;
             meterDetailCreateDto.RemovedByUserId = null;
             meterDetailCreateDto.RemovedDateTime = null;
-            meterDetailCreateDto.MobileNumber = customerInfo?.MembersInfo?.MobileNumber ?? string.Empty;
+            meterDetailCreateDto.MobileNumber = customerInfo?.MobileNumber ?? string.Empty;
             meterDetailCreateDto.BranchTypeId = previousMeterDetailDto.BranchTypeId;
             meterDetailCreateDto.UsageId = previousMeterDetailDto.UsageId;
             meterDetailCreateDto.ConsumptionUsageId = previousMeterDetailDto.ConsumptionUsageId;
@@ -230,10 +231,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             meterDetailCreateDto.MeterDiameterId = previousMeterDetailDto.MeterDiameterId;
             meterDetailCreateDto.VirtualCategoryId = previousMeterDetailDto.VirtualCategoryId;
             meterDetailCreateDto.BodySerial = previousMeterDetailDto.BodySerial;
-            meterDetailCreateDto.TavizDateJalali = customerInfo?.TavizInfo?.TavizDateJalali ?? null;
-            meterDetailCreateDto.TavizNumber = customerInfo?.TavizInfo?.TavizNumber ?? null;
-            meterDetailCreateDto.TavizCause = customerInfo?.TavizInfo?.TavizCause ?? null;
-            meterDetailCreateDto.TavizRegisterDateJalali = customerInfo?.TavizInfo?.TavizRegisterDateJalali ?? null;
+            meterDetailCreateDto.TavizDateJalali = customerInfo?.ChangeDateJalali ?? null;
+            meterDetailCreateDto.TavizNumber = customerInfo?.ChangeNumber ?? null;
+            meterDetailCreateDto.TavizCause = customerInfo?.ChangeCause ?? null;
+            meterDetailCreateDto.TavizRegisterDateJalali = customerInfo?.ChangeRegisterDateJalali ?? null;
             meterDetailCreateDto.LastMeterDateJalali = previousMeterDetailDto.PreviousMeterDateJalali;
             meterDetailCreateDto.LastMeterNumber = previousMeterDetailDto.PreviousMeterNumber ?? 0;
             meterDetailCreateDto.LastConsumption = previousMeterDetailDto.PreviousConsumption ?? 0;
@@ -270,7 +271,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             meterDetailCreateDto.Baha = (decimal)sumItems;
             meterDetailCreateDto.Pard = (decimal)pard;
             meterDetailCreateDto.Jam = (decimal)jam;
-            meterDetailCreateDto.WaterDebt = customerInfo.MembersInfo.DebtAmount ?? 0;
+            meterDetailCreateDto.WaterDebt = customerInfo.DebtAmount ?? 0;
 
             meterDetailCreateDto.CodVas = meterDetailCreateDto.CurrentCounterStateCode;
             meterDetailCreateDto.Ghabs = "1";
@@ -390,7 +391,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 throw new ReadingException(ExceptionLiterals.PreviousDateIsInvalid);
             }
         }
-        private async Task<AbBahaCalculationDetails> CalcAbBahaTariff(MeterReadingDetailUpdateDto meterReadingDetailUpdate, MeterReadingDetailDataOutputDto previousMeterDetailDto, CommonDto.CustomerInfoGetDto customerInfo, CancellationToken cancellationToken)
+        private async Task<AbBahaCalculationDetails> CalcAbBahaTariff(MeterReadingDetailUpdateDto meterReadingDetailUpdate, MeterReadingDetailDataOutputDto previousMeterDetailDto, CustomerLastInfoGetDto customerInfo, CancellationToken cancellationToken)
         {
             AbBahaCalculationDetails abBaha;
 
@@ -409,19 +410,19 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
             else if (meterReadingDetailUpdate.CurrentCounterStateCode == (int)CounterStateCodeEnum.Change)
             {
-                if (string.IsNullOrWhiteSpace(customerInfo.TavizInfo.TavizDateJalali) ||
-                    customerInfo.TavizInfo.TavizDateJalali.CompareTo(meterReadingDetailUpdate.CurrentDateJalali) > 0 ||
-                     customerInfo.TavizInfo.TavizDateJalali.CompareTo(customerInfo.BedBesInfo.LastMeterDateJalali) < 0)
+                if (string.IsNullOrWhiteSpace(customerInfo.ChangeDateJalali) ||
+                    customerInfo.ChangeDateJalali.CompareTo(meterReadingDetailUpdate.CurrentDateJalali) > 0 ||
+                     customerInfo.ChangeDateJalali.CompareTo(customerInfo.LastMeterDateJalali) < 0)
                 {
                     throw new ReadingException(ExceptionLiterals.InvalidCalculation);
                 }
                 else
                 {
-                    MeterImaginaryInputDto meterImaginary = GetMeterImaginary(meterReadingDetail, meterReadingDetailUpdate, previousMeterDetailDto, customerInfo.TavizInfo.TavizDateJalali, true);
+                    MeterImaginaryInputDto meterImaginary = GetMeterImaginary(meterReadingDetail, meterReadingDetailUpdate, previousMeterDetailDto, customerInfo.ChangeDateJalali, true);
                     AbBahaCalculationDetails abBahaCalcTmp = await _oldTariffEngine.Handle(meterImaginary, cancellationToken);
                     MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto()
                     {
-                        BillId = customerInfo.MembersInfo.BillId,
+                        BillId = customerInfo.BillId,
                         CurrentDateJalali = meterReadingDetailUpdate.CurrentDateJalali,
                         MonthlyAverageConsumption = abBahaCalcTmp.MonthlyConsumption,
                         PreviousDateJalali = previousMeterDetailDto.PreviousDateJalali,
@@ -430,7 +431,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     abBaha = await _oldTariffEngine.Handle(meterInfo, cancellationToken);
                     if (abBaha.SumItems > _maxAmount)
                     {
-                        throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(customerInfo.MembersInfo.BillId, _maxAmount));
+                        throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(customerInfo.BillId, _maxAmount));
                     }
                 }
             }
@@ -446,44 +447,44 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             return abBaha;
         }
-        private AbBahaCalculationDetails GetAbBahaCalcWithZeroValues(MeterReadingDetailUpdateDto inputDto, CommonDto.CustomerInfoGetDto customerInfo)
+        private AbBahaCalculationDetails GetAbBahaCalcWithZeroValues(MeterReadingDetailUpdateDto inputDto, CustomerLastInfoGetDto customerInfo)
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             inputDto.CurrentNumber = 0;
-            string previousDate = customerInfo.BedBesInfo?.LastMeterDateJalali ?? customerInfo.MembersInfo.MeterInstallationDateJalali;
-            int previousNumber = customerInfo.BedBesInfo?.LastMeterNumber ?? 0;
+            string previousDate = customerInfo?.LastMeterDateJalali ?? customerInfo.MeterInstallationDateJalali;
+            int previousNumber = customerInfo?.LastMeterNumber ?? 0;
             int finalUnit = GetFinalDomesticUnit(customerInfo, inputDto.CurrentDateJalali);
             ConsumptionInfo consumptionInfo = new(previousDate, inputDto.CurrentDateJalali, 0, GetDuration(previousDate, inputDto.CurrentDateJalali), 0, finalUnit);
             MeterInfoOutputDto meterInfo = new(previousDate, inputDto.CurrentDateJalali, previousNumber, 0, inputDto.CurrentCounterStateCode);
 
             CustomerDetailInfoInputDto customerDetailInfo = new()
             {
-                ZoneId = customerInfo.MembersInfo.ZoneId,
-                Radif = customerInfo.MembersInfo.CustomerNumber,
-                BranchType = customerInfo.MembersInfo.UseStateId,
-                UsageId = customerInfo.MembersInfo.UsageId,
-                DomesticUnit = customerInfo.MembersInfo.DomesticUnit,
-                CommertialUnit = customerInfo.MembersInfo.CommercialUnit,
-                OtherUnit = customerInfo.MembersInfo.OtherUnit,
-                EmptyUnit = customerInfo.MembersInfo.EmptyUnit,
-                WaterInstallationDateJalali = customerInfo.MembersInfo.MeterInstallationDateJalali,
-                SewageInstallationDateJalali = customerInfo.MembersInfo.SiphonInstallationDateJalali,
-                WaterRegisterDate = customerInfo.MembersInfo.MeterInstalltionRegisterDateJalali,
-                SewageRegisterDate = customerInfo.MembersInfo.SiphonInstalltionRegisterDateJalali,
-                SewageCalcState = customerInfo.MembersInfo.SewageCalcState,
-                ContractualCapacity = customerInfo.MembersInfo.ContractualCapacity,
-                HouseholdNumber = customerInfo.MembersInfo.HouseholdNumber,
-                HouseholdDate = customerInfo.MembersInfo.HouseholdDateJalali,
-                ReadingNumber = customerInfo.MembersInfo.ReadingNumber,
-                VillageId = customerInfo.MembersInfo.VillageId,
-                IsSpecial = customerInfo.MembersInfo.IsSpecial,
-                VirtualCategoryId = customerInfo.MembersInfo.VirtualCategoryId,
+                ZoneId = customerInfo.ZoneId,
+                Radif = customerInfo.CustomerNumber,
+                BranchType = customerInfo.UseStateId,
+                UsageId = customerInfo.UsageId,
+                DomesticUnit = customerInfo.DomesticUnit,
+                CommertialUnit = customerInfo.CommercialUnit,
+                OtherUnit = customerInfo.OtherUnit,
+                EmptyUnit = customerInfo.EmptyUnit,
+                WaterInstallationDateJalali = customerInfo.MeterInstallationDateJalali,
+                SewageInstallationDateJalali = customerInfo.SiphonInstallationDateJalali,
+                WaterRegisterDate = customerInfo.MeterInstalltionRegisterDateJalali,
+                SewageRegisterDate = customerInfo.SiphonInstalltionRegisterDateJalali,
+                SewageCalcState = customerInfo.SewageCalcState,
+                ContractualCapacity = customerInfo.ContractualCapacity,
+                HouseholdNumber = customerInfo.HouseholdNumber,
+                HouseholdDate = customerInfo.HouseholdDateJalali,
+                ReadingNumber = customerInfo.ReadingNumber,
+                VillageId = customerInfo.VillageId,
+                IsSpecial = customerInfo.IsSpecial,
+                VirtualCategoryId = customerInfo.VirtualCategoryId,
                 CounterStateCode = inputDto.CurrentCounterStateCode,
             };
             MeterInfoByPreviousDataInputDto previousMeterInfo = new()
             {
-                BillId = customerInfo.MembersInfo.BillId,
+                BillId = customerInfo.BillId,
                 PreviousDateJalali = previousDate,
                 PreviousNumber = previousNumber,
                 CurrentDateJalali = inputDto.CurrentDateJalali,
@@ -578,18 +579,18 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
             return duration;
         }
-        private int GetFinalDomesticUnit(CommonDto.CustomerInfoGetDto customerInfo, string readingDateJalali)
+        private int GetFinalDomesticUnit(CustomerLastInfoGetDto customerInfo, string readingDateJalali)
         {
-            if (IsGardenAndResidence(customerInfo.MembersInfo.UsageId))
+            if (IsGardenAndResidence(customerInfo.UsageId))
             {
-                return customerInfo.MembersInfo.DomesticUnit < 1 ? 1 : customerInfo.MembersInfo.DomesticUnit;//((/*customerInfo.OtherUnit + */customerInfo.DomesticUnit) == 0 ? 1 : /*customerInfo.OtherUnit + */ customerInfo.DomesticUnit);
+                return customerInfo.DomesticUnit < 1 ? 1 : customerInfo.DomesticUnit;//((/*customerInfo.OtherUnit + */customerInfo.DomesticUnit) == 0 ? 1 : /*customerInfo.OtherUnit + */ customerInfo.DomesticUnit);
             }
-            int finalHousehold = GetHouseholdUnit(customerInfo.MembersInfo.HouseholdNumber, customerInfo.MembersInfo.HouseholdDateJalali, readingDateJalali);
+            int finalHousehold = GetHouseholdUnit(customerInfo.HouseholdNumber, customerInfo.HouseholdDateJalali, readingDateJalali);
             if (finalHousehold > 1)
             {
-                return customerInfo.MembersInfo.HouseholdNumber;//customerInfo.DomesticUnit;
+                return customerInfo.HouseholdNumber;//customerInfo.DomesticUnit;
             }
-            return customerInfo.MembersInfo.DomesticUnit - customerInfo.MembersInfo.EmptyUnit < 1 ? 1 : customerInfo.MembersInfo.DomesticUnit - customerInfo.MembersInfo.EmptyUnit;
+            return customerInfo.DomesticUnit - customerInfo.EmptyUnit < 1 ? 1 : customerInfo.DomesticUnit - customerInfo.EmptyUnit;
         }
         internal static bool IsGardenAndResidence(int usageId)
         {
