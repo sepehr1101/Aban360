@@ -43,6 +43,21 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             await _sqlReportConnection.ExecuteAsync(IncreaseParavand(dbName, isAtlas), new { zoneId });
             return parvand;
         }
+        public async Task<decimal> RenewBrageMotamAndGet(int zoneId, bool isAtlas)
+        {
+            string dbName = isAtlas ? _atlasDbName : GetDbName(zoneId);
+            decimal previousBargeMotam = await _sqlReportConnection.QueryFirstOrDefaultAsync<decimal>(GetBargeMotamQuery(dbName, isAtlas), new { zoneId });
+            if (previousBargeMotam == 999)
+            {
+                await _sqlReportConnection.ExecuteAsync(SetZeroToBargeMotam(dbName, isAtlas), new { zoneId });
+            }
+            else
+            {
+                await _sqlReportConnection.ExecuteAsync(IncreaseBargeMotam(dbName, isAtlas), new { zoneId });
+            }
+            decimal bargeMotam = await _sqlReportConnection.QueryFirstOrDefaultAsync<decimal>(GetBargeMotamQuery(dbName, isAtlas), new { zoneId });
+            return bargeMotam;
+        }
         public async Task<bool> IsOperationValid(int zoneId, string operationDate)
         {
             string dateCheck = await _sqlReportConnection.QuerySingleAsync<string>(GetCheckDate1(GetDbName(zoneId)), new { @zoneId });
@@ -118,6 +133,12 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             return query;
         }
 
+        private string GetBargeMotamQuery(string dbName, bool isAtlas)
+        {
+            string zoneCondition = isAtlas ? string.Empty : " Where town=@zoneId";
+            string query = $"USE [{dbName}] SELECT barg_motam FROM variab {zoneCondition} ;";
+            return query;
+        }
         private string GetParvandQuery(string dbName, bool isAtlas)
         {
             string zoneCondition = isAtlas ? string.Empty : " Where town=@zoneId";
@@ -129,6 +150,20 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             string zoneCondition = isAtlas ? string.Empty : " Where town=@zoneId";
             string query = $"USE [{dbName}] " +
                $"UPDATE variab SET parvand=parvand+1 {zoneCondition} ;";
+            return query;
+        }
+        private string IncreaseBargeMotam(string dbName, bool isAtlas)
+        {
+            string zoneCondition = isAtlas ? string.Empty : " Where town=@zoneId";
+            string query = $"USE [{dbName}] " +
+               $"UPDATE variab SET barg_motam=barg_motam+1 {zoneCondition} ;";
+            return query;
+        }
+        private string SetZeroToBargeMotam(string dbName, bool isAtlas)
+        {
+            string zoneCondition = isAtlas ? string.Empty : " Where town=@zoneId";
+            string query = $"USE [{dbName}] " +
+               $"UPDATE variab SET barg_motam=0 {zoneCondition} ;";
             return query;
         }
 

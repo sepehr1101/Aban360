@@ -154,7 +154,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
             return $@"Insert Into [Atlas].reading.Tracking
                     Select 
                     	NEWID() Id,
-                        Id FirstId,
+                        FirstId FirstId,
                     	BlockId ,
                     	TrackNumber ,
                     	TbReadingProgramId,
