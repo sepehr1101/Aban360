@@ -25,6 +25,16 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             }
             return _3digitZoneId;
         }
+        public async Task<string> Get(int zoneId)
+        {
+            string query = GetFirstByZoneIdQuery();
+            string? _3digitZoneId = await _sqlReportConnection.QueryFirstOrDefaultAsync<string>(query, new { zoneId});
+            if (string.IsNullOrWhiteSpace(_3digitZoneId))
+            {
+                throw new InvalidBillCommandException(ExceptionLiterals.NotFoundUniqueCode);
+            }
+            return _3digitZoneId;
+        }
 
         private string GetByZoneIdAndCustomerNumberQuery()
         {
@@ -33,6 +43,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     Where 
                         C1=@ZoneId AND 
                         (@CustomerNumber Between C9 and C10)";
+        }
+        private string GetFirstByZoneIdQuery()
+        {
+            return @"Select Top 1 C3 _3digitZoneId
+                    From Db70.dbo.T52
+                    Where 
+                        C1=@ZoneId";
         }
     }
 }
