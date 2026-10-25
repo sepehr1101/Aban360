@@ -174,6 +174,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                     MeterDiameterId = d.MeterDiameterId,
                     MeterDiameterTitle = d.MeterDiameterTitle,
                     SiphonDiameterId = d.SiphonDiameterId,
+                    SiphonDiameterTitle = d.SiphonDiameterTitle ?? string.Empty,
                     PostalCode = d.PostalCode,
                     PreNumber = d.PreNumber,
                     PreDateJalali = d.PreDateJalali,
