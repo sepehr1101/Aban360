@@ -10,6 +10,7 @@ using Aban360.CommunicationPool.Domain.Features.Sms.Queries;
 using Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementations;
 using Aban360.CommunicationPool.Persistence.Features.Sms.Queries.Contracts;
 using Aban360.NotificationPool.Application.Features.Sms;
+using Aban360.NotificationPool.Domain.Features.Sms;
 using Hangfire;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -69,8 +70,9 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 IEnumerable<Guid> smsDrafIds = smsDraftInfo.Select(s => s.Id).ToList();
                 await ExecSql(new SmsDraftUpdateDto(smsDrafIds, firstFlowId.ToString(), smsFlowId), true);
 
-                //SendSms
-                //if SmsResult==200 -> UpdateSendDateTime (smsFlow,smsDraft)
+                ICollection<SendSmsDataDto> smsData = smsDraftInfo.Select(sms => new SendSmsDataDto(sms.Message, sms.MobileNumber, sms.BillId, null, Guid.Empty)).ToList();
+                await _smsOldHandler.Send(smsData);
+            
                 await ExecSql(new SmsDraftUpdateDto(smsDrafIds, firstFlowId.ToString(), smsFlowId), new SmsFlowUpdateDto(smsFlowId), false);
             }
             await SendSms(firstFlowId, smsFlowId);

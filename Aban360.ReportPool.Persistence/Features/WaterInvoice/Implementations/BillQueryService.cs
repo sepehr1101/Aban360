@@ -440,7 +440,8 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
 						PreviousDay >= @PreviousDateJalali AND
 						NextDay <= @CurrentDateJalali AND
 						--OldDbDel <> 1 AND
-						TypeCode IN (1,7,8)";
+						TypeCode IN (1,7,8)  AND
+						CounterStateCode NOT IN (4,7,8)";
         }
         private string GetRepairReturnedQuery(int type)
         {

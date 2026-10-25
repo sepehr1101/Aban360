@@ -3,6 +3,8 @@ using Microsoft.Extensions.Options;
 using Aban360.Common.Literals;
 using System.Net.Http.Json;
 using System.Runtime.InteropServices;
+using Aban360.NotificationPool.Domain.Features.Sms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Aban360.NotificationPool.Application.Features.Sms
 {
@@ -11,6 +13,7 @@ namespace Aban360.NotificationPool.Application.Features.Sms
         Task SendNew(string mobile, string text, Guid trackingId);
         Task Send(string mobile, string text, Guid trackingId = default, SmsMessageType messageType = SmsMessageType.Notification);
         Task Send(string mobile, string text, [Optional] Guid trackingId);
+        Task Send(IEnumerable<SendSmsDataDto> data, SmsMessageType messageType = SmsMessageType.Notification);
     }
 
     internal sealed class SmsOldHandler : ISmsOldHandler
@@ -51,6 +54,22 @@ namespace Aban360.NotificationPool.Application.Features.Sms
                         clientCorrelatedId = trackingId == Guid.Empty ? (string?)null : trackingId.ToString()
                     }
                 }
+            });
+
+            using HttpResponseMessage response = await _httpClient.SendAsync(request);
+            string res = await response.Content.ReadAsStringAsync();
+            response.EnsureSuccessStatusCode();
+        }
+        public async Task Send(IEnumerable<SendSmsDataDto> data, SmsMessageType messageType = SmsMessageType.Notification)
+        {
+            using HttpRequestMessage request = new(HttpMethod.Post, "messages");
+            request.Headers.Add("X-Api-Key", _options.ApiKey);
+            request.Content = JsonContent.Create(new
+            {
+                senderLine = _options.Sender,
+                messageTypeId = (byte)messageType,
+                clientBatchId = Guid.NewGuid().ToString("N"),
+                messages = data
             });
 
             using HttpResponseMessage response = await _httpClient.SendAsync(request);
