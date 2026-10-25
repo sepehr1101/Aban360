@@ -1,4 +1,4 @@
-using Aban360.Api.ExceptionHandlers;
+﻿using Aban360.Api.ExceptionHandlers;
 using Aban360.Api.Extensions;
 using Aban360.Api.Filters;
 using Aban360.Api.Hubs.Implementations;
@@ -78,4 +78,3 @@ app.MapControllers();
 app.Run();
 
 public partial class Program { }
-

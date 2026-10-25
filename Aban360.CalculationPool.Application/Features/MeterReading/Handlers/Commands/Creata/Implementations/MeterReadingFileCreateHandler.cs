@@ -132,7 +132,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
             return newSmsDraftList;
         }
-        public async Task<MeterReadingFileCreateOutputDto> InsertCloseSmsAndGetResult(ICollection<MeterReadingDetailCreateDto> readingDetailsCreate, IAppUser appUser)
+        private async Task<MeterReadingFileCreateOutputDto> InsertCloseSmsAndGetResult(ICollection<MeterReadingDetailCreateDto> readingDetailsCreate, IAppUser appUser)
         {
             int firstFlowId = readingDetailsCreate?.FirstOrDefault()?.FlowImportedId ?? 0;
             IEnumerable<MeterReadingDetailDataOutputDto> meterReadigInfo = await _meterReadingDetailQueryService.Get(firstFlowId, false);

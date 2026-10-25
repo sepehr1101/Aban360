@@ -22,7 +22,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
             string query = GetGroupedWithCteQuery(input.IsChangeDate, "mc.ChangeCauseTitle");
             string reportTitle = input.IsChangeDate == true ? ReportLiterals.WaterMeterReplacements(ReportLiterals.ChangeDate) + ReportLiterals.ByChangeCause : ReportLiterals.WaterMeterReplacements(ReportLiterals.RegisterDate) + ReportLiterals.ByChangeCause;
 
-            IEnumerable<WaterMeterReplacementsSummaryDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsSummaryDataOutputDto>(query, input);
+            IEnumerable<WaterMeterReplacementsSummaryDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsSummaryDataOutputDto>(query, input, commandTimeout: 3600);
             WaterMeterReplacementsHeaderOutputDto waterMeterReplacementsHeader = new WaterMeterReplacementsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,

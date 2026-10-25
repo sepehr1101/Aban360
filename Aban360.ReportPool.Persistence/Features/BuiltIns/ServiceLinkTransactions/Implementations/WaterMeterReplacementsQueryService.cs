@@ -23,7 +23,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.ServiceLinkTransactio
 
             string reportTitle = input.IsChangeDate == true ? ReportLiterals.WaterMeterReplacements(ReportLiterals.ChangeDate) : ReportLiterals.WaterMeterReplacements(ReportLiterals.RegisterDate);
 
-            IEnumerable<WaterMeterReplacementsDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsDataOutputDto>(query, input);
+            IEnumerable<WaterMeterReplacementsDataOutputDto> waterMeterReplacementsData = await _sqlReportConnection.QueryAsync<WaterMeterReplacementsDataOutputDto>(query, input, commandTimeout: 3600);
             WaterMeterReplacementsHeaderOutputDto waterMeterReplacementsHeader = new WaterMeterReplacementsHeaderOutputDto()
             {
                 FromDateJalali = input.FromDateJalali,
