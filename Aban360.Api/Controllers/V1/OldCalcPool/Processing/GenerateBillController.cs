@@ -2,6 +2,8 @@
 using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Db.Constants.Literals;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.NotificationPool.Application.Features.Sms;
 using Aban360.NotificationPool.Domain.Features.Sms;
@@ -27,6 +29,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly ILatestBillSendSmsHandler _latestBillSendSmsHandler;
+        private readonly IOpLogCommandService _opLogCommandService;
         public GenerateBillController(
             IGenerateBillHandler generateBillHandler,
             IFreeGenerateBillHandler freeGenerateBillHandler,
@@ -34,7 +37,8 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             INowGenerateBillHandler nowGenerateBillHandler,
             ISmsOldHandler smsOldHandler,
             IBackgroundJobClient backgroundJobClient,
-            ILatestBillSendSmsHandler latestBillSendSmsHandler)
+            ILatestBillSendSmsHandler latestBillSendSmsHandler,
+            IOpLogCommandService opLogCommandService)
         {
             _generateBillHandler = generateBillHandler;
             _generateBillHandler.NotNull(nameof(generateBillHandler));
@@ -56,6 +60,9 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
 
             _latestBillSendSmsHandler = latestBillSendSmsHandler;
             _latestBillSendSmsHandler.NotNull(nameof(latestBillSendSmsHandler));
+
+            _opLogCommandService = opLogCommandService;
+            _opLogCommandService.NotNull(nameof(opLogCommandService));
         }
 
         [HttpPost, HttpGet]
@@ -91,9 +98,11 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [ProducesResponseType(typeof(ApiResponseEnvelope<NowGenerateBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> NowCalcuation(NowGenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
+            IAppUser appUser = new AppUserManual();
+            string requestOpLogText = string.Format(OpLogLiterals.NowGenerateBillRequestOpLog, inputDto.BillId, inputDto.CurrentMeterNumber);
+            await _opLogCommandService.Insert(requestOpLogText, CurrentUser);
             try
             {
-                IAppUser appUser = new AppUserManual();
                 NowGenerateBillOutputDto handleResult = await _nowGenerateBillHandler.Handle(inputDto, appUser, cancellationToken);
                 HttpStatusCode statusResult = handleResult.ErrorCode switch
                 {

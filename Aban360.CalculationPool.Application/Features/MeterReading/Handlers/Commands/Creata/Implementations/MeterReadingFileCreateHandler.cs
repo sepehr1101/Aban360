@@ -127,7 +127,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             foreach (var item in meterDetails)
             {
                 string smsText = string.Format(smsTemplateInfo.SmsText, zoneInfo.Title, item.BillId, Environment.NewLine);
-                SmsDraftInsertDto newSmsDraftInsert = new(null, item.BillId, smsTemplateInfo.Id, smsText, item.MobileNumber, item.FlowImportedId.ToString(), item.Id.ToString());
+                SmsDraftInsertDto newSmsDraftInsert = new(null, item.BillId, smsFlowId, smsText, item.MobileNumber, item.FlowImportedId.ToString(), item.Id.ToString());
                 newSmsDraftList.Add(newSmsDraftInsert);
             }
             return newSmsDraftList;
