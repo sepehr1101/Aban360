@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Aban360.UserPool.Persistence/Aban360.UserPool.Persistence.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
+    <Using Include="Microsoft.AspNetCore.Http" />
+    <Using Include="Microsoft.Extensions.Logging" />
+    <Compile Include="../../Aban360.UserPool.Application/Features/Ticketing/**/*.cs" LinkBase="Production" />
+    <Compile Include="../../Aban360.UserPool.Application/Features/Auth/Validations/BaseValidator.cs" LinkBase="Production" />
+    <Compile Include="../../Aban360.UserPool.Application/Exceptions/InvalidIdException.cs" LinkBase="Production" />
+    <Compile Include="../../Aban360.UserPool.Application/Extensions/ConfigureServices.cs" LinkBase="Production" />
+    <Compile Include="../../Aban360.Api/Controllers/V1/UserPool/Ticketing/**/*.cs" LinkBase="Production" />
+    <Compile Include="../../Aban360.Api/Models/Ticketing/*.cs" LinkBase="Production" />
+    <Compile Include="../../Aban360.Api/Controllers/V1/BaseController.cs" LinkBase="Production" />
+    <Compile Include="../../Aban360.Api/Filters/EndpointAuthorizationFilter.cs" LinkBase="Production" />
+    <Compile Include="../../Aban360.Api/ExceptionHandlers/GlobalExceptionHandler.cs" LinkBase="Production" />
+  </ItemGroup>
+</Project>
