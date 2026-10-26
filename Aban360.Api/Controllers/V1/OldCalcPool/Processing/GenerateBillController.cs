@@ -1,12 +1,10 @@
-﻿using Aban360.Api.Controllers.V1.NotificationPool.Commands;
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
+﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.NotificationPool.Application.Features.Sms;
-using Aban360.NotificationPool.Domain.Features.Sms;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Constants;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
@@ -99,8 +97,8 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         public async Task<IActionResult> NowCalcuation(NowGenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
             IAppUser appUser = new AppUserManual();
-            string requestOpLogText = string.Format(OpLogLiterals.NowGenerateBillRequestOpLog, inputDto.BillId, inputDto.CurrentMeterNumber);
-            await _opLogCommandService.Insert(requestOpLogText, CurrentUser);
+            string requestOpLogText = string.Format(OpLogLiterals.NowGenerateBillRequestOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber);
+            await _opLogCommandService.Insert(requestOpLogText, appUser);
             try
             {
                 NowGenerateBillOutputDto handleResult = await _nowGenerateBillHandler.Handle(inputDto, appUser, cancellationToken);
@@ -118,7 +116,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
                 NowGenerateBillOutputDto result = new(handleResult.Message, handleResult.ErrorCode);
                 if (result.ErrorCode == (int)NowGenerateBillErrorCodeEnum.Success)
                 {
-                    await _latestBillSendSmsHandler.Handle(inputDto.BillId, inputDto.MobileNumber, CurrentUser, cancellationToken);
+                    await _latestBillSendSmsHandler.Handle(inputDto.BillId, inputDto.MobileNumber, appUser, cancellationToken);
                 }
                 return CustomeStatus(handleResult, statusResult, handleResult.Message);
             }
