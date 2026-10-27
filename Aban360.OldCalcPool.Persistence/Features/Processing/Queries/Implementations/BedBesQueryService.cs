@@ -621,7 +621,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         private string GetListByFromToDate(string dbName)
         {
             return @$"SELECT
-                        id AS id,
+                        id AS Id,
                         town AS Town,
                         radif AS Radif,
                         eshtrak AS Eshtrak,

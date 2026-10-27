@@ -97,7 +97,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             string atlasDbName = ReportLiterals.Atlas;
 
             IEnumerable<BedBesWithDelOutputDto> bedBesIds = await _bedBesQueryService.GetByDateInterval(new ZoneCustomerFromToDateDto((int)repairInfo.Town, (int)repairInfo.Radif, repairInfo.PriDate, repairInfo.TodayDate), zoneDbName);
-            IEnumerable<BedBesUpdateDelDto> bedBesUpdateDelDto = bedBesIds.Select(s => new BedBesUpdateDelDto((int)repairInfo.Town, s.Id, true));
+            IEnumerable<BedBesUpdateDelDto> bedBesUpdateDelDto = bedBesIds.Where(s => s.IsReturned == false).Select(s => new BedBesUpdateDelDto((int)repairInfo.Town, s.Id, true));
             BillFindReturnedInputDto returnedValues = new(memberInfo.ZoneId, memberInfo.CustomerNumber, (int)repairInfo.PriNo, (int)repairInfo.TodayNo, repairInfo.PriDate, repairInfo.TodayDate);
             IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn = await GetBillsToReturn(returnedValues);
 

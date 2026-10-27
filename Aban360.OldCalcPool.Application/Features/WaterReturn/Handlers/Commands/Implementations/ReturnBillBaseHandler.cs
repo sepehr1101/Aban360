@@ -45,7 +45,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IValidator<ReturnBillPartialInputDto> _returnPartialValidator;
         private string _invalidReturnLesstThan1401 = "1401/01/01";
         private static string _title = "برگشتی";
-        static string _type = ReportLiterals.RepairTypeCode;
+        static string _type = ReportLiterals.RepairReturnTypeCode;
         const int _operator = 666;
         public ReturnBillBaseHandler(
             IHttpContextAccessor contextAccessor,
@@ -625,8 +625,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
         public BedBesCreateDto GetBedbes(IEnumerable<BedBesCreateDto> input, CustomerInfoOutputDto customerInfo)
         {
-            var r = input.MaxBy(x => x.DateBed);
-
+            BedBesCreateDto? first = input?.OrderByDescending(x => x.DateBed).ThenByDescending(x => x.Id).FirstOrDefault();
+            var r=first with { };
             r.Id = 0;
 
             r.Barge = 0;

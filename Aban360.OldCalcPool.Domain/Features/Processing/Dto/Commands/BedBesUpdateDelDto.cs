@@ -3,9 +3,9 @@
     public record BedBesUpdateDelDto
     {
         public int ZoneId { get; set; }
-        public int Id { get; set; }
+        public long Id { get; set; }
         public bool Del { get; set; }
-        public BedBesUpdateDelDto(int zoneId, int id, bool del)
+        public BedBesUpdateDelDto(int zoneId, long id, bool del)
         {
             ZoneId = zoneId;
             Id = id;
