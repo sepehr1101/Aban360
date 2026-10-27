@@ -80,7 +80,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillPartialInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             CustomerInfoOutputDto customerInfo = await Validate(inputDto, appUser, cancellationToken);
-            int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(inputDto.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
+            int jalaseNumber = await _returnBillBaseHandler.GetMinutesNumber(inputDto.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
             var (bedBesInfo, bedBesResult) = await GetBedBesCreateDto(inputDto, customerInfo);
 
             float consumptionAverage = 0;
