@@ -17,7 +17,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         Task<IEnumerable<BedBesCreateDto>> GetBedBesList(CustomerInfoOutputDto customerInfo, string fromDateJalali, string toDateJalali);
         BedBesCreateDto GetBedbes(IEnumerable<BedBesCreateDto> input, CustomerInfoOutputDto customerInfo);
         AutoBackCreateDto GetBedBes(BedBesCreateDto bedBes, int bedBesCount, int jalaseNumber, int returnCauseId, string? description);
-        Task<int> GetJalaliNumber(int? minutesNumber, int zoneId, int customerNumber);
+        Task<int> GetMinutesNumber(int? minutesNumber, int zoneId, int customerNumber);
         Task FullValidate(ReturnBillFullInputDto input, CancellationToken cancellationToken);
         Task PartialValidate(ReturnBillPartialInputDto input, CancellationToken cancellationToken);
         void AmountValidate(decimal repairSumItems, decimal previousSumItems);
