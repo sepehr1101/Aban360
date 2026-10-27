@@ -19,6 +19,7 @@ using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -96,53 +97,72 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
         public async Task<ReportOutput<OtherExpensesHeaderOutputDto, OtherExpensesDataOutputDto>> Handle(OtherExpensesInsertInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await InputValidate(inputDto, cancellationToken);
-            ZoneIdAndCustomerNumber zoneIdAndCustomerNumbere = await _memberQueryService.Get(inputDto.BillId);
-            MemberInfoGetDto memberInfo = await _memberQueryService.Get(zoneIdAndCustomerNumbere);
-            await _zoneService.IsUserInZone(appUser, memberInfo.ZoneId);
-            await AmountValidate(memberInfo, inputDto);
-            decimal barge = await _variabService.GetAndRenew(memberInfo.ZoneId);
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(inputDto, appUser);
 
-            IEnumerable<KartInsertDto> kartsInsertDto = GetKartInsertDto(inputDto, memberInfo, (int)barge);
-            IEnumerable<RequestBillDetailsInsertDto> requestBillDetailsInsertDto = await GetRequestBillDetailsInsertDto(kartsInsertDto, memberInfo);
+            var (kartsInsertDto, requestBillDetailsInsertDto) = await GetKartAndRequestBillDetailDto(inputDto, memberInfo);
+
             string opLogText = string.Format(OpLogLiterals.ServiceLinkOtherExpensesOpLog, inputDto.BillId, inputDto.Amount, kartsInsertDto?.Sum(s => s.FinalAmount) ?? 0);
             await SqlCommands(kartsInsertDto, requestBillDetailsInsertDto, inputDto, memberInfo, appUser, opLogText);
             return GetResult(memberInfo, requestBillDetailsInsertDto);
         }
+        public async Task<(IEnumerable<KartInsertDto>, IEnumerable<RequestBillDetailsInsertDto>)> GetKartAndRequestBillDetailDto(OtherExpensesInsertInputDto inputDto, MemberInfoGetDto memberInfo)
+        {
+            decimal barge = await _variabService.GetAndRenew(memberInfo.ZoneId);
+            IEnumerable<KartInsertDto> kartsInsertDto = GetKartInsertDto(inputDto, memberInfo, (int)barge);
+            IEnumerable<RequestBillDetailsInsertDto> requestBillDetailsInsertDto = await GetRequestBillDetailsInsertDto(kartsInsertDto, memberInfo);
+
+            return (kartsInsertDto, requestBillDetailsInsertDto);
+        }
+        public async Task<MemberInfoGetDto> ValidateAndGetMemberInfo(OtherExpensesInsertInputDto inputDto, IAppUser appUser)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumbere = await _memberQueryService.Get(inputDto.BillId);
+            MemberInfoGetDto memberInfo = await _memberQueryService.Get(zoneIdAndCustomerNumbere);
+            await _zoneService.IsUserInZone(appUser, memberInfo.ZoneId);
+            await AmountValidate(memberInfo, inputDto);
+
+            return memberInfo;
+        }
         private async Task SqlCommands(IEnumerable<KartInsertDto> kartsInsertDto, IEnumerable<RequestBillDetailsInsertDto> requestBillDetailsInsertDto, OtherExpensesInsertInputDto inputDto, MemberInfoGetDto memeberInfo, IAppUser appUser, string opLogText)
         {
-            string dbName = GetDbName(kartsInsertDto?.FirstOrDefault()?.ZoneId ?? 0);
-            //string dbName = "Atlas";
-
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
                     connection.Open();
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
                 {
-                    T0CommandService t0CommandService = new(connection, transaction);
-                    MoshtrakCommandService moshtrakCommandService = new(connection, transaction);
-                    KartCommandService kartCommandService = new(connection, transaction);
-                    RequestBillDetailsCommandService requestBillDetailCommandService = new(connection, transaction);
-                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
-                    int trackNumber = (int)(await t0CommandService.GetTrackNumber());
-                    string stringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
-                    MoshtrakCreateDto moshtrakInsertDto = GetMoshtrackCreateDto(inputDto, memeberInfo, trackNumber);
-                    foreach (var item in kartsInsertDto)
-                    {
-                        item.StringTrackNumber = stringTrackNumber;
-                    }
-                    foreach (var item in requestBillDetailsInsertDto)
-                    {
-                        item.TrackNumber = stringTrackNumber;
-                    }
-
-                    await moshtrakCommandService.Insert(moshtrakInsertDto, dbName);
-                    await kartCommandService.Insert(kartsInsertDto, true, dbName);
-                    await requestBillDetailCommandService.Insert(requestBillDetailsInsertDto);
-                    await opLogCommandService.Insert(opLogText, appUser);
-
+                    await ExecSql(connection, transaction, kartsInsertDto, requestBillDetailsInsertDto, inputDto, memeberInfo, appUser, opLogText);
                     transaction.Commit();
                 }
+            }
+        }
+        public async Task ExecSql(IDbConnection connection, IDbTransaction transaction, IEnumerable<KartInsertDto> kartsInsertDto, IEnumerable<RequestBillDetailsInsertDto> requestBillDetailsInsertDto, OtherExpensesInsertInputDto inputDto, MemberInfoGetDto memeberInfo, IAppUser appUser, string? opLogText)
+        {
+            string dbName = GetDbName(kartsInsertDto?.FirstOrDefault()?.ZoneId ?? 0);
+
+
+            T0CommandService t0CommandService = new(connection, transaction);
+            MoshtrakCommandService moshtrakCommandService = new(connection, transaction);
+            KartCommandService kartCommandService = new(connection, transaction);
+            RequestBillDetailsCommandService requestBillDetailCommandService = new(connection, transaction);
+            OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+            int trackNumber = (int)(await t0CommandService.GetTrackNumber());
+            string stringTrackNumber = trackNumber.ToString().PadLeft(11, '0');
+            MoshtrakCreateDto moshtrakInsertDto = GetMoshtrackCreateDto(inputDto, memeberInfo, trackNumber);
+            foreach (var item in kartsInsertDto)
+            {
+                item.StringTrackNumber = stringTrackNumber;
+            }
+            foreach (var item in requestBillDetailsInsertDto)
+            {
+                item.TrackNumber = stringTrackNumber;
+            }
+
+            await moshtrakCommandService.Insert(moshtrakInsertDto, dbName);
+            await kartCommandService.Insert(kartsInsertDto, true, dbName);
+            await requestBillDetailCommandService.Insert(requestBillDetailsInsertDto);
+            if (!string.IsNullOrWhiteSpace(opLogText))
+            {
+                await opLogCommandService.Insert(opLogText, appUser);
             }
         }
         private ReportOutput<OtherExpensesHeaderOutputDto, OtherExpensesDataOutputDto> GetResult(MemberInfoGetDto memberInfo, IEnumerable<RequestBillDetailsInsertDto> requestBillDetails)

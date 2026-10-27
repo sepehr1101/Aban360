@@ -1,4 +1,5 @@
 ﻿using Aban360.Api.Cronjobs;
+using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Implementations;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
@@ -10,7 +11,6 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.NotificationPool.Application.Features.Sms;
-using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
@@ -22,7 +22,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
     [Route("v1/service-link")]
     public class ServiceLinkConnectDisconnectManagerController : BaseController
     {
-        private readonly IConnectDisconnectCommandHandler _connectDisconnectCommandHandler;
+        private readonly IConnectCommandHandler _connectCommandHandler;
+        private readonly IDisconnectCommandHandler _disconnectCommandHandler;
         private readonly IConnectDisconnectSetResultHandler _connectDisconnectSetResultHandler;
         private readonly IConnectDisconnectGetAllHandler _connectDisconnectGetAllHandler;
         private readonly IConnectDisconnectNoResultDeleteHandler _connectDisconnectNoResultDeleteHandler;
@@ -34,7 +35,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         private readonly IBackgroundJobClient _jobClient;
         string successfullyDone = "با موفقیت انجام شد";
         public ServiceLinkConnectDisconnectManagerController(
-            IConnectDisconnectCommandHandler connectDisconnectCommandHandler,
+            IConnectCommandHandler connectCommandHandler,
+            IDisconnectCommandHandler disconnectCommandHandler,
             IConnectDisconnectSetResultHandler connectDisconnectSetResultHandler,
             IConnectDisconnectGetAllHandler connectDisconnectGetAllHandler,
             IConnectDisconnectNoResultDeleteHandler connectDisconnectNoResultDeleteHandler,
@@ -45,8 +47,11 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
             ISmsOldHandler smsHandler,
             IBackgroundJobClient jobClient)
         {
-            _connectDisconnectCommandHandler = connectDisconnectCommandHandler;
-            _connectDisconnectCommandHandler.NotNull(nameof(connectDisconnectCommandHandler));
+            _connectCommandHandler = connectCommandHandler;
+            _connectCommandHandler.NotNull(nameof(connectCommandHandler));
+
+            _disconnectCommandHandler = disconnectCommandHandler;
+            _disconnectCommandHandler.NotNull(nameof(disconnectCommandHandler));
 
             _connectDisconnectSetResultHandler = connectDisconnectSetResultHandler;
             _connectDisconnectSetResultHandler.NotNull(nameof(connectDisconnectSetResultHandler));
@@ -80,10 +85,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         [HttpPost]
         [Route("connect-command")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetConnectCommandSti(ConnectDisconnectPrintInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetConnectCommandSti(ConnectPrintInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = (int)StiReportCodeLiterals.ConnectServiceLink;
-            ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await _connectDisconnectCommandHandler.Handle(inputDto, CurrentUser, true, cancellationToken);
+            ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await _connectCommandHandler.Handle(inputDto, CurrentUser, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
 
             string mobileNumber = result.ReportData?.FirstOrDefault()?.MobileNumber ?? string.Empty;
@@ -96,10 +101,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering.Commands
         [HttpPost]
         [Route("disconnect-command")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetDisconnectCommandSti(ConnectDisconnectPrintInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetDisconnectCommandSti(DisconnectPrintInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = (int)StiReportCodeLiterals.DisconnectServiceLink;
-            ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await _connectDisconnectCommandHandler.Handle(inputDto, CurrentUser, false, cancellationToken);
+            ReportOutput<ConnectDisconnectPrintHeaderOutputDto, ConnectDisconnectPrintDataOutputDto> result = await _disconnectCommandHandler.Handle(inputDto, CurrentUser, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
 
             string mobileNumber = result.ReportData?.FirstOrDefault()?.MobileNumber ?? string.Empty;

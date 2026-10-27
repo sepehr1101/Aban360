@@ -31,7 +31,8 @@
         public static string ServiceLinkReturnRemoved => @"قبض برگشتی حق انشعاب حذف شد. شناسه قبض:{0}  تاریخ:{1}  مبلغ:{2}  نوع قبض:{3}  نوع درخواست:{4}";
         public static string ServiceLinkReturnConfirmedOpLog => @"برگشتی دسته‌ای حق انشعاب انجام شد. شناسه قبض:{0}  تعداد برگشتی:{1}";
 
-        public static string ServiceLinkConnectInsertOpLog => @"صدور دستور وصل انجام شد. شناسه قبض:{0} ";
+        public static string ServiceLinkConnectInsertOpLog => @"صدور دستور وصل انجام شد. شناسه قبض:{0}";
+        public static string ServiceLinkConnectByOfferingInsertOpLog => @"صدور دستور وصل انجام شد. شناسه قبض:{0} مبلغ:{1} با احتساب مالیات:{2}";
         public static string ServiceLinkDisconnectInsertOpLog => @"صدور دستور قطع انجام شد. شناسه قبض:{0}  علت:{1}";
         public static string ServiceLinkConnectSetResultOpLog => @"ثبت نتیجه وصل انجام شد. شناسه قبض:{0}";
         public static string ServiceLinkDisconnectSetResultOpLog => @"ثبت نتیجه قطع انجام شد. شناسه قبض:{0}  نتیجه:{1}";
