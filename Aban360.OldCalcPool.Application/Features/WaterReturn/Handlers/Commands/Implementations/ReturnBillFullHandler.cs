@@ -23,7 +23,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             CustomerInfoOutputDto customerInfo = await Validate(input, appUser, cancellationToken);
 
-            int jalaseNumber = await _returnBillBaseHandler.GetJalaliNumber(input.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
+            int jalaseNumber = await _returnBillBaseHandler.GetMinutesNumber(input.MinutesNumber, customerInfo.ZoneId, customerInfo.Radif);
             IEnumerable<BedBesCreateDto> bedBesInfo = await _returnBillBaseHandler.GetBedBesList(customerInfo, input.FromDateJalali, input.ToDateJalali);
             BedBesCreateDto bedBesResult = _returnBillBaseHandler.GetBedbes(bedBesInfo, customerInfo);
 

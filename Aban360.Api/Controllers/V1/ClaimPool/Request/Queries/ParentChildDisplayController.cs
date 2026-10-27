@@ -17,12 +17,21 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
             _motherChildGetHandler.NotNull(nameof(motherChildGetHandler));
         }
 
-        [HttpGet]
+        [HttpGet, HttpPost]
         [Route("display-parent-child")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MotherChildOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(SearchNumericInput input, CancellationToken cancellationToken)
         {
             MotherChildOutputDto result = await _motherChildGetHandler.Handle(input.Input, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("display-parent-child/{trackNumber}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MotherChildOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByQuery(int trackNumber, CancellationToken cancellationToken)
+        {
+            MotherChildOutputDto result = await _motherChildGetHandler.Handle(trackNumber, cancellationToken);
             return Ok(result);
         }
     }
