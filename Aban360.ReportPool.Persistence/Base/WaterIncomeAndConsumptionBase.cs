@@ -179,9 +179,9 @@ namespace Aban360.ReportPool.Persistence.Base
 						   Case
 							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)<=0 THEN 1
 							    When b.TypeCode IN (1) AND b.UsageId IN (1,3) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)>0 THEN (b.OtherCount+b.CommercialCount+b.DomesticCount)
-								When b.TypeCode IN (1) AND b.UsageId NOT IN (1,3) AND (b.OtherCount+b.CommercialCount)>0 THEN (b.OtherCount+b.CommercialCount)
+								When b.TypeCode IN (1) AND b.UsageId NOT IN (1,3) AND (b.OtherCount+b.CommercialCount+DomesticCount)>0 THEN (b.OtherCount+b.CommercialCount+DomesticCount)
 							    Else 0 
-						    END UnitC
+						   END UnitC
                     From [CustomerWarehouse].dbo.Bills b
                     Join [Db70].dbo.T41 t41
                     	ON b.UsageId=t41.C0

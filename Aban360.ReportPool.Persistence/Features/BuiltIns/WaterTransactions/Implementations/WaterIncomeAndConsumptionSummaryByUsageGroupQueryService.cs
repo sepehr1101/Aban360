@@ -8,6 +8,7 @@ using Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Contrac
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Implementations
 {
@@ -55,7 +56,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 FromConsumption = input.FromConsumption,
                 ToConsumption = input.ToConsumption,
 
-                SumBillCount = waterIncomeAndConsumptionData.Sum(w => w.BillCount),
+                SumBillCount = waterIncomeAndConsumptionData.Sum(w => w.BillCount),//BillC
                 SumTransactionCount = waterIncomeAndConsumptionData.Sum(w=>w.TransactionCount),
                 SumSewageConsumption = waterIncomeAndConsumptionData.Sum(w => w.SewageConsumption),
                 SumConsumption = waterIncomeAndConsumptionData.Sum(w => w.Consumption),
@@ -82,9 +83,16 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 SumItem16 = waterIncomeAndConsumptionData.Sum(w => w.Item16),
                 SumItem17 = waterIncomeAndConsumptionData.Sum(w => w.Item17),
                 SumItem18 = waterIncomeAndConsumptionData.Sum(w => w.Item18),
-                BillUnit = waterIncomeAndConsumptionData.Sum(w => w.BillUnit),
-                TotalUnit = waterIncomeAndConsumptionData.Sum(w => w.TotalUnit)
+                BillUnit = waterIncomeAndConsumptionData.Sum(w => w.BillUnit),//UnitC
+                TotalUnit = waterIncomeAndConsumptionData.Sum(w => w.TotalUnit),
+                WaterConsumptionUnit= waterIncomeAndConsumptionData.Sum(w=>w.WaterConsumptionUnit)                
             };
+            waterIncomeAndConsumptionHeader.ConsumptionAverage =
+                waterIncomeAndConsumptionHeader.SumConsumption * 30 /
+                (waterIncomeAndConsumptionHeader.SumDuration == 0 ? 1 : waterIncomeAndConsumptionHeader.SumDuration) *
+                (waterIncomeAndConsumptionHeader.SumBillCount == 0 ? 1 : waterIncomeAndConsumptionHeader.SumBillCount) *
+                (waterIncomeAndConsumptionHeader.BillUnit == 0 ? 1 : waterIncomeAndConsumptionHeader.BillUnit);
+          
 
             var result = new ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>(reportTitle, waterIncomeAndConsumptionHeader, waterIncomeAndConsumptionData);
             return result;
