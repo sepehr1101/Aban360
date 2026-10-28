@@ -20,6 +20,7 @@
         public static string RepairReturnTypeCode { get { return "5"; } }
         public static string ReturnFull { get { return "کامل"; } }
         public static string ReturnPartial { get { return "محاسبه مجدد"; } }
+        public static string ReturnManual{ get { return " برگشتی دستی"; } }
 
         public static string Madrese { get { return "تخفیف مدارس"; } }
         public static string KomiteEmdad { get { return "کمیته امداد"; } }
