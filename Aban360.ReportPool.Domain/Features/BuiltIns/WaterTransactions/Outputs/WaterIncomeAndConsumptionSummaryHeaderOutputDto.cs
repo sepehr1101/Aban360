@@ -43,6 +43,9 @@
         public long SumItem18 { get; set; }
         public int BillUnit { get; set; }
         public int TotalUnit { get; set; }
+        public double? WaterConsumptionUnit { get; set; }
+        public double? DailyAverage { get; set; }
+        public decimal ConsumptionAverage { get; set; }
     }
     public record WaterIncomeDiscountSummaryHeaderOutputDto
     {
@@ -87,5 +90,8 @@
         public long SumItemOff18 { get; set; }
         public int BillUnit { get; set; }
         public int TotalUnit { get; set; }
+        public double? WaterConsumptionUnit { get; set; }
+        public double? DailyAverage { get; set; }
+        public decimal ConsumptionAverage { get; set; }
     }
 }

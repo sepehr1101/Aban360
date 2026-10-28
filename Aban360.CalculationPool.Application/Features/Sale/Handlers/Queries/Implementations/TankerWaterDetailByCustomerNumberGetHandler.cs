@@ -27,7 +27,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         public async Task<ReportOutput<TankerHeaderOutputDto, StringDictionary>> Handle(ZoneIdAndCustomerNumber input, CancellationToken cancellationToken)
         {
             TankerOutputDto tankerInfo = await _tankerQueryService.Get(input);
-            BedBesItemsOutputDto bedBesInfo = await _besQueryService.GetLatestByCustomerNumber(input);
+            BedBesItemsOutputDto bedBesInfo = await _besQueryService.GetLatestByCustomerNumberTanker(input);
             long deliveryAmount = bedBesInfo.SumItems - (bedBesInfo.Water + bedBesInfo.Budget + bedBesInfo.Tax);
             ICollection<StringDictionary> data = new List<StringDictionary>()
             {

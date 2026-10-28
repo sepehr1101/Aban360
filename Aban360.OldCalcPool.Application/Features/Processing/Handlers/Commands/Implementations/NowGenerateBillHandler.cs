@@ -36,7 +36,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private static int[] _invalidDeletionStateCodes = { (int)DeletionStateEnum.JamAvari, (int)DeletionStateEnum.JabejaShode, (int)DeletionStateEnum.HazfMovaghat };
         private static int _invalidGTAmount = 50_000_000;
         private static int _invalidLTConsumption = 1;
-        private static int _invalidLTDistanceDay = 20;
+        private static int _invalidLTDistanceDay = 10;
 
         public NowGenerateBillHandler(
             IHttpContextAccessor contextAccessor,
@@ -148,9 +148,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 returnMessage = "رقم فعلی برابر با رقم قبلی است.";
                 return new NowGenerateBillOutputDto(returnMessage, (int)NowGenerateBillErrorCodeEnum.PreNumberEqualTodayNumber);
             }
-            if (customerInfo.LastMeterDateJalali.CompareTo(DateTime.Now.ToShortPersianDateString().ToString()) <= _invalidLTDistanceDay)
+            if (customerInfo.LastMeterDateJalali.CompareTo(DateTime.Now.AddDays(-1* _invalidLTDistanceDay).ToShortPersianDateString()) >= 0)
             {
-                returnMessage = "برای مشترک در کمتر از 20 روز قبض دیگری صادر شده.";
+                returnMessage = "برای مشترک در 10 روز گذشته قبض دیگری صادر شده.";
                 return new NowGenerateBillOutputDto(returnMessage, (int)NowGenerateBillErrorCodeEnum.Low);
             }
 

@@ -176,11 +176,12 @@ namespace Aban360.ReportPool.Persistence.Base
 							    When b.TypeCode NOT IN (1) Then 0
 							    Else 0 
 						    END BillC,
-						    Case
-							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount-b.EmptyCount)<=0 THEN 1
-							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount-EmptyCount)>0 THEN (b.OtherCount+b.CommercialCount+b.DomesticCount-EmptyCount)
+						   Case
+							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)<=0 THEN 1
+							    When b.TypeCode IN (1) AND b.UsageId IN (1,3) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)>0 THEN (b.OtherCount+b.CommercialCount+b.DomesticCount)
+								When b.TypeCode IN (1) AND b.UsageId NOT IN (1,3) AND (b.OtherCount+b.CommercialCount+DomesticCount)>0 THEN (b.OtherCount+b.CommercialCount+DomesticCount)
 							    Else 0 
-						    END UnitC
+						   END UnitC
                     From [CustomerWarehouse].dbo.Bills b
                     Join [Db70].dbo.T41 t41
                     	ON b.UsageId=t41.C0
@@ -207,9 +208,9 @@ namespace Aban360.ReportPool.Persistence.Base
                        -- ROUND(SUM(BillUnit*Duration/IIF(SumDuration<=0,1,SumDuration)),1) WaterConsumptionUnit,--آحاد مصرف آب
                     	--CAST((SUM(CAST(Consumption as bigint))*30)/( (SUM(IIF(Duration<=0,1,Duration))/(SUM(IIF(BillC<=0,1,BillC)))*SUM(IIF(UnitC<=0,1,UnitC)))) AS float) as ConsumptionAverage,
 						--SUM(Duration)/SUM(IIF(BillC<=0,1,BillC)) DailyAverage,-- روز قرائت
-                        ROUND(SUM(CAST(BillUnit AS bigint)*CAST(Duration AS bigint)/IIF(SumDuration<=0,1,SumDuration)),1) AS WaterConsumptionUnit, 
-						CAST((SUM(CAST(Consumption AS bigint))*30.0)/NULLIF((SUM(CAST(IIF(Duration<=0,1,Duration) AS bigint))*1.0/NULLIF(SUM(CAST(IIF(BillC<=0,1,BillC) AS bigint)),0))*SUM(CAST(IIF(UnitC<=0,1,UnitC) AS bigint)),0) AS decimal(18,2)) AS ConsumptionAverage,
-						SUM(CAST(Duration AS bigint))/SUM(CAST(IIF(BillC<=0,1,BillC) AS bigint)) AS DailyAverage,
+                        ROUND(SUM(CAST(BillUnit AS decimal(18,2))*CAST(Duration AS decimal(18,2))/IIF(SumDuration<=0,1,SumDuration)),1) AS WaterConsumptionUnit, 
+						CAST((SUM(CAST(Consumption AS decimal(18,2)))*30.0)/NULLIF((SUM(CAST(IIF(Duration<=0,1,Duration) AS decimal))*1.0/NULLIF(SUM(CAST(IIF(BillC<=0,1,BillC) AS bigint)),0))*SUM(CAST(IIF(UnitC<=0,1,UnitC) AS bigint)),0) AS decimal(18,2)) AS ConsumptionAverage,
+						SUM(CAST(Duration AS decimal(18,2)))/SUM(CAST(IIF(BillC<=0,1,BillC) AS bigint)) AS DailyAverage,
 						MAX(RegionId) RegionId,
 						MAX(RegionTitle) RegionTitle,
                     	{SelectKey} as GroupKey,
