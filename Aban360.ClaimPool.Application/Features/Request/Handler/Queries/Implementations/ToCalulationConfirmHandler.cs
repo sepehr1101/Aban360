@@ -1,4 +1,5 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
@@ -21,13 +22,15 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IExaminationQueryService _assessmentQueryService;
         private readonly ICommonZoneService _commonZoneService;
-        private static int _assessmentResultId = (int)RequestStatusEnum.SetExaminationResult;
+        private readonly IMotherChildGetByTrackNumberHandler _motherChildGetByTrackNumberHandler;
         private readonly IMoshtrakService _moshtrakService;
+        private static int _assessmentResultId = (int)RequestStatusEnum.SetExaminationResult;
         public ToCalulationConfirmHandler(
             IMoshtrakQueryService moshtrakQueryService,
             ITrackingQueryService trackingQueryService,
             IExaminationQueryService assessmentQueryService,
             ICommonZoneService commonZoneService,
+            IMotherChildGetByTrackNumberHandler motherChildGetByTrackNumberHandler,
             IMoshtrakService moshtrakService)
         {
             _moshtrakQueryService = moshtrakQueryService;
@@ -41,6 +44,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             _commonZoneService = commonZoneService;
             _commonZoneService.NotNull(nameof(commonZoneService));
+
+            _motherChildGetByTrackNumberHandler = motherChildGetByTrackNumberHandler;
+            _motherChildGetByTrackNumberHandler.NotNull(nameof(motherChildGetByTrackNumberHandler));
 
             _moshtrakService = moshtrakService;
             _moshtrakService.NotNull(nameof(moshtrakService));
@@ -121,7 +127,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 AssessmentDateJalali = assessmentInfo?.AssessmentDateJalali ?? null,
                 AssessmentMobile = assessmentInfo?.AssessmentMobile ?? null,
                 AssessmentName = assessmentInfo?.AssessmentName ?? null,
-                SelectedServices = companyServices
+                SelectedServices = companyServices,
             };
         }
     }

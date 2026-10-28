@@ -320,6 +320,8 @@
         public static string InvalidShowPreviousRequest => "درخواست در سیستم قدیم ثبت شده است. امکان نمایش وجود ندارد.";
         public static string UseUpdateApi => "از آدرس  ویرایش استفاده کنید.";
         public static string InvalidMotherRequest => "درخواست مادر-فرزند قابل پذیرش نیست";
+        public static string InvalidMotherDataRequest => "شناسه قبض مادر نامعتبر است. ابتدا درخواست مادر-فرزندی را حذف و مجددا درخواست خود را ثبت کنید.";
+        public static string NotFoundMotherRequest => "درخواست مادر-فرزند یافت نشد. ";
         public static string CantUpdate => "امکان ویرایش وجود ندارد";
         public static string NotFoundAnyOpenTrack => "درخواست باز یافت نشد.";
         public static string InvalidStateId => "وضعیت ارسالی یافت نشد.";
