@@ -24,5 +24,14 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
             await _jobService.Initialize(DateTime.Now.AddDays(-1), cancellationToken);
             return Ok();
         }
+
+        [HttpPost, HttpGet]
+        [Route("send-file/{day}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<CollectBillsDetailGetDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SendFileByDay(int day, CancellationToken cancellationToken)
+        {
+            await _jobService.Initialize(DateTime.Now.AddDays(day), cancellationToken);
+            return Ok();
+        }
     }
 }

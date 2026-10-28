@@ -33,7 +33,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
         }
 
-        public async Task<MotherChildOutputDto> Handle(int trackNumber, CancellationToken cancellationToken)
+        public async Task<MotherChildOutputDto> Handle(int trackNumber,  CancellationToken cancellationToken)
         {
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(trackNumber);
             MoshtrakOutputDto inheritedMoshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
