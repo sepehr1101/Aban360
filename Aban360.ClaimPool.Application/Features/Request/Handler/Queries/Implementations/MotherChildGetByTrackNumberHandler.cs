@@ -4,7 +4,9 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations
 {
@@ -33,13 +35,21 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
         }
 
-        public async Task<MotherChildOutputDto> Handle(int trackNumber,  CancellationToken cancellationToken)
+        public async Task<MotherChildOutputDto> Handle(int trackNumber, CancellationToken cancellationToken)
         {
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(trackNumber);
             MoshtrakOutputDto inheritedMoshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             MotherInfoOutputDto? inheritedInfo = await _motherQueryService.Get(trackingInfo.StringTrackNumber, trackingInfo.ZoneId);
+            if (inheritedInfo is null)
+            {
+                return new MotherChildOutputDto(null, null, false);
+            }
 
-            MemberInfoGetDto motherInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(trackingInfo.ZoneId, inheritedInfo.MotherCustomerNumber));
+            MemberInfoGetDto? motherInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(trackingInfo.ZoneId, inheritedInfo.MotherCustomerNumber), false);
+            if (motherInfo is null)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidMotherDataRequest);
+            }
 
             MotherOutputDto inheritedOutput = new()
             {
@@ -70,7 +80,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             MotherOutputDto motherOutput = new()
             {
                 TrackNumber = 0,
-                BillId = trackingInfo.BillId,
+                BillId = motherInfo.BillId,
                 StringTrackNumber = string.Empty,
                 CustomerNumbe = motherInfo.CustomerNumber,
                 ZoneId = motherInfo.ZoneId,
@@ -94,7 +104,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 ContractualCapacity = motherInfo.ContractualCapacity,
             };
 
-            return new MotherChildOutputDto(motherOutput, inheritedOutput);
+            return new MotherChildOutputDto(motherOutput, inheritedOutput, true);
         }
     }
 }
