@@ -17,7 +17,7 @@
 
         public static int ReaderRoleId { get { return 40; } }
 
-        public static string RepairTypeCode { get { return "5"; } }
+        public static string RepairReturnTypeCode { get { return "5"; } }
         public static string ReturnFull { get { return "کامل"; } }
         public static string ReturnPartial { get { return "محاسبه مجدد"; } }
 

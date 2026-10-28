@@ -72,7 +72,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                 TrackNumber = 0,
                 BillId = trackingInfo.BillId,
                 StringTrackNumber = string.Empty,
-                CustomerNumbe = inheritedMoshtrakInfo.CustomerNumber,
+                CustomerNumbe = motherInfo.CustomerNumber,
                 ZoneId = motherInfo.ZoneId,
                 MeterDiameterId = motherInfo.MeterDiameterId,
                 UsageId = motherInfo.UsageId,

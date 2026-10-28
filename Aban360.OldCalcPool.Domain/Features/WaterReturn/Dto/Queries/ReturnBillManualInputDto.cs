@@ -10,9 +10,7 @@ namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
         public string MinutesNumber { get; set; }
         public int ReturnCauseId { get; set; }
         public ReturnBillManualTypeEnum ReturnType { get; set; }
-
-
-        public IEnumerable<ReturnBillManualItemInputDto> Items { get; set; }//whitch?
+        public string? Description { get; set; }
         public int Item1 { get; set; }
         public int Item2 { get; set; }
         public int Item3 { get; set; }
