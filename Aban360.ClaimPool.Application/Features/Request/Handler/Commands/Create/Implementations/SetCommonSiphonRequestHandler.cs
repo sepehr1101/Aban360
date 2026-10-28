@@ -4,7 +4,9 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
@@ -19,11 +21,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMotherQueryService _motherQueryService;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly IValidator<CommonSiphonRequestInputDto> _validator;
         public SetCommonSiphonRequestHandler(
             IMoshtrakQueryService moshtrakQueryService,
             ITrackingQueryService trackingQueryService,
             IMotherQueryService motherQueryService,
+            ICommonMemberQueryService commonMemberQueryService,
             IValidator<CommonSiphonRequestInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
@@ -37,6 +41,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             _motherQueryService = motherQueryService;
             _motherQueryService.NotNull(nameof(motherQueryService));
 
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+
             _validator = validator;
             _validator.NotNull(nameof(validator));
         }
@@ -44,11 +51,17 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         public async Task Handle(CommonSiphonRequestInputDto inputDto, int userName, CancellationToken cancellationToken)
         {
             await InputValidation(inputDto, cancellationToken);
+            ZoneIdAndCustomerNumber motherCustomerNumberInfo = await _commonMemberQueryService.Get(inputDto.MotherBillId, true);
+            
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             MoshtrakOutputDto moshtrackInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
+            if (moshtrackInfo.CommonSiphon == 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidZeroCommonSiphon);
+            }
 
             string dbName = GetDbName(trackingInfo.ZoneId);
-            MotherInsertDto motherInsertDto = GetMotherInsertDto(inputDto, moshtrackInfo);
+            MotherInsertDto motherInsertDto = GetMotherInsertDto(inputDto, moshtrackInfo, motherCustomerNumberInfo.CustomerNumber);
             await DuplicateValidation(moshtrackInfo.IsRegistered, motherInsertDto.StringTrackNumber, moshtrackInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -86,7 +99,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 throw new InvalidTrackingException(ExceptionLiterals.UseUpdateApi);
             }
         }
-        private MotherInsertDto GetMotherInsertDto(CommonSiphonRequestInputDto inputDto, MoshtrakOutputDto moshtrackInfo)
+        private MotherInsertDto GetMotherInsertDto(CommonSiphonRequestInputDto inputDto, MoshtrakOutputDto moshtrackInfo,int motherCustomerNumber)
         {
             return new MotherInsertDto()
             {
@@ -94,7 +107,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 CustomerNumber = moshtrackInfo.CustomerNumber,
                 ReadingNumber = moshtrackInfo.ReadingNumber ?? string.Empty,
                 StringTrackNumber = inputDto.TrackNumber.ToString().PadLeft(11, '0'),
-                MotherCustomerNumber = inputDto.MotherCustomerNumber,
+                MotherCustomerNumber = motherCustomerNumber,
                 FirstName = moshtrackInfo.FirstName ?? string.Empty,
                 Surname = moshtrackInfo.Surname ?? string.Empty,
                 FatherName = moshtrackInfo.FatherName,
