@@ -2,7 +2,7 @@
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations;
+using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,13 +18,14 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Commands
             _returnBillManualHandler.NotNull(nameof(returnBillManualHandler));
         }
 
-        //[HttpGet]
-        //[Route("items")]
-        //[ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
+        [HttpPost]
+        [Route("generate")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
         //[TypeFilter(typeof(EndpointAuthorizationFilter))]
-        //public IActionResult GetItems(CancellationToken cancellationToken)
-        //{
-        //    return Ok(result);
-        //}
+        public async Task<IActionResult> GenerateBill(ReturnBillManualInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _returnBillManualHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(inputDto);
+        }
     }
 }

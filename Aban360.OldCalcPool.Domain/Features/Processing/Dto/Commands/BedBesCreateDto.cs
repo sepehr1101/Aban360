@@ -2,7 +2,7 @@
 {
     public record BedBesCreateDto
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public decimal Town { get; set; }
         public decimal Radif { get; set; }
         public string Eshtrak { get; set; }
