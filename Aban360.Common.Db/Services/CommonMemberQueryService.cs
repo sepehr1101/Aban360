@@ -15,7 +15,7 @@ namespace Aban360.Common.Db.Services
         Task<ZoneIdAndCustomerNumber?> Get(string billId, bool hasException = true);
         Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> GetFromClient(ZoneIdsAndReadingNumber input, bool hasException);
         Task<IEnumerable<ZoneIdAndCustomerNumberAndBillId>> Get(IEnumerable<string> billId, IDbConnection connection, IDbTransaction transction);
-        Task<MemberInfoGetDto> Get(ZoneIdAndCustomerNumber input);
+        Task<MemberInfoGetDto?> Get(ZoneIdAndCustomerNumber input, bool hasException = true);
         Task<IEnumerable<MemberInfoGetDto>> Get(IEnumerable<ZoneIdAndCustomerNumber> input, IDbConnection connection);
         Task<CustomerInfoGetDto> GetMembersBedBesTavizInfo(int zoneId, int customerNumber);
         Task<CustomerLastInfoGetDto?> GetMembersBedBesTavizFlatInfo(int zoneId, int customerNumber, bool hasException);
@@ -47,22 +47,22 @@ namespace Aban360.Common.Db.Services
             }
             return result;
         }
-        public async Task<MemberInfoGetDto> Get(ZoneIdAndCustomerNumber input)
+        public async Task<MemberInfoGetDto?> Get(ZoneIdAndCustomerNumber input, bool hasException = true)
         {
             string dbName = GetDbName(input.ZoneId);
             string query = GetMemeberInfoQuery(dbName);
             MemberInfoGetDto data = await _sqlReportConnection.QueryFirstOrDefaultAsync<MemberInfoGetDto>(query, input);
-            if (data is null || data.ZoneId <= 0)
+            if ((data is null || data.ZoneId <= 0) && hasException)
             {
                 throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
             }
-            MemberInfoGetDto result = await GetFromMoshtrak(data, dbName);
+            MemberInfoGetDto? result = await GetFromMoshtrak(data, dbName);
             return result;
         }
-        public async Task<MemberInfoGetDto> GetFromMoshtrak(MemberInfoGetDto input, string dbName)
+        public async Task<MemberInfoGetDto?> GetFromMoshtrak(MemberInfoGetDto input, string dbName)
         {
             string query = GetMoshtrakInfoQuery(dbName);
-            MoshtrakInfoGetDto moshtrakInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<MoshtrakInfoGetDto>(query, new { customerNumber = input.CustomerNumber });
+            MoshtrakInfoGetDto? moshtrakInfo = await _sqlReportConnection.QueryFirstOrDefaultAsync<MoshtrakInfoGetDto>(query, new { customerNumber = input.CustomerNumber });
 
             input.DiscountCount = moshtrakInfo?.DiscountCount ?? 0;
             input.DiscountId = moshtrakInfo?.DiscountId ?? 0;

@@ -2,12 +2,14 @@
 {
     public record MotherChildOutputDto
     {
-        public MotherOutputDto MotherInfo { get; set; }
-        public MotherOutputDto InheritedInfo { get; set; }
-        public MotherChildOutputDto(MotherOutputDto motherInfo, MotherOutputDto inheritedInfo)
+        public bool HasMother { get; set; }
+        public MotherOutputDto? MotherInfo { get; set; }
+        public MotherOutputDto? InheritedInfo { get; set; }
+        public MotherChildOutputDto(MotherOutputDto? motherInfo, MotherOutputDto? inheritedInfo,bool hasMother)
         {
             MotherInfo = motherInfo;
             InheritedInfo = inheritedInfo;
+            HasMother = hasMother;
         }
     }
 }
