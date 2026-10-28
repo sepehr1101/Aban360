@@ -160,7 +160,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             string _3digitZoneId = await _t52QueryService.Get(tankerInsertDto.ZoneId);
             string billId = TransactionIdGenerator.GenerateBillId(tankerInsertDto.CustomerNumber.ToString(), _3digitZoneId);
             var (sumItems, jam, payable) = TransactionIdGenerator.GetAmounts(0, (long)calcResult.Final);
-            string payId = TransactionIdGenerator.GeneratePaymentId((long)payable, billId, $"{CommonLiterals.WaterPayIdUniqueCode}00");
+            string payId = TransactionIdGenerator.GeneratePaymentId((long)payable, billId, $"{CommonLiterals.WaterPayIdUniqueCode}{currentDateJalali.Substring(5, 2)}");
 
             return new BedBesCreateDto()
             {

@@ -8,7 +8,7 @@
         public static string GenerateBatchBillOpLog => @"قبض دسته‌ای صادر شد. ناحیه:{0}  تعداد قبض:{1}";
         public static string GenerateBillOpLog => @"قبض صادر شد. شناسه قبض:{0}  شناسه پرداخت:{1}  مبلغ:{2}";
         public static string GenerateFreeBillOpLog => @"قبض با رقم قبلیصادر شد. شناسه قبض:{0}  شناسه پرداخت:{1}  مبلغ:{2}";
-        public static string NowGenerateBillRequestOpLog => @$"{NowGenerateBillOpLog} - درخواست صدور قبض ثبت شد. شناسه قبض:{0}  رقم کنتور:{1}";
+        public static string NowGenerateBillRequestOpLog => @" - درخواست صدور قبض ثبت شد. شناسه قبض:{0}  رقم کنتور:{1} شماره تلفن همراه {2}";
         public static string NowGenerateBillOpLog => @"سامانه تلفنی";
         public static string RemoveBillOpLog => @"قبض ابطال شد.  شناسه جدول:{0}  شناسه قبض:{1}.";
         public static string BillInstallmentOpLog => @"اقساط قبض انجام شد. شناسه قبض:{0}  مبلغ کل:{1}  تعداد اقساط:{2}  پیش پرداخت:{3}  درصد پیش پرداخت:{4}";
