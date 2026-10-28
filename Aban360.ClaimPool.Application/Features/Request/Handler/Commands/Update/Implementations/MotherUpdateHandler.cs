@@ -90,7 +90,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
                 }
             }
         }
-
         private async Task MoshtrakValdiation(int zoneId, int trackNumber)
         {
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(zoneId, null, null, trackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();

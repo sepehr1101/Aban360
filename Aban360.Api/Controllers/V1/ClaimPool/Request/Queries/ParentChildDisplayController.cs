@@ -35,5 +35,4 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
             return Ok(result);
         }
     }
-
 }

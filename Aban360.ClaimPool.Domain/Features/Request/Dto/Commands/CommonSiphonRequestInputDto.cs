@@ -3,7 +3,7 @@
     public record CommonSiphonRequestInputDto
     {
         public int TrackNumber { get; set; }
-        public int MotherCustomerNumber { get; set; }
+        public string MotherBillId { get; set; }
         public int Siphon100 { get; set; }
         public int Siphon125 { get; set; }
         public int Siphon150 { get; set; }

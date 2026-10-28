@@ -13,7 +13,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
              .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
-            RuleFor(f => f.MotherCustomerNumber)
+            RuleFor(f => f.MotherBillId)
              .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
              .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
