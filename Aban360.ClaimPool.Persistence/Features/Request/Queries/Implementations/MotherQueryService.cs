@@ -12,10 +12,10 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             : base(configuration)
         {
         }
-
+		
         public async Task<MotherInfoOutputDto?> Get(string stringTrackNumber, int zoneId)
         {
-			string dbName=GetDbName(zoneId);
+            string dbName = GetDbName(zoneId);
             string query = GetQuery(dbName);
             MotherInfoOutputDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<MotherInfoOutputDto>(query, new { stringTrackNumber });
             return result;

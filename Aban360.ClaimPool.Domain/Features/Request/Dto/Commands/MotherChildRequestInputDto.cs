@@ -3,7 +3,7 @@
     public record MotherChildRequestInputDto
     {
         public int TrackNumber { get; set; }
-        public int MotherCustomerNumber { get; set; }
+        public string MotherBillId { get; set; }
         public int CommercialUnit { get; set; }
         public int DomesticUnit { get; set; }
         public int OtherUnit { get; set; }
