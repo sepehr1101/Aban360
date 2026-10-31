@@ -48,7 +48,6 @@ builder.AddStiFonts();
 //builder.Services.AddTransient<TokenInterceptor>();
 var app = builder.Build();
 //app.UsePathBase("/aban360");
-app.UseExceptionHandler("/error");
 app.AddSwaggerApp();
 
 // Configure the HTTP request pipeline.
@@ -64,6 +63,8 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseRouting();
+app.UseMiddleware<Aban360.Api.Middleware.HttpRequestLoggingMiddleware>();
+app.UseExceptionHandler("/error");
 app.UseCustomCors();
 app.UseSerilogInterface();
 app.UseAuthentication();
