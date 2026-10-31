@@ -104,6 +104,7 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Comma
                 DueDateJalali = DateTime.Now.AddMonths(1).ToShortPersianDateString(),
                 DiscountTypeId = hasDiscount ? input.DiscountTypeId : input.DescriptionCode,
                 FinalAmount = input.Amount,
+                Amount = input.Amount,
                 DiscountAmount = 0,
                 PardN = input.Amount,
                 PardG = 0,

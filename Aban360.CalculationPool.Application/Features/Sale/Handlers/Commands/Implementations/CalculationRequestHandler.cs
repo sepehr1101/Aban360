@@ -8,7 +8,6 @@ using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
-using Aban360.ClaimPool.Persistence.Features.People.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations;
@@ -18,6 +17,7 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using Microsoft.Extensions.Configuration;
 using System.Data;
@@ -38,6 +38,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private static int _kartTypeId = 2;
         private static int _intervalDueDate = 30;
         private static string _insertBy = "Aban";
+        private static int _operator = ReportLiterals.RayabOperator;
 
         public CalculationRequestHandler(
             ISaleGetHandler saleGetHandler,
@@ -242,8 +243,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         }
         private async Task ExecSql(ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> input, MoshtrakOutputDto moshtrakInfo, int userCode, string billId)
         {
-            ICollection<KartInsertDto> kartsInsertDto = GetKartsInsertDto(input.ReportHeader, input.ReportData, moshtrakInfo, userCode);
-            GhestInsertDto ghestInsertDto = GetGhestInsertDto(input.ReportHeader, input.ReportData, moshtrakInfo, billId);
+            IEnumerable<SaleAndAfterSaleDataOutputDto> validOfferings = input.ReportData.Where(o => o.Amount != 0).ToList();
+            input.ReportHeader.ItemCount = input.ReportData.Where(o => o.Amount != 0).Count();
+            ICollection<KartInsertDto> kartsInsertDto = GetKartsInsertDto(input.ReportHeader, validOfferings, moshtrakInfo, userCode);
+            GhestInsertDto ghestInsertDto = GetGhestInsertDto(input.ReportHeader, validOfferings, moshtrakInfo, billId);
             string dbName = GetDbName(moshtrakInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)
@@ -285,6 +288,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     DueDateJalali = DateTime.Now.AddMonths(1).ToShortPersianDateString(),
                     DiscountTypeId = s.DiscountTypeId,
                     FinalAmount = s.FinalAmount,
+                    Amount = s.Amount,
                     DiscountAmount = s.Discount ?? 0,
                     PardN = 0,
                     PardG = 0,
@@ -298,7 +302,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     JGEST_FA = 0,
                     PishFa = 0,
                     InstallmentPercent = 100,
-                    Operator = userCode,
+                    Operator = _operator,
                     DomesticUnit = moshtrakInfo.DomesticUnit,
                     CommercialUnit = moshtrakInfo.CommercialUnit,
                     OtherUnit = moshtrakInfo.OtherUnit,
