@@ -85,9 +85,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
 
 
-        public async Task Handle(ReturnBillManualInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<BillReturnManualOutputDto> Handle(ReturnBillManualInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await Validate(inputDto, cancellationToken);
+            string returnCauseTitle = await ValidateAndGetReturnCause(inputDto, cancellationToken);
             CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.RealDateValidate(appUser, inputDto.BillId, inputDto.FromDateJalali, inputDto.ToDateJalali);
             CustomerLastInfoGetDto memberInfo = await _memberQueryService.GetMembersBedBesTavizFlatInfo(customerInfo.ZoneId, customerInfo.Radif, true);
 
@@ -104,9 +104,16 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 throw new ReturnedBillException(ExceptionLiterals.InvalidBillIdToReturn);
             }
 
+            if (!inputDto.IsConfirm)
+            {
+                return GetResult(repairCreateDto, customerInfo, returnCauseTitle);
+            }
+
             string opLogText = string.Format(OpLogLiterals.BillReturnedManualInsertOpLog, customerInfo.BillId, repairCreateDto.TedGhabs, repairCreateDto.PriDate, repairCreateDto.TodayDate, repairCreateDto.Baha, repairCreateDto.JalaseNo);
             long amount = inputDto.ReturnType == ReturnBillManualTypeEnum.Returned ? -1 * (long)repairCreateDto.Baha : (long)repairCreateDto.Baha;
             await ExecSql(autoBackCreateDto, bedBesUpdateDelDto, billsIdToReturn, repairCreateDto, customerInfo, appUser, opLogText, dbName, amount);
+
+            return GetResult(repairCreateDto, customerInfo, returnCauseTitle);
         }
         private async Task ExecSql(ICollection<AutoBackCreateDto> autoBackCreateDto, IEnumerable<BedBesUpdateDelDto> bedBesUpdateDelDto, IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn, RepairCreateDto repairCreateDto, CustomerInfoOutputDto customerInfo, IAppUser appUser, string logText, string dbName, long amount)
         {
@@ -170,7 +177,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             return billsIdToReturn;
         }
-        public AutoBackCreateDto GetAutoBackCreate(RepairCreateDto repairDto, string? description)
+        private AutoBackCreateDto GetAutoBackCreate(RepairCreateDto repairDto, string? description)
         {
             return new AutoBackCreateDto()
             {
@@ -315,7 +322,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Faz = bedBesDto.Faz,
                 ChkKarbari = 0,//todo
                 C200 = 0,
-                TmpPriDate =string.Empty,
+                TmpPriDate = string.Empty,
                 TmpTodayDate = string.Empty,
                 TmpMohlat = string.Empty,
                 TmpTavizDate = string.Empty,
@@ -326,14 +333,30 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Avarez = 0,
             };
         }
-        private async Task Validate(ReturnBillManualInputDto inputDto, CancellationToken cancellationToken)
+        private BillReturnManualOutputDto GetResult(RepairCreateDto repairDto, CustomerInfoOutputDto customerInfo, string returnCauseTitle)
+        {
+            return new BillReturnManualOutputDto()
+            {
+                BillId = customerInfo.BillId,
+                ReportDateJalali = _currentDateJalali,
+                Title = ReportLiterals.ReturnManual,
+                Amount = (long)repairDto.Baha,
+                ReturnCauseTitle = returnCauseTitle,
+                FullName = customerInfo.FullName,
+                ZoneTitle = customerInfo.ZoneTitle,
+            };
+        }
+        private async Task<string> ValidateAndGetReturnCause(ReturnBillManualInputDto inputDto, CancellationToken cancellationToken)
         {
             await InputValidate(inputDto, cancellationToken);
             IEnumerable<NumericDictionary> returnPartialCauseList = await _billReturnCauseQueryService.Get(false);
-            if (!returnPartialCauseList.Where(r => r.Id == inputDto.ReturnCauseId).Any())
+            NumericDictionary? returnCauseSelected = returnPartialCauseList?.Where(r => r.Id == inputDto.ReturnCauseId)?.FirstOrDefault();
+            if (returnCauseSelected is null)
             {
                 throw new ReturnedBillException(ExceptionLiterals.InvalidReturnCauseId);
             }
+
+            return returnCauseSelected.Title;
         }
         private async Task InputValidate(ReturnBillManualInputDto inputDto, CancellationToken cancellationToken)
         {
