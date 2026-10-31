@@ -26,6 +26,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private static string _title = "پس از فروش";
         private static string _article2Title = "تبصره 2";
         private static string _taxTitle = "مالیات بر ارزش افزوده";
+        private static short _taxOfferingId = 550;
         private static int _removeBranchTypeId = 11;
         private static float _removeBranchMultiple = 0.5f;
         private static float _noRemoveBranchMultiple = 0.3f;
@@ -91,11 +92,11 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             }
             if (companyServiceEnum.Contains(CompanyServiceEnum.IsTaqirNam))
             {
-                taxAmount += differentData.Where(s => s.Id == (short)CompanyServiceEnum.IsTaqirNam).FirstOrDefault().FinalAmount;
+                taxAmount += differentData.Where(s => s.Id ==301 /*(short)CompanyServiceEnum.IsTaqirNam*/).FirstOrDefault().FinalAmount;
             }
-            SaleDataOutputDto previousTax = new(0, _taxTitle, 0, 0, 0);
-            SaleDataOutputDto currentTax = new(0, _taxTitle, 0, 0, 0);
-            SaleDataOutputDto differentTax = new(0, _taxTitle, (long)(taxAmount * 0.1f), 0, (long)(taxAmount * 0.1f));
+            SaleDataOutputDto previousTax = new(_taxOfferingId, _taxTitle, 0, 0, 0);
+            SaleDataOutputDto currentTax = new(_taxOfferingId, _taxTitle, 0, 0, 0);
+            SaleDataOutputDto differentTax = new(_taxOfferingId, _taxTitle, (long)(taxAmount * 0.1f), 0, (long)(taxAmount * 0.1f));
 
             return (previousTax, currentTax, differentTax);
         }
@@ -187,9 +188,23 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 throw new AfterSaleException(ExceptionLiterals.InvalidDiscountCount);
             }
         }
+        private ICollection<int> GetCompanyServiceEqualTable3(ICollection<int> inputIds)
+        {
+            ICollection<int> items = new List<int>();
+            foreach (int inputId in inputIds)
+            {
+                if (inputId == (int)CompanyServiceEnum.IsTaqirNam)
+                    items.Add(301);
+                if (inputId == (int)CompanyServiceEnum.QatVaslEnsheab)
+                    items.Add(303);
+                if (inputId == (int)CompanyServiceEnum.JabejaiiKontor)
+                    items.Add(308);
+            }
+            return items;
+        }
         private async Task<AfterSaleDataOutputDto> GetAllCompanyService(AfterSaleInputDto input, AfterSaleDataOutputDto companyServiceData)
         {
-            Table3InputDto table3Input = new(input.ZoneId, input.CurrentData.UsageId, input.CompanyServiceIds);
+            Table3InputDto table3Input = new(input.ZoneId, input.CurrentData.UsageId, GetCompanyServiceEqualTable3(input.CompanyServiceIds));
             IEnumerable<Table3GetDto> table3 = await _table3QueryService.Get(table3Input);
             ICollection<SaleDataOutputDto> previousItems = new List<SaleDataOutputDto>();
             ICollection<SaleDataOutputDto> currentItems = new List<SaleDataOutputDto>();

@@ -15,7 +15,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Validations
 
             RuleFor(i => i.WaterDiameterId)
               .NotNull().WithMessage(ExceptionLiterals.NotNull)
-              .NotEmpty().WithMessage(ExceptionLiterals.NotNull);
+              .NotEmpty().WithMessage(string.Join(" , ", ExceptionLiterals.NotNull, ExceptionLiterals.MeterDiameter));
 
         }
     }

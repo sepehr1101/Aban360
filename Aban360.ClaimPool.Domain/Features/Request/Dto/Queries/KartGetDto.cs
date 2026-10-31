@@ -13,7 +13,7 @@
         public string CurrentDateJalali { get; set; }
         public string DueDateJalali { get; set; }
         public int DiscountTypeId { get; set; }
-        public long FinalAmount { get; set; }// & Jam_ha
+        public long Amount { get; set; }
         public long DiscountAmount { get; set; }
         public long PardN { get; set; }
         public long PardG { get; set; }

@@ -118,6 +118,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 DueDateJalali = DateTime.Now.AddMonths(1).ToShortPersianDateString(),
                 DiscountTypeId = 0,
                 FinalAmount = inputDto.Amount,
+                Amount = inputDto.Amount,
                 DiscountAmount = 0,
                 PardN = inputDto.Amount,
                 PardG = 0,
