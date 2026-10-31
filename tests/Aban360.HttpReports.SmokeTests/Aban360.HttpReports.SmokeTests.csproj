@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+<ItemGroup>
+<Compile Include="../../Aban360.SystemPool.Domain/Features/Logging/Dto/Input/HttpRequestReportInput.cs" />
+<Compile Include="../../Aban360.SystemPool.Domain/Features/Logging/Dto/Output/HttpRequestReportOutput.cs" />
+<Compile Include="../../Aban360.SystemPool.Persistence/Features/Logging/Queries/Contracts/IHttpRequestReportQueryService.cs" />
+<Compile Include="../../Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Conracts/IHttpRequestReportHandler.cs" />
+<Compile Include="../../Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Implementations/HttpRequestReportHandler.cs" />
+<Compile Include="../../Aban360.Common/Exceptions/BaseException.cs" />
+<Compile Include="../../Aban360.Common/Exceptions/InvalidDateException.cs" />
+<Compile Include="../../Aban360.Common/Literals/ExceptionLiterals.cs" />
+</ItemGroup>
+</Project>
