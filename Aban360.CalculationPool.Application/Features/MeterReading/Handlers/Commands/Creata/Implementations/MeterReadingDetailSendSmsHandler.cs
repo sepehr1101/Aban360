@@ -3,9 +3,7 @@ using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Implementations;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
-using Aban360.Common.ApplicationUser;
 using Aban360.Common.Db.Dapper;
-using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.CommunicationPool.Domain.Features.Sms.Commands;
@@ -13,38 +11,31 @@ using Aban360.CommunicationPool.Domain.Features.Sms.Queries;
 using Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementations;
 using Aban360.CommunicationPool.Persistence.Features.Sms.Queries.Contracts;
 using Aban360.NotificationPool.Application.Features.Sms;
+using Aban360.NotificationPool.Domain.Features.Sms;
 using Aban360.ReportPool.Domain.Base;
 using Hangfire;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
-namespace Aban360.CalculationPool.Application.Features.Base
+namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
 {
-    public interface IMeterReadingDetailSendSms
+    internal sealed class MeterReadingDetailSendSmsHandler : AbstractBaseConnection, IMeterReadingDetailSendSmsHandler
     {
-        Task Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken);
-        Task CreateJob(int firstFlowId, Guid userId);
-    }
-    internal sealed class MeterReadingDetailSendSms : AbstractBaseConnection, IMeterReadingDetailSendSms
-    {
-
         private readonly IBackgroundJobClient _jobClient;
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IMeterFlowQueryService _meterFlowQueryService;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailQueryService;
-        private readonly ICommonZoneService _commonZoneService;
         private readonly ISmsStateTemplateQueryService _meterSmsStateTemplateQueryService;
         private readonly ISmsFlowQueryService _meterSmsFlowQueryService;
         private readonly ICalculationConfirmationHandler _calcConfirmationHandler;
         private readonly ISmsDraftQueryService _smsDraftQueryService;
         private const long _minWaterDebt = 100_000;
         private int _smsGroupId = CommonLiterals.SmsStateGroupCollectBills_LastSms;
-        public MeterReadingDetailSendSms(
+        public MeterReadingDetailSendSmsHandler(
             IBackgroundJobClient jobClient,
             ISmsOldHandler smsOldHandler,
             IMeterFlowQueryService meterFlowQueryService,
             IMeterReadingDetailQueryService meterReadingDetailQueryService,
-            ICommonZoneService commonZoneService,
             ISmsStateTemplateQueryService meterSmsStateTemplateQueryService,
             ISmsFlowQueryService meterSmsFlowQueryService,
             ICalculationConfirmationHandler calcConfirmationHandler,
@@ -64,9 +55,6 @@ namespace Aban360.CalculationPool.Application.Features.Base
             _meterReadingDetailQueryService = meterReadingDetailQueryService;
             _meterReadingDetailQueryService.NotNull(nameof(meterReadingDetailQueryService));
 
-            _commonZoneService = commonZoneService;
-            _commonZoneService.NotNull(nameof(commonZoneService));
-
             _meterSmsStateTemplateQueryService = meterSmsStateTemplateQueryService;
             _meterSmsStateTemplateQueryService.NotNull(nameof(meterSmsStateTemplateQueryService));
 
@@ -80,21 +68,19 @@ namespace Aban360.CalculationPool.Application.Features.Base
             _smsDraftQueryService.NotNull(nameof(smsDraftQueryService));
         }
 
-        public async Task Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task Handle(int latestFlowId, Guid userId, CancellationToken cancellationToken)
         {
-            MeterReadingCheckedOutputDto calculationConfirmResult = await _calcConfirmationHandler.Handle(latestFlowId, appUser, cancellationToken);
             MeterFlowGetDto meterFlowInfo = await _meterFlowQueryService.Get(latestFlowId);
-            await _commonZoneService.IsUserInZone(appUser, meterFlowInfo.ZoneId);
 
-            _jobClient.Enqueue(() => CreateJob(meterFlowInfo.FirstFlowId, appUser.UserId));
+            _jobClient.Enqueue(() => CreateJob(meterFlowInfo.FirstFlowId, userId));
         }
         public async Task CreateJob(int firstFlowId, Guid userId)
         {
             MeterFlowGetDto meterFlowInfo = await _meterFlowQueryService.Get(firstFlowId);
             IEnumerable<MeterReadingDetailToSendMessageDto> customerInfoToSendSms = await _meterReadingDetailQueryService.GetToSend(firstFlowId, meterFlowInfo.ZoneId, _minWaterDebt, ReportLiterals.RayabOperator);
 
-
-            int newSmsFlowId = await ExecSql(customerInfoToSendSms, firstFlowId, userId);
+            var (nextTemplate, newMeterSmsFlowInfo) = await GetCurrentTemplateAndFlow(customerInfoToSendSms, firstFlowId, userId);
+            int newSmsFlowId = await ExecSql(customerInfoToSendSms, nextTemplate, newMeterSmsFlowInfo, firstFlowId, userId);
             SmsFlowGetDto? newSmsFlowInfo = await _meterSmsFlowQueryService.Get(newSmsFlowId, false);
             if (newSmsFlowInfo is null || newSmsFlowInfo.Id == 0 || newSmsFlowInfo.SendDateTime.HasValue)
             {
@@ -121,6 +107,11 @@ namespace Aban360.CalculationPool.Application.Features.Base
             //if(smsDraftCount>0) then send to Sms4040
             //if smsSendResult==200 then update smsDraft.FetchTime  MeterStatFlow.SendTime
             //else makeException
+            IEnumerable<SendSmsDataDto> smsData = GetSmsDto(smsDraftToSend);
+            if ((smsData?.Count() ?? 0) > 0)
+            {
+                await _smsOldHandler.Send(smsData);
+            }
             await ExecSql(smsFlowUpdateDto, smsDraftUpdateDto, false);
 
             await CreateJob(firstFlowId, userId);
@@ -146,15 +137,14 @@ namespace Aban360.CalculationPool.Application.Features.Base
                                             .Replace("{PreviousDateJalali}", customerInfo.PreviousDateJalali)
                                             .Replace("{CurrentDateJalali}", customerInfo.CurrentDateJalali)
                                             .Replace("{newLine}", Environment.NewLine);
-                    SmsDraftInsertDto newSms = new(null, customerInfo.BillId, smsFlowId, message, customerInfo.MobileNumber, customerInfo.FlowImportedId.ToString(), customerInfo.MeterReadingDetailId.ToString());
+                    SmsDraftInsertDto newSms = new(null, customerInfo.BillId, customerInfo.PaymentId, smsFlowId, message, customerInfo.MobileNumber, customerInfo.FlowImportedId.ToString(), customerInfo.MeterReadingDetailId.ToString());
                     smsDraftList.Add(newSms);
                 }
             }
             return smsDraftList;
         }
-        public async Task<int> ExecSql(IEnumerable<MeterReadingDetailToSendMessageDto> customerInfoToSendSms, int firstFlowId, Guid userId)
+        public async Task<int> ExecSql(IEnumerable<MeterReadingDetailToSendMessageDto> customerInfoToSendSms, SmsStateTemplateGetDto? nextTemplate, SmsFlowInsertDto? newSmsFlowInfo, int firstFlowId, Guid userId)
         {
-            var (nextTemplate, newSmsFlowInfo) = await GetCurrentTemplateAndFlow(customerInfoToSendSms, firstFlowId, userId);
             int newSmsFlowId = 0;
             if (nextTemplate is not null)
             {
@@ -239,6 +229,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
                 return (nextTemplateInfo, newMeterSmsFlowInfo);
             }
             return (null, null);
+        }
+        private IEnumerable<SendSmsDataDto> GetSmsDto(IEnumerable<SmsDraftGetDto> input)
+        {
+            return input.Select(s =>
+            new SendSmsDataDto(s.Message, "09925306265"/*s.MobileNumber*/, s.BillId, s.PaymentId, s.Id)
+            ).ToList();
         }
     }
 }
