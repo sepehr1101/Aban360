@@ -109,7 +109,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                     	ICT_CO,barge)
                     Values
                     	(@ZoneId ,@CustomerNumber ,@ReadingNumber  ,@StringTrackNumber ,@Serial ,
-                    	@CurrentDateJalali ,@DueDateJalali ,@DiscountTypeId ,@FinalAmount  ,@DiscountAmount ,
+                    	@CurrentDateJalali ,@DueDateJalali ,@DiscountTypeId ,@Amount  ,@DiscountAmount ,
                     	@PardN ,@PardG ,@Sum ,@Type ,@AmountItemId ,
                     	@Ser ,@MeterDiameterId ,@SiphonId ,@UsageId ,@IsRegister  ,
                     	@TotalServicesAmount ,@TotalServicesAmount ,@FirstInstallment ,@JGEST_FA ,@PishFa ,
