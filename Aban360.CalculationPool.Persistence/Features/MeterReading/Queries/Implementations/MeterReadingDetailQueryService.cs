@@ -832,7 +832,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
         }
         private string GetDataToSendSms(string dbName)
         {
-            return $@"Select 
+            return $@"Select Top 5
                     	md.Id MeterReadingDetailId,
                     	md.FlowImportedId ,
 	                    m.town ZoneId,

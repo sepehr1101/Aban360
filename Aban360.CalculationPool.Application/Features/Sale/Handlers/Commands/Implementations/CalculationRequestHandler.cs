@@ -118,7 +118,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> saleResult = await _saleGetHandler.Handle(saleInputDto, cancellationToken);
 
             IEnumerable<SaleAndAfterSaleDataOutputDto> data = await GetSaleResult(saleResult.ReportData);
-            ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(saleResult.Title, GetHeaderResul(data), data);
+            ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(saleResult.Title, GetHeaderResul(data), data.Where(o => o.Amount != 0).ToList());
             return result;
         }
         private async Task<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>> GetAfterSaleResult(MoshtrakOutputDto moshtrakInfo, CancellationToken cancellationToken)
@@ -169,7 +169,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
             FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto> afterSaleResult = await _afterSaleGetHandler.Handle(afterSaleInputDto, cancellationToken);
 
             IEnumerable<SaleAndAfterSaleDataOutputDto> data = await GetAfterSaleResult(afterSaleResult.ReportData);
-            ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(afterSaleResult.Title, GetHeaderResul(data), data);
+            ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = new(afterSaleResult.Title, GetHeaderResul(data), data.Where(o => o.Amount != 0).ToList());
             return result;
         }
         private MoshtrakServiceDto GetMoshtrakService(MoshtrakOutputDto serviceSelected)
@@ -243,10 +243,10 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         }
         private async Task ExecSql(ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> input, MoshtrakOutputDto moshtrakInfo, int userCode, string billId)
         {
-            IEnumerable<SaleAndAfterSaleDataOutputDto> validOfferings = input.ReportData.Where(o => o.Amount != 0).ToList();
+            //IEnumerable<SaleAndAfterSaleDataOutputDto> validOfferings = input.ReportData.Where(o => o.Amount != 0).ToList();
             input.ReportHeader.ItemCount = input.ReportData.Where(o => o.Amount != 0).Count();
-            ICollection<KartInsertDto> kartsInsertDto = GetKartsInsertDto(input.ReportHeader, validOfferings, moshtrakInfo, userCode);
-            GhestInsertDto ghestInsertDto = GetGhestInsertDto(input.ReportHeader, validOfferings, moshtrakInfo, billId);
+            ICollection<KartInsertDto> kartsInsertDto = GetKartsInsertDto(input.ReportHeader, input.ReportData, moshtrakInfo, userCode);
+            GhestInsertDto ghestInsertDto = GetGhestInsertDto(input.ReportHeader, input.ReportData, moshtrakInfo, billId);
             string dbName = GetDbName(moshtrakInfo.ZoneId);
 
             using (IDbConnection connection = _sqlReportConnection)

@@ -28,7 +28,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
         }
         public async Task<IEnumerable<NumericDictionary>> Get(IEnumerable<short> ids)
         {
-            string query = GetByIdQuery();
+            string query = GetByIdsQuery();
             IEnumerable<NumericDictionary> data = await _sqlReportConnection.QueryAsync<NumericDictionary>(query, new { ids = ids });
             return data;
         }

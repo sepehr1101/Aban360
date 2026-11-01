@@ -36,7 +36,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private static int _deletedSatatus = (int)TrackingStatusEnum.Deleted;
         private static int _registeredStatus = (int)TrackingStatusEnum.Registered;
         private static int _amountConfirmedStatus = (int)TrackingStatusEnum.AmountConfirmed;
-        private int[] _disallowedPreviousStatusIds = { _requestRegistered, _reAssessmentStatusId, _setAssessmentTimeStatusId, _deletedSatatus, _registeredStatus, _amountConfirmedStatus };
+        private int[] _disallowedPreviousStatusIds = { _requestRegistered, _reAssessmentStatusId, _deletedSatatus, _registeredStatus, _amountConfirmedStatus };
         public ReAssessmentRequestHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,

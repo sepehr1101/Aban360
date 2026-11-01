@@ -54,6 +54,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
 
+            if (!string.IsNullOrWhiteSpace(latestTrackingInfo.BillId))
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.CantSetBillIdDuplicate);
+            }
             int customerNumber = await GetCustomerNumber(latestTrackingInfo.ZoneId);
             string _3digitZoneId = await _t52QueryService.Get(new ZoneIdAndCustomerNumber(latestTrackingInfo.ZoneId, customerNumber));
             string billId = TransactionIdGenerator.GenerateBillId(customerNumber.ToString(), _3digitZoneId);

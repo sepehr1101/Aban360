@@ -104,16 +104,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             SmsDraftUpdateDto smsDraftUpdateDto = new(smsDraftIds, firstFlowId.ToString(), newSmsFlowId);
             await ExecSql(smsDraftUpdateDto, true);
 
-            //if(smsDraftCount>0) then send to Sms4040
-            //if smsSendResult==200 then update smsDraft.FetchTime  MeterStatFlow.SendTime
-            //else makeException
             IEnumerable<SendSmsDataDto> smsData = GetSmsDto(smsDraftToSend);
             if ((smsData?.Count() ?? 0) > 0)
             {
                 await _smsOldHandler.Send(smsData);
+                await ExecSql(smsFlowUpdateDto, smsDraftUpdateDto, false);
             }
-            await ExecSql(smsFlowUpdateDto, smsDraftUpdateDto, false);
-
             await CreateJob(firstFlowId, userId);
 
         }
@@ -233,7 +229,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private IEnumerable<SendSmsDataDto> GetSmsDto(IEnumerable<SmsDraftGetDto> input)
         {
             return input.Select(s =>
-            new SendSmsDataDto(s.Message, "09925306265"/*s.MobileNumber*/, s.BillId, s.PaymentId, s.Id)
+            new SendSmsDataDto(s.Message + "-" + s.Id.ToString(), "09925306265"/*s.MobileNumber*/, s.BillId, s.PaymentId, s.Id)
             ).ToList();
         }
     }

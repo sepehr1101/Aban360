@@ -264,7 +264,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         }
         private async Task<SaleDataOutputDto> GetSaleData(OfferingEnum offeringEnum, long? amount, long? discount)
         {
-            string title = await _offeringQueryService.Get((short)offeringEnum);
+            string title = (await _offeringQueryService.Get((short)offeringEnum)).Title;
             SaleDataOutputDto saleData = new((short)offeringEnum, title, amount, discount, amount);
 
             return saleData;

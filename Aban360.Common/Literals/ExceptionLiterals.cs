@@ -341,6 +341,7 @@
         public static string InvalidFewInstallmentCount(int count) => $"تعداد اقساط باید کمتر از {count} قسط باشد.";
         public static string InvalidInstallmentCount => $"تعداد اقساط نامعتبر است.";
         public static string InvalidBlockForThisZone => $" ناحیه انتخابی نیازی به بلوک ندارد.";
+        public static string CantSetBillIdDuplicate => $"امکان انتساب مجدد شناسه قبض وجود ندارد.";
 
         public static string NotFountOpenRequest => "درخواستی با وضعیت نیمه‌تمام یافت نشد.";
         public static string CantSetTime => "امکان انتساب زمانبندی ارزیابی وجود ندارد";
