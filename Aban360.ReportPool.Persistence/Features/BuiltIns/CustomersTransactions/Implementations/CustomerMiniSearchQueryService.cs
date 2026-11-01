@@ -21,7 +21,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
         }
         public async Task<ReportOutput<CustomerMiniSearchHeaderOutputDto, CustomerMiniSearchDataOutputDto>> Get(CustomerMiniSearchInputDto input)
         {
-            string fieldSearch = GetSqlCondition(input.SearchType);
+            string fieldSearch = GetSqlCondition(input);
             string query = GetQuery(fieldSearch);
             string normalizedInput = NormalizeText(input.Input);
             if (input.SearchType == CustomerMiniSearchInputEnum.Name)
@@ -61,8 +61,9 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 .Replace('ۀ', 'ه')
                 .Trim();
         }
-        private string GetSqlCondition(CustomerMiniSearchInputEnum input)
+        private string GetSqlCondition(CustomerMiniSearchInputDto inputAll)
         {
+            var input = inputAll.SearchType;
             return input switch
             {
                 CustomerMiniSearchInputEnum.MobileNumber => "c.MobileNo=@input",
@@ -70,8 +71,8 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.CustomersTransactions
                 CustomerMiniSearchInputEnum.PostalCode => "c.PostalCode=@input",
                 CustomerMiniSearchInputEnum.Name => "c.FullNameNormalized LIKE @input",
                 CustomerMiniSearchInputEnum.PhoneNumber => "c.PhoneNo=@input",
-                CustomerMiniSearchInputEnum.CustomerNumber => "(c.CustomerNumber=@input OR TRIM(c.ReadingNumber)=@input)",
-				CustomerMiniSearchInputEnum.BillId=> "c.BillId=@input",
+                CustomerMiniSearchInputEnum.CustomerNumber => inputAll.Input.Length > 8 ? "c.ReadingNumber=@input" : "(c.CustomerNumber=@input OR c.ReadingNumber=@input)",
+                CustomerMiniSearchInputEnum.BillId => "c.BillId=@input",
                 _ => throw new InvalidDateException(ExceptionLiterals.MustEnum),
             };
         }
