@@ -14,6 +14,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -30,7 +31,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IT100QueryService _t100QueryService;
         private readonly IT15QueryService _discountTypeQueryService;
         private readonly IValidator<KartInsertManualInputDto> _validator;
-        static string _insertBy = "Aban";
+        static string _insertBy = ReportLiterals.RayabPersian;
         static int _manualSerial = 10000;
         static int _operator = 666;
         static int _kartTypeId = 8;

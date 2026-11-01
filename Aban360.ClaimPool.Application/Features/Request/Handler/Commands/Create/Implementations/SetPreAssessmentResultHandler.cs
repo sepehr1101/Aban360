@@ -23,10 +23,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IT64QueryService _t64QueryService;
         private readonly IValidator<PreAssessmentResultInputDto> _validator;
-        private static int _setAssessmentResultStatus = 110;
-        private static int _seenByAssessmentStatus = 150;
-        private static int _archiveStats = 90003;
-        static int _assessmentSetTime = 10;
+        private static int _setAssessmentResultStatus = (int)TrackingStatusEnum.SetAssessmentResult;
+        private static int _seenByAssessmentStatus = (int)TrackingStatusEnum.SeenByAssessment;
+        private static int _archiveStats = (int)TrackingStatusEnum.Archived;
+        static int _assessmentSetTime = (int)TrackingStatusEnum.SetAssessmentTime;
         static int _requestOrigin = 12;
         public SetPreAssessmentResultHandler(
             IHttpContextAccessor contextAccessor,

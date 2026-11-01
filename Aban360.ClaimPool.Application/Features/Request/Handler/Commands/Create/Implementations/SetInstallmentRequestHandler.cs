@@ -11,6 +11,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
@@ -25,14 +26,16 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IKartQueryService _kartQueryService;
         private readonly IVariabService _variabService;
         private readonly IValidator<InstallmentRequestInputDto> _validator;
-        static int[] _enableStatus = { 60, 75 };
+        private static int _calculationConfirmedStatusId = (int)TrackingStatusEnum.CalculationConfirmed;
+        private static int _amountIsConfirmedStatusId= (int)TrackingStatusEnum.AmountIsConfirmed;
+        static int[] _enableStatus = { _calculationConfirmedStatusId, _amountIsConfirmedStatusId };
         static int _maxInterval = 3;
         static int _maxInstallmentCount = 9;
         static int _prePaymentType = 0;
         static int _installmentType = 1;
-        static int _operator = 666;
+        static int _operator = ReportLiterals.RayabOperator;
         static string _title = "تقسیط";
-        static string _insertBy = "Aban";
+        static string _insertBy = ReportLiterals.RayabPersian;
         public SetInstallmentRequestHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakQueryService moshtrakQueryService,

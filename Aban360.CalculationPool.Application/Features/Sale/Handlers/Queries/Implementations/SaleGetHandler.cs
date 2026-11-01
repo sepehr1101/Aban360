@@ -36,10 +36,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private short _siphon125 = 125;
         private short _siphon150 = 150;
         private short _siphon200 = 200;
-        private short _siphon100Id = 1;
-        private short _siphon125Id = 2;
-        private short _siphon150Id = 3;
-        private short _siphon200Id = 4;
         public SaleGetHandler(
             IInstallationAndEquipmentQueryService installationAndEquipmentService,
             IArticle11QueryService article11QueryService,
@@ -256,13 +252,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private short GetMeterDiamterId(short? meterDiameterId)
         {
             if (meterDiameterId == _siphon100)
-                return _siphon100Id;
+                return (short)SiphonDiameterEnum.siphon100;
             if (meterDiameterId == _siphon125)
-                return _siphon125Id;
+                return (short)SiphonDiameterEnum.siphon125;
             if (meterDiameterId == _siphon150)
-                return _siphon150Id;
+                return (short)SiphonDiameterEnum.siphon150;
             if (meterDiameterId == _siphon200)
-                return _siphon200Id;
+                return (short)SiphonDiameterEnum.siphon200;
 
             return meterDiameterId.Value;
         }

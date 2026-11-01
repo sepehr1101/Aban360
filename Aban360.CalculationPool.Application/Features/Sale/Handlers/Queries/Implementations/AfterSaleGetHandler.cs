@@ -27,7 +27,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private static string _article2Title = "تبصره 2";
         private static string _taxTitle = "مالیات بر ارزش افزوده";
         private static short _taxOfferingId = 550;
-        private static int _removeBranchTypeId = 11;
         private static float _removeBranchMultiple = 0.5f;
         private static float _noRemoveBranchMultiple = 0.3f;
         public AfterSaleGetHandler(
@@ -59,15 +58,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
         public async Task<FlatReportOutput<SaleHeaderOutputDto, AfterSaleDataOutputDto>> Handle(AfterSaleInputDto input, CancellationToken cancellationToken)
         {
-            await InputValidate(input, cancellationToken);
-            ValidationOffering(input);
+            await Validate(input, cancellationToken);
 
             SaleInputDto previousDataInput = GetSaleInput(input.PreviousData, input.ZoneId, input.Block, input.HasWaterArticle11, input.HasSewageArticle11);
             SaleInputDto currentDataInput = GetSaleInput(input.CurrentData, input.ZoneId, input.Block, input.HasWaterArticle11, input.HasSewageArticle11);
 
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> previousSaleCalculation = await _saleGetHandler.Handle(previousDataInput, cancellationToken);
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> currentSaleCalculation = await _saleGetHandler.Handle(currentDataInput, cancellationToken);
-
 
             AfterSaleDataOutputDto data = await GetData(input, previousSaleCalculation.ReportData, currentSaleCalculation.ReportData);
             SaleHeaderOutputDto header = await GetHeader(data, input);
@@ -92,7 +89,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             }
             if (companyServiceEnum.Contains(CompanyServiceEnum.IsTaqirNam))
             {
-                taxAmount += differentData.Where(s => s.Id ==301 /*(short)CompanyServiceEnum.IsTaqirNam*/).FirstOrDefault().FinalAmount;
+                taxAmount += differentData.Where(s => s.Id == 301 /*(short)CompanyServiceEnum.IsTaqirNam*/).FirstOrDefault().FinalAmount;
             }
             SaleDataOutputDto previousTax = new(_taxOfferingId, _taxTitle, 0, 0, 0);
             SaleDataOutputDto currentTax = new(_taxOfferingId, _taxTitle, 0, 0, 0);
@@ -139,7 +136,12 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 throw new CustomValidationException(message);
             }
         }
-        private void ValidationOffering(AfterSaleInputDto input)
+        private async Task Validate(AfterSaleInputDto input, CancellationToken cancellationToken)
+        {
+            await InputValidate(input, cancellationToken);
+            OfferingValidate(input);
+        }
+        private void OfferingValidate(AfterSaleInputDto input)
         {
             int[] domesticUsageWithoutContractual = { 1, 34 };
             IEnumerable<CompanyServiceEnum> afterSaleCompanySelected = GetAfterSaleCompanyServiceSelected(input.CompanyServiceIds);
@@ -205,13 +207,13 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
         private async Task<AfterSaleDataOutputDto> GetAllCompanyService(AfterSaleInputDto input, AfterSaleDataOutputDto companyServiceData)
         {
             Table3InputDto table3Input = new(input.ZoneId, input.CurrentData.UsageId, GetCompanyServiceEqualTable3(input.CompanyServiceIds));
-            IEnumerable<Table3GetDto> table3 = await _table3QueryService.Get(table3Input);
+            IEnumerable<Table3GetDto> table3Info = await _table3QueryService.Get(table3Input);
             ICollection<SaleDataOutputDto> previousItems = new List<SaleDataOutputDto>();
             ICollection<SaleDataOutputDto> currentItems = new List<SaleDataOutputDto>();
             ICollection<SaleDataOutputDto> differentItems = new List<SaleDataOutputDto>();
-            if (table3 is not null && table3.Count() > 0)
+            if (table3Info is not null && table3Info.Count() > 0)
             {
-                foreach (var item in table3)
+                foreach (var item in table3Info)
                 {
                     previousItems.Add(new SaleDataOutputDto((short)item.CompanyServiceId, item.CompanyServiceTitle, 0, 0, 0));
                     currentItems.Add(new SaleDataOutputDto((short)item.CompanyServiceId, item.CompanyServiceTitle, 0, 0, 0));
@@ -334,16 +336,28 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 ItemCount = differentData.Count(),
             };
         }
+        private string GetOfferingTitle(IEnumerable<NumericDictionary> offeringDatas, OfferingEnum currentOfferingId)
+        {
+            NumericDictionary? data = offeringDatas?.Where(o => o.Id == (short)currentOfferingId).FirstOrDefault();
+            if (data is null)
+            {
+                throw new ReadingException(ExceptionLiterals.NotFoundOfferingId);
+            }
+            return data.Title.ToString();
+        }
         private async Task<(IEnumerable<SaleDataOutputDto>, IEnumerable<SaleDataOutputDto>, IEnumerable<SaleDataOutputDto>)> GetCompanyData(IEnumerable<SaleDataOutputDto> previousSaleData, IEnumerable<SaleDataOutputDto> currentSaleData, AfterSaleInputDto input)
         {
-            string waterSubscriptionTitle = await _offeringQueryService.Get((short)OfferingEnum.WaterSubscription);
-            string sewageSubscriptionTitle = await _offeringQueryService.Get((short)OfferingEnum.SewageSubscription);
-            string waterInstallationTitle = await _offeringQueryService.Get((short)OfferingEnum.WaterInstallation);
-            string sewageInstallationTitle = await _offeringQueryService.Get((short)OfferingEnum.SewageInstalltion);
-            string waterEquipmentTitle = await _offeringQueryService.Get((short)OfferingEnum.WaterEquipment);
-            string sewageEquipmentTitle = await _offeringQueryService.Get((short)OfferingEnum.SewageEquipment);
-            string waterArtile11Title = await _offeringQueryService.Get((short)OfferingEnum.WaterArticle11);
-            string sewageArtile11Title = await _offeringQueryService.Get((short)OfferingEnum.SewageArticle11);
+            IEnumerable<short> offeringIds = new List<short> { (short)OfferingEnum.WaterSubscription, (short)OfferingEnum.SewageSubscription, (short)OfferingEnum.WaterInstallation, (short)OfferingEnum.SewageInstalltion, (short)OfferingEnum.WaterEquipment, (short)OfferingEnum.SewageEquipment, (short)OfferingEnum.WaterArticle11, (short)OfferingEnum.SewageArticle11 };
+            IEnumerable<NumericDictionary> offeringDatas = await _offeringQueryService.Get(offeringIds);
+
+            string waterSubscriptionTitle = GetOfferingTitle(offeringDatas, OfferingEnum.WaterSubscription);
+            string sewageSubscriptionTitle = GetOfferingTitle(offeringDatas, OfferingEnum.SewageSubscription);
+            string waterInstallationTitle = GetOfferingTitle(offeringDatas, OfferingEnum.WaterInstallation);
+            string sewageInstallationTitle = GetOfferingTitle(offeringDatas, OfferingEnum.SewageInstalltion);
+            string waterEquipmentTitle = GetOfferingTitle(offeringDatas, OfferingEnum.WaterEquipment);
+            string sewageEquipmentTitle = GetOfferingTitle(offeringDatas, OfferingEnum.SewageEquipment);
+            string waterArtile11Title = GetOfferingTitle(offeringDatas, OfferingEnum.WaterArticle11);
+            string sewageArtile11Title = GetOfferingTitle(offeringDatas, OfferingEnum.SewageArticle11);
 
             var previousDictionary = previousSaleData.ToDictionary(x => x.Id);
             var currentDictionary = currentSaleData.ToDictionary(x => x.Id);
@@ -410,8 +424,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
                 {
                     return new SaleDataOutputDto(existingItem.Id, title, existingItem.Amount, existingItem.Discount, existingItem.FinalAmount);
                 }
-                return new SaleDataOutputDto(id, title, 0, 0, 0);
 
+                return new SaleDataOutputDto(id, title, 0, 0, 0);
             }
 
             return (previousItems, currentItems, differentItems);

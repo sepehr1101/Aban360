@@ -23,9 +23,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IT64QueryService _t64QueryService;
         private readonly IValidator<LightAssessmentResultInputDto> _validator;
-        private static int _setAssessmentResultStatus = 110;
-        private static int _seenByAssessmentStatus = 150;
-        static int _assessmentSetTime = 10;
+        private static int _setAssessmentResultStatus = (int)TrackingStatusEnum.SetAssessmentResult;
+        private static int _seenByAssessmentStatus = (int)TrackingStatusEnum.SeenByAssessment;
+        static int _assessmentSetTime = (int)TrackingStatusEnum.SetAssessmentTime;
         static int _requestOrigin = 12;
         public SetLightAssessmentResultHandler(
             IHttpContextAccessor contextAccessor,

@@ -314,6 +314,7 @@
         public static string ChangeContractualCapacity => "تغیر ظرفیت قراردادی";
         public static string InvalidTwoDiscount => "قابلیت اعمال تخفیف همزمان برای اطلاعات قبلی و فعلی وجود ندارد. ";
         public static string InvalidDiscountCount => "تعداد تخفیف را وارد کنید";
+        public static string NotFoundOfferingId => "شناسه خدمت یافت نشد.";
 
         //Tracking
         public static string NotFoundMoshtrak => "اطلاعات مشترک یافت نشد.";

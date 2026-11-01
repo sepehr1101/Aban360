@@ -1,4 +1,5 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Contracts;
@@ -11,6 +12,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -28,11 +30,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IExaminationQueryService _examinationQueryService;
         private readonly IMoshtrakService _moshtrakService;
         private readonly IValidator<RequestAfterSaleInputDto> _validator;
-        static int _afterSaleRequestServiceId = 2;
-        static int _setAssessmentTimeStatusId = 10;
-        static string _insertWayTitle = "رایاب";
+        static string _insertWayTitle = ReportLiterals.RayabPersian;
+        static int _afterSaleRequestServiceId = ReportLiterals.AfterSaleRequestTypeId;
+        static int _setAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentResult;
+        static int _firstStepStatusId = (int)TrackingStatusEnum.RequestRegistered;
         static int _requestOrigin = 12;
-        static int _firstStepStatusId = 0;
         public RequestAfterSaleHandler(
             IHttpContextAccessor contextAccessor,
            ICommonMemberQueryService commonMemberQueryService,

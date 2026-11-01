@@ -27,9 +27,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IReadingBlockListGetHandler _readingBlockListGetHandler;
         private readonly IValidator<AssessmentResultInputDto> _validator;
         static int[] _zoneIdsMustBlock = { 131301, 131302, 131303, 131304, 131305, 131811 };
-        private static int _setAssessmentResultStatus = 110;
-        private static int _seenByAssessmentStatus = 150;
-        private static int _setAssessmentTimeStatus = 10;
+        private static int _setAssessmentResultStatus = (int)TrackingStatusEnum.SetAssessmentResult;
+        private static int _seenByAssessmentStatus = (int)TrackingStatusEnum.SeenByAssessment;
+        private static int _setAssessmentTimeStatus = (int)TrackingStatusEnum.SetAssessmentTime;
         static int _requestOrigin = 12;
         public SetAssessmentResultHandler(
             IHttpContextAccessor contextAccessor,

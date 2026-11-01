@@ -15,6 +15,7 @@ using Aban360.Common.BaseEntities;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Contracts;
 using DNTPersianUtils.Core;
 using Aban360.Common.Timing;
+using Aban360.ReportPool.Domain.Base;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
 {
@@ -27,14 +28,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IExaminationQueryService _examinationQueryService;
         private readonly IMoshtrakService _moshtrakService;
         private static int _requestOrigin = 12;
-        private static int _afterSaleRequestType = 2;
-        private static int _saleRequestType = 1;
-        private static int _requestRegistered = 0;
-        private static int _reAssessmentStatusId = 15;
-        private static int _setAssessmentTimeStatusId = 10;
-        private static int _deletedSatatus = 90000;
-        private static int _registeredStatus = 90;
-        private static int _amountConfirmedStatus = 75;
+        private static int _afterSaleRequestType = ReportLiterals.AfterSaleRequestTypeId;
+        private static int _saleRequestType = ReportLiterals.SaleRequestTypeId;
+        private static int _requestRegistered = (int)TrackingStatusEnum.RequestRegistered;
+        private static int _reAssessmentStatusId = (int)TrackingStatusEnum.ReAssessment;
+        private static int _setAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentTime;
+        private static int _deletedSatatus = (int)TrackingStatusEnum.Deleted;
+        private static int _registeredStatus = (int)TrackingStatusEnum.Registered;
+        private static int _amountConfirmedStatus = (int)TrackingStatusEnum.AmountConfirmed;
         private int[] _disallowedPreviousStatusIds = { _requestRegistered, _reAssessmentStatusId, _setAssessmentTimeStatusId, _deletedSatatus, _registeredStatus, _amountConfirmedStatus };
         public ReAssessmentRequestHandler(
             ITrackingQueryService trackingQueryService,

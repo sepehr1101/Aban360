@@ -1,7 +1,10 @@
-﻿namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts
+﻿using Aban360.Common.BaseEntities;
+
+namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts
 {
     public interface IOfferingQueryService
     {
-        Task<string> Get(short id);
+        Task<NumericDictionary> Get(short id);
+        Task<IEnumerable<NumericDictionary>> Get(IEnumerable<short> ids);
     }
 }

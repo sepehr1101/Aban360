@@ -13,6 +13,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
+using Aban360.ReportPool.Domain.Base;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using DNTPersianUtils.Core;
@@ -33,9 +34,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IExaminerOffQueryService _examinerOffQueryService;
         private readonly IMoshtrakService _moshtrakService;
         private readonly IValidator<AssessmentSetTimeInputDto> _validator;
-        static int _firstStepStatusId = 0;
-        static int _setAssessmentTimeStatusId = 10;
-        static int _setReAssessmentRequired = 15;
+        static int _saleRequestTypeId = ReportLiterals.SaleRequestTypeId;
+        static int _setAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentTime;
+        static int _setReAssessmentRequired = (int)TrackingStatusEnum.ReAssessment;
         static int _requestOrigin = 12;
 
         public SetAssessmentTimeHandler(
@@ -124,7 +125,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private async Task<TrackingOutputDto> StatusValidation(int trackNumber)
         {
-            int[] allowedSetTime = { _firstStepStatusId, _setReAssessmentRequired };
+            int[] allowedSetTime = { _saleRequestTypeId, _setReAssessmentRequired };
             TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(trackNumber);
             if (!allowedSetTime.Contains(latestTrackingInfo.StatusId))
             {
