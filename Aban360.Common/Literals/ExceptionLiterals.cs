@@ -269,6 +269,7 @@
         public static string InvalidBlocksReadingNumberChars => "تعداد کاراکتر بلوک‌ها برابر نیست.";
         public static string InvalidBoundAndBlockStartReadingNumber => "شماره اشتراک اولین مسیر و شروع مسیر مغایرت دارد.";
         public static string InvalidStartReadingNumber => "خطا در شماره اشتراک. شروع مسیر جاری و پایان مسیر قبلی برابر است. نام مسیر:{0}";
+        public static string InvalidCounterStateId => "شناسه وضعیت کنتور نامعتبر است.";
 
 
 
