@@ -18,10 +18,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly IGhestQueryService _ghestQueryService;
-        static int _calculationConfirmedStatus = 60;
+        static int _calculationConfirmedStatus = (int)TrackingStatusEnum.CalculationConfirmed;
         static int _requestOrigin = 12;
-        static int _setAssessmentResult = 110;
-        static int _reCalculateRequired = 65;
+        static int _setAssessmentResult = (int)TrackingStatusEnum.SetAssessmentResult;
+        static int _reCalculateRequired = (int)TrackingStatusEnum.ReCalculation;
         static int[] _allowedStatus = { _reCalculateRequired, _setAssessmentResult };
 
         public CalculationRequestConfirmHandler(

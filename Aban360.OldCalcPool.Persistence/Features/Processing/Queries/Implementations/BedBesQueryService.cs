@@ -716,7 +716,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         {
             return $@"Select top 1 jalase_no
                     From atlas.dbo.autoback
-                    Order By date_bed desc,id desc";
+                    Order By id desc, date_bed desc";
         }
         private string GetLatest(string dbName)
         {

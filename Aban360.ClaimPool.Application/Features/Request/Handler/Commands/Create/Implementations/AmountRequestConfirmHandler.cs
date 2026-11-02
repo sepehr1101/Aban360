@@ -1,4 +1,5 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
@@ -16,8 +17,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IGhestQueryService _ghestQueryService;
-        static int _amountIsConfirmedStatus = 75;
-        static int _calculationConfirmedStatus = 60;
+        static int _amountIsConfirmedStatus = (int)TrackingStatusEnum.AmountIsConfirmed;
+        static int _calculationConfirmedStatus = (int)TrackingStatusEnum.CalculationConfirmed;
         static int _requestOrigin = 12;
 
         public AmountRequestConfirmHandler(

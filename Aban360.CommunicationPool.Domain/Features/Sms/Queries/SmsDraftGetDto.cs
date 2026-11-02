@@ -7,6 +7,7 @@ namespace Aban360.CommunicationPool.Domain.Features.Sms.Queries
         public Guid Id { get; set; }
         public int? TrackNumber { get; set; }
         public string? BillId { get; set; }
+        public string? PaymentId { get; set; }
         public string GroupId { get; set; }
         public string ReferenceId { get; set; }
         public int TemplateId { get; set; }

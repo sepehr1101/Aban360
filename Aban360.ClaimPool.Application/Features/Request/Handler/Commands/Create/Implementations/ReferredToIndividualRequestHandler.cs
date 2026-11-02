@@ -17,8 +17,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
-        static int _referredToIndividualStatusId = 160;
-        static int _removeRequestStatusId = 90000;
+        static int _referredToIndividualStatusId = (int)TrackingStatusEnum.ReferredToIndividual;
+        static int _removeRequestStatusId = (int)TrackingStatusEnum.Deleted;
         static int _requestOrigin = 12;
         public ReferredToIndividualRequestHandler(
             ITrackingQueryService trackingQueryService,

@@ -10,19 +10,34 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
     public class MeterFlowAmountConfirmedController : BaseController
     {
         private readonly ICalculationConfirmationHandler _confirmationHandler;
-        public MeterFlowAmountConfirmedController(ICalculationConfirmationHandler confirmationHandler)
+        private readonly IMeterReadingCalculationConfirmThenSendSmsHandler _confirmationThenSendSmsHandler;
+        public MeterFlowAmountConfirmedController(
+            ICalculationConfirmationHandler confirmationHandler,
+            IMeterReadingCalculationConfirmThenSendSmsHandler confirmationThenSendSmsHandler)
         {
             _confirmationHandler = confirmationHandler;
             _confirmationHandler.NotNull(nameof(confirmationHandler));
+
+            _confirmationThenSendSmsHandler = confirmationThenSendSmsHandler;
+            _confirmationThenSendSmsHandler.NotNull(nameof(confirmationThenSendSmsHandler));
         }
 
         [HttpPost]
         [Route("amount-confirmed/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingCheckedOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CheckAmount(int id, CancellationToken cancellationToken)
-        {           
-            MeterReadingCheckedOutputDto result = await _confirmationHandler.Handle(id, CurrentUser, cancellationToken);
+        {
+            MeterReadingCheckedOutputDto result = await _confirmationHandler.Handle(id, CurrentUser.UserId, cancellationToken);
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("amount-confirmed-then-send-sms/{id}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> CheckAmountThenSendSms(int id, CancellationToken cancellationToken)
+        {
+             await _confirmationThenSendSmsHandler.Handle(id, CurrentUser.UserId, cancellationToken);
+            return Ok(id);
         }
     }
 }

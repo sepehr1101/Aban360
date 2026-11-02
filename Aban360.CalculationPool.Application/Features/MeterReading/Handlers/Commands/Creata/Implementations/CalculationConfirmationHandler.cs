@@ -10,7 +10,6 @@ using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
-using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
@@ -31,6 +30,8 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Text.Json;
 using Aban360.Common.Timing;
+using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
 {
@@ -40,10 +41,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
         private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
         private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly ICommonZoneService _commonZoneService;
         private readonly IMeterFlowQueryService _meterFlowQueryService;
         private readonly IBedBesQueryService _bedBesQueryService;
         private readonly IVariabService _variabService;
         private readonly ICounterStateQueryService _counterStateQueryService;
+        private readonly IUserQueryService _userQueryService;
         private readonly IT51QueryService _t51QueryService;
         private readonly IT5QueryService _t5QueryService;
         private readonly IT7QueryService _t7QueryService;
@@ -60,10 +63,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler,
             IMeterReadingDetailQueryService meterReadingDetailService,
             ICommonMemberQueryService commonMemberQueryService,
+            ICommonZoneService commonZoneService,
             IMeterFlowQueryService meterFlowQueryService,
             IBedBesQueryService bedBesQueryService,
             IVariabService variabService,
             ICounterStateQueryService counterStateQueryService,
+            IUserQueryService userQueryService,
             IT51QueryService t51QueryService,
             IT7QueryService t7QueryService,
             IT5QueryService t5QueryService,
@@ -84,6 +89,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
 
+            _commonZoneService = commonZoneService;
+            _commonZoneService.NotNull(nameof(commonZoneService));
+
             _meterFlowQueryService = meterFlowQueryService;
             _meterFlowQueryService.NotNull(nameof(meterFlowQueryService));
 
@@ -95,6 +103,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             _counterStateQueryService = counterStateQueryService;
             _counterStateQueryService.NotNull(nameof(counterStateQueryService));
+
+            _userQueryService = userQueryService;
+            _userQueryService.NotNull(nameof(userQueryService));
 
             _t51QueryService = t51QueryService;
             _t51QueryService.NotNull(nameof(t51QueryService));
@@ -112,7 +123,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             _idempotentOperationService.NotNull(nameof(idempotentOperationService));
         }
 
-        public async Task<MeterReadingCheckedOutputDto> Handle(int latestFlowId, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<MeterReadingCheckedOutputDto> Handle(int latestFlowId, Guid userId, CancellationToken cancellationToken)
         {
             string operationKey = $"MeterFlowAmountConfirmed:{latestFlowId}";
             Guid lockToken = Guid.NewGuid();
@@ -134,7 +145,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             try
             {
-                return await Execute(latestFlowId, appUser, operationKey, lockToken, cancellationToken);
+                return await Execute(latestFlowId, userId, operationKey, lockToken, cancellationToken);
             }
             catch
             {
@@ -150,14 +161,15 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
         }
 
-        private async Task<MeterReadingCheckedOutputDto> Execute(int latestFlowId, IAppUser appUser, string operationKey, Guid lockToken, CancellationToken cancellationToken)
+        private async Task<MeterReadingCheckedOutputDto> Execute(int latestFlowId, Guid userId, string operationKey, Guid lockToken, CancellationToken cancellationToken)
         {
             await _meterFlowValidationGetHandler.Handle(latestFlowId, MeterFlowStepEnum.ConsumptionChecked, cancellationToken);
             var (meterReadings, firstFlowId) = await GetMeterReadings(latestFlowId);
 
             int zoneId = meterReadings.FirstOrDefault().ZoneId;
+            await _commonZoneService.IsUserInZone(userId, zoneId);
             IEnumerable<BedBesPreviousNumberAndDateOutputDto> previousBillsInfo = await GetPreviousBills(meterReadings, zoneId);
-            var (finalWarning, invalidMeterReadingsExcludedList) = await GetDuplicateBills(meterReadings, previousBillsInfo, zoneId, appUser);
+            var (finalWarning, invalidMeterReadingsExcludedList) = await GetDuplicateBills(meterReadings, previousBillsInfo, zoneId, userId);
             IEnumerable<MeterReadingDetailDataOutputDto> allMeterReadingWithoutInvalids = meterReadings.Where(r => !invalidMeterReadingsExcludedList.Any(invalid => invalid.Id == r.Id)).ToList();
 
             var (bedBesBatch, kasrHaBatch) = await GetBedBesAndKasrHaDto(allMeterReadingWithoutInvalids, cancellationToken);
@@ -165,13 +177,14 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch = bedBesBatch.Select(b => new MembersFazelabCountAndDebtAmountUpdateDto((int)b.Town, (int)b.Radif, b.ShGhabs1, _invalidCounterStateCode.Contains((int)b.CodVas) ? 0 : (long)b.Baha, b.TodayDate)).ToList();
             ICollection<ContorUpdateDto> contorsUpdateBatch = GetContorsUpdateDto(bedBesBatch, previousBillsInfo);
 
-            MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
-            MeterFlowCreateDto newMeterFlow = await GetMeterFlowCreate(latestFlowId, appUser);
+            MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, userId, DateTime.Now);
+            MeterFlowCreateDto newMeterFlow = await GetMeterFlowCreate(latestFlowId, userId);
 
             string opLogText = string.Format(OpLogLiterals.GenerateBatchBillOpLog, billsBatch?.FirstOrDefault()?.ZoneTitle, bedBesBatch?.Count() ?? 0);
-            return await ExceSql(bedBesBatch, kasrHaBatch, billsBatch, memberDebtAmountBatch, contorsUpdateBatch, meterFlowUpdate, newMeterFlow, appUser, opLogText, operationKey, lockToken, finalWarning);
+            User currentUser = await _userQueryService.Get(userId);
+            return await ExceSql(bedBesBatch, kasrHaBatch, billsBatch, memberDebtAmountBatch, contorsUpdateBatch, meterFlowUpdate, newMeterFlow, currentUser, opLogText, operationKey, lockToken, finalWarning);
         }
-        private async Task<MeterFlowCreateDto> GetMeterFlowCreate(int latestFlowId, IAppUser appUser)
+        private async Task<MeterFlowCreateDto> GetMeterFlowCreate(int latestFlowId, Guid userId)
         {
             MeterFlowGetDto meterFlow = await _meterFlowQueryService.Get(latestFlowId);
             return new MeterFlowCreateDto()
@@ -183,7 +196,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 FromReadingNumber = meterFlow.FromReadingNumber,
                 ToReadingNumber = meterFlow.ToReadingNumber,
                 PrimaryCount = meterFlow.PrimaryCount,
-                InsertByUserId = appUser.UserId,
+                InsertByUserId = userId,
                 InsertDateTime = DateTime.Now,
                 Description = meterFlow.Description
             };
@@ -223,7 +236,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
             return (bedBesBatch, kasrHaBatch);
         }
-        private async Task<MeterReadingCheckedOutputDto> ExceSql(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, ICollection<BillInsertDto> billsBatch, ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch, ICollection<ContorUpdateDto> contorsUpdateBatch, MeterFlowUpdateDto meterFlowUpdate, MeterFlowCreateDto newMeterFlow, IAppUser appUser, string opLogText, string operationKey, Guid lockToken, string finalWarning)
+        private async Task<MeterReadingCheckedOutputDto> ExceSql(ICollection<BedBesCreateDto> BedBesBatch, ICollection<KasrHaDto> kasrHaBatch, ICollection<BillInsertDto> billsBatch, ICollection<MembersFazelabCountAndDebtAmountUpdateDto> memberDebtAmountBatch, ICollection<ContorUpdateDto> contorsUpdateBatch, MeterFlowUpdateDto meterFlowUpdate, MeterFlowCreateDto newMeterFlow, User currentUser, string opLogText, string operationKey, Guid lockToken, string finalWarning)
         {
             string dbName = GetDbName(newMeterFlow.ZoneId);
 
@@ -254,7 +267,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     await membersCommandService.UpdateBedbes(memberDebtAmountBatch, dbName);
                     await contorCommandService.Update(contorsUpdateBatch, dbName, false);
                     await waterDebtCommandService.UpdateAmount(memberDebtAmountBatch);
-                    await opLogCommandService.Insert(opLogText, appUser);
+                    await opLogCommandService.Insert(opLogText, currentUser);
 
                     await meterFlowCommandService.Update(meterFlowUpdate);
                     int newMeterFlowId = await meterFlowCommandService.Insert(newMeterFlow);
@@ -266,10 +279,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 }
             }
         }
-        private async Task<(string, ICollection<MeterReadingDetailExcludedDto>)> GetDuplicateBills(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, IEnumerable<BedBesPreviousNumberAndDateOutputDto> previousBillsInfo, int zoneId, IAppUser appUser)
+        private async Task<(string, ICollection<MeterReadingDetailExcludedDto>)> GetDuplicateBills(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, IEnumerable<BedBesPreviousNumberAndDateOutputDto> previousBillsInfo, int zoneId, Guid userId)
         {
             int firstFlowId = meterReadings?.FirstOrDefault()?.FlowImportedId ?? 0;
-            var (invalidDuplicateReadingToExcludeList, invalidDuplicateCount, invalidLessThan5DayCount) = await GetInvlaidDuplicateReading(meterReadings, previousBillsInfo, appUser);
+            var (invalidDuplicateReadingToExcludeList, invalidDuplicateCount, invalidLessThan5DayCount) = await GetInvlaidDuplicateReading(meterReadings, previousBillsInfo, userId);
             await ExcludeExecSql(invalidDuplicateReadingToExcludeList, firstFlowId);
             string warningInvalidDuplicateMessage = invalidDuplicateCount == 0 ? string.Empty : ExceptionLiterals.InvalidDuplicateGenerateBill(invalidDuplicateCount);
             string warningInvalidLessThan5DayMessage = invalidLessThan5DayCount == 0 ? string.Empty : ExceptionLiterals.InvalidToleranceGenerateBill(invalidLessThan5DayCount);
@@ -277,7 +290,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             return (finalWarning, invalidDuplicateReadingToExcludeList);
         }
-        private async Task<(ICollection<MeterReadingDetailExcludedDto>, int, int)> GetInvlaidDuplicateReading(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, IEnumerable<BedBesPreviousNumberAndDateOutputDto> previousBillsInfo, IAppUser appUser)
+        private async Task<(ICollection<MeterReadingDetailExcludedDto>, int, int)> GetInvlaidDuplicateReading(IEnumerable<MeterReadingDetailDataOutputDto> meterReadings, IEnumerable<BedBesPreviousNumberAndDateOutputDto> previousBillsInfo, Guid userId)
         {
             ICollection<MeterReadingDetailExcludedDto> invalidDuplicateMeterReadingToExcludeList = new List<MeterReadingDetailExcludedDto>();
             DateTime currentDateTime = DateTime.Now;
@@ -292,7 +305,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 }
                 if (item.PreviousDateJalali.CompareTo(previousBills.PreviousDateJalali) != 0)//previousBills.PreviousDateJalali: تا تاریخ قرائت قبلی
                 {
-                    MeterReadingDetailExcludedDto excludeDto = new(item.Id, appUser.UserId, currentDateTime, ExcludedCauseEnum.DuplicateBill, ReportLiterals.DuplicateBill);
+                    MeterReadingDetailExcludedDto excludeDto = new(item.Id, userId, currentDateTime, ExcludedCauseEnum.DuplicateBill, ReportLiterals.DuplicateBill);
                     invalidDuplicateMeterReadingToExcludeList.Add(excludeDto);
                     invalidDuplicateCount++;
                 }
@@ -301,7 +314,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     DateTime previousRegisterDate = ConvertDate.JalaliToDateTime(previousBills.RegisterDateJalali, true).Value;
                     if (item.DateBed.CompareTo(previousRegisterDate.AddDays(5).ToShortPersianDateString()) < 0)//تاریخ صدور قبض
                     {
-                        MeterReadingDetailExcludedDto excludeDto = new(item.Id, appUser.UserId, currentDateTime, ExcludedCauseEnum.DuplicateBill5, ReportLiterals.DuplicateBill5);
+                        MeterReadingDetailExcludedDto excludeDto = new(item.Id, userId, currentDateTime, ExcludedCauseEnum.DuplicateBill5, ReportLiterals.DuplicateBill5);
                         invalidDuplicateMeterReadingToExcludeList.Add(excludeDto);
                         invalidLessThan5DayCount++;
                     }

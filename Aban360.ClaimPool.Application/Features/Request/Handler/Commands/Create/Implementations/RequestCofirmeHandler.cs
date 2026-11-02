@@ -14,6 +14,7 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.ReportPool.Domain.Base;
 using DNTPersianUtils.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -32,11 +33,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly ICommonZoneService _commonZoneService;
         private readonly IValidator<RequestConfirmInputDto> _validator;
         private string _currentDateJalali = DateTime.Now.ToShortPersianDateString();
-        private int _requestConfirmStatusId = 90;
-        private int _validCounterStateCode = 0;
-        private int _saleGroupServiceId = 1;
+        private int _requestConfirmStatusId = (int)TrackingStatusEnum.Registered;
+        private int _validCounterStateCode = (int)CounterStateCodeEnum.Common;
+        private int _saleGroupServiceId = ReportLiterals.SaleRequestTypeId;
+        private int _operator = ReportLiterals.RayabOperator;
         static int _requestOrigin = 12;
-        private int _operator = 666;
         public RequestCofirmeHandler(
             IHttpContextAccessor contextAccessor,
             ITrackingQueryService trackingQueryService,

@@ -17,8 +17,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
-        static int _recalculateStatus = 65;
-        static int _deletedSatatus = 90000;
+        static int _recalculateStatus = (int)TrackingStatusEnum.ReCalculation;
+        static int _deletedSatatus = (int)TrackingStatusEnum.Deleted;
         static int[] _disallowedStatusIds = { _recalculateStatus, _deletedSatatus };
         static int _requestOrigin = 12;
         public ReCalculationRequestHandler(

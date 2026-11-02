@@ -1,4 +1,5 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
@@ -21,8 +22,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IVariabService _variabService;
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IT52QueryService _t52QueryService;
-        static int _setAssessmentResult = 110;
-        static int _reCalculateRequired = 65;
+        static int _setAssessmentResult = (int)TrackingStatusEnum.SetAssessmentResult;
+        static int _reCalculateRequired = (int)TrackingStatusEnum.ReCalculation;
         static int[] _allowedStatus = { _reCalculateRequired, _setAssessmentResult };
         public SetBillIdHandler(
             ICommonMemberQueryService memberQueryService,
@@ -53,6 +54,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
             }
 
+            if (!string.IsNullOrWhiteSpace(latestTrackingInfo.BillId))
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.CantSetBillIdDuplicate);
+            }
             int customerNumber = await GetCustomerNumber(latestTrackingInfo.ZoneId);
             string _3digitZoneId = await _t52QueryService.Get(new ZoneIdAndCustomerNumber(latestTrackingInfo.ZoneId, customerNumber));
             string billId = TransactionIdGenerator.GenerateBillId(customerNumber.ToString(), _3digitZoneId);

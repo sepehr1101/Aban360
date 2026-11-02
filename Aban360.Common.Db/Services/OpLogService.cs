@@ -5,6 +5,7 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
+using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.AspNetCore.Http;
@@ -42,6 +43,27 @@ namespace Aban360.Common.Db.Services
                 UserId = appUser.UserId,
                 DisplayName = appUser.FullName,
                 UserName = appUser.Username,
+                Ip = _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(),
+                SystemInfo = JsonSerializer.Serialize(logInfo),
+                Description = text,
+                Scope = string.Empty,
+            };
+
+            string command = GetInsertCommand();
+            int recordEffected = await _connection.ExecuteAsync(command, insertDto, _transaction);
+            if (recordEffected <= 0)
+            {
+                throw new InvalidDateException(ExceptionLiterals.InvalidInsertOpLog);
+            }
+        }
+        public async Task Insert(string text, User user)
+        {
+            LogInfo logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
+            OpLogInsertDto insertDto = new()
+            {
+                UserId = user.Id    ,
+                DisplayName = user.FullName,
+                UserName = user.Username,
                 Ip = _contextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString(),
                 SystemInfo = JsonSerializer.Serialize(logInfo),
                 Description = text,
