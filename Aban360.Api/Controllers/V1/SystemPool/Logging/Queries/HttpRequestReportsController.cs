@@ -22,7 +22,7 @@ public sealed class HttpRequestReportsController(IHttpRequestReportHandler handl
     [HttpGet("slowest")]
     public Task<IActionResult> Slowest([FromQuery] HttpRequestReportInput input, CancellationToken cancellationToken)
         => Report(input, HttpRequestReportKind.Requests, cancellationToken);
-
+     
     private async Task<IActionResult> Report(HttpRequestReportInput input, HttpRequestReportKind kind, CancellationToken cancellationToken)
     {
         var role = configuration["ApiSettings:AdminRoleName"];

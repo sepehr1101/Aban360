@@ -9,6 +9,7 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts
     {
         IQueryable<User> GetQuery();
         Task<ICollection<User>> Get();
+        Task<ICollection<UserBriefQueryDto>> GetBrief(CancellationToken cancellationToken);
         Task<ICollection<UserQueryDto>> GetWithDefaultZone();
         Task<User> Get(Guid id);
         Task<User> GetByRoleInfo(Guid id);

@@ -87,11 +87,14 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 WaterConsumptionUnit= waterIncomeAndConsumptionData.Sum(w=>w.WaterConsumptionUnit)                
             };
             waterIncomeAndConsumptionHeader.ConsumptionAverage =
-                waterIncomeAndConsumptionHeader.SumConsumption * 30 /
-                ((waterIncomeAndConsumptionHeader.SumDuration == 0 ? 1 : waterIncomeAndConsumptionHeader.SumDuration) *
-                (waterIncomeAndConsumptionHeader.SumBillCount == 0 ? 1 : waterIncomeAndConsumptionHeader.SumBillCount) *
-                (waterIncomeAndConsumptionHeader.BillUnit == 0 ? 1 : waterIncomeAndConsumptionHeader.BillUnit));
-          
+              (decimal)waterIncomeAndConsumptionHeader.SumConsumption * 30 /
+              ((waterIncomeAndConsumptionHeader.SumDuration == 0 ? 1 : waterIncomeAndConsumptionHeader.SumDuration) *
+               (waterIncomeAndConsumptionHeader.SumBillCount == 0 ? 1 : waterIncomeAndConsumptionHeader.SumBillCount) /
+               (waterIncomeAndConsumptionHeader.BillUnit == 0 ? 1 : waterIncomeAndConsumptionHeader.BillUnit));
+
+            waterIncomeAndConsumptionHeader.DailyAverage = (double)waterIncomeAndConsumptionHeader.SumDuration /
+                (waterIncomeAndConsumptionHeader.SumBillCount == 0 ? 1 : waterIncomeAndConsumptionHeader.SumBillCount);
+
 
             var result = new ReportOutput<WaterIncomeAndConsumptionSummaryHeaderOutputDto, WaterIncomeAndConsumptionSummaryDataOutputDto>(reportTitle, waterIncomeAndConsumptionHeader, waterIncomeAndConsumptionData);
             return result;

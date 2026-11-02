@@ -124,10 +124,18 @@ namespace Aban360.Common.Db.Services
         }
         public async Task<IEnumerable<OpLogDataDto>> Get(OpLogGetDto input)
         {
+            if (input is null)
+                throw new CustomValidationException("اطلاعات جست‌وجوی لاگ عملیات ارسال نشده است.");
             string query = GetFromToDateQuery();
-            DateTime fromDate = ConvertDate.JalaliToDateTime(input.FromDateJalali,true).Value;
-            DateTime toDate = ConvertDate.JalaliToDateTime(input.ToDateJalali,true).Value;
-            IEnumerable<OpLogDataDto> datas = await _sqlReportConnection.QueryAsync<OpLogDataDto>(query, new { fromDate, toDate });
+            DateTime fromDate = PersianDateTimeParser.Parse(input.FromDateJalali, "00:00", "تاریخ شروع");
+            DateTime toDate = PersianDateTimeParser.Parse(input.ToDateJalali, "00:00", "تاریخ پایان");
+            if (fromDate > toDate)
+                throw new InvalidDateException("تاریخ شروع نباید بعد از تاریخ پایان باشد.");
+            if (toDate == DateTime.MaxValue.Date)
+                throw new InvalidDateException("تاریخ پایان خارج از محدودهٔ پشتیبانی‌شدهٔ گزارش است.");
+            var toDateExclusive = toDate.AddDays(1);
+            using var connection = _sqlReportConnection;
+            IEnumerable<OpLogDataDto> datas = await connection.QueryAsync<OpLogDataDto>(query, new { fromDate, toDateExclusive });
             datas.ForEach(d => d.RegisterDateJalali = d.RegisterDateTime.ToShortPersianDateString());
 
             return datas;
@@ -146,7 +154,8 @@ namespace Aban360.Common.Db.Services
                         Scope
                     From CustomerWarehouse.dbo.OpLog
                     Where 
-                    CAST( DATEFROMPARTS( YEAR(RegisterDateTime), MONTH(RegisterDateTime), DAY(RegisterDateTime )) AS datetime)  BETWEEN @fromDate and @toDate ";
+                    RegisterDateTime >= @fromDate AND RegisterDateTime < @toDateExclusive
+                    ORDER BY RegisterDateTime DESC, Id DESC";
         }
     }
     public record OpLogInsertDto

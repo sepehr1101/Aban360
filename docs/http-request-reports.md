@@ -42,3 +42,9 @@ against production SQL and representative load still needs deployment validation
 If indexes or storage changes become necessary, review them separately first.
 
 Run validation: `dotnet run --project tests/Aban360.HttpReports.SmokeTests/Aban360.HttpReports.SmokeTests.csproj`.
+
+Timeout follow-up: see [the performance review](log-timeouts.fa.md). Optional
+filters now produce parameterized predicates only when present, XML projections
+are selected per report, and reports use `OPTION (RECOMPILE)` for the current
+range/filter values. Index scripts remain manual; no production improvement
+has been measured by the offline checks.
