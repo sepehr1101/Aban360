@@ -97,8 +97,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         public async Task<IActionResult> NowCalcuation(NowGenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
             IAppUser appUser = new AppUserManual();
-            string requestOpLogText = string.Format(OpLogLiterals.NowGenerateBillRequestOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber);
-            await _opLogCommandService.Insert(requestOpLogText, appUser);
+            await InsertOpLog(OpLogLiterals.NowGenerateBillRequestOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber);
             try
             {
                 NowGenerateBillOutputDto handleResult = await _nowGenerateBillHandler.Handle(inputDto, appUser, cancellationToken);
@@ -117,14 +116,26 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
                 if (result.ErrorCode == (int)NowGenerateBillErrorCodeEnum.Success)
                 {
                     await _latestBillSendSmsHandler.Handle(inputDto.BillId, inputDto.MobileNumber, appUser, cancellationToken);
+                    await InsertOpLog(OpLogLiterals.NowGenerateBillRequestSuccessedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber);
+                }
+                else
+                {
+                    await InsertOpLog(OpLogLiterals.NowGenerateBillRequestFailedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber);
                 }
                 return CustomeStatus(handleResult, statusResult, handleResult.Message);
             }
             catch
             {
+                await InsertOpLog(OpLogLiterals.NowGenerateBillRequestFailedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber);
+
                 NowGenerateBillOutputDto result = new("سیستم قادر به محاسبه نیست", (int)NowGenerateBillErrorCodeEnum.NotAvailableNow);
                 return CustomeStatus(result, HttpStatusCode.RequestedRangeNotSatisfiable, result.Message);
             }
+        }
+        private async Task InsertOpLog(string baseText, string billId, int meterNumber, string mobileNumber)
+        {
+            string requestSeccessOpLogText = string.Format(baseText, billId, meterNumber, mobileNumber);
+            await _opLogCommandService.Insert(requestSeccessOpLogText, CurrentUser);
         }
     }
 }

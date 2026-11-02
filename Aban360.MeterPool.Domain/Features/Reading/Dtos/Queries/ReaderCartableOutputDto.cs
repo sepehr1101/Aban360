@@ -1,4 +1,6 @@
 ﻿using Aban360.Common.BaseEntities;
+using Newtonsoft.Json.Linq;
+using System.Text.Json;
 
 namespace Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries
 {
@@ -11,5 +13,6 @@ namespace Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries
         public IEnumerable<ReadingCounterStateGetDto> CounterStates { get; set; }
         public IEnumerable<NumericDictionary> BranchTypes { get; set; }
         public IEnumerable<NumericDictionary> Guilds { get; set; }
+        public JsonElement Traverse { get; set; }
     }
 }

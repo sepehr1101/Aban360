@@ -16,6 +16,9 @@ using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Implementataions
 {
@@ -257,6 +260,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 DeletionStates = deletionStateList,
                 CounterStates = counterStateList,
                 Guilds = guildDictionary,
+                Traverse = GetTraverse()
             };
             return result;
         }
@@ -265,10 +269,93 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             User userInfo = await _userQueryService.GetByRoleInfo(appUser.UserId);
             if (!userInfo.UserRoles.Where(role => role.RoleId == _readerRoleId).Any())
             {
-                throw new ReadingException(ExceptionLiterals.NotFoundCurrentUserByReaderRole);
+                //throw new ReadingException(ExceptionLiterals.NotFoundCurrentUserByReaderRole);
             }
 
             return userInfo;
+        }
+        private JsonElement GetTraverse()
+        {
+            string traverseString = @"{
+  ""fields"": [
+    {
+      ""type"": ""numeric"",
+      ""values"": """",
+      ""label"": ""شماره موبایل"",
+      ""placeholder"": ""موبایل را وارد کنید"",
+      ""isRequired"": true,
+      ""regex"": ""^09\\d{9}$"",
+      ""maxLen"": 10,
+      ""minLen"": 10,
+      ""selecteOptions"": [],
+      ""name"": ""mobileNumber""
+    },
+    {
+      ""type"": ""string"",
+      ""values"": ""رضا"",
+      ""label"": ""نام"",
+      ""placeholder"": ""نام را وارد کنید"",
+      ""isRequired"": true,
+      ""regex"": """",
+      ""maxLen"": 20,
+      ""minLen"": 3,
+      ""selecteOptions"": [],
+      ""name"": ""name""
+    },
+    {
+      ""type"": ""comboSingle"",
+      ""values"": ""2"",
+      ""label"": ""کاربری"",
+      ""placeholder"": """",
+      ""isRequired"": false,
+      ""regex"": """",
+      ""maxLen"": null,
+      ""minLen"": null,
+      ""selecteOptions"": [
+        {
+            ""key"": 1,
+            ""value"": ""مسکونی""
+        },
+        {
+            ""key"": 2,
+            ""value"": ""تجاری""},
+        {
+            ""key"": 3,
+            ""value"": ""سایر""
+        }
+    ],
+      ""name"": ""کاربری""
+    },
+        {
+      ""type"": ""comboMulti"",
+      ""values"": ""[1,2]"",
+      ""label"": ""خدمات"",
+      ""placeholder"": """",
+      ""isRequired"": false,
+      ""regex"": """",
+      ""maxLen"": null,
+      ""minLen"": null,
+      ""selecteOptions"": [
+        {
+            ""key"": 1,
+            ""value"": ""قطع""
+        },
+        {
+            ""key"": 2,
+            ""value"": ""وصل""},
+        {
+            ""key"": 3,
+            ""value"": ""شماره 3""
+        }
+    ],
+      ""name"": ""خدمات""
+    }
+  ]
+}";
+            JToken traverseJson = JToken.Parse(traverseString);
+            JsonElement result = JsonDocument.Parse(traverseJson.ToString()).RootElement;
+
+            return result;
         }
     }
 }
