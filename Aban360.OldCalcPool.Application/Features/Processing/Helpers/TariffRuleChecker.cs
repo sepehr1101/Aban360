@@ -11,6 +11,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Helpers
         }
         internal static bool IsVillage(int zoneId)
         {
+            if (zoneId == 144411 || zoneId==142618)
+            {
+                return false;
+            }
             return zoneId > 140000;
         }
         internal static bool IsGardenOrDwelty(int usageId)
