@@ -29,6 +29,7 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Queries.Implementat
                         Id,
 	                    TrackNumber,
 	                    BillId,
+                        PaymentId,
                         GroupId,
 	                    ReferenceId,
 	                    SmsFlowId,

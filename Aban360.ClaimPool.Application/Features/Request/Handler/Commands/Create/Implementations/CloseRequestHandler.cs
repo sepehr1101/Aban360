@@ -17,7 +17,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     {
         private readonly IMoshtrakQueryService _moshtrakQueryService;
         private readonly ITrackingQueryService _trackingQueryService;
-        static int _removeRequestStatusId = 90000;
+        static int _removeRequestStatusId = (int)TrackingStatusEnum.Deleted;
         static int _requestOrigin = 12;
         public CloseRequestHandler(
             IMoshtrakQueryService moshtrakQueryService,
@@ -34,7 +34,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
         public async Task<RequestCloseOuputDto> Handle(CloseRequestInputDto inputDto, int userName, CancellationToken cancellationToken)
         {
-            //
             TrackingOutputDto? trackingInfo = await _trackingQueryService.GetFirstStep(inputDto.TrackNumber, false);
             string deleteDescription = $"حذف توسط {userName}";
 

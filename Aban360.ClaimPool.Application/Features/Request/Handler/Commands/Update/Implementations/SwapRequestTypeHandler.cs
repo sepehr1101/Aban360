@@ -1,5 +1,6 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
@@ -9,6 +10,7 @@ using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.ReportPool.Domain.Base;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 
@@ -18,9 +20,15 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakService _moshtrakService;
-        static int[] _allowedStatusId = { 0, 10, 20, 65 };
-        static string _newRequest = "انشعاب جدید";
-        static string _afterSaleRequest = "پس از فروش";
+        private static int _requestRegisteredStatusId = (int)TrackingStatusEnum.RequestRegistered;
+        private static int _setAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentTime;
+        private static int _assessmentSetResultStatusId = (int)TrackingStatusEnum.ExamineResultSet;
+        private static int _reCalculationStatusId = (int)TrackingStatusEnum.ReCalculation;
+        private static int[] _allowedStatusId = { _requestRegisteredStatusId, _setAssessmentTimeStatusId, _assessmentSetResultStatusId, _reCalculationStatusId };
+       private static int _saleRequestTypeId=ReportLiterals.SaleRequestTypeId;
+       private static int _afterSaleRequestTypeId=ReportLiterals.AfterSaleRequestTypeId;
+        private static string _newRequest = "انشعاب جدید";
+        private static string _afterSaleRequest = "پس از فروش";
         public SwapRequestTypeHandler(
             ITrackingQueryService trackingQueryService,
             IMoshtrakService moshtrakService,
@@ -70,15 +78,15 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
         }
         private (int, string, string) GetServiceGroup(int previousServiceTypeId, string userName)
         {
-            int requestTypeId = previousServiceTypeId == 1 ? 2 : 1;
-            string requestTypeTitle = requestTypeId == 1 ? _newRequest : _afterSaleRequest;
+            int requestTypeId = previousServiceTypeId == _saleRequestTypeId ? _afterSaleRequestTypeId : _saleRequestTypeId;
+            string requestTypeTitle = requestTypeId == _saleRequestTypeId ? _newRequest : _afterSaleRequest;
             string description = $@"-نوع درخواست توسط{userName} به '{requestTypeTitle}' تغیر یافت.";
 
             return new(requestTypeId, requestTypeTitle, description);
         }
         private MoshtrakServicesUpdateDto GetMoshtrakServicesDto(SwapRequestTypeInputDto inputDto)
         {
-            MoshtrakServiceDto moshtrakServices =  _moshtrakService.GetServicesSelected(inputDto.SelectedServices);
+            MoshtrakServiceDto moshtrakServices = _moshtrakService.GetServicesSelected(inputDto.SelectedServices);
 
             return new MoshtrakServicesUpdateDto()
             {

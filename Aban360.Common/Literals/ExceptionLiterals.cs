@@ -269,6 +269,7 @@
         public static string InvalidBlocksReadingNumberChars => "تعداد کاراکتر بلوک‌ها برابر نیست.";
         public static string InvalidBoundAndBlockStartReadingNumber => "شماره اشتراک اولین مسیر و شروع مسیر مغایرت دارد.";
         public static string InvalidStartReadingNumber => "خطا در شماره اشتراک. شروع مسیر جاری و پایان مسیر قبلی برابر است. نام مسیر:{0}";
+        public static string InvalidCounterStateId => "شناسه وضعیت کنتور نامعتبر است.";
 
 
 
@@ -314,6 +315,7 @@
         public static string ChangeContractualCapacity => "تغیر ظرفیت قراردادی";
         public static string InvalidTwoDiscount => "قابلیت اعمال تخفیف همزمان برای اطلاعات قبلی و فعلی وجود ندارد. ";
         public static string InvalidDiscountCount => "تعداد تخفیف را وارد کنید";
+        public static string NotFoundOfferingId => "شناسه خدمت یافت نشد.";
 
         //Tracking
         public static string NotFoundMoshtrak => "اطلاعات مشترک یافت نشد.";
@@ -340,6 +342,7 @@
         public static string InvalidFewInstallmentCount(int count) => $"تعداد اقساط باید کمتر از {count} قسط باشد.";
         public static string InvalidInstallmentCount => $"تعداد اقساط نامعتبر است.";
         public static string InvalidBlockForThisZone => $" ناحیه انتخابی نیازی به بلوک ندارد.";
+        public static string CantSetBillIdDuplicate => $"امکان انتساب مجدد شناسه قبض وجود ندارد.";
 
         public static string NotFountOpenRequest => "درخواستی با وضعیت نیمه‌تمام یافت نشد.";
         public static string CantSetTime => "امکان انتساب زمانبندی ارزیابی وجود ندارد";

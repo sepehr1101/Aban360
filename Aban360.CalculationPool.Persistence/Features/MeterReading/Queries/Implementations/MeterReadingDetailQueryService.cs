@@ -832,7 +832,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
         }
         private string GetDataToSendSms(string dbName)
         {
-            return $@"Select 
+            return $@"Select Top 5
                     	md.Id MeterReadingDetailId,
                     	md.FlowImportedId ,
 	                    m.town ZoneId,
@@ -870,7 +870,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                     	b.rate = md.MonthlyConsumption AND
                     	b.date_bed Collate Persian_100_CI_AI >= md.date_bed Collate Persian_100_CI_AI AND
                         md.FlowImportedId = @flowImportedId AND
-                    	m.bed_bes > @minAmount and m.id=1";
+                    	m.bed_bes > @minAmount";
         }
     }
 }

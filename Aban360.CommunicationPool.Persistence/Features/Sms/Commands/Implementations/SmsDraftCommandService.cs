@@ -88,6 +88,7 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementa
             table.Columns.Add("Id", typeof(Guid));
             table.Columns.Add("TrackNumber", typeof(int));
             table.Columns.Add("BillId", typeof(string));
+            table.Columns.Add("PaymentId", typeof(string));
             table.Columns.Add("GroupId", typeof(string));
             table.Columns.Add("ReferenceId", typeof(string));
             table.Columns.Add("SmsFlowId", typeof(int));
@@ -104,6 +105,7 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementa
                 row["Id"] = item.Id;
                 row["TrackNumber"] = item.TrackNumber ?? (object)DBNull.Value;
                 row["BillId"] = item.BillId ?? (object)DBNull.Value;
+                row["PaymentId"] = item.PaymentId ?? (object)DBNull.Value;
                 row["GroupId"] = item.GroupId;
                 row["ReferenceId"] = item.ReferenceId;
                 row["SmsFlowId"] = item.SmsFlowId;
@@ -122,14 +124,14 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Commands.Implementa
         {
             return @"Insert Into [Atlas].dbo.SmsDraft
                     (
-                    	Id,TrackNumber, BillId,
+                    	Id,TrackNumber, BillId, PaymentId,
                     	GroupId, ReferenceId, SmsFlowId, 
                         Message, MobileNumber,
                     	InsertDateTime, FetchDateTime, SendDateTime
                     )
                     Values
                     (
-                    	@Id, @TrackNumber, @BillId,
+                    	@Id, @TrackNumber, @BillId, @PaymentId,
                     	@GroupId, @ReferenceId, @SmsFlowId, 
                         @Message, @MobileNumber,
                     	@InsertDateTime, @FetchDateTime, @SendDateTime

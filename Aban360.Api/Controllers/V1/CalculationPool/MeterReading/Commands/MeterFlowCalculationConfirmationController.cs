@@ -12,7 +12,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
     {
         private readonly ICalculationConfirmationHandler _calculationConfirmedHandler;
         public MeterFlowCalculationConfirmationController(
-            ICalculationConfirmationHandler calculationConfirmedHandler, 
+            ICalculationConfirmationHandler calculationConfirmedHandler,
             IMeterFlowValidationGetHandler meterFlowValidationGetHandler)
         {
             _calculationConfirmedHandler = calculationConfirmedHandler;
@@ -23,8 +23,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
         [Route("confirm/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ConfirmCalculation(int id, CancellationToken cancellationToken)
-        {           
-            await _calculationConfirmedHandler.Handle(id, CurrentUser, cancellationToken);
+        {
+            await _calculationConfirmedHandler.Handle(id, CurrentUser.UserId, cancellationToken);
             return Ok(id);
         }
     }

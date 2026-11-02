@@ -7,7 +7,7 @@ namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
         public string BillId { get; set; }
         public string FromDateJalali { get; set; }
         public string ToDateJalali { get; set; }
-        public string MinutesNumber { get; set; }
+        public string? MinutesNumber { get; set; }
         public int ReturnCauseId { get; set; }
         public ReturnBillManualTypeEnum ReturnType { get; set; }
         public bool IsConfirm { get; set; }

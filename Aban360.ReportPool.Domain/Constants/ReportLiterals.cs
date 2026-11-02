@@ -9,6 +9,7 @@
         public static string XApiKey { get { return "x-api-key"; } }
         public static string NowGenerateBillXApiKey { get { return "AAOiI1MTIiLCJodHRwOi8vc23NoZW"; } }
 
+        public static string RayabPersian { get { return "رایاب"; } }
         public static string Atlas { get { return "Atlas"; } }
         public static string AbAndFazelab { get { return "AbAndFazelab"; } }
         public static string Db70 { get { return "Db70"; } }
@@ -17,6 +18,9 @@
 
         public static int ReaderRoleId { get { return 40; } }
 
+        public static int SaleRequestTypeId { get { return 1; } }
+        public static int AfterSaleRequestTypeId { get { return 2; } }
+        
         public static string RepairReturnTypeCode { get { return "5"; } }
         public static string ReturnFull { get { return "کامل"; } }
         public static string ReturnPartial { get { return "محاسبه مجدد"; } }

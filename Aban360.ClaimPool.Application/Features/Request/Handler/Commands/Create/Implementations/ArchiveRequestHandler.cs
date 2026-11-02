@@ -17,10 +17,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
     {
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IMoshtrakQueryService _moshtrakQueryService;
-        static int _archiveStatusId = 90003;
-        static int _deletedSatatus = 90000;
-        static int _reAssessmentRequest = 15;
-        static int _reCalculationRequest = 65;
+        static int _archiveStatusId = (int)TrackingStatusEnum.Archived;
+        static int _deletedSatatus = (int)TrackingStatusEnum.Deleted;
+        static int _reAssessmentRequest = (int)TrackingStatusEnum.ReAssessment;
+        static int _reCalculationRequest = (int)TrackingStatusEnum.ReCalculation;
         static int _requestOrigin = 12;
         static int[] _allowedRemoveArchivedStatusId = { _reAssessmentRequest, _reCalculationRequest };
         public ArchiveRequestHandler(
