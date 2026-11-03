@@ -46,6 +46,7 @@
         public double? WaterConsumptionUnit { get; set; }
         public double? DailyAverage { get; set; }
         public decimal ConsumptionAverage { get; set; }
+        public decimal AverageDuration { get; set; }
     }
     public record WaterIncomeDiscountSummaryHeaderOutputDto
     {
@@ -93,5 +94,6 @@
         public double? WaterConsumptionUnit { get; set; }
         public double? DailyAverage { get; set; }
         public decimal ConsumptionAverage { get; set; }
+        public decimal AverageDuration { get; set; }
     }
 }
