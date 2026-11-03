@@ -80,6 +80,7 @@
         public static string UsageGroup3DeleteOpLog => @"گروه کاربری3 حذف شد. شناسه جدول:{0}";
         public static string UsageGroup3DeleteListOpLog => @"گروه کاربری3 حذف شد. شناسه گروه کاربری 2:{0}  تعداد :{1}";
 
+        public static string RequestAssessmentCompletionOpLog => @"درخواست تکمیل ارزیابی انجام شد. شماره پیگیری:{0}  شناسه یکتا جدول ارزیابی:{1}";
         public static string RequestConfirmTracking => @"ثبت قطعی درخواست انجام شد. شماره پیگیری:{0} ناحیه:{1}  شناسه جدول لاگ اطلاعات کاربر:{2}";
         public static string SubscriptionAssignmentByTrackNumberUpdateOpLog => @"انتساب اشتراک با شماره پیگیری انجام شد. شماره پیگیری:{0}";
 

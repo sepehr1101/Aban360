@@ -168,6 +168,7 @@
         public static string BasicInfoChangeHistory { get { return $"{Report} تاریخچه اطلاعات پایه"; } }
         public static string MeterChangeRandom { get { return $"{Report}تعویضی رندوم "; } }
         public static string ContractRepair { get { return $"{Report} تصحیح قرارداد"; } }
+        public static string MeterChangeVerification { get { return $"{Report} صحت سنجی تعویضی"; } }
 
 
         public static string WaterMeterReplacements(string reason) => $"{Report}  کنتور های تعویضی بر اساس {reason}";
