@@ -435,9 +435,9 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	t.Rn=1 And 
                     	t.Status=75";
         }
-        private string GetDuplicateDataQuery(AssessmentDuplicateParametersEnum input)
+        private string GetDuplicateDataQuery(int checkItem)
         {
-            string condition=GetDuplicateConditionProp(input);
+            string condition=GetDuplicateConditionProp(checkItem);
 
             return $@";WITH AssessmentRequests AS
                     (
@@ -483,13 +483,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     WHERE cnt > 1
                     ORDER BY NeighbourBillId, TrackNumber;";
         }
-        private string GetDuplicateConditionProp(AssessmentDuplicateParametersEnum input)
+        private string GetDuplicateConditionProp(int checkItem)
         {
-            return input switch
+            return checkItem switch
             {
-                AssessmentDuplicateParametersEnum.BillId => "BillId",
-                AssessmentDuplicateParametersEnum.NeighbourBillId => "NeighbourBillId",
-                AssessmentDuplicateParametersEnum.MobileNumber => "NotificationMobile",
+                (int)AssessmentDuplicateParametersEnum.BillId => "BillId",
+                (int)AssessmentDuplicateParametersEnum.NeighbourBillId => "NeighbourBillId",
+                (int)AssessmentDuplicateParametersEnum.MobileNumber => "NotificationMobile",
                 _ => ""
             };
         }

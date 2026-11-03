@@ -13,18 +13,32 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
     public class AssessmentDuplicateController : BaseController
     {
         private readonly IAssessmentDuplicateDetailHandler _assessmentDuplicateDetailHandler;
+        private readonly IAssessmentDuplicateParametersGetHandler _assessmentDuplicateParametersGetHandler;
         private readonly IReportGenerator _reportGenerator;
         public AssessmentDuplicateController(
             IAssessmentDuplicateDetailHandler assessmentDuplicateDetailHandler,
+            IAssessmentDuplicateParametersGetHandler assessmentDuplicateParametersGetHandler,
             IReportGenerator reportGenerator)
         {
             _assessmentDuplicateDetailHandler = assessmentDuplicateDetailHandler;
             _assessmentDuplicateDetailHandler.NotNull(nameof(assessmentDuplicateDetailHandler));
 
+            _assessmentDuplicateParametersGetHandler = assessmentDuplicateParametersGetHandler;
+            _assessmentDuplicateParametersGetHandler.NotNull(nameof(assessmentDuplicateParametersGetHandler));
+
             _reportGenerator = reportGenerator;
             _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
+        [HttpGet]
+        [Route("duplicate-dictionary")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
+        public IActionResult GetDictionary([FromBody] AssessmentDuplicateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            IEnumerable<NumericDictionary> result =  _assessmentDuplicateParametersGetHandler.Handle( cancellationToken);
+            return Ok(result);
+        }
+        
         [HttpPost]
         [Route("duplicate-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<AssessmentDuplicatHeaderOutputDto, AssessmentDuplicateDetailDataOutputDto>>), StatusCodes.Status200OK)]
