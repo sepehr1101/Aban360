@@ -40,6 +40,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertAssessment);
             }
         }
+        public async Task Update(AssessmentCompletionUpdateDto inputDto)
+        {
+            string command = GetAllInJsonUpdateQuery();
+            int recordCount = await _sqlRonnection.ExecuteAsync(command, inputDto, _transaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertAssessmentCompeletion);
+            }
+        }
         private string GetInsertQuery()
         {
             return @"INSERT INTO AbAndFazelab.dbo.Examination (
@@ -89,6 +98,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                         KarbariId = @UsageId,
                         AllInJson=@AllInJson
                     WHERE  TrackId = @TrackId;";
+        }
+        private string GetAllInJsonUpdateQuery()
+        {
+            return $@"UPDATE AbAndFazelab.dbo.Examination
+                    SET AllInJson = @AllInJson
+                    WHERE  Id = @Id;";
         }
     }
 }

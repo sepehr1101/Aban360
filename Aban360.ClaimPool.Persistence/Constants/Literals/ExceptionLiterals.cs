@@ -11,6 +11,7 @@
         public static string InvalidUpdateMoshtrakin => "خطا در ویرایش اطلاعات مشترک";
         public static string InvalidInsertCustomerNumber => "خطا در ذخیره ردیف";
         public static string InvalidInsertAssessment => "خطا در ذخیره نتیجه ارزیابی";
+        public static string InvalidInsertAssessmentCompeletion => "خطا در ذخیره ارزیابی تکمیلی";
         public static string InvalidInsertMother => "خطا در ذخیره اطلاعات مادر-فرزند";
         public static string InvalidUpdateMother => "خطا در ویرایش اطلاعات مادر-فرزند";
         public static string InvalidDeleteMother => "خطا در حذف اطلاعات مادر-فرزند";

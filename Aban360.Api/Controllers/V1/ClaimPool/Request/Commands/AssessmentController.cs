@@ -21,6 +21,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     {
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly ISetAssessmentResultHandler _setAssessmentResultHandler;
+        private readonly IAssessmentResultCompletionHandler _assessmentResultCompletionHandler;
         private readonly ISetAssessmentTimeHandler _setAssessmentTimeHandler;
         private readonly ISetLightAssessmentResultHandler _setLightAssessmentResultHandler;
         private readonly ISetPreAssessmentResultHandler _setPreAssessmentResultHandler;
@@ -31,7 +32,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
         public AssessmentController(
             IHttpContextAccessor contextAccessor,
-            ISetAssessmentResultHandler setAssessmentResultHandler,
+            ISetAssessmentResultHandler setAssessmentResultHandler, 
+            IAssessmentResultCompletionHandler assessmentResultCompletionHandler,
             ISetAssessmentTimeHandler setAssessmentTimeHandler,
             ISetLightAssessmentResultHandler setLightAssessmentResultHandler,
             ISetPreAssessmentResultHandler setPreAssessmentResultHandler,
@@ -45,6 +47,9 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 
             _setAssessmentResultHandler = setAssessmentResultHandler;
             _setAssessmentResultHandler.NotNull(nameof(setAssessmentResultHandler));
+
+            _assessmentResultCompletionHandler = assessmentResultCompletionHandler;
+            _assessmentResultCompletionHandler.NotNull(nameof(assessmentResultCompletionHandler));
 
             _setAssessmentTimeHandler = setAssessmentTimeHandler;
             _setAssessmentTimeHandler.NotNull(nameof(setAssessmentTimeHandler));
@@ -75,6 +80,15 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         {
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
             AssessmentResultInputDto inputDto = await _setAssessmentResultHandler.Handle(examinerCode, cancellationToken);
+            return Ok(inputDto);
+        }
+        
+        [HttpPost]
+        [Route("result-completion")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentResultInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetCompletionReult(CancellationToken cancellationToken)
+        {
+            AssessmentResultInputDto inputDto = await _assessmentResultCompletionHandler.Handle(CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
