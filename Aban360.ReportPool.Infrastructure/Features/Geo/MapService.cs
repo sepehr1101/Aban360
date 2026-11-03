@@ -30,7 +30,7 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
             _mapOptions.NotNull(nameof(mapOptions));
         }
 
-        public async Task<string> GenerateMapBase64(string x, string y,CancellationToken cancellationToken)
+        public async Task<string> GenerateMapBase64(string x, string y, CancellationToken cancellationToken)
         {
             double latitude = (double.Parse)(y);
             double longitude = (double.Parse)(x);
@@ -82,6 +82,11 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
                 {
                     return null;
                 }
+                var mediaType = response.Content.Headers.ContentType?.MediaType;
+                if (mediaType is null || !mediaType.StartsWith("image/"))
+                {
+                    return null;
+                }
                 bytes = await response.Content.ReadAsByteArrayAsync();
                 return bytes;
             }
@@ -107,7 +112,7 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
             }
 
             using var fs = new FileStream(pinPath, FileMode.Open, FileAccess.Read);
-            Image _pinImage = new Bitmap(fs);
+            using Image _pinImage = new Bitmap(fs);
 
             int pinWidth = 100;
             int pinHeight = 100;
