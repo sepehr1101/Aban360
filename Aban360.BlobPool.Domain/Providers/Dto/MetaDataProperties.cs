@@ -18,6 +18,7 @@ namespace Aban360.BlobPool.Domain.Providers.Dto
         public string Name { get; set; } = default!;
 
         [JsonPropertyName("value")]
+        [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
         public int? Value { get; set; }= default!;
     }
     public class PropertyGroupContainer

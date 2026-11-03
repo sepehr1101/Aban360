@@ -10,6 +10,7 @@ var configuration = builder.Configuration;
 // Add services to the container.
 //DI
 builder.Services.AddDI();
+builder.Services.AddSubscriberRequests(configuration);
 builder.Services.AddAuth(configuration);
 //builder.Services.AddControllers(options =>
 //    options.Filters.Add<EndpointAuthorizationFilter>()

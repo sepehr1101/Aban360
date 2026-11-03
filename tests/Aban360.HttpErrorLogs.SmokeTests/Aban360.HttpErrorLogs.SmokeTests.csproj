@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Aban360.Common.Db/Aban360.Common.Db.csproj" />
+    <ProjectReference Include="../../Aban360.SystemPool.Domain/Aban360.SystemPool.Domain.csproj" />
+    <Compile Include="../../Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Conracts/IHttpErrorLogHandler.cs" />
+    <Compile Include="../../Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Implementations/HttpErrorLogHandler.cs" />
+    <Compile Include="../../Aban360.SystemPool.Persistence/Features/Logging/Queries/Contracts/IHttpErrorLogQueryService.cs" />
+    <Compile Include="../../Aban360.SystemPool.Persistence/Features/Logging/Queries/Implementations/HttpErrorLogQueryService.cs" />
+  </ItemGroup>
+</Project>

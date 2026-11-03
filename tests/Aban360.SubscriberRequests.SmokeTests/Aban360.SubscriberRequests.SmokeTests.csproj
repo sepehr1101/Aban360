@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Aban360.UserPool.Domain/Features/SubscriberRequests/*.cs" LinkBase="Production" />
+    <Compile Include="../../Aban360.UserPool.Application/Features/SubscriberRequests/*.cs" LinkBase="Production" />
+    <Compile Include="../../Aban360.Common/Exceptions/BaseException.cs" LinkBase="Production" />
+  </ItemGroup>
+</Project>
