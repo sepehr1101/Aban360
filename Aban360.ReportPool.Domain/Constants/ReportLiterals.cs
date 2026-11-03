@@ -310,6 +310,7 @@
 
         //Request
         public static string Tracking { get { return "درخواست ها"; } }
+        public static string AssessmentDuplicate { get { return "درخواست‌های تکراری"; } }
 
         public static int DisconnectId { get { return 0; } }
         public static int ConnectId { get { return 1; } }
