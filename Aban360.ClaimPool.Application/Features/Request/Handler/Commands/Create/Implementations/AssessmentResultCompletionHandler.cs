@@ -5,6 +5,7 @@ using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
@@ -60,11 +61,12 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
             AssessmentDataOutputDto latestAssessmentInfo = await _examinationQueryService.GetLatestByTrackNumber(inputDto.TrackNumber);
             AssessmentCompletionUpdateDto assessmentUpdateDto = new(latestAssessmentInfo.Id, requestBody);
+            string opLogText = string.Format(OpLogLiterals.RequestAssessmentCompletionOpLog, inputDto.TrackNumber, latestAssessmentInfo.Id);
 
-            await ExecSql(assessmentUpdateDto);
+            await ExecSql(assessmentUpdateDto, opLogText, appUser);
             return inputDto;
         }
-        private async Task ExecSql(AssessmentCompletionUpdateDto assessmentUpdateDto)
+        private async Task ExecSql(AssessmentCompletionUpdateDto assessmentUpdateDto, string opLogText, IAppUser appUser)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -75,7 +77,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     ExaminationCommandService _assessmentCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService _opLogWithTransactionCommandService = new(_contextAccessor, connection, transaction);
+
                     await _assessmentCommandService.Update(assessmentUpdateDto);
+                    await _opLogWithTransactionCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();
                 }
