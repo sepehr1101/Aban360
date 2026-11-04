@@ -142,9 +142,13 @@ namespace Aban360.UserPool.Application.Features.Auth.Services.Implementations
             // add roles
             if (roles is not null)
             {
-                foreach (var role in roles)
+                var roleNames = roles
+                     .Select(role => role.Name.Trim())
+                     .Distinct(StringComparer.OrdinalIgnoreCase);
+
+                foreach (var roleName in roleNames)
                 {
-                    claims.Add(new Claim(ClaimTypes.Role, role.Name, ClaimValueTypes.String, _configuration.Value.Issuer));
+                    claims.Add(new Claim( ClaimTypes.Role, roleName, ClaimValueTypes.String, _configuration.Value.Issuer));
                 }
             }
 

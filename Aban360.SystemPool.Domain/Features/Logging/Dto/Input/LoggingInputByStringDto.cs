@@ -10,6 +10,6 @@ namespace Aban360.SystemPool.Domain.Features.Logging.Dto.Input
         public string FromTime { get; set; } = default!;
         public string ToTime { get; set; } = default!;
 
-        public LogLevelEnum LogLevel { get; set; }
+        public LogLevelEnum LogLevel { get; set; } = LogLevelEnum.None;
     }
 }

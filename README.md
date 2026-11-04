@@ -1,5 +1,9 @@
 # Aban360
 
+## درخواست‌های مشترک با تأیید پیامکی
+
+- [راهنما، تنظیمات و اسکریپت دستی Atlas](docs/subscriber-requests/README.fa.md)
+
 ## مستندات تیکتینگ
 
 - [شروع و تحویل مستندات به فرانت](docs/ticketing/START_HERE.fa.md)

@@ -23,7 +23,12 @@ namespace Aban360.SystemPool.Persistence.Features.Logging.Queries.Implementation
             {
                 fromDateTime = input.FromDateTime,
                 toDateTime = input.ToDateTime,
-                logLevel = input.LogLevel.ToString()
+                logLevel = input.LogLevel switch
+                {
+                    LogLevelEnum.Trace => "Verbose",
+                    LogLevelEnum.Critical => "Fatal",
+                    _ => input.LogLevel.ToString()
+                }
             };
             using var connection = _sqlConnection;
             var command = new CommandDefinition(loggingQueryString, @params, cancellationToken: cancellationToken);

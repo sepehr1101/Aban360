@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Aban360.Common.Db/Aban360.Common.Db.csproj" />
+    <ProjectReference Include="../../Aban360.SystemPool.Domain/Aban360.SystemPool.Domain.csproj" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.1" />
+    <Using Include="Microsoft.AspNetCore.Http" />
+    <Using Include="Microsoft.Extensions.Logging" />
+    <Compile Include="../../Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Implementations/LoggingGetyDateTimeHandler.cs" />
+    <Compile Include="../../Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Implementations/*LogGetByFileNameHandler.cs" />
+    <Compile Include="../../Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Conracts/ILoggingGetyDateTimeHandler.cs" />
+    <Compile Include="../../Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Conracts/I*LogGetByFileNameHandler.cs" />
+    <Compile Include="../../Aban360.SystemPool.Persistence/Features/Logging/Queries/Contracts/ILoggingGetByDateTimeQueryService.cs" />
+    <Compile Include="../../Aban360.SystemPool.Persistence/Features/Logging/Queries/Contracts/IHttpRequestReportQueryService.cs" />
+    <Compile Include="../../Aban360.SystemPool.Persistence/Features/Logging/Queries/Implementations/HttpRequestReportQueryService.cs" />
+    <Compile Include="../../Aban360.Api/ExceptionHandlers/GlobalExceptionHandler.cs" />
+  </ItemGroup>
+</Project>

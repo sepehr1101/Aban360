@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../Aban360.UserPool.Persistence/Aban360.UserPool.Persistence.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.1" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <Using Include="Microsoft.AspNetCore.Http" />
+    <Compile Include="../../Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Contracts/IUserAllQueryHandler.cs" />
+    <Compile Include="../../Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Contracts/IUserBriefQueryHandler.cs" />
+    <Compile Include="../../Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Implementations/UserBriefQueryHandler.cs" />
+    <Compile Include="../../Aban360.Api/Controllers/V1/UserPool/Auth/Queries/UserAllQueryController.cs" />
+  </ItemGroup>
+</Project>

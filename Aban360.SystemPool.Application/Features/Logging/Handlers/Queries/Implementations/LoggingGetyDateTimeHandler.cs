@@ -1,12 +1,10 @@
 ﻿using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.Common.Literals;
 using Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Conracts;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Input;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Output;
 using Aban360.SystemPool.Persistence.Features.Logging.Queries.Contracts;
-using DNTPersianUtils.Core;
-using System.Globalization;
+using Aban360.Common.Timing;
 
 namespace Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Implementations
 {
@@ -21,18 +19,17 @@ namespace Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Imple
 
         public async Task<IEnumerable<LoggingOutputDto>> Handle(LoggingInputByStringDto inputDto, CancellationToken cancellationToken)
         {
-            DateOnly? from = inputDto.FromDate.ToGregorianDateOnly();
-            DateOnly? to = inputDto.ToDate.ToGregorianDateOnly();
-            if (!from.HasValue || !to.HasValue)
+            if (inputDto is null)
+                throw new CustomValidationException("اطلاعات جست‌وجوی لاگ ارسال نشده است.");
+            var fromDateTime = PersianDateTimeParser.Parse(inputDto.FromDate, inputDto.FromTime, "تاریخ شروع", "ساعت شروع");
+            var toDateTime = PersianDateTimeParser.Parse(inputDto.ToDate, inputDto.ToTime, "تاریخ پایان", "ساعت پایان");
+            if (fromDateTime > toDateTime)
             {
-                throw new InvalidDateException(ExceptionLiterals.InvalidDate);
+                throw new InvalidDateException("تاریخ و ساعت شروع نباید بعد از تاریخ و ساعت پایان باشد.");
             }
 
-            string fromDateTimeString = $"{from.Value:yyyy-MM-dd} {inputDto.FromTime}";
-            string toDateTimeString = $"{to.Value:yyyy-MM-dd} {inputDto.ToTime}";
-
-            DateTime fromDateTime = DateTime.ParseExact(fromDateTimeString, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
-            DateTime toDateTime = DateTime.ParseExact(toDateTimeString, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+            if (!Enum.IsDefined(inputDto.LogLevel))
+                throw new CustomValidationException("سطح لاگ معتبر نیست؛ مقدار LogLevel باید بین 1 و 7 باشد. برای همهٔ سطح‌ها مقدار 7 ارسال کنید یا این فیلد را حذف کنید.");
 
             IEnumerable<LoggingOutputDto> result = await _loggingGetByDateTimeService.Get(new LoggingInputByDateTimeDto(fromDateTime, toDateTime, inputDto.LogLevel), cancellationToken);
             return result;

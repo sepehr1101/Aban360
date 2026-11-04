@@ -15,7 +15,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 {
     internal interface IFazelabCalculator
     {
-        TariffItemResult Calculate(ConsumptionInfo consumptionInfo,NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier);
+        TariffItemResult Calculate(ConsumptionInfo consumptionInfo,NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, [Optional] IEnumerable<int> tagIds, out double multiplier);
         TariffItemResult CalculateDiscount(NerkhGetDto nerkh, TariffItemResult fazelabCalculationResult , double abBahaDiscount, double fazelabAmount, CustomerInfoOutputDto customerInfo, ConsumptionPartialInfo consumptionPartialInfo);
     }
 
@@ -29,7 +29,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const double _villageAllowedMultiplier = 0.5;
         const double _villageDisallowedMultiplier = 0.65;
 
-        public TariffItemResult Calculate(ConsumptionInfo consumptionInfo, NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, out double multiplier)
+        public TariffItemResult Calculate(ConsumptionInfo consumptionInfo, NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, [Optional] IEnumerable<int> tagIds, out double multiplier)
         {
             if (date2.IsLtEq(date_1405_03_15) || isAbonman)
             {
@@ -161,7 +161,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 decimal allowedKModifier = isVillage && isDomestic ? (decimal)_villageAllowedMultiplier : 1M;
                 decimal disAllowedKModifier = isVillage && isDomestic ? (decimal)_villageDisallowedMultiplier : 1M;
 
-                (double, double) values = CalcFormula(consumptionInfo, nerkh, monthlyConsumption.Value, s.Value, c, zoneMultiplier: multiplierAbBaha, zoneMultiplier2:k1, duration, allowedKModifier, disAllowedKModifier, customerInfo, consumptionPartialInfo);
+                (double, double) values = CalcFormula(consumptionInfo, nerkh, monthlyConsumption.Value, s.Value, c, zoneMultiplier: multiplierAbBaha, zoneMultiplier2:k1, duration, allowedKModifier, disAllowedKModifier, customerInfo, consumptionPartialInfo, tagIds);
                 return new TariffItemResult(values.Item1, values.Item2);
             }
         }
@@ -301,7 +301,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 Q = consumptionPartialInfo.DisallowedConsumtion,
                 T = t,
                 Z = (double)customerInfo.ContractualCapacity,
-                tags = tagIds?.ToArray()
+                tags = tagIds.ToArray()
             };
             object parametersDisallwed = new
             {
@@ -317,7 +317,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
                 Q = consumptionPartialInfo.DisallowedConsumtion,
                 T = t,
                 Z = (double)customerInfo.ContractualCapacity,
-                tags = tagIds?.ToArray()
+                tags = tagIds.ToArray()
             };
             double allowed = Eval<double>(nerkh.AllowedSewageFormula, parametersAllowed);
             double disallowed = Eval<double>(nerkh.DisallowedSewageFormula, parametersDisallwed);

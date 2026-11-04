@@ -52,6 +52,18 @@ namespace Aban360.UserPool.Persistence.Features.Auth.Queries.Implementations
                 _query
                 .ToListAsync();
         }
+        public async Task<ICollection<UserBriefQueryDto>> GetBrief(CancellationToken cancellationToken)
+        {
+            return await _query
+                .OrderBy(user => user.DisplayName)
+                .ThenBy(user => user.Id)
+                .Select(user => new UserBriefQueryDto
+                {
+                    Id = user.Id,
+                    DisplayName = user.DisplayName
+                })
+                .ToListAsync(cancellationToken);
+        }
         public async Task<ICollection<UserQueryDto>> GetWithDefaultZone()
         {
             var users = await _query.ToListAsync();

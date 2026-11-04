@@ -11,7 +11,9 @@ namespace Aban360.UserPool.Persistence.Extensions
             services.Scan(scan =>
                 scan
                     .FromAssemblies(Assembly.GetExecutingAssembly())
-                    .AddClasses(publicOnly: false)
+                    .AddClasses(classes => classes.Where(type =>
+                        !typeof(Aban360.UserPool.Domain.Features.SubscriberRequests.ISubscriberRequestTransaction).IsAssignableFrom(type)),
+                        publicOnly: false)
                     .UsingRegistrationStrategy(RegistrationStrategy.Append)
                     .AsImplementedInterfaces()
                     .WithScopedLifetime());
