@@ -4,7 +4,6 @@ using Aban360.PaymentPool.Application.Features.BankReceipt.Contracts;
 using Aban360.PaymentPool.Domain.Features.BankReceipt.Dto;
 using Aban360.PaymentPool.Domain.Features.BankReceipt.Entities;
 using Aban360.PaymentPool.Persistence.Features.BankReceipt.Contracts;
-using Aban360.PaymentPool.Persistence.Features.Remuneration.Queries.Contracts;
 
 namespace Aban360.PaymentPool.Application.Features.BankReceipt.Implementations
 {
@@ -12,10 +11,10 @@ namespace Aban360.PaymentPool.Application.Features.BankReceipt.Implementations
     {
         public const int MaxFileSize = 10 * 1024 * 1024;
         private readonly IBankReceiptImportRepository _repository;
-        private readonly IBankQueryService _banks;
+        private readonly IBankReceiptBankQueryService _banks;
         private readonly IBankReceiptParser _parser;
         private readonly IEnumerable<IBankReceiptReconciliationService> _reconciliationServices;
-        public BankReceiptFlowHandler(IBankReceiptImportRepository repository, IBankQueryService banks,
+        public BankReceiptFlowHandler(IBankReceiptImportRepository repository, IBankReceiptBankQueryService banks,
             IBankReceiptParser parser, IEnumerable<IBankReceiptReconciliationService> reconciliationServices)
         {
             _repository = repository;
@@ -47,10 +46,17 @@ namespace Aban360.PaymentPool.Application.Features.BankReceipt.Implementations
             return import.Id;
         }
 
+        public Task<IReadOnlyList<BankReceiptFileListItemDto>> List(Guid userId, int page, int pageSize, CancellationToken cancellationToken)
+        {
+            if (page < 1 || pageSize is < 1 or > 200)
+                throw new BaseException("شماره صفحه باید مثبت و اندازه صفحه بین ۱ و ۲۰۰ باشد.");
+            return _repository.List(userId, page, pageSize, cancellationToken);
+        }
+
         public async Task<BankReceiptDisplayDto> Validate(Guid id, Guid userId, CancellationToken cancellationToken)
         {
             var import = await _repository.Get(id, userId, cancellationToken);
-            EnsureNotCommitted(import);
+            EnsureUndecided(import);
             int version = import.Version;
             await Parse(import);
             await MarkDuplicates(import, cancellationToken);
@@ -66,7 +72,7 @@ namespace Aban360.PaymentPool.Application.Features.BankReceipt.Implementations
         public async Task<BankReceiptReconcileDto> Reconcile(Guid id, Guid userId, CancellationToken cancellationToken)
         {
             var import = await _repository.Get(id, userId, cancellationToken);
-            EnsureNotCommitted(import);
+            EnsureUndecided(import);
             if (import.Status == BankReceiptImportStatus.Uploaded) throw new BaseException("ابتدا صحت‌سنجی فایل را اجرا کنید.");
             int version = import.Version;
             await Parse(import);
@@ -93,19 +99,39 @@ namespace Aban360.PaymentPool.Application.Features.BankReceipt.Implementations
             import.Status = BankReceiptImportStatus.Reconciled;
             SetExclusionReasons(import);
             await _repository.Save(import, version, cancellationToken);
-            return new(import.Version, import.DataRowCount, import.DataRowCount - import.Rows.Count + import.Rows.Count(r => r.Issues.Count != 0), import.Rows);
+            return new(import.Version, import.DataRowCount, import.DataRowCount - import.Rows.Count + import.Rows.Count(r => r.Issues.Count != 0), import.Rows)
+            {
+                CanConfirm = Ready(import)
+            };
         }
 
-        public async Task<int> Confirm(Guid id, Guid userId, BankReceiptConfirmDto input, CancellationToken cancellationToken)
+        public async Task<int?> Confirm(Guid id, Guid userId, BankReceiptConfirmDto input, CancellationToken cancellationToken)
         {
-            if (!input.Confirmed) throw new BaseException("تأیید صریح کاربر الزامی است.");
             var import = await _repository.Get(id, userId, cancellationToken);
             // Retrying confirmation after a successful commit returns the same result.
-            if (import.Status == BankReceiptImportStatus.Committed) return import.UploaderId!.Value;
+            if (input.Confirmed && import.Status == BankReceiptImportStatus.Committed) return import.UploaderId;
+            if (!input.Confirmed && import.Status == BankReceiptImportStatus.Rejected) return null;
+            EnsureUndecided(import);
             if (import.Version != input.Version) throw new BaseException("نسخه اطلاعات تغییر کرده است. پیش‌نمایش را دوباره دریافت کنید.");
-            if (!Ready(import)) throw new BaseException("ابتدا خطاها و مغایرت‌ها را برطرف کنید و مغایرت‌گیری را اجرا کنید.");
+            if (import.Status != BankReceiptImportStatus.Reconciled)
+                throw new BaseException("ابتدا مغایرت‌گیری را اجرا کنید.");
+            if (!input.Confirmed)
+            {
+                import.Status = BankReceiptImportStatus.Rejected;
+                await _repository.Save(import, input.Version, cancellationToken);
+                return null;
+            }
+
+            SetExclusionReasons(import);
+            if (!Ready(import)) throw new BaseException("ردیف قابل ثبت وجود ندارد یا فایل خطای ساختاری دارد.");
+            int eligibleCount = import.Rows.Count(r => r.CanPost);
             await MarkDuplicates(import, cancellationToken);
-            if (!Ready(import)) throw new BaseException("پرداخت تکراری شناسایی شد. مغایرت‌گیری را دوباره اجرا کنید.");
+            SetExclusionReasons(import);
+            if (eligibleCount != import.Rows.Count(r => r.CanPost))
+            {
+                await _repository.Save(import, input.Version, cancellationToken);
+                throw new BaseException("پرداخت تکراری جدید شناسایی شد. نتیجه را دوباره بررسی کنید.");
+            }
             return await _repository.Commit(import, input.Version, cancellationToken);
         }
 
@@ -117,7 +143,7 @@ namespace Aban360.PaymentPool.Application.Features.BankReceipt.Implementations
         private async Task MarkDuplicates(BankReceiptImport import, CancellationToken cancellationToken)
         {
             var hashes = await _repository.FindCommittedPayments(import.Rows.Where(r => r.Hash.Length != 0), cancellationToken);
-            foreach (var row in import.Rows.Where(r => hashes.Contains(r.Hash)))
+            foreach (var row in import.Rows.Where(r => hashes.Contains(r.Hash) && r.Issues.All(i => i.Code != "AlreadyPaid")))
                 row.Issues.Add(new("AlreadyPaid", "این پرداخت قبلاً در سامانه ثبت شده است.", row.LineNumber));
         }
         private static void SetExclusionReasons(BankReceiptImport import)
@@ -125,17 +151,17 @@ namespace Aban360.PaymentPool.Application.Features.BankReceipt.Implementations
             foreach (var row in import.Rows)
             {
                 row.Issues = row.Issues.Select(i => BankReceiptIssueCatalog.Normalize(i, row.LineNumber)).ToList();
-                row.ExclusionReasons = row.Issues.Concat(import.Issues.Where(i => i.LineNumber == null || i.LineNumber == 1 || i.LineNumber == row.LineNumber))
+                row.ExclusionReasons = row.Issues.Concat(import.Issues.Where(i => (i.LineNumber == null && i.Code is not ("Count" or "Total")) || i.LineNumber == 1 || i.LineNumber == row.LineNumber))
                     .Select(i => BankReceiptIssueCatalog.Normalize(i, row.LineNumber)).DistinctBy(i => i.Code).ToList();
             }
         }
-        private static void EnsureNotCommitted(BankReceiptImport import)
+        private static void EnsureUndecided(BankReceiptImport import)
         {
-            if (import.Status == BankReceiptImportStatus.Committed) throw new BaseException("فایل قبلاً ثبت نهایی شده است.");
+            if (import.Status is BankReceiptImportStatus.Committed or BankReceiptImportStatus.Rejected)
+                throw new BaseException("تصمیم نهایی فایل قبلاً ثبت شده است.");
         }
         private static bool Ready(BankReceiptImport import) => import.Status == BankReceiptImportStatus.Reconciled
-            && import.Header != null && import.Issues.Count == 0 && import.Rows.Count > 0
-            && import.Rows.All(r => r.Issues.Count == 0 && r.InvoiceId != null && r.InvoiceInstallmentId != null);
+            && !import.HasBlockingFileIssues && import.Rows.Any(r => r.CanPost);
         private static BankReceiptDisplayDto ToDisplay(BankReceiptImport import)
         {
             SetExclusionReasons(import);

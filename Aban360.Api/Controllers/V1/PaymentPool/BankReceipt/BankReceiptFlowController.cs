@@ -11,6 +11,10 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.BankReceipt
         private readonly IBankReceiptFlowHandler _handler;
         public BankReceiptFlowController(IBankReceiptFlowHandler handler) { _handler = handler; }
 
+        [HttpGet("files")]
+        public async Task<IActionResult> List(CancellationToken cancellationToken, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+            => Ok(await _handler.List(CurrentUser.UserId, page, pageSize, cancellationToken));
+
         [HttpPost("upload")]
         [Consumes("multipart/form-data")]
         [RequestSizeLimit(11 * 1024 * 1024)]

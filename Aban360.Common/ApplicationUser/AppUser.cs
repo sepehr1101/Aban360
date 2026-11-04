@@ -58,8 +58,7 @@ namespace Aban360.Common.ApplicationUser
             get
             {
                 return FindAll(u => u.Type.Trim() == ClaimTypes.Role)
-                     .Select(u => u.Value)
-                     .ToList().Any(r => r.Trim() == "admin");
+                    .Any(role => string.Equals(role.Value.Trim(), "Admin", StringComparison.OrdinalIgnoreCase));
             }
         }
     }

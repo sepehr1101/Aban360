@@ -16,8 +16,9 @@ namespace Aban360.PaymentPool.Persistence.Features.BankReceipt.Implementations
         public async Task<BankReceiptDiscrepancyReportDto> Report(DateTime fromUtc, DateTime toUtcExclusive,
             Guid userId, int pageNumber, int pageSize, bool? hasDescription, bool? isActive, CancellationToken cancellationToken)
         {
-            using var connection = _sqlConnection;
+            using var connection = _sqlReportConnection;
             using var result = await connection.QueryMultipleAsync(new CommandDefinition(@"
+                USE [Atlas];
                 SELECT COUNT(*) FROM [PaymentPool].[BankReceiptDiscrepancy]
                 WHERE UserId=@userId AND UploadedAt>=@fromUtc AND UploadedAt<@toUtcExclusive
                     AND (@hasDescription IS NULL OR CASE WHEN Description IS NULL THEN 0 ELSE 1 END=@hasDescription)
@@ -46,8 +47,9 @@ namespace Aban360.PaymentPool.Persistence.Features.BankReceipt.Implementations
         }
         public async Task Describe(Guid importId, int lineNumber, string description, Guid userId, CancellationToken cancellationToken)
         {
-            using var connection = _sqlConnection;
+            using var connection = _sqlReportConnection;
             int changed = await connection.ExecuteAsync(new CommandDefinition(@"
+                USE [Atlas];
                 UPDATE [PaymentPool].[BankReceiptDiscrepancy]
                 SET Description=@description, DescribedBy=@userId, DescribedAt=@now
                 WHERE ImportId=@importId AND LineNumber=@lineNumber AND UserId=@userId

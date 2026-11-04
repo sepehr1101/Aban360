@@ -1,4 +1,5 @@
-﻿using Aban360.PaymentPool.Domain.Features.BankReceipt.Entities;
+﻿using System.Text.Json.Serialization;
+using Aban360.PaymentPool.Domain.Features.BankReceipt.Entities;
 
 namespace Aban360.PaymentPool.Domain.Features.BankReceipt.Dto
 {
@@ -18,9 +19,10 @@ namespace Aban360.PaymentPool.Domain.Features.BankReceipt.Dto
         public List<BankReceiptIssue> Issues { get; set; } = new();
         public List<BankReceiptRow> SampleRows { get; set; } = new();
     }
-    public sealed record BankReceiptConfirmDto(int Version, bool Confirmed);
+    public sealed record BankReceiptConfirmDto(int Version, [property: JsonRequired] bool Confirmed);
     public sealed record BankReceiptReconcileDto(int Version, int TotalCount, int InvalidCount, List<BankReceiptRow> Rows)
     {
+        public bool CanConfirm { get; init; }
         public int ExcludedRecordCount => Rows.Count(r => r.IsExcluded);
     }
 }
