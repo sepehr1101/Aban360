@@ -22,8 +22,8 @@
         public static string BillReturnDeletedOpLog => @"قبض برگشتی تایید نشده، حذف شد. شناسه قبض:{0}  از تاریخ:{1}   تا تاریخ:{2}   کد تایید:{3}";
         public static string BillReturnedDeletedOpLog => @"قبض برگشتی تایید شده، حذف شد.شناسه قبض:{0} شناسه جدول برگشتی:{1}  شناسه جدید: {2}";
         public static string BillReturnedManualInsertOpLog => @"قبض برگشتی دستی صادر شد.شناسه قبض:{0}  تعداد قبض:{1}  از تاریخ:{2} تا تاریخ:{3}  مبلغ:{4}  کد تایید:{5}";
-        public static string TankerInsertOpLog => @"قبض آب تانکری توسط:{0}  صادر شد. تاریخ:{1} کد ناحیه:{2} شناسه قبض:{3} ردیف:{4} مبلغ:{5}";
-        public static string TankerDeleteOpLog => @"قبض آب تانکری توسط:{0}  حذف شد. تاریخ:{1} کد ناحیه:{2} شناسه قبض:{3} ردیف:{4} مبلغ:{5}";
+        public static string TankerInsertOpLog => @"قبض فروش به تانکر صادر شد.توسط:{0} تاریخ:{1} کد ناحیه:{2} شناسه قبض:{3} ردیف:{4} مبلغ:{5}";
+        public static string TankerDeleteOpLog => @"قبض فروش به تانکر حذف شد.توسط:{0} تاریخ:{1} کد ناحیه:{2} شناسه قبض:{3} ردیف:{4} مبلغ:{5}";
         public static string RequestOfferingInsertOpLog => @"آیتم {0} برای شماره درخواست{1} ایجاد شد. مبلغ{2}  نوع آیتم {3}";
         public static string ServiceLinkReturnOpLog => @"برگشتی حق انشعاب انجام شد. شناسه قبض{0}  مبلغ{1}";
         public static string ServiceLinkOtherExpensesOpLog => @"هزینه متفرقه حق انشعاب ذخیره شد. شناسه قبض{0}  مبلغ{1}  با احتساب مالیات:{2}";

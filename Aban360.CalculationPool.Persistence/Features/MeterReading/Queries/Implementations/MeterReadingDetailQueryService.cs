@@ -67,6 +67,12 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
             IEnumerable<MeterReadingDetailToSendMessageDto> result = await _sqlReportConnection.QueryAsync<MeterReadingDetailToSendMessageDto>(query, new { flowImportedId, minAmount, abanOperator });
             return result;
         }
+        public async Task<IEnumerable<MeterReadingUploadToRegisteredSummaryDataOutputDto>> Get(MeterReadingUploadToRegisteredInputDto inputDto)
+        {
+            string query = GetUploadToRegisteredSummaryQuery();
+            IEnumerable<MeterReadingUploadToRegisteredSummaryDataOutputDto> result = await _sqlReportConnection.QueryAsync<MeterReadingUploadToRegisteredSummaryDataOutputDto>(query, inputDto);
+            return result;
+        }
 
         private string GetWithFlowImportedIdQuery(bool? hasExcluded)
         {
@@ -871,6 +877,79 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                     	b.date_bed Collate Persian_100_CI_AI >= md.date_bed Collate Persian_100_CI_AI AND
                         md.FlowImportedId = @flowImportedId AND
                     	m.bed_bes > @minAmount";
+        }
+        private string GetUploadToRegisteredSummaryQuery()
+        {
+            return $@";WITH FirstMeterFlow AS (
+                       Select 
+                    		mf.FirstFlowId,
+                    		mf.InsertDateTime
+                    	From Atlas.dbo.MeterFlow mf
+                    	Where 
+                    		mf.ZoneId IN @ZoneIds AND
+                    		Format(mf.InsertDateTime , 'yyyy/MM/dd' , 'fa') BETWEEN @FromDateJalali AND @ToDateJalali AND
+                    		mf.MeterFlowStepId = 2
+                    ),
+                    UploadToRegistered AS (
+                        SELECT
+                            m.FileName,
+                    		m.FirstFlowId,
+                    		m.PrimaryCount,
+                    		m.ZoneId,
+                    		t51.C2 ZoneTitle,
+                    		fm.InsertDateTime UploadedDateTime,
+                    		FORMAT(fm.InsertDateTime , 'yyyy/MM/dd' , 'fa') UploadedDateJalali,
+                    		m.InsertDateTime RegisteredDateTime,
+                    		FORMAT(m.InsertDateTime , 'yyyy/MM/dd' , 'fa') RegisteredDateJalali,
+                            DATEDIFF(DAY, fm.InsertDateTime, m.InsertDateTime) AS UploadedToRegisteredDay
+                        From Atlas.dbo.MeterFlow m
+                    	Join FirstMeterFlow fm
+                    		ON m.FirstFlowId = fm.FirstFlowId
+                    	Join [Db70].dbo.T51 t51
+                    		ON t51.C0 = m.ZoneId
+                    	Where m.MeterFlowStepId = 5
+                    ),
+                    DetailStats AS (
+                        SELECT
+                            md.FlowImportedId,
+                            COUNT(*) AS AllCount,
+                            COUNT(DISTINCT md.BillId) AS CustomerCount,
+                            COUNT(CASE WHEN md.RemovedDateTime  IS NOT NULL THEN 1 END) AS RemovedCount,
+                            COUNT(CASE WHEN md.ExcludedDateTime IS NOT NULL THEN 1 END) AS ExcludedCount
+                        FROM Atlas.dbo.MeterReadingDetail md
+                        WHERE md.FlowImportedId IN (SELECT FirstFlowId FROM UploadToRegistered)
+                        GROUP BY md.FlowImportedId
+                    ),
+                    WithMedian AS (
+                    SELECT
+                        u.ZoneTitle,
+                    	u.FirstFlowId,
+                    	u.FileName,
+                        u.UploadedToRegisteredDay,
+                        s.AllCount,
+                        s.CustomerCount,
+                        s.RemovedCount,
+                        s.ExcludedCount,
+                        PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY u.UploadedToRegisteredDay) OVER (PARTITION BY u.ZoneTitle) AS DistanceMedian
+                    FROM UploadToRegistered u
+                    LEFT JOIN DetailStats s
+                        ON s.FlowImportedId = u.FirstFlowId
+                    )
+                    SELECT
+                        ZoneTitle,
+                    	MAX(FirstFlowId) FirstFlowId,
+                    	MAX(FileName) FileName,
+                        COUNT(*) AS FileCount,
+                        SUM(AllCount) AS AllRecords,
+                        SUM(CustomerCount) AS CustomerCount,
+                        SUM(RemovedCount) AS RemovedAndUpdatedCount,
+                        SUM(ExcludedCount) AS ExcludedCount,
+                    	MAX(UploadedToRegisteredDay) DistanceMax,
+                    	MIN(UploadedToRegisteredDay) DistanceMin,
+						CAST( AVG(1.0 * UploadedToRegisteredDay) AS decimal(10,2)) AS DistanceAverage,
+                        MAX(DistanceMedian) AS DistanceMedian
+                    FROM WithMedian
+                    GROUP BY ZoneTitle;";
         }
     }
 }
