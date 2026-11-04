@@ -32,6 +32,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly IOpenKmMetaDataQueryServices _openKmMetaDataQueryService;
         private readonly IGuildQueryHandler _guildQueryHandler;
         private readonly IT9QueryService _t9QueryService;
+        private readonly IMapDictionaryGetHandler _mapDictionaryGetHandler;
         private int _saleServiceGroupId = 1;
         private int _afterSaleServiceGroupId = 2;
         public AssessmentTaskGetAllHandler(
@@ -46,7 +47,8 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             IMeterMaterialQueryService meterMaterialQueryService,
             IOpenKmMetaDataQueryServices openKmMetaDataQueryService,
             IGuildQueryHandler guildQueryHandler,
-            IT9QueryService t9QueryService)
+            IT9QueryService t9QueryService,
+            IMapDictionaryGetHandler mapDictionaryGetHandler)
         {
             _assessmentTaskQueryService = assessmentTaskQueryService;
             _assessmentTaskQueryService.NotNull(nameof(assessmentTaskQueryService));
@@ -83,6 +85,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             _t9QueryService = t9QueryService;
             _t9QueryService.NotNull(nameof(t9QueryService));
+
+            _mapDictionaryGetHandler = mapDictionaryGetHandler;
+            _mapDictionaryGetHandler.NotNull(nameof(mapDictionaryGetHandler));
         }
 
         public async Task<AssessmentTasksOutputDto> Handle(int assessmentCode, CancellationToken cancellationToken)
@@ -119,7 +124,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             IEnumerable<NumericDictionary> afterSaleServiceGroups = await _t9QueryService.GetByTypeId(_afterSaleServiceGroupId);
 
-            IEnumerable<StringDictionary> mapDictionary = GetMapDictionary();
+            IEnumerable<StringDictionary> mapDictionary = _mapDictionaryGetHandler.Handle(cancellationToken);
 
             return new AssessmentTasksOutputDto()
             {
@@ -347,14 +352,6 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
                     new StringDictionary("L", "L"),
                     new StringDictionary("M", "M"),
                     new StringDictionary("N", "N")];
-        }
-        private IEnumerable<StringDictionary> GetMapDictionary()
-        {
-            return [new ("ماهواره","https://maps.abfaisfahan.com/api/tile/googlesatellite/"),
-                new ("ناهمواری","https://maps.abfaisfahan.com/api/tile/googleterrain/"),
-                new ("مسیر‌ها","https://maps.abfaisfahan.com/api/tile/osm/"),
-                new ("گوگل","https://maps.abfaisfahan.com/api/tile/googlestreet/"),
-                new ("هیبرید","https://maps.abfaisfahan.com/api/tile/googlehybrid/")];
         }
     }
 }
