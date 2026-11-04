@@ -276,8 +276,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
         }
         private JsonElement GetTraverse()
         {
-            string traverseString = @"{
-  ""fields"": [
+            string traverseString = @"[
     {
       ""type"": ""numeric"",
       ""values"": """",
@@ -351,7 +350,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
       ""name"": ""خدمات""
     }
   ]
-}";
+";
             JToken traverseJson = JToken.Parse(traverseString);
             JsonElement result = JsonDocument.Parse(traverseJson.ToString()).RootElement;
 

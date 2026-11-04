@@ -1,4 +1,5 @@
-﻿using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+﻿using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
@@ -107,6 +108,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             string dbName = GetDbName(zoneId);
             string query = GetUnconfirmedRequestByZoneIdQuery(dbName);
             IEnumerable<UnconfirmedRequestDataOutputDto> result = await _sqlReportConnection.QueryAsync<UnconfirmedRequestDataOutputDto>(query, new { zoneId });
+            return result;
+        }
+        public async Task<IEnumerable<AssessmentDuplicateDetailDataOutputDto>> Get(AssessmentDuplicateInputDto input)
+        {
+            string query = GetDuplicateDataQuery(input.DuplicateCheckItem);
+            IEnumerable<AssessmentDuplicateDetailDataOutputDto> result = await _sqlReportConnection.QueryAsync<AssessmentDuplicateDetailDataOutputDto>(query, input);
             return result;
         }
 
@@ -427,6 +434,64 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     Where 
                     	t.Rn=1 And 
                     	t.Status=75";
+        }
+        private string GetDuplicateDataQuery(int checkItem)
+        {
+            string condition=GetDuplicateConditionProp(checkItem);
+
+            return $@";WITH AssessmentRequests AS
+                    (
+                        SELECT
+                            f.ZoneID,
+                    		f.TrackNumber, 
+                    		f.BillId,
+                    		f.NeighbourBillId,
+                            f.NotificationMobile,
+                    		f.InsertDateJalali,
+                            ROW_NUMBER() OVER (PARTITION BY f.TrackNumber ORDER BY f.InsertDateJalali ASC, f.Id ASC) AS rn
+                        FROM CustomerWarehouse.dbo.RequestFlows AS f
+                        WHERE 
+                    		f.ZoneID IN @ZoneIds AND
+                            f.StatusId = 110 AND
+                            EXISTS (                      
+                                SELECT 1
+                                FROM CustomerWarehouse.dbo.RequestFlows AS s
+                                WHERE 
+                                    s.TrackNumber = f.TrackNumber AND
+                                    s.StatusId = 0 AND
+                                    s.InsertDateJalali BETWEEN @FromDateJalali AND @ToDateJalali
+                          )	
+                    ),
+                    Requests AS
+                    (
+                        SELECT 
+                    			*,
+                               COUNT({condition}) OVER (PARTITION BY {condition}) AS cnt
+                        FROM AssessmentRequests
+                        WHERE rn = 1
+                    )
+                    SELECT 
+                        {condition} DuplicateItem,
+                    	ZoneID,
+                    	TrackNumber,
+                    	BillId, 
+                    	NeighbourBillId, 
+                    	NotificationMobile, 
+                    	InsertDateJalali,
+                    	cnt PeriodCount
+                    FROM Requests
+                    WHERE cnt > 1
+                    ORDER BY {condition}, TrackNumber;";
+        }
+        private string GetDuplicateConditionProp(int checkItem)
+        {
+            return checkItem switch
+            {
+                (int)AssessmentDuplicateParametersEnum.BillId => "BillId",
+                (int)AssessmentDuplicateParametersEnum.NeighbourBillId => "NeighbourBillId",
+                (int)AssessmentDuplicateParametersEnum.MobileNumber => "NotificationMobile",
+                _ => ""
+            };
         }
     }
 }
