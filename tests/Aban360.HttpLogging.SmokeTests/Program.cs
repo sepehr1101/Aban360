@@ -27,10 +27,21 @@ await Check("handled server error", async () =>
     var log = await Run(Context(), c => { c.Response.StatusCode = 500; return Task.CompletedTask; });
     Assert(log.Events.Single().Level == LogLevel.Error);
 });
-await Check("client error remains informational", async () =>
+await Check("client errors are logged at error level", async () =>
 {
-    var log = await Run(Context(), c => { c.Response.StatusCode = 400; return Task.CompletedTask; });
-    Assert(log.Events.Single().Level == LogLevel.Information);
+    foreach (var status in new[] { 400, 401, 403, 404, 429, 499 })
+    {
+        var context = Context();
+        if (status == 404)
+            context.SetEndpoint(null);
+
+        var log = await Run(context, c => { c.Response.StatusCode = status; return Task.CompletedTask; });
+        var entry = log.Events.Single();
+        Assert(entry.Level == LogLevel.Error);
+        Assert(Equals(entry.Fields["StatusCode"], status));
+        if (status == 404)
+            Assert(Equals(entry.Fields["RouteTemplate"], "<unmatched>"));
+    }
 });
 await Check("slow request", async () =>
 {

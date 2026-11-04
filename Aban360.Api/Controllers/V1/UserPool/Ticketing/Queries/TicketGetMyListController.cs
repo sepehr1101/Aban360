@@ -17,6 +17,14 @@ namespace Aban360.Api.Controllers.V1.UserPool.Ticketing.Queries
             _handler.NotNull(nameof(handler));
         }
 
+        [HttpGet]
+        [Route("my-list")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TicketPage<TicketGetDto>>), StatusCodes.Status200OK)]
+        public Task<IActionResult> ReadFromQuery([FromQuery] TicketMySearchInput inputDto, CancellationToken cancellationToken)
+        {
+            return Read(inputDto, cancellationToken);
+        }
+
         [HttpPost]
         [Route("my-list")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TicketPage<TicketGetDto>>), StatusCodes.Status200OK)]

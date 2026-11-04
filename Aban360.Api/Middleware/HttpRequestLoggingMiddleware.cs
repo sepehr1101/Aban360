@@ -56,7 +56,7 @@ public sealed class HttpRequestLoggingMiddleware
         {
             var elapsed = Stopwatch.GetElapsedTime(started).TotalMilliseconds;
             var status = aborted ? 499 : failed ? StatusCodes.Status500InternalServerError : context.Response.StatusCode;
-            var level = status >= 500 ? LogLevel.Error :
+            var level = !aborted && status >= StatusCodes.Status400BadRequest ? LogLevel.Error :
                 aborted || elapsed >= _slowMilliseconds ? LogLevel.Warning : LogLevel.Information;
             var userId = context.User.Identity?.IsAuthenticated == true
                 ? context.User.FindFirstValue(ClaimTypes.NameIdentifier) : null;

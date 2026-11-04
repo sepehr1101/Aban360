@@ -233,6 +233,9 @@ internal static class ApiChecks
         Check(nonAdmin.GetProperty("totalCount").GetInt32() == 0, "Other role names do not grant admin access");
         var assignedQueue = await Data(await client.PostAsJsonAsync("/v1/ticket/list", new { assignedToUserId = agent }));
         Check(assignedQueue.GetProperty("totalCount").GetInt32() == 1, "Non-admin still sees own assigned queue when requested");
+        var assignedQueueFromQuery = await Data(await client.GetAsync($"/v1/ticket/list?assignedToUserId={agent}&pageNumber=2&pageSize=1"));
+        Check(assignedQueueFromQuery.GetProperty("totalCount").GetInt32() == 1
+            && assignedQueueFromQuery.GetProperty("items").GetArrayLength() == 0, "GET ticket list binds the assigned-user filter and pagination");
         await app.StopAsync();
         Console.WriteLine($"PASS: {checks} ticketing HTTP checks. No SQL Server connection was opened.");
     }
