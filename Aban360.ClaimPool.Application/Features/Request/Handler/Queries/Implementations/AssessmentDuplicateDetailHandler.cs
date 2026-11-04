@@ -19,16 +19,33 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
         public async Task<ReportOutput<AssessmentDuplicatHeaderOutputDto, AssessmentDuplicateDetailDataOutputDto>> Handle(AssessmentDuplicateInputDto inputDto, CancellationToken cancellationToken)
         {
-            IEnumerable<AssessmentDuplicateDetailDataOutputDto> data = await _trackingQueryService.Get(inputDto);
+            IEnumerable<AssessmentDuplicateDetailDataOutputDto> dataWithoutColour = await _trackingQueryService.Get(inputDto);
+            IEnumerable<AssessmentDuplicateDetailDataOutputDto> data=SetColour(dataWithoutColour);
             AssessmentDuplicatHeaderOutputDto header = new()
             {
                 FromDateJalali = inputDto.FromDateJalali,
                 ToDateJalali = inputDto.ToDateJalali,
-                RecordCount = data?.Count() ?? 0,
-                CustomerCount = data?.DistinctBy(x => x.BillId)?.Count() ?? 0,
+                RecordCount = dataWithoutColour?.Count() ?? 0,
+                CustomerCount = dataWithoutColour?.DistinctBy(x => x.BillId)?.Count() ?? 0,
                 Title = _title,
             };
             return new ReportOutput<AssessmentDuplicatHeaderOutputDto, AssessmentDuplicateDetailDataOutputDto>(_title, header, data);
+        }
+        private IEnumerable<AssessmentDuplicateDetailDataOutputDto> SetColour(IEnumerable<AssessmentDuplicateDetailDataOutputDto> data)
+        {
+            string? tempVariable = null;
+            bool isColour = false;
+            foreach (var item in data)
+            {
+                if (tempVariable is not null && item.DuplicateItem != tempVariable)
+                {
+                    isColour = !isColour;
+                }
+                item.IsColour = isColour;
+                tempVariable = item.DuplicateItem;
+            }
+
+            return data;
         }
     }
 }

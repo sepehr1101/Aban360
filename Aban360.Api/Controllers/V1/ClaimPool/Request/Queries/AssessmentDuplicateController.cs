@@ -33,12 +33,12 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         [HttpGet]
         [Route("duplicate-dictionary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
-        public IActionResult GetDictionary([FromBody] AssessmentDuplicateInputDto inputDto, CancellationToken cancellationToken)
+        public IActionResult GetDictionary(CancellationToken cancellationToken)
         {
-            IEnumerable<NumericDictionary> result =  _assessmentDuplicateParametersGetHandler.Handle( cancellationToken);
+            IEnumerable<NumericDictionary> result = _assessmentDuplicateParametersGetHandler.Handle(cancellationToken);
             return Ok(result);
         }
-        
+
         [HttpPost]
         [Route("duplicate-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<AssessmentDuplicatHeaderOutputDto, AssessmentDuplicateDetailDataOutputDto>>), StatusCodes.Status200OK)]

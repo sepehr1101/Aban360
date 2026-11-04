@@ -10,7 +10,7 @@
         public string NotificationMobile { get; set; }
         public string InsertDateJalali { get; set; }
         public int PeriodCount { get; set; }
-        public bool IsColor { get; set; }
+        public bool IsColour { get; set; }
 
     }
 }

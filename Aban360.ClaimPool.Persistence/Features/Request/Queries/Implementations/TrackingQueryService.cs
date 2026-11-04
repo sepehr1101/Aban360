@@ -481,7 +481,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                     	cnt PeriodCount
                     FROM Requests
                     WHERE cnt > 1
-                    ORDER BY NeighbourBillId, TrackNumber;";
+                    ORDER BY {condition}, TrackNumber;";
         }
         private string GetDuplicateConditionProp(int checkItem)
         {
