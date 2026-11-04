@@ -71,6 +71,11 @@ queue. Otherwise non-admin users receive their own tickets. Administrators can
 also filter `createdByUserId` or `assignedToUserId`. Creation returns the unique
 ticket number; it can be searched with `searchText` to retrieve the ticket ID.
 
+For the administrator queue, POST `{}` to `/v1/ticket/list` to include tickets
+from all creators and assignees, across all statuses, with pagination. Explicit
+search filters still apply. The authenticated `admin` role is compared without
+case sensitivity (`Admin` and `ADMIN` are also recognized).
+
 Pages contain `items`, `totalCount`, `pageNumber`, `pageSize` inside `data`.
 Page numbers start at 1, and page size must be between 1 and 100. Message pages
 are chronological; ticket pages show newest tickets first.

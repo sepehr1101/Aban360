@@ -202,12 +202,37 @@ internal static class ApiChecks
         Check(ownNew.GetProperty("totalCount").GetInt32() == 1, "My tickets status filter");
         Check((await client.PostAsJsonAsync("/v1/ticket/my-list", new { pageSize = 101 })).StatusCode == HttpStatusCode.BadRequest, "My tickets shares search validation");
         ActAs(owner, admin: true);
+        var adminReport = await Data(await client.PostAsJsonAsync("/v1/ticket/report", new { pageSize = 1 }));
+        Check(adminReport.GetProperty("ticketCount").GetInt32() == 3, "Admin report counts tickets across owners without paging");
         var adminOwn = await Data(await client.PostAsJsonAsync("/v1/ticket/my-list", new { createdByUserId = stranger, assignedToUserId = agent }));
         Check(adminOwn.GetProperty("totalCount").GetInt32() == 2
             && adminOwn.GetProperty("items").EnumerateArray().All(x => x.GetProperty("createdByUserId").GetGuid() == owner), "My tickets cannot override ownership even for admin");
         ActAs(agent);
         var assignedOnly = await Data(await client.PostAsJsonAsync("/v1/ticket/my-list", new { }));
         Check(assignedOnly.GetProperty("totalCount").GetInt32() == 0, "My tickets excludes assigned tickets created by someone else");
+        foreach (var role in new[] { "admin", "Admin", "ADMIN", " Admin " })
+        {
+            ActAs(agent);
+            client.DefaultRequestHeaders.Add("X-Test-Role", role);
+            var allTickets = await Data(await client.PostAsJsonAsync("/v1/ticket/list", new { }));
+            Check(allTickets.GetProperty("totalCount").GetInt32() == 3
+                && allTickets.GetProperty("items").GetArrayLength() == 3, $"Admin role '{role}' sees every owner's tickets without owning any");
+            var adminPage = await Data(await client.PostAsJsonAsync("/v1/ticket/list", new { pageNumber = 2, pageSize = 2 }));
+            Check(adminPage.GetProperty("totalCount").GetInt32() == 3
+                && adminPage.GetProperty("items").GetArrayLength() == 1, "Admin queue preserves pagination and total count");
+            var filtered = await Data(await client.PostAsJsonAsync("/v1/ticket/list", new { createdByUserId = stranger }));
+            Check(filtered.GetProperty("totalCount").GetInt32() == 1
+                && filtered.GetProperty("items")[0].GetProperty("createdByUserId").GetGuid() == stranger, "Admin can explicitly filter another owner's tickets");
+            var myTickets = await Data(await client.PostAsJsonAsync("/v1/ticket/my-list", new { }));
+            Check(myTickets.GetProperty("totalCount").GetInt32() == 0, "Admin my-list still excludes other owners' tickets");
+            client.DefaultRequestHeaders.Remove("X-Test-Role");
+        }
+        ActAs(agent);
+        client.DefaultRequestHeaders.Add("X-Test-Role", "Administrator");
+        var nonAdmin = await Data(await client.PostAsJsonAsync("/v1/ticket/list", new { }));
+        Check(nonAdmin.GetProperty("totalCount").GetInt32() == 0, "Other role names do not grant admin access");
+        var assignedQueue = await Data(await client.PostAsJsonAsync("/v1/ticket/list", new { assignedToUserId = agent }));
+        Check(assignedQueue.GetProperty("totalCount").GetInt32() == 1, "Non-admin still sees own assigned queue when requested");
         await app.StopAsync();
         Console.WriteLine($"PASS: {checks} ticketing HTTP checks. No SQL Server connection was opened.");
     }
@@ -227,6 +252,8 @@ internal sealed class TicketingSmokeAuthenticationHandler(
             new(ClaimTypes.UserData, id.ToString()), new(ClaimTypes.Name, id.ToString()), new(ClaimTypes.GivenName, "Test")
         };
         if (Request.Headers["X-Test-Admin"] == "true") claims.Add(new Claim(ClaimTypes.Role, "admin"));
+        foreach (var role in Request.Headers["X-Test-Role"])
+            claims.Add(new Claim(ClaimTypes.Role, role!));
         var identity = new ClaimsIdentity(claims, Scheme.Name);
         return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name)));
     }

@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -28,16 +28,24 @@ namespace Aban360.PaymentPool.Application.Features.BankReceipt.Implementations
                 import.Issues.Add(new("FileName", "نام فایل با الگوی بانک، تاریخ، شرکت، توالی و کد تابعه مطابقت ندارد."));
             using var reader = new StringReader(Encoding.ASCII.GetString(import.Content));
             var header = reader.ReadLine();
-            if (!Numeric(header, 32))
-                import.Issues.Add(new("Header", "سطر اول باید شامل ۳۲ رقم باشد.", 1));
+            if (!Numeric(header, 46))
+                import.Issues.Add(new("Header", "سطر اول باید شامل ۴۶ رقم باشد.", 1));
             else
             {
+                bool validAmount = long.TryParse(header!.AsSpan(14, 20), NumberStyles.None, CultureInfo.InvariantCulture, out long amount)
+                    && amount <= long.MaxValue / 1000;
+                bool validCount = int.TryParse(header.AsSpan(34, 12), NumberStyles.None, CultureInfo.InvariantCulture, out int recordCount);
+                if (!validAmount)
+                    import.Issues.Add(new("Total", "مبلغ کل سربرگ خارج از محدوده معتبر است.", 1));
+                if (!validCount)
+                    import.Issues.Add(new("Count", "تعداد سطرهای سربرگ خارج از محدوده معتبر است.", 1));
+
                 import.Header = new()
                 {
                     UtilityCode = header![..1], SubUtilityCode = header.Substring(1, 3),
                     BankCode = header.Substring(4, 2), SendDate = header.Substring(6, 8),
-                    Amount = long.Parse(header.Substring(14, 10), CultureInfo.InvariantCulture) * 1000,
-                    RecordCount = int.Parse(header.Substring(24, 8), CultureInfo.InvariantCulture)
+                    Amount = validAmount ? amount * 1000 : 0,
+                    RecordCount = validCount ? recordCount : 0
                 };
                 if (!ValidDate(import.Header.SendDate))
                     import.Issues.Add(new("SendDate", "تاریخ ارسال معتبر نیست.", 1));

@@ -1,9 +1,11 @@
-﻿using Aban360.PaymentPool.Domain.Features.BankReceipt.Entities;
+﻿using Aban360.PaymentPool.Domain.Features.BankReceipt.Dto;
+using Aban360.PaymentPool.Domain.Features.BankReceipt.Entities;
 
 namespace Aban360.PaymentPool.Persistence.Features.BankReceipt.Contracts
 {
     public interface IBankReceiptImportRepository
     {
+        Task<IReadOnlyList<BankReceiptFileListItemDto>> List(Guid userId, int page, int pageSize, CancellationToken cancellationToken);
         Task Create(BankReceiptImport import, CancellationToken cancellationToken);
         Task<BankReceiptImport> Get(Guid id, Guid userId, CancellationToken cancellationToken);
         Task Save(BankReceiptImport import, int expectedVersion, CancellationToken cancellationToken);

@@ -17,10 +17,6 @@ namespace Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Imple
             {
                 throw new InvalidTrackingException(ExceptionLiterals.NotFoundFile);
             }
-            FileStream fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-
-
-
             FileInfo fileInfo = new FileInfo(fullPath);
             string content = File.ReadAllText(fullPath, Encoding.UTF8);
             return new MeterApkLogFileGetDto(fileName, content, fileInfo.LastWriteTime.ToPersianDateTimeString("yyyy/MM/dd - hh:mm:ss"));

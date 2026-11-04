@@ -13,6 +13,35 @@ internal sealed class HttpRequestReportQueryService(IConfiguration configuration
     public async Task<IEnumerable<HttpRequestReportOutput>> Get(DateTime from, DateTime to,
         HttpRequestReportInput input, HttpRequestReportKind kind, CancellationToken cancellationToken)
     {
+        var sql = BuildSql(kind, input.UserId is not null, input.RouteTemplate is not null);
+        using var connection = _sqlConnection;
+        return await connection.QueryAsync<HttpRequestReportOutput>(new CommandDefinition(sql, new
+        {
+            from, to, input.UserId, input.RouteTemplate, input.PageSize,
+            offset = ((long)input.Page - 1) * input.PageSize,
+            template = "HTTP {RequestMethod} {RouteTemplate} completed {StatusCode} in {ElapsedMilliseconds} ms; TraceId {TraceId}; UserId {UserId}"
+        }, cancellationToken: cancellationToken));
+    }
+
+    internal static string BuildSql(HttpRequestReportKind kind, bool filterUser, bool filterRoute)
+    {
+        if (!Enum.IsDefined(kind)) throw new ArgumentOutOfRangeException(nameof(kind));
+        var needRoute = kind is HttpRequestReportKind.Routes or HttpRequestReportKind.Requests || filterRoute;
+        var needUser = kind is HttpRequestReportKind.Users or HttpRequestReportKind.Requests || filterUser;
+        var projection = new List<string>
+        {
+            "TRY_CONVERT(int, P.value('(properties/property[@key=\"StatusCode\"]/text())[1]', 'nvarchar(30)')) StatusCode",
+            "TRY_CONVERT(float, P.value('(properties/property[@key=\"ElapsedMilliseconds\"]/text())[1]', 'nvarchar(100)')) Elapsed"
+        };
+        if (needUser)
+            projection.Add("NULLIF(P.value('(properties/property[@key=\"UserId\"]/text())[1]', 'nvarchar(256)'), '') UserId");
+        if (needRoute)
+            projection.Add("P.value('(properties/property[@key=\"RouteTemplate\"]/text())[1]', 'nvarchar(2048)') RouteTemplate");
+        if (kind is HttpRequestReportKind.Routes or HttpRequestReportKind.Requests)
+            projection.Add("P.value('(properties/property[@key=\"RequestMethod\"]/text())[1]', 'nvarchar(20)') RequestMethod");
+        if (kind == HttpRequestReportKind.Requests)
+            projection.Add("P.value('(properties/property[@key=\"TraceId\"]/text())[1]', 'nvarchar(256)') TraceId");
+
         var group = kind switch
         {
             HttpRequestReportKind.Routes => "RequestMethod, RouteTemplate",
@@ -40,7 +69,7 @@ internal sealed class HttpRequestReportQueryService(IConfiguration configuration
             _ => "RequestCount DESC"
         };
         // The existing MSSqlServer sink stores structured properties as XML.
-        var sql = $$"""
+        return $$"""
             WITH Source AS (
                 SELECT Id, TimeStamp, TRY_CONVERT(xml, Properties) P
                 FROM [Aban360].dbo.Logs
@@ -48,27 +77,16 @@ internal sealed class HttpRequestReportQueryService(IConfiguration configuration
                   AND MessageTemplate = @template
             ), Parsed AS (
                 SELECT Id, TimeStamp,
-                    P.value('(properties/property[@key="RequestMethod"]/text())[1]', 'nvarchar(20)') RequestMethod,
-                    P.value('(properties/property[@key="RouteTemplate"]/text())[1]', 'nvarchar(2048)') RouteTemplate,
-                    NULLIF(P.value('(properties/property[@key="UserId"]/text())[1]', 'nvarchar(256)'), '') UserId,
-                    P.value('(properties/property[@key="TraceId"]/text())[1]', 'nvarchar(256)') TraceId,
-                    TRY_CONVERT(int, P.value('(properties/property[@key="StatusCode"]/text())[1]', 'nvarchar(30)')) StatusCode,
-                    TRY_CONVERT(float, P.value('(properties/property[@key="ElapsedMilliseconds"]/text())[1]', 'nvarchar(100)')) Elapsed
+                    {{string.Join(",\n                    ", projection)}}
                 FROM Source
             ), Filtered AS (
                 SELECT * FROM Parsed WHERE Elapsed >= 0 AND StatusCode IS NOT NULL
-                  AND (@UserId IS NULL OR UserId = @UserId)
-                  AND (@RouteTemplate IS NULL OR RouteTemplate = @RouteTemplate)
+                  {{(filterUser ? "AND UserId = @UserId" : "")}}
+                  {{(filterRoute ? "AND RouteTemplate = @RouteTemplate" : "")}}
             ), Results AS ({{selection}})
             SELECT *, COUNT_BIG(*) OVER() TotalGroups FROM Results
-            ORDER BY {{order}} OFFSET @offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+            ORDER BY {{order}} OFFSET @offset ROWS FETCH NEXT @PageSize ROWS ONLY
+            OPTION (RECOMPILE);
             """;
-        using var connection = _sqlConnection;
-        return await connection.QueryAsync<HttpRequestReportOutput>(new CommandDefinition(sql, new
-        {
-            from, to, input.UserId, input.RouteTemplate, input.PageSize,
-            offset = ((long)input.Page - 1) * input.PageSize,
-            template = "HTTP {RequestMethod} {RouteTemplate} completed {StatusCode} in {ElapsedMilliseconds} ms; TraceId {TraceId}; UserId {UserId}"
-        }, cancellationToken: cancellationToken));
     }
 }

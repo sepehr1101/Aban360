@@ -1,6 +1,6 @@
 ﻿namespace Aban360.PaymentPool.Domain.Features.BankReceipt.Entities
 {
-    public enum BankReceiptImportStatus { Uploaded, Validated, Reconciled, Committed }
+    public enum BankReceiptImportStatus { Uploaded, Validated, Reconciled, Committed, Rejected }
 
     public sealed class BankReceiptImport
     {
@@ -19,6 +19,8 @@
         public BankReceiptHeader? Header { get; set; }
         public List<BankReceiptRow> Rows { get; set; } = new();
         public List<BankReceiptIssue> Issues { get; set; } = new();
+        public bool HasBlockingFileIssues => Header == null || Issues.Any(i =>
+            i.LineNumber == 1 || (i.LineNumber == null && i.Code is not ("Count" or "Total")));
         public int? UploaderId { get; set; }
     }
 
@@ -38,6 +40,7 @@
         public string RawData { get; set; } = string.Empty;
         public List<BankReceiptIssue> ExclusionReasons { get; set; } = new();
         public bool IsExcluded => ExclusionReasons.Count != 0;
+        public bool CanPost => Issues.Count == 0 && !IsExcluded && InvoiceId != null && InvoiceInstallmentId != null;
         public string BranchCode { get; set; } = string.Empty;
         public short ChannelType { get; set; }
         public string PayDate { get; set; } = string.Empty;

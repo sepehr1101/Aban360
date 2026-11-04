@@ -178,7 +178,7 @@ namespace Aban360.ReportPool.Persistence.Base
 						    END BillC,
 						   Case
 							    When b.TypeCode IN (1) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)<=0 THEN 1
-							    When b.TypeCode IN (1) AND b.UsageId IN (1,3) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)>0 THEN (b.OtherCount+b.CommercialCount+b.DomesticCount)
+							    When b.TypeCode IN (1) AND b.UsageId IN (1,3) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)>0 THEN (b.OtherCount+b.CommercialCount+b.DomesticCount - ISNULL(b.EmptyCount,0) + ISNULL(b.HouseholdCount,0))
 								When b.TypeCode IN (1) AND b.UsageId NOT IN (1,3) AND (b.OtherCount+b.CommercialCount+DomesticCount)>0 THEN (b.OtherCount+b.CommercialCount+DomesticCount)
 							    Else 0 
 						   END UnitC
@@ -211,6 +211,7 @@ namespace Aban360.ReportPool.Persistence.Base
                         ROUND(SUM(CAST(BillUnit AS decimal(18,2))*CAST(Duration AS decimal(18,2))/IIF(SumDuration<=0,1,SumDuration)),1) AS WaterConsumptionUnit, 
 						CAST((SUM(CAST(Consumption AS decimal(18,2)))*30.0)/NULLIF((SUM(CAST(IIF(Duration<=0,1,Duration) AS decimal))*1.0/NULLIF(SUM(CAST(IIF(BillC<=0,1,BillC) AS bigint)),0))*SUM(CAST(IIF(UnitC<=0,1,UnitC) AS bigint)),0) AS decimal(18,2)) AS ConsumptionAverage,
 						SUM(CAST(Duration AS decimal(18,2)))/SUM(CAST(IIF(BillC<=0,1,BillC) AS bigint)) AS DailyAverage,
+                        AVG(SumDuration) AverageDuration,
 						MAX(RegionId) RegionId,
 						MAX(RegionTitle) RegionTitle,
                     	{SelectKey} as GroupKey,
