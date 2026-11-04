@@ -202,6 +202,8 @@ internal static class ApiChecks
         Check(ownNew.GetProperty("totalCount").GetInt32() == 1, "My tickets status filter");
         Check((await client.PostAsJsonAsync("/v1/ticket/my-list", new { pageSize = 101 })).StatusCode == HttpStatusCode.BadRequest, "My tickets shares search validation");
         ActAs(owner, admin: true);
+        var adminReport = await Data(await client.PostAsJsonAsync("/v1/ticket/report", new { pageSize = 1 }));
+        Check(adminReport.GetProperty("ticketCount").GetInt32() == 3, "Admin report counts tickets across owners without paging");
         var adminOwn = await Data(await client.PostAsJsonAsync("/v1/ticket/my-list", new { createdByUserId = stranger, assignedToUserId = agent }));
         Check(adminOwn.GetProperty("totalCount").GetInt32() == 2
             && adminOwn.GetProperty("items").EnumerateArray().All(x => x.GetProperty("createdByUserId").GetGuid() == owner), "My tickets cannot override ownership even for admin");

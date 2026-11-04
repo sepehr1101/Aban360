@@ -1,10 +1,8 @@
 ﻿using System.Data;
-using Aban360.PaymentPool.Persistence.Dapper;
 using Aban360.PaymentPool.Domain.Features.BankReceipt.Dto;
 using Aban360.PaymentPool.Persistence.Features.BankReceipt.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Data.SqlClient;
 using Aban360.Common.Db.Dapper;
 
 namespace Aban360.PaymentPool.Persistence.Features.BankReceipt.Implementations
@@ -15,10 +13,11 @@ namespace Aban360.PaymentPool.Persistence.Features.BankReceipt.Implementations
         public async Task<BankReceiptDeleteResultDto> Delete(short bankId, DateTime fromUtc, DateTime toUtcExclusive,
             Guid userId, CancellationToken cancellationToken)
         {
-            using var connection = new SqlConnection();// _sqlConnection;
+            using var connection = _sqlReportConnection;
             await connection.OpenAsync(cancellationToken);
             using var transaction = connection.BeginTransaction(IsolationLevel.Serializable);
             var result = await connection.QuerySingleAsync<BankReceiptDeleteResultDto>(new CommandDefinition(@"
+                USE [Atlas];
                 DECLARE @Deleted TABLE (Id uniqueidentifier PRIMARY KEY, PreviousStatus int);
                 UPDATE [PaymentPool].[BankReceiptImport]
                 SET IsDeleted=1, DeletedAt=@now, DeletedBy=@userId, Version=Version+1

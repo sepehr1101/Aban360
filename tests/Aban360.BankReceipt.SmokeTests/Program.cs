@@ -1,4 +1,5 @@
-﻿using System.Text;
+using Aban360.PaymentPool.Domain.Features.BankReceipt.Dto;
+using System.Text;
 using System.Text.Json;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -7,7 +8,6 @@ using Aban360.PaymentPool.Application.Features.BankReceipt.Implementations;
 using Aban360.PaymentPool.Domain.Features.BankReceipt.Entities;
 using Aban360.PaymentPool.Domain.Features.Remuneration.Entities;
 using Aban360.PaymentPool.Persistence.Features.BankReceipt.Contracts;
-using Aban360.PaymentPool.Persistence.Features.Remuneration.Queries.Contracts;
 
 int checks = 0;
 void Check(bool value, string name) { if (!value) throw new Exception(name); checks++; }
@@ -19,7 +19,7 @@ async Task Reject(Func<Task> action, string name)
 string bill = TransactionIdGenerator.GenerateBillId("123456", "091");
 string pay = TransactionIdGenerator.GeneratePaymentId(123000, bill);
 string row = "0000015914040101" + bill.PadLeft(13, '0') + pay.PadLeft(13, '0') + "123456";
-string header = "10911814040101" + "0000000123" + "00000001";
+string header = "10911814040101" + "00000000000000000123" + "000000000001";
 string text = header + "\r\n" + row + "\r\n";
 BankReceiptImport Import(string data) => new() { FileName = "TEJ14040101WA001.091", Content = Encoding.ASCII.GetBytes(data) };
 var parser = new BankReceiptParser();
@@ -30,9 +30,9 @@ Check(good.Header!.Amount == 123000 && good.Rows[0].Amount == 123000, "thousand-
 Check(good.Rows[0].BillId == bill && good.Rows[0].PayDate == "14040101", "field offsets and padding");
 var badDate = Import(text.Replace("14040101", "14041301")); parser.Parse(badDate, "18", "TEJ");
 Check(badDate.Issues.Any(i => i.Code == "SendDate") && badDate.Rows[0].Issues.Any(i => i.Code == "PayDate"), "invalid dates");
-var badCount = Import(text.Replace("00000001\r", "00000002\r")); parser.Parse(badCount, "18", "TEJ");
+var badCount = Import(text.Replace("000000000001\r", "000000000002\r")); parser.Parse(badCount, "18", "TEJ");
 Check(badCount.Issues.Any(i => i.Code == "Count"), "header count mismatch");
-var badAmount = Import(text.Replace("0000000123", "0000000124")); parser.Parse(badAmount, "18", "TEJ");
+var badAmount = Import(text.Replace("00000000000000000123", "00000000000000000124")); parser.Parse(badAmount, "18", "TEJ");
 Check(badAmount.Issues.Any(i => i.Code == "Total"), "header sum mismatch");
 var duplicate = Import(text + row); parser.Parse(duplicate, "18", "TEJ");
 Check(duplicate.Rows[1].Issues.Any(i => i.Code == "DuplicateRow"), "duplicate rows");
@@ -40,6 +40,8 @@ var malformed = Import(header + "\n123"); parser.Parse(malformed, "18", "TEJ");
 Check(malformed.Issues.Any(i => i.Code == "RowStructure"), "short row");
 var old = Import(text.Replace("14040101", "040101")); parser.Parse(old, "18", "TEJ");
 Check(old.Issues.Any(i => i.Code == "Header"), "old date format rejected");
+var legacyHeader = Import("10911814040101000000012300000001\r\n" + row); parser.Parse(legacyHeader, "18", "TEJ");
+Check(legacyHeader.Issues.Any(i => i.Code == "Header"), "32-digit header rejected");
 var corrupt = Import(text); corrupt.Content[0] = 255; parser.Parse(corrupt, "18", "TEJ");
 Check(corrupt.Issues.Any(i => i.Code == "Encoding"), "invalid encoding");
 var tampered = Import(text[..^4] + "00\r\n"); parser.Parse(tampered, "19", "MLI");
@@ -64,9 +66,8 @@ Check(pending.InvalidCount == 1 && pending.Rows[0].Issues.Any(i => i.Code == "Re
 await Reject(() => handler.Confirm(id, user, new(pending.Version, true), default), "unresolved cannot commit");
 handler = new(repo, new Banks(), parser, new[] { new Matches() });
 var reconciled = await handler.Reconcile(id, user, default);
-await Reject(() => handler.Confirm(id, user, new(reconciled.Version, false), default), "explicit confirmation");
 await Reject(() => handler.Confirm(id, user, new(reconciled.Version - 1, true), default), "stale version");
-int uploader = await handler.Confirm(id, user, new(reconciled.Version, true), default);
+int? uploader = await handler.Confirm(id, user, new(reconciled.Version, true), default);
 Check(uploader == 42 && repo.Commits == 1, "commit matched payments");
 Check(await handler.Confirm(id, user, new(reconciled.Version, true), default) == 42 && repo.Commits == 1, "idempotent confirmation");
 await Reject(() => handler.Validate(id, user, default), "committed file immutable");
@@ -77,7 +78,7 @@ var manyRows = Enumerable.Range(1, 15).Select(n =>
     var p = TransactionIdGenerator.GeneratePaymentId(123000, b);
     return "0000015914040101" + b.PadLeft(13, '0') + p.PadLeft(13, '0') + "123456";
 });
-var manyText = "10911814040101" + "0000001845" + "00000015\n" + string.Join("\n", manyRows);
+var manyText = "10911814040101" + "00000000000000001845" + "000000000015\n" + string.Join("\n", manyRows);
 var manyId = await handler.Upload(new MemoryStream(Encoding.ASCII.GetBytes(manyText)), good.FileName, 1, user, "tester", default);
 var preview = await handler.Validate(manyId, user, default);
 Check(preview.ActualRecordCount == 15 && preview.SampleRows.Count == 10 && preview.SampleRows.Select(r => r.LineNumber).Distinct().Count() == 10, "random preview size");
@@ -85,7 +86,7 @@ Check(preview.Issues.Count == 0 && preview.InvalidRecordCount == 0, "multi-row t
 repo.Duplicates.Add(preview.SampleRows[0].Hash);
 var repeats = await handler.Reconcile(manyId, user, default);
 Check(repeats.InvalidCount == 1 && repeats.Rows.Any(r => r.Issues.Any(i => i.Code == "AlreadyPaid")), "database duplicate");
-await Reject(() => handler.Confirm(manyId, user, new(repeats.Version, true), default), "database duplicate blocks commit");
+Check(repeats.CanConfirm && repeats.Rows.Count(r => r.CanPost) == 14, "duplicate excluded and remaining rows eligible");
 repo.Duplicates.Clear();
 handler = new(repo, new Banks(), parser, new[] { new Matches("OutsideIsfahan") });
 var outside = await handler.Reconcile(manyId, user, default);
@@ -103,11 +104,22 @@ Check(malformedResult.Rows.Single().RawData == "123" && malformedResult.Rows[0].
 var subsidiaryId = await handler.Upload(new MemoryStream(Encoding.ASCII.GetBytes(text)), "TEJ14040101WA001.092", 1, user, "tester", default);
 var subsidiary = await handler.Validate(subsidiaryId, user, default);
 Check(subsidiary.ExcludedRecordCount == 1 && subsidiary.SampleRows[0].ExclusionReasons.Any(i => i.Code == "SubUtilityCode"), "file reasons propagated to receipt");
+Check(await handler.Confirm(manyId, user, new(unknown.Version, false), default) == null
+    && (await handler.Display(manyId, user, default)).Status == BankReceiptImportStatus.Rejected
+    && repo.Commits == 1, "rejection is recorded without payments");
+await Reject(() => handler.Confirm(manyId, user, new(unknown.Version, true), default), "rejected file cannot post");
+handler = new(repo, new Banks(), parser, new[] { new Matches() });
+var partialId = await handler.Upload(new MemoryStream(Encoding.ASCII.GetBytes(header + "\n" + row + "\n123")), good.FileName, 1, user, "tester", default);
+await handler.Validate(partialId, user, default);
+var partial = await handler.Reconcile(partialId, user, default);
+Check(partial.CanConfirm && partial.ExcludedRecordCount == 1, "malformed row excluded despite header count warning");
+Check(await handler.Confirm(partialId, user, new(partial.Version, true), default) == 42
+    && repo.LastPostedCount == 1, "only eligible payment posted");
 checks += await DiscrepancyChecks.Run(user, manyId);
 checks += await BankReceiptManagementChecks.Run();
 Console.WriteLine($"Passed {checks} bank receipt checks.");
 
-sealed class Banks : IBankQueryService
+sealed class Banks : IBankReceiptBankQueryService
 {
     public Task<Bank> Get(short id) => Task.FromResult(new Bank { Id = id, BankName = "Tejarat", CentralBankCode = "18", _3Char = "TEJ" });
     public Task<ICollection<Bank>> Get() => throw new NotImplementedException();
@@ -122,6 +134,7 @@ sealed class MemoryRepository : IBankReceiptImportRepository
     readonly Dictionary<Guid, string> _items = new();
     public HashSet<string> Duplicates { get; } = new();
     public int Commits { get; private set; }
+    public int LastPostedCount { get; private set; }
     public Task Create(BankReceiptImport import, CancellationToken cancellationToken) { _items.Add(import.Id, JsonSerializer.Serialize(import)); return Task.CompletedTask; }
     public Task<BankReceiptImport> Get(Guid id, Guid userId, CancellationToken cancellationToken)
     {
@@ -129,6 +142,8 @@ sealed class MemoryRepository : IBankReceiptImportRepository
         if (item.UserId != userId) throw new BaseException("owner");
         return Task.FromResult(item);
     }
+    public Task<IReadOnlyList<BankReceiptFileListItemDto>> List(Guid userId, int page, int pageSize, CancellationToken cancellationToken)
+        => throw new NotSupportedException();
     public async Task Save(BankReceiptImport import, int expectedVersion, CancellationToken cancellationToken)
     {
         var old = await Get(import.Id, import.UserId, cancellationToken);
@@ -139,6 +154,7 @@ sealed class MemoryRepository : IBankReceiptImportRepository
         => Task.FromResult<IReadOnlySet<string>>(Duplicates);
     public async Task<int> Commit(BankReceiptImport import, int expectedVersion, CancellationToken cancellationToken)
     {
+        LastPostedCount = import.Rows.Count(r => r.CanPost);
         import.Status = BankReceiptImportStatus.Committed; import.UploaderId = 42;
         await Save(import, expectedVersion, cancellationToken); Commits++; return 42;
     }

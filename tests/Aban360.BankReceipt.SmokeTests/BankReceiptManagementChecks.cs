@@ -3,7 +3,6 @@ using Aban360.PaymentPool.Application.Features.BankReceipt.Implementations;
 using Aban360.PaymentPool.Domain.Features.BankReceipt.Dto;
 using Aban360.PaymentPool.Domain.Features.Remuneration.Entities;
 using Aban360.PaymentPool.Persistence.Features.BankReceipt.Contracts;
-using Aban360.PaymentPool.Persistence.Features.Remuneration.Queries.Contracts;
 
 internal static class BankReceiptManagementChecks
 {
@@ -55,7 +54,7 @@ internal static class BankReceiptManagementChecks
         Check(store.Calls == calls, "cancelled deletion does not reach persistence");
         return checks;
     }
-    private sealed class BankSource : IBankQueryService
+    private sealed class BankSource : IBankReceiptBankQueryService
     {
         private readonly Bank[] _banks = {
             new() { Id = 2, BankName = "B", CentralBankCode = "18", _3Char = "BBB" },

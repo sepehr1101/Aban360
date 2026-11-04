@@ -2,15 +2,14 @@
 using Aban360.PaymentPool.Application.Features.BankReceipt.Contracts;
 using Aban360.PaymentPool.Domain.Features.BankReceipt.Dto;
 using Aban360.PaymentPool.Persistence.Features.BankReceipt.Contracts;
-using Aban360.PaymentPool.Persistence.Features.Remuneration.Queries.Contracts;
 
 namespace Aban360.PaymentPool.Application.Features.BankReceipt.Implementations
 {
     internal sealed class BankReceiptDeleteHandler : IBankReceiptDeleteHandler
     {
         private readonly IBankReceiptDeleteRepository _repository;
-        private readonly IBankQueryService _banks;
-        public BankReceiptDeleteHandler(IBankReceiptDeleteRepository repository, IBankQueryService banks)
+        private readonly IBankReceiptBankQueryService _banks;
+        public BankReceiptDeleteHandler(IBankReceiptDeleteRepository repository, IBankReceiptBankQueryService banks)
         {
             _repository = repository;
             _banks = banks;
