@@ -29,7 +29,11 @@ namespace Aban360.UserPool.Persistence.Features.Ticketing.Queries.Implementation
             {
                 TotalCount = await query.CountAsync(cancellationToken),
                 Items = await query.OrderByDescending(x => x.CreatedAt).ThenByDescending(x => x.Id)
-                    .Skip(skip).Take(input.PageSize).ToListAsync(cancellationToken),
+                    .Skip(skip).Take(input.PageSize)
+                    .Include(x => x.CreatedByUser)
+                    .ThenInclude(user => user.UserRoles.Where(role => role.ValidTo == null))
+                    .ThenInclude(userRole => userRole.Role)
+                    .ToListAsync(cancellationToken),
                 PageNumber = input.PageNumber,
                 PageSize = input.PageSize
             };

@@ -71,6 +71,14 @@ internal static class ApiChecks
             }));
             context.TicketStatuses.AddRange(new[] { "New", "InProgress", "Answered", "Closed" }
                 .Select((code, i) => new TicketStatus { Id = (short)(i + 1), Code = code, Title = code }));
+            context.Set<UserRole>().AddRange(new[] { "Reporter", "Operator", "Previous" }.Select(name => new UserRole
+            {
+                UserId = owner,
+                Role = new Role { Name = name, Title = name, Hash = "unused", InsertLogInfo = "test" },
+                Hash = "unused",
+                InsertLogInfo = "test",
+                ValidTo = name == "Previous" ? DateTime.UtcNow : null
+            }));
             await context.SaveChangesAsync();
         }
         await app.StartAsync();
@@ -103,6 +111,9 @@ internal static class ApiChecks
         var ticket = page.GetProperty("items")[0];
         var ticketId = ticket.GetProperty("id").GetInt64();
         Check(ticket.GetProperty("ticketNumber").GetString() == number, "Create returns saved ticket number");
+        Check(ticket.GetProperty("createdByUserFullName").GetString() == "Test"
+            && ticket.GetProperty("createdByUserRoles").GetString() == "Operator, Reporter",
+            "Ticket list includes the creator's full name and comma-separated active roles");
         await Data(await client.GetAsync($"/v1/ticket/read/{ticketId}"));
         var history = await Data(await client.PostAsJsonAsync("/v1/ticket-message/list", new { ticketId }));
         var initialId = history.GetProperty("items")[0].GetProperty("id").GetInt64();
@@ -201,15 +212,25 @@ internal static class ApiChecks
         var ownNew = await Data(await client.PostAsJsonAsync("/v1/ticket/my-list", new { statusId = 1 }));
         Check(ownNew.GetProperty("totalCount").GetInt32() == 1, "My tickets status filter");
         Check((await client.PostAsJsonAsync("/v1/ticket/my-list", new { pageSize = 101 })).StatusCode == HttpStatusCode.BadRequest, "My tickets shares search validation");
+        var ownReport = await Data(await client.GetAsync("/v1/ticket/my-report"));
+        Check(ownReport.GetProperty("ticketCount").GetInt32() == 2, "My report counts only the current user's tickets");
         ActAs(owner, admin: true);
         var adminReport = await Data(await client.PostAsJsonAsync("/v1/ticket/report", new { pageSize = 1 }));
         Check(adminReport.GetProperty("ticketCount").GetInt32() == 3, "Admin report counts tickets across owners without paging");
+        var adminOwnReport = await Data(await client.PostAsJsonAsync("/v1/ticket/my-report", new { createdByUserId = stranger, assignedToUserId = agent, pageSize = 1 }));
+        Check(adminOwnReport.GetProperty("ticketCount").GetInt32() == 2
+            && adminOwnReport.GetProperty("ratingCount").GetInt32() == ownReport.GetProperty("ratingCount").GetInt32(),
+            "Admin my report ignores owner overrides and paging");
+        var filteredOwnReport = await Data(await client.GetAsync($"/v1/ticket/my-report?statusId=1&createdByUserId={stranger}"));
+        Check(filteredOwnReport.GetProperty("ticketCount").GetInt32() == 1, "GET my report binds status and ignores owner overrides");
         var adminOwn = await Data(await client.PostAsJsonAsync("/v1/ticket/my-list", new { createdByUserId = stranger, assignedToUserId = agent }));
         Check(adminOwn.GetProperty("totalCount").GetInt32() == 2
             && adminOwn.GetProperty("items").EnumerateArray().All(x => x.GetProperty("createdByUserId").GetGuid() == owner), "My tickets cannot override ownership even for admin");
         ActAs(agent);
         var assignedOnly = await Data(await client.PostAsJsonAsync("/v1/ticket/my-list", new { }));
         Check(assignedOnly.GetProperty("totalCount").GetInt32() == 0, "My tickets excludes assigned tickets created by someone else");
+        var assignedOnlyReport = await Data(await client.GetAsync("/v1/ticket/my-report"));
+        Check(assignedOnlyReport.GetProperty("ticketCount").GetInt32() == 0, "My report excludes assigned tickets created by someone else");
         foreach (var role in new[] { "admin", "Admin", "ADMIN", " Admin " })
         {
             ActAs(agent);
@@ -233,6 +254,9 @@ internal static class ApiChecks
         Check(nonAdmin.GetProperty("totalCount").GetInt32() == 0, "Other role names do not grant admin access");
         var assignedQueue = await Data(await client.PostAsJsonAsync("/v1/ticket/list", new { assignedToUserId = agent }));
         Check(assignedQueue.GetProperty("totalCount").GetInt32() == 1, "Non-admin still sees own assigned queue when requested");
+        var assignedQueueFromQuery = await Data(await client.GetAsync($"/v1/ticket/list?assignedToUserId={agent}&pageNumber=2&pageSize=1"));
+        Check(assignedQueueFromQuery.GetProperty("totalCount").GetInt32() == 1
+            && assignedQueueFromQuery.GetProperty("items").GetArrayLength() == 0, "GET ticket list binds the assigned-user filter and pagination");
         await app.StopAsync();
         Console.WriteLine($"PASS: {checks} ticketing HTTP checks. No SQL Server connection was opened.");
     }

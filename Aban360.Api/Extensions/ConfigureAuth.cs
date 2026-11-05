@@ -75,7 +75,6 @@ namespace Aban360.Api.Extensions
                 OnAuthenticationFailed = HandleAuthenticationFailed,
                 OnTokenValidated = HandleTokenValidated,
                 OnMessageReceived = HandleMessageReceived,
-                OnChallenge = HandleChallenge,
                 OnForbidden = HandleForbidden
             };
         }
@@ -86,7 +85,19 @@ namespace Aban360.Api.Extensions
                 .GetRequiredService<ILoggerFactory>()
                 .CreateLogger(nameof(JwtBearerEvents));
 
-            logger.LogError("Authentication failed.", context.Exception);
+            if (context.Exception is SecurityTokenExpiredException
+                or SecurityTokenNotYetValidException
+                or SecurityTokenInvalidLifetimeException
+                or SecurityTokenNoExpirationException
+                or SecurityTokenInvalidSignatureException
+                or SecurityTokenSignatureKeyNotFoundException
+                or SecurityTokenMalformedException)
+            {
+                logger.LogWarning("JWT validation rejected a token ({ExceptionType}).", context.Exception.GetType().Name);
+                return Task.CompletedTask;
+            }
+
+            logger.LogError(context.Exception, "Authentication failed.");
             return Task.CompletedTask;
         }
 
@@ -123,23 +134,13 @@ namespace Aban360.Api.Extensions
             return Task.CompletedTask;
         }
 
-        private static Task HandleChallenge(JwtBearerChallengeContext context)
-        {
-            var logger = context.HttpContext.RequestServices
-                .GetRequiredService<ILoggerFactory>()
-                .CreateLogger(nameof(JwtBearerEvents));
-
-            logger.LogError("OnChallenge error: {Error}, {Description}", context.Error, context.ErrorDescription);
-            return Task.CompletedTask;
-        }
-
         private static Task HandleForbidden(ForbiddenContext context)
         {
             var logger = context.HttpContext.RequestServices
                 .GetRequiredService<ILoggerFactory>()
                 .CreateLogger(nameof(JwtBearerEvents));
 
-            logger.LogError("OnForbidden error at path {Path}", context.Request.Path);
+            logger.LogWarning("OnForbidden error at path {Path}", context.Request.Path);
             return Task.CompletedTask;
         }
     }

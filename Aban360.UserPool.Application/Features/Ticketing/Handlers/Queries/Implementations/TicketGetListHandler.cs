@@ -37,9 +37,25 @@ namespace Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Imple
         {
             await TicketHandlerValidation.Validate(_validator, input, cancellationToken);
             var result = await _ticketQueryService.Get(_ticketAccessService.Scope(input, currentUser), cancellationToken);
+            var items = new List<TicketGetDto>();
+            foreach (var ticket in result.Items)
+            {
+                var item = _mapper.Map<TicketGetDto>(ticket);
+                var creator = ticket.CreatedByUser;
+                if (creator is not null)
+                {
+                    item.CreatedByUserFullName = creator.FullName;
+                    item.CreatedByUserRoles = string.Join(", ", creator.UserRoles
+                        .Select(userRole => userRole.Role.Name)
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .OrderBy(name => name, StringComparer.OrdinalIgnoreCase));
+                }
+                items.Add(item);
+            }
+
             return new TicketPage<TicketGetDto>
             {
-                Items = _mapper.Map<ICollection<TicketGetDto>>(result.Items),
+                Items = items,
                 TotalCount = result.TotalCount, PageNumber = result.PageNumber, PageSize = result.PageSize
             };
         }

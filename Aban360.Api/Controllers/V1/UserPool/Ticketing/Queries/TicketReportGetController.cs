@@ -17,12 +17,37 @@ namespace Aban360.Api.Controllers.V1.UserPool.Ticketing.Queries
             _handler.NotNull(nameof(handler));
         }
 
+        [HttpGet]
+        [Route("report")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TicketReportOutput>), StatusCodes.Status200OK)]
+        public Task<IActionResult> ReportFromQuery([FromQuery] TicketSearchInput inputDto, CancellationToken cancellationToken)
+        {
+            return Report(inputDto, cancellationToken);
+        }
+
         [HttpPost]
         [Route("report")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TicketReportOutput>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Report([FromBody] TicketSearchInput inputDto, CancellationToken cancellationToken)
         {
             var result = await _handler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("my-report")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TicketReportOutput>), StatusCodes.Status200OK)]
+        public Task<IActionResult> MyReportFromQuery([FromQuery] TicketMySearchInput inputDto, CancellationToken cancellationToken)
+        {
+            return MyReport(inputDto, cancellationToken);
+        }
+
+        [HttpPost]
+        [Route("my-report")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TicketReportOutput>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> MyReport([FromBody] TicketMySearchInput inputDto, CancellationToken cancellationToken)
+        {
+            var result = await _handler.HandleMine(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

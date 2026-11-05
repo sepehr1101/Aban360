@@ -91,11 +91,14 @@ Check((await statusQuery.Get()).Count == 2 && (await statusQuery.Get(1))?.Code =
 var report = await reportQuery.Get(new TicketSearchInput { CreatedByUserId = owner });
 Check(report.TicketCount == 1 && report.RatingCount == 2 && report.AverageScore == 4,
     "Multiple rated replies do not multiply ticket count");
-Check(report.StatusCounts.Single().Count == 1, "Report status counts");
+Check(report.StatusCounts.Select(x => (x.StatusId, x.Count)).SequenceEqual(new[] { ((short)1, 0), ((short)3, 1) }),
+    "Filtered report includes statuses with zero tickets in status ID order");
 var unrated = await reportQuery.Get(new TicketSearchInput { CreatedByUserId = agent });
 Check(unrated.TicketCount == 1 && unrated.RatingCount == 0 && unrated.AverageScore == null, "Unrated ticket has no average");
 var empty = await reportQuery.Get(new TicketSearchInput { CreatedByUserId = Guid.NewGuid() });
 Check(empty.TicketCount == 0 && empty.RatingCount == 0 && empty.AverageScore == null, "Empty report");
+Check(empty.StatusCounts.Count == 2 && empty.StatusCounts.All(x => x.Count == 0),
+    "Empty report includes every configured status with zero tickets");
 
 var tracked = (await query.Get(ticket.Id))!;
 tracked.Subject = "Updated";

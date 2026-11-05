@@ -6,5 +6,6 @@ namespace Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contr
     public interface ITicketReportGetHandler
     {
         Task<TicketReportOutput> Handle(TicketSearchInput input, IAppUser currentUser, CancellationToken cancellationToken);
+        Task<TicketReportOutput> HandleMine(TicketMySearchInput input, IAppUser currentUser, CancellationToken cancellationToken);
     }
 }

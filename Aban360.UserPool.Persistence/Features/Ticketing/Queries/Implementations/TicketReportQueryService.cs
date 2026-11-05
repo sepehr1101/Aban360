@@ -10,21 +10,28 @@ namespace Aban360.UserPool.Persistence.Features.Ticketing.Queries.Implementation
     internal sealed class TicketReportQueryService : ITicketReportQueryService
     {
         private readonly DbSet<Ticket> _tickets;
+        private readonly DbSet<TicketStatus> _statuses;
         private readonly DbSet<TicketRating> _ratings;
 
         public TicketReportQueryService(IUnitOfWork uow)
         {
             uow.NotNull(nameof(uow));
             _tickets = uow.Set<Ticket>();
+            _statuses = uow.Set<TicketStatus>();
             _ratings = uow.Set<TicketRating>();
         }
 
         public async Task<TicketReportOutput> Get(TicketSearchInput input, CancellationToken cancellationToken = default)
         {
             var tickets = TicketQueryFilter.Apply(_tickets.AsNoTracking(), input);
-            var statusCounts = await tickets.GroupBy(x => x.StatusId)
-                .Select(g => new TicketStatusCount { StatusId = g.Key, Count = g.Count() })
-                .OrderBy(x => x.StatusId).ToListAsync(cancellationToken);
+            var statusCounts = await _statuses.AsNoTracking()
+                .OrderBy(status => status.Id)
+                .Select(status => new TicketStatusCount
+                {
+                    StatusId = status.Id,
+                    Count = tickets.Count(ticket => ticket.StatusId == status.Id)
+                })
+                .ToListAsync(cancellationToken);
             // Count tickets separately from ratings: several rated replies must not
             // multiply the ticket count. An empty rating set has no average.
             var ratings = _ratings.AsNoTracking().Where(x => tickets.Select(t => t.Id).Contains(x.TicketMessage.TicketId));
