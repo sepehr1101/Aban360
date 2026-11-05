@@ -12,6 +12,8 @@ using Aban360.MeterPool.Application.Extensions;
 using Aban360.MeterPool.Application.Features.AutoReading.Handlers.Queries.Contracts;
 using Aban360.MeterPool.Application.Features.AutoReading.Validations;
 using Aban360.MeterPool.Domain.Features.AutoReading.Dtos.Queries;
+using Aban360.ReportPool.Application.Features.ConsumersInfo.Queries.Contracts;
+using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -52,15 +54,23 @@ catch (JsonException) { Check(true, "Reject numeric billId"); }
 
 var transport = new FakeTransport { Body = fixture };
 var factory = new FakeFactory(transport);
+var consumers = new FakeConsumerSummary();
 var services = new ServiceCollection();
 services.AddMeterPoolApplicationInjections();
 services.AddSingleton<IHttpClientFactory>(factory);
+services.AddSingleton<IConsumerSummaryGetHandler>(consumers);
 services.AddSingleton(Options.Create(new AutoReadingOptions { BaseUrl = "https://example.invalid/", FlowMeterReportEndpoint = "FM-Poyak-FlowMeterReport/1.0" }));
 using var provider = services.BuildServiceProvider();
 using var scope = provider.CreateScope();
 var handler = scope.ServiceProvider.GetRequiredService<IFlowMeterReportGetHandler>();
-var report = await handler.Handle(valid, CancellationToken.None);
+using var requestCancellation = new CancellationTokenSource();
+var report = await handler.Handle(valid, requestCancellation.Token);
 Check(report.UltraSonicReadAllReportModelList.Count == 2, "Resolve handler through existing DI and deserialize report");
+Check(consumers.BillId == valid.BillId && consumers.Token == requestCancellation.Token,
+    "Consumer summary receives the requested bill and cancellation token");
+Check(report.ReportHeader is not null && report.ReportHeader.BillId == valid.BillId && report.ReportHeader.Address == "Test address"
+    && report.ReportHeader.Firstname == "Test first name" && report.ReportHeader.Surname == "Test surname"
+    && report.ReportHeader.UsageTitle == "Test usage", "Report header includes consumer summary without database access");
 Check(report.UltraSonicReadAllReportModelList.First().EnvironmentTemperature == 27m, "Read numeric string temperature");
 Check(report.UltraSonicReadAllReportModelList.First().InstantFlow == -0.01m, "Preserve negative flow");
 Check(report.UltraSonicReadAllReportModelList.First().Pressure is null, "Preserve missing pressure");
@@ -131,6 +141,22 @@ sealed class FakeFactory(FakeTransport transport) : IHttpClientFactory
     {
         Name = name;
         return new HttpClient(transport, disposeHandler: false) { BaseAddress = new Uri("https://example.invalid/") };
+    }
+}
+sealed class FakeConsumerSummary : IConsumerSummaryGetHandler
+{
+    public string? BillId { get; private set; }
+    public CancellationToken Token { get; private set; }
+    public Task<ConsumerSummaryDto> Handle(string billId, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        BillId = billId;
+        Token = cancellationToken;
+        return Task.FromResult(new ConsumerSummaryDto
+        {
+            BillId = billId, Address = "Test address", FirstName = "Test first name",
+            Surname = "Test surname", UsageSell = "Test usage"
+        });
     }
 }
 sealed class FakeTransport : HttpMessageHandler

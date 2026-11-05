@@ -4,6 +4,8 @@
     {
         public string Message { get; set; }
         public int ErrorCode { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore]
+        public Aban360.OldCalcPool.Domain.Constants.NowGenerateBillSmsCategoryEnum? SmsCategory { get; set; }
         public NowGenerateBillOutputDto(string message, int errorCode)
         {
             Message = message;

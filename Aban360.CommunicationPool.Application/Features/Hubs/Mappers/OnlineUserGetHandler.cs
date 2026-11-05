@@ -17,7 +17,24 @@ namespace Aban360.CommunicationPool.Application.Features.Hubs.Mappers
         public async Task<IEnumerable<OnlineUserGetDto>> Handle(CancellationToken cancellationToken)
         {
             var result = await _OnlineUserGetService.Get();
-            return result;
+            return result
+                .GroupBy(connection => connection.UserId)
+                .Select(userConnections =>
+                {
+                    var connections = userConnections
+                        .OrderByDescending(connection => connection.ConnectDateTime)
+                        .ThenByDescending(connection => connection.Id)
+                        .DistinctBy(connection => connection.ConnectionId)
+                        .ToArray();
+                    return connections[0] with
+                    {
+                        ConnectionCount = connections.Length,
+                        ConnectionIds = connections.Select(connection => connection.ConnectionId).ToArray()
+                    };
+                })
+                .OrderByDescending(user => user.ConnectDateTime)
+                .ThenBy(user => user.UserId)
+                .ToArray();
         }
     }
 }

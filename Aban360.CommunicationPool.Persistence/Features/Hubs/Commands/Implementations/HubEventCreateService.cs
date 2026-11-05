@@ -22,14 +22,15 @@ namespace Aban360.CommunicationPool.Persistence.Features.Hubs.Commands.Implement
                 userId = input.UserId,
                 connectDateTime = DateTime.Now,
             };
-            await _sqlConnection.ExecuteAsync(createQuery, @params);
+            await using var connection = _sqlConnection;
+            await connection.ExecuteAsync(createQuery, @params);
         }
 
         private string GetHubEventCreateQuery()
         {
             return @"Insert Into [Aban360].CommunicationPool.HubEvent
-                          (ConnectionId, UserId, ConnectDateTime)
-                    Values(@connectionId,@userId,@connectDateTime)";
+                          (ConnectionId, UserId, ConnectDateTime, LastSeenDateTime)
+                    Values(@connectionId,@userId,@connectDateTime,SYSDATETIME())";
         }
     }
 }

@@ -10,5 +10,6 @@ namespace Aban360.CommunicationPool.Domain.Features.Hubs.Entities
         public Guid UserId { get; set; }
         public DateTime ConnectDateTime { get; set; }
         public DateTime? DisconnectDateTime { get; set; }
+        public DateTime? LastSeenDateTime { get; set; }
     }
 }
