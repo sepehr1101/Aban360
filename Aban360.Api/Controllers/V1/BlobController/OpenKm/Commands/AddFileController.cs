@@ -36,6 +36,19 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
         }
 
         [HttpPost]
+        [Route("add-reading-image")]
+        [Consumes("multipart/form-data")]
+        [RequestSizeLimit(21 * 1024 * 1024)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<AddFileDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> AddReadingImage(
+            [FromForm] AddReadingImageInput input,
+            [FromServices] IReadingArchiveService handler,
+            CancellationToken cancellation)
+        {
+            return Ok(await handler.Add(input, CurrentUser, cancellation));
+        }
+
+        [HttpPost]
         [Route("add-file-base64")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AddFileDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> AddFile(AddBase64FileInput input, CancellationToken cancellation)
