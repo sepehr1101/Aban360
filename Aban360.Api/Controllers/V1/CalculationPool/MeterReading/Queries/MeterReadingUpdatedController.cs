@@ -10,11 +10,11 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
     [Route("v1/meter-flow")]
     public class MeterReadingUpdatedController : BaseController
     {
-        private readonly IMeterReadingDetailUpdatedGetHadler _updatedGetHandler;
+        private readonly IMeterReadingDetailUpdatedGetHadler _uploadedToRegisteredHandler;
         public MeterReadingUpdatedController(IMeterReadingDetailUpdatedGetHadler updatedGetHandler)
         {
-            _updatedGetHandler = updatedGetHandler;
-            _updatedGetHandler.NotNull(nameof(updatedGetHandler));
+            _uploadedToRegisteredHandler = updatedGetHandler;
+            _uploadedToRegisteredHandler.NotNull(nameof(updatedGetHandler));
         }
 
         [HttpGet, HttpPost]
@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterReadingDetailUpdatedHeaderOutptuDto, MeterReadingDetailUpdatedDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUpdated([FromBody] MeterReadingDetailUpdatedInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<MeterReadingDetailUpdatedHeaderOutptuDto, MeterReadingDetailUpdatedDataOutputDto> result = await _updatedGetHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            ReportOutput<MeterReadingDetailUpdatedHeaderOutptuDto, MeterReadingDetailUpdatedDataOutputDto> result = await _uploadedToRegisteredHandler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
+using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Constants.Literals;
@@ -40,6 +41,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private readonly IBillReturnCauseQueryService _billReturnCauseQueryService;
         private readonly IBedBesQueryService _bedBesQueryService;
         private readonly IBillQueryService _billQueryService;
+        private readonly IModifyCauseQueryService _modifyCauseQueryService;
         private readonly IValidator<ReturnBillManualInputDto> _validator;
         private static int _operator = ReportLiterals.RayabOperator;
         private static string _currentDateJalali = DateTime.Now.ToShortPersianDateString();
@@ -52,6 +54,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             IBedBesQueryService bedBesQueryService,
             IBillQueryService billQueryService,
             IBillReturnCauseQueryService billReturnCauseQueryService,
+            IModifyCauseQueryService modifyCauseQueryService,
             IValidator<ReturnBillManualInputDto> validator,
             IConfiguration configuration)
                 : base(configuration)
@@ -82,6 +85,9 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             _returnBillBaseHandler = returnBillBaseHandler;
             _returnBillBaseHandler.NotNull(nameof(returnBillBaseHandler));
+
+            _modifyCauseQueryService = modifyCauseQueryService;
+            _modifyCauseQueryService.NotNull(nameof(modifyCauseQueryService));
         }
 
 
@@ -349,14 +355,31 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         private async Task<string> ValidateAndGetReturnCause(ReturnBillManualInputDto inputDto, CancellationToken cancellationToken)
         {
             await InputValidate(inputDto, cancellationToken);
-            IEnumerable<NumericDictionary> returnPartialCauseList = await _billReturnCauseQueryService.Get(false);
-            NumericDictionary? returnCauseSelected = returnPartialCauseList?.Where(r => r.Id == inputDto.ReturnCauseId)?.FirstOrDefault();
-            if (returnCauseSelected is null)
-            {
-                throw new ReturnedBillException(ExceptionLiterals.InvalidReturnCauseId);
-            }
+            string returnCauseSelected = await TypeCauseValidate(inputDto);
 
-            return returnCauseSelected.Title;
+            return returnCauseSelected;
+        }
+        private async Task<string> TypeCauseValidate(ReturnBillManualInputDto inputDto)
+        {
+            if (inputDto.ReturnType == ReturnBillManualTypeEnum.Returned)
+            {
+                IEnumerable<NumericDictionary> returnPartialCauseList = await _billReturnCauseQueryService.Get(false);
+                NumericDictionary? returnCauseSelected = returnPartialCauseList?.Where(r => r.Id == inputDto.ReturnCauseId)?.FirstOrDefault();
+                if (returnCauseSelected is null)
+                {
+                    throw new ReturnedBillException(ExceptionLiterals.InvalidReturnCauseId);
+                }
+                return returnCauseSelected.Title;
+            }
+            else if (inputDto.ReturnType == ReturnBillManualTypeEnum.PositiveModification)
+            {
+                NumericDictionary modifyCauseInfo = await _modifyCauseQueryService.Get(inputDto.ReturnCauseId);
+                return modifyCauseInfo.Title;
+            }
+            else
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidReturnManualType);
+            }
         }
         private async Task InputValidate(ReturnBillManualInputDto inputDto, CancellationToken cancellationToken)
         {

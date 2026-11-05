@@ -84,7 +84,7 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 SumItem18 = waterIncomeAndConsumptionData.Sum(w => w.Item18),
                 BillUnit = waterIncomeAndConsumptionData.Sum(w => w.BillUnit),
                 TotalUnit = waterIncomeAndConsumptionData.Sum(w => w.TotalUnit),
-                AverageDuration = waterIncomeAndConsumptionData.Average(w => w.ConsumptionAverage)
+                AverageDuration = waterIncomeAndConsumptionData.Average(w => w.ConsumptionAverage),
                 WaterConsumptionUnit= waterIncomeAndConsumptionData.Sum(w=>w.WaterConsumptionUnit)
             };
             waterIncomeAndConsumptionHeader.ConsumptionAverage =

@@ -13,6 +13,7 @@ namespace Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries
         public IEnumerable<ReadingCounterStateGetDto> CounterStates { get; set; }
         public IEnumerable<NumericDictionary> BranchTypes { get; set; }
         public IEnumerable<NumericDictionary> Guilds { get; set; }
+        public IEnumerable<StringDictionary> MapDictionary { get; set; }
         public JsonElement Traverse { get; set; }
     }
 }
