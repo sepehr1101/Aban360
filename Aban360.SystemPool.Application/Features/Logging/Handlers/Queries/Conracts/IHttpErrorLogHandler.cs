@@ -5,5 +5,7 @@ namespace Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Conra
 
 public interface IHttpErrorLogHandler
 {
+    Task<HttpErrorLogDetailOutput?> GetDetail(long id, CancellationToken cancellationToken);
+
     Task<IEnumerable<HttpErrorLogOutput>> Handle(HttpErrorLogInput input, CancellationToken cancellationToken);
 }

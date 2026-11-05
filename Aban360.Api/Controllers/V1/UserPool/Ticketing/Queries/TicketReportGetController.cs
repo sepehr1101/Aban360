@@ -33,5 +33,22 @@ namespace Aban360.Api.Controllers.V1.UserPool.Ticketing.Queries
             var result = await _handler.Handle(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("my-report")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TicketReportOutput>), StatusCodes.Status200OK)]
+        public Task<IActionResult> MyReportFromQuery([FromQuery] TicketMySearchInput inputDto, CancellationToken cancellationToken)
+        {
+            return MyReport(inputDto, cancellationToken);
+        }
+
+        [HttpPost]
+        [Route("my-report")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TicketReportOutput>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> MyReport([FromBody] TicketMySearchInput inputDto, CancellationToken cancellationToken)
+        {
+            var result = await _handler.HandleMine(inputDto, CurrentUser, cancellationToken);
+            return Ok(result);
+        }
     }
 }

@@ -6,6 +6,8 @@ namespace Aban360.UserPool.Domain.Features.Ticketing.Dto.Queries
         public string TicketNumber { get; set; } = null!;
         public string Subject { get; set; } = null!;
         public Guid CreatedByUserId { get; set; }
+        public string? CreatedByUserFullName { get; set; }
+        public string CreatedByUserRoles { get; set; } = string.Empty;
         public Guid? AssignedToUserId { get; set; }
         public short StatusId { get; set; }
         public DateTime CreatedAt { get; set; }

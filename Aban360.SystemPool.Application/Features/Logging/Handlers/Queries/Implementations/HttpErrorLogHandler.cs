@@ -9,6 +9,9 @@ namespace Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Imple
 
 internal sealed class HttpErrorLogHandler(IHttpErrorLogQueryService query) : IHttpErrorLogHandler
 {
+    public Task<HttpErrorLogDetailOutput?> GetDetail(long id, CancellationToken cancellationToken)
+        => query.GetDetail(id, cancellationToken);
+
     public Task<IEnumerable<HttpErrorLogOutput>> Handle(HttpErrorLogInput input, CancellationToken cancellationToken)
     {
         if (input is null)

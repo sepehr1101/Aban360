@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Routing;
 
 namespace Aban360.Api.Middleware;
@@ -36,7 +37,7 @@ public sealed class HttpRequestLoggingMiddleware
         var route = (context.GetEndpoint() as RouteEndpoint)?.RoutePattern.RawText ?? "<unmatched>";
         var traceId = Activity.Current?.TraceId.ToString() ?? context.TraceIdentifier;
         var started = Stopwatch.GetTimestamp();
-        var failed = false;
+        Exception? failure = null;
         var aborted = false;
         try
         {
@@ -47,20 +48,23 @@ public sealed class HttpRequestLoggingMiddleware
             aborted = true;
             throw;
         }
-        catch
+        catch (Exception exception)
         {
-            failed = true;
+            failure = exception;
             throw;
         }
         finally
         {
             var elapsed = Stopwatch.GetElapsedTime(started).TotalMilliseconds;
-            var status = aborted ? 499 : failed ? StatusCodes.Status500InternalServerError : context.Response.StatusCode;
+            var status = aborted ? 499 : failure is not null ? StatusCodes.Status500InternalServerError : context.Response.StatusCode;
             var level = !aborted && status >= StatusCodes.Status400BadRequest ? LogLevel.Error :
                 aborted || elapsed >= _slowMilliseconds ? LogLevel.Warning : LogLevel.Information;
             var userId = context.User.Identity?.IsAuthenticated == true
                 ? context.User.FindFirstValue(ClaimTypes.NameIdentifier) : null;
-            _logger.Log(level,
+            var exception = status >= StatusCodes.Status500InternalServerError
+                ? failure ?? context.Features.Get<IExceptionHandlerFeature>()?.Error
+                : null;
+            _logger.Log(level, exception,
                 "HTTP {RequestMethod} {RouteTemplate} completed {StatusCode} in {ElapsedMilliseconds} ms; TraceId {TraceId}; UserId {UserId}",
                 context.Request.Method, route, status, elapsed, traceId, userId);
         }

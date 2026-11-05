@@ -34,5 +34,21 @@ namespace Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Imple
             await TicketHandlerValidation.Validate(_validator, input, cancellationToken);
             return await _ticketReportQueryService.Get(_ticketAccessService.Scope(input, currentUser), cancellationToken);
         }
+
+        public Task<TicketReportOutput> HandleMine(TicketMySearchInput input, IAppUser currentUser, CancellationToken cancellationToken)
+        {
+            input.NotNull(nameof(input));
+            currentUser.NotNull(nameof(currentUser));
+            return Handle(new TicketSearchInput
+            {
+                CreatedByUserId = currentUser.UserId,
+                StatusId = input.StatusId,
+                SearchText = input.SearchText,
+                FromDate = input.FromDate,
+                ToDateExclusive = input.ToDateExclusive,
+                PageNumber = input.PageNumber,
+                PageSize = input.PageSize
+            }, currentUser, cancellationToken);
+        }
     }
 }

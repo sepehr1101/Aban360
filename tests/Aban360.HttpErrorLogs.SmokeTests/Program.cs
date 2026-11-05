@@ -24,6 +24,10 @@ Check(query.From == new DateTime(2026, 3, 21, 8, 30, 0), "Jalali start conversio
 Check(query.To == new DateTime(2026, 3, 23), "Includes end minute and midnight rollover");
 Check(query.Lower == 400 && query.Upper == 500, "4XX includes 400 through 499");
 Check(query.Token == cancellation.Token && query.Page == 1 && query.Size == 50, "Cancellation and paging defaults");
+var detail = await handler.GetDetail(1, cancellation.Token);
+Check(detail?.Id == 1 && detail.Exception == "Stored exception" && query.Token == cancellation.Token,
+    "Detail retrieves the requested row and propagates cancellation");
+Check(await handler.GetDetail(2, default) is null, "Missing detail remains absent");
 var server = Valid();
 server.StatusCodeClass = " 5xx ";
 server.FromDate = "۱۴۰۵/۰۱/۰۱";
@@ -67,6 +71,14 @@ sealed class CaptureQuery : IHttpErrorLogQueryService
     public DateTime From, To;
     public int Lower, Upper, Page, Size, Calls;
     public CancellationToken Token;
+    public Task<HttpErrorLogDetailOutput?> GetDetail(long id, CancellationToken cancellationToken)
+    {
+        Token = cancellationToken;
+        return Task.FromResult(id == 1
+            ? new HttpErrorLogDetailOutput { Id = id, Exception = "Stored exception" }
+            : null);
+    }
+
     public IEnumerable<HttpErrorLogOutput> Rows = new[]
     {
         new HttpErrorLogOutput { Id = 1, StatusCode = 400, TraceId = "trace-400" },

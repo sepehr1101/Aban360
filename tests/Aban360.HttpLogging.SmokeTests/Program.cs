@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Security.Claims;
 using Aban360.Api.Middleware;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Routing.Patterns;
 
@@ -24,8 +25,15 @@ await Check("success and privacy", async () =>
 });
 await Check("handled server error", async () =>
 {
-    var log = await Run(Context(), c => { c.Response.StatusCode = 500; return Task.CompletedTask; });
+    var error = new InvalidOperationException("Server failure");
+    var log = await Run(Context(), c =>
+    {
+        c.Features.Set<IExceptionHandlerFeature>(new ExceptionHandlerFeature { Error = error });
+        c.Response.StatusCode = 500;
+        return Task.CompletedTask;
+    });
     Assert(log.Events.Single().Level == LogLevel.Error);
+    Assert(ReferenceEquals(log.Events[0].Exception, error));
 });
 await Check("client errors are logged at error level", async () =>
 {
@@ -59,6 +67,7 @@ await Check("exception propagates and logs once", async () =>
     }
     catch (InvalidOperationException caught) when (ReferenceEquals(error, caught)) { }
     Assert(log.Events.Count == 1 && log.Events[0].Level == LogLevel.Error);
+    Assert(ReferenceEquals(log.Events[0].Exception, error));
     Assert(!log.Events[0].Text.Contains("SECRET"));
 });
 await Check("health exclusions", async () =>
@@ -128,9 +137,9 @@ static async Task Check(string name, Func<Task> test) { await test(); Console.Wr
 
 sealed class CaptureLogger : ILogger<HttpRequestLoggingMiddleware>
 {
-    public List<(LogLevel Level, Dictionary<string, object?> Fields, string Text)> Events { get; } = new();
+    public List<(LogLevel Level, Dictionary<string, object?> Fields, string Text, Exception? Exception)> Events { get; } = new();
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
     public bool IsEnabled(LogLevel level) => true;
     public void Log<TState>(LogLevel level, EventId id, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
-        => Events.Add((level, ((IEnumerable<KeyValuePair<string, object?>>)state!).ToDictionary(p => p.Key, p => p.Value), formatter(state, exception)));
+        => Events.Add((level, ((IEnumerable<KeyValuePair<string, object?>>)state!).ToDictionary(p => p.Key, p => p.Value), formatter(state, exception), exception));
 }
