@@ -622,7 +622,13 @@ namespace Aban360.Common.Extensions
                     {"RawAmountAverage","خالص - متوسط نرخ آب بها(ریال)" },
                     {"ConsumptionAverageInMonth","خالص - متوسط مصرف مترمکعب در ماه" },
                     {"StringCode","شناسه یکتا" },
-
+                    {"FirstFlowId","شناسه آپلود فایل" },
+                    {"FileCount","تعداد فایل" },
+                    {"AllRecords","تعداد رکورد" },
+                    {"RemovedCount","تعداد حذف" },
+                    {"ExcludedCount","تعداد خارج از لیست" },
+                    {"DistanceMax","بیشترین فاصله" },
+                    {"DistanceMin","کمترین فاصله" }
             };
         }
     }

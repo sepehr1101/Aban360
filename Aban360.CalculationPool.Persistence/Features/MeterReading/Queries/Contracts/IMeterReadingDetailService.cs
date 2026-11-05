@@ -12,5 +12,6 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Cont
         Task<IEnumerable<MeterReadingDetailDataOutputDto>> Get(ChangeDateBatchInputDto inputDto);
         Task<MeterReadingDetailDataOutputDto?> Get(string billId);
         Task<IEnumerable<MeterReadingDetailToSendMessageDto>> GetToSend(int flowImportedId, int zoneId, long minAmount, int abanOperator);
+        Task<IEnumerable<MeterReadingUploadToRegisteredSummaryDataOutputDto>> Get(MeterReadingUploadToRegisteredInputDto inputDto);
     }
 }

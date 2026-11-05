@@ -19,6 +19,8 @@ using System.Data;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Text.Json;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+using System.Threading;
 
 namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Implementataions
 {
@@ -32,6 +34,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
         private readonly IT7QueryService _branchTypeQueryService;
         private readonly IDeletionStateQueryService _deletionStateQueryService;
         private readonly IReadingCounterStateQueryService _counterStateQueryService;
+        private readonly IMapDictionaryGetHandler _mapDictionaryGetHandler;
         private readonly Guild.IGuildQueryService _guildQueryService;
         private static int _createPathFlowStepId = (int)ReadingFlowStepEnum.CreatePath;
         private static int _downloadByReadigFlowStepId = (int)ReadingFlowStepEnum.DownloadByReader;
@@ -46,6 +49,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             Guild.IGuildQueryService guildQueryService,
             IDeletionStateQueryService deletionStateQueryService,
             IReadingCounterStateQueryService counterStateQueryService,
+            IMapDictionaryGetHandler mapDictionaryGetHandler,
             IConfiguration configuration)
                 : base(configuration)
         {
@@ -73,6 +77,9 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             _deletionStateQueryService = deletionStateQueryService;
             _deletionStateQueryService.NotNull(nameof(deletionStateQueryService));
 
+            _mapDictionaryGetHandler = mapDictionaryGetHandler;
+            _mapDictionaryGetHandler.NotNull(nameof(mapDictionaryGetHandler));
+
             _counterStateQueryService = counterStateQueryService;
             _counterStateQueryService.NotNull(nameof(counterStateQueryService));
         }
@@ -88,7 +95,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             TrackingSeenUpdateDto trackingSeenUpdateDto = new(trackingInfo.Select(t => t.BlockId).Distinct().ToList(), true);
             TrackingDuplicateInsertDto trackingDuplicateInsertDto = new(trackingIds, _downloadByReadigFlowStepId, appUser.UserId);
             await ExecSql(trackingDuplicateInsertDto, trackingSeenUpdateDto);
-            return await GetResult(trackingInfo, detailInfo);
+            return await GetResult(trackingInfo, detailInfo, cancellationToken);
         }
         private async Task ExecSql(TrackingDuplicateInsertDto trackingDuplicateInsertDto, TrackingSeenUpdateDto trackingSeenUpdateDto)
         {
@@ -109,7 +116,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 }
             }
         }
-        private async Task<ReaderCartableOutputDto> GetResult(IEnumerable<TrackingGetDto> trackingInfo, IEnumerable<DetailGetDto> detailInfo)
+        private async Task<ReaderCartableOutputDto> GetResult(IEnumerable<TrackingGetDto> trackingInfo, IEnumerable<DetailGetDto> detailInfo, CancellationToken cancellationToken)
         {
             IEnumerable<TrackingDataOutputDto> trackingData = trackingInfo
                 .Select(t => new TrackingDataOutputDto()
@@ -250,6 +257,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             IEnumerable<NumericDictionary> deletionStateList = await _deletionStateQueryService.Get();
             IEnumerable<ReadingCounterStateGetDto> counterStateList = await _counterStateQueryService.Get();
             IEnumerable<NumericDictionary> guildDictionary = await _guildQueryService.Get();
+            IEnumerable<StringDictionary> mapDictionary = _mapDictionaryGetHandler.Handle(cancellationToken);
 
             ReaderCartableOutputDto result = new()
             {
@@ -260,6 +268,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 DeletionStates = deletionStateList,
                 CounterStates = counterStateList,
                 Guilds = guildDictionary,
+                MapDictionary = mapDictionary,
                 Traverse = GetTraverse()
             };
             return result;

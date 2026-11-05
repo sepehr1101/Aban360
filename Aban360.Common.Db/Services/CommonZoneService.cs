@@ -13,6 +13,7 @@ namespace Aban360.Common.Db.Services
         Task<IEnumerable<NumericDictionary>> GetIdTitle(IAppUser appUser);
         Task<IEnumerable<int>> GetMyZoneIds(IAppUser appUser);
         Task<IEnumerable<int>> IsUserInZone(IAppUser appUser, int zoneId);
+        Task<IEnumerable<int>> IsUserInZone(IAppUser appUser, IEnumerable<int> zoneIds);
         Task<IEnumerable<int>> IsUserInZone(Guid userId, int zoneId);
         Task<NumericDictionary> GetDefault(IAppUser appUser);
         Task<NumericDictionary> GetDefaultRegion(IAppUser appUser);
@@ -38,6 +39,20 @@ namespace Aban360.Common.Db.Services
             if (!result.Contains(zoneId))
             {
                 throw new AccessZoneException(ExceptionLiterals.NotAccessZone);
+            }
+
+            return result;
+        }
+        public async Task<IEnumerable<int>> IsUserInZone(IAppUser appUser, IEnumerable<int> zoneIds)
+        {
+            string query = GetIdQuery();
+            IEnumerable<int> result = await _sqlConnection.QueryAsync<int>(query, new { userId = appUser.UserId });
+            foreach (var inputZoneId in zoneIds)
+            {
+                if (!result.Contains(inputZoneId))
+                {
+                    throw new AccessZoneException(ExceptionLiterals.NotAccessZone);
+                }
             }
 
             return result;
