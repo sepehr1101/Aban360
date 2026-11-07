@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Http;
 using Aban360.ReportPool.Domain.Base;
 using FluentValidation;
 using Aban360.Common.Exceptions;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 
 namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations
 {
@@ -29,6 +30,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly ICommonMemberQueryService _commonMemberQueryService;
         private readonly ICommonZoneService _commonZoneService;
         private readonly IValidator<NowGenerateBillInputDto> _validator;
+        private readonly INowGenerateBillRequestService _requestService;
         private static string _xApiKey = ReportLiterals.XApiKey;
         private static string _nowGenerateBillXApiKey = ReportLiterals.NowGenerateBillXApiKey;
         private static float _invalidGTConsumptionPercent = 1.5f;
@@ -45,6 +47,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             ICommonMemberQueryService commonMemberQueryService,
             ICommonZoneService commonZoneService,
             IValidator<NowGenerateBillInputDto> validator,
+            INowGenerateBillRequestService requestService,
             IConfiguration configuration)
                 : base(configuration)
         {
@@ -65,11 +68,22 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
+            _requestService = requestService;
+            _requestService.NotNull(nameof(requestService));
         }
 
         public async Task<NowGenerateBillOutputDto> Handle(NowGenerateBillInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await InputValidate(inputDto, cancellationToken);
+            var limitResult = await _requestService.Register(inputDto, cancellationToken);
+            if (limitResult == NowGenerateBillErrorCodeEnum.MobileDailyLimitReached)
+            {
+                return new NowGenerateBillOutputDto("به حداکثر تعداد درخواست در روز رسیده‌اید.", (int)limitResult);
+            }
+            if (limitResult == NowGenerateBillErrorCodeEnum.BillDailyLimitReached)
+            {
+                return new NowGenerateBillOutputDto("امکان صدور قبض برای این شناسه قبض در امروز وجود ندارد چون به حداکثر دفعات مجاز اعلام رقم کنتور رسیده است.", (int)limitResult);
+            }
+            await ValidateInput(inputDto, cancellationToken);
             var (zoneIdAndCustomerNumber, customerInfo, customerValidateResult) = await CustomerValidate(inputDto);
             if (customerValidateResult is not null)
             {
@@ -92,7 +106,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             return result;
         }
-        private async Task InputValidate(NowGenerateBillInputDto inputDto, CancellationToken cancellationToken)
+        private async Task ValidateInput(NowGenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
@@ -108,7 +122,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             if (!requestHeader.Where(r => r.Key == _xApiKey && r.Value == _nowGenerateBillXApiKey).Any())
             {
                 returnMessage = "احراز هویت با خطا روبرو شد.";
-                NowGenerateBillOutputDto result = new(returnMessage, (int)NowGenerateBillErrorCodeEnum.BadRequest);
+                NowGenerateBillOutputDto result = new(returnMessage, (int)NowGenerateBillErrorCodeEnum.BadRequest)
+                {
+                    SmsCategory = NowGenerateBillSmsCategoryEnum.System
+                };
                 return (null, null, result);
             }
 
@@ -151,7 +168,10 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             if (customerInfo.LastMeterDateJalali.CompareTo(DateTime.Now.AddDays(-1* _invalidLTDistanceDay).ToShortPersianDateString()) >= 0)
             {
                 returnMessage = "برای مشترک در 10 روز گذشته قبض دیگری صادر شده.";
-                return new NowGenerateBillOutputDto(returnMessage, (int)NowGenerateBillErrorCodeEnum.Low);
+                return new NowGenerateBillOutputDto(returnMessage, (int)NowGenerateBillErrorCodeEnum.Low)
+                {
+                    SmsCategory = NowGenerateBillSmsCategoryEnum.RecentBill
+                };
             }
 
             return null;

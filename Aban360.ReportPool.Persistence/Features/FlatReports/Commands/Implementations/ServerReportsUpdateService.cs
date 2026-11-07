@@ -12,7 +12,7 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
             : base(configuration)
         { }
 
-        public async void Update(ServerReportsUpdateDto input)
+        public async Task Update(ServerReportsUpdateDto input, CancellationToken cancellationToken)
         {
             string UpdateQuery = GetServerReportsUpdateQuery();
             var @params = new
@@ -23,8 +23,17 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
                 isInformed = input.IsInformed,
                 reportPath=input.ReportPath,
             };
-            await _sqlConnection.ExecuteAsync(UpdateQuery, @params);
+            await using var connection = _sqlConnection;
+            await connection.ExecuteAsync(new CommandDefinition(UpdateQuery, @params, cancellationToken: cancellationToken));
         }
+        public async Task Fail(Guid id, CancellationToken cancellationToken)
+        {
+            await using var connection = _sqlConnection;
+            await connection.ExecuteAsync(new CommandDefinition(
+                "UPDATE [Aban360].ReportPool.ServerReports SET ErrorDateTime = SYSDATETIME() WHERE Id = @id AND CompletionDateTime IS NULL",
+                new { id }, cancellationToken: cancellationToken));
+        }
+
         private string GetServerReportsUpdateQuery()
         {
             return @"Update [Aban360].ReportPool.ServerReports

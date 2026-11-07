@@ -4,6 +4,7 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Contracts
 {
     public interface IServerReportsUpdateService
     {
-        void Update(ServerReportsUpdateDto input);
+        Task Update(ServerReportsUpdateDto input, CancellationToken cancellationToken);
+        Task Fail(Guid id, CancellationToken cancellationToken);
     }
 }

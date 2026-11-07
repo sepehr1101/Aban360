@@ -15,6 +15,8 @@ using System.Globalization;
 using DNTCaptcha.Core;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using System.Diagnostics;
+using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Services;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 {
@@ -35,6 +37,8 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
         private readonly IUserPolicyQueryHandler _userPolicyQueryHandler;
         private readonly IUserLoginAddHandler _userLoginAddHandler;
         private readonly IUserLoginFindHandler _userLoginFindHandler;
+        private readonly IOpLogCommandService _opLog;
+        private readonly ILogger<LoginController> _logger;
 
         public LoginController(
             IUnitOfWork uow,
@@ -50,7 +54,9 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
             IUserTokenFindByRefreshQueryHandler userTokenFindByRefreshTokenHandler,
             IUserPolicyQueryHandler userPolicyQueryHandler,
             IUserLoginAddHandler userLoginAddHandler,
-            IUserLoginFindHandler userLoginFindHandler)
+            IUserLoginFindHandler userLoginFindHandler,
+            IOpLogCommandService opLog,
+            ILogger<LoginController> logger)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
@@ -93,6 +99,11 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
 
             _userFindByPasswordHandler=findUserByUsernamePasswordHandler;
             _userFindByPasswordHandler.NotNull(nameof(_userFindByPasswordHandler));
+
+            _opLog = opLog;
+            _opLog.NotNull(nameof(opLog));
+            _logger = logger;
+            _logger.NotNull(nameof(logger));
         }
 
         [AllowAnonymous]
@@ -110,6 +121,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
             var (user, result) = await _userFindByPasswordHandler.Handle(loginInput, cancellationToken);
             if (!result || user is null)
             {
+                await LogFailedLogin(loginInput.Username, user);
                 return ClientError(MessageResources.UserNotFound);
             }
 
@@ -151,6 +163,28 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
             await _uow.SaveChangesAsync(cancellationToken);
             return new SecondStepOutput(jwtData.AccessToken, jwtData.RefreshToken);
         }
+        private async Task LogFailedLogin(string? username, User? user)
+        {
+            const string message = "ورود ناموفق به سامانه؛ نام کاربری یا رمز عبور نادرست است.";
+            // Login is anonymous; CurrentUser has no authenticated identity at this point.
+            var logUser = new FailedLoginLogUser(user?.Id ?? Guid.Empty,
+                username?.Replace('\r', ' ').Replace('\n', ' ') ?? string.Empty, user?.FullName ?? string.Empty);
+            try
+            {
+                await _opLog.Insert(message, logUser);
+            }
+            catch (Exception exception)
+            {
+                _logger.LogError(exception, "Failed to record unsuccessful login in OpLog for username {Username}.", logUser.Username);
+            }
+        }
+
+        private sealed record FailedLoginLogUser(Guid UserId, string Username, string FullName) : IAppUser
+        {
+            public ICollection<string> Roles => Array.Empty<string>();
+            public bool IsAdmin => false;
+        }
+
         private bool HasRequestValidCaptchaEntry(FirstStepLoginInput input)
         {
             if (string.IsNullOrEmpty(input.CaptchaToken))

@@ -49,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Reading
         [Route("finish")]
         [HttpPost]
         [ProducesResponseType(typeof(ApiResponseEnvelope<long>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Finsih(long trackNumber, CancellationToken cancellationToken)
+        public async Task<IActionResult> Finish(long trackNumber, CancellationToken cancellationToken)
         {
             await _meterReadingListFinishHandler.Handle(trackNumber, CurrentUser, cancellationToken);
             return Ok(trackNumber);

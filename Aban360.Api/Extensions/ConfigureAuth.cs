@@ -120,14 +120,13 @@ namespace Aban360.Api.Extensions
             string accessTokenKey = "access_token";
             var accessToken = context.Request.Query[accessTokenKey];
 
-            if (!string.IsNullOrEmpty(accessToken))
+            if (accessToken.Count == 1)
             {
                 string? token = context.Request.Query[accessTokenKey][0];
                 if (!string.IsNullOrEmpty(token) &&
                     !context.Request.Headers.ContainsKey(HeaderNames.Authorization))
                 {
-                    context.Request.Headers.Add(HeaderNames.Authorization, $"Bearer {token}");
-                    context.Token = accessToken;
+                    context.Token = token;
                 }
             }
 

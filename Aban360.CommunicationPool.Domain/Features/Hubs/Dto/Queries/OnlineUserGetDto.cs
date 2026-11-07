@@ -7,6 +7,8 @@
         public Guid UserId { get; set; }
         public string FullName{ get; set; }
         public DateTime ConnectDateTime { get; set; }
+        public int ConnectionCount { get; set; }
+        public ICollection<string> ConnectionIds { get; set; } = new List<string>();
 
     }
 }
