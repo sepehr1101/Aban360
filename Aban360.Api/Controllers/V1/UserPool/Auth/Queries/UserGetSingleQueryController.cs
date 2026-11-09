@@ -24,5 +24,13 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
             UserDisplayDto userInfo= await _userGetSingleQueryHandler.Handle(userId, cancellationToken);
             return Ok(userInfo);
         }
+
+        [HttpGet]
+        [Route("is-admin")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<bool>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> IsAdminGet(CancellationToken cancellationToken)
+        {
+            return Ok(CurrentUser.IsAdmin);
+        }
     }
 }
