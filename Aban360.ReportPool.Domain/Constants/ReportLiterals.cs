@@ -346,6 +346,7 @@
         public static string DuplicateBill { get { return "قبض تکراری"; } }
         public static string Deleted_Close { get { return "حذف موقت_بسته"; } }
         public static string Deleted_Block { get { return "حذف موقت_مانع"; } }
+        public static string Deleted_HasMeterNumber { get { return "حذف موقت_دارای رقم"; } }
         public static string DuplicateBill5 { get { return "قبض تکراری 5 روزه"; } }
 
         public static string NonRead { get { return "NonRead"; } }
