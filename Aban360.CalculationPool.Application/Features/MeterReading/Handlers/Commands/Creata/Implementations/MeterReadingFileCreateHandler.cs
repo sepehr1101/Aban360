@@ -141,9 +141,9 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             if ((closeReadingDetailCreate?.Count() ?? 0) != 0)
             {
                 int newSmsFlowId = await GenerateAndInsertCloseSms(closeReadingDetailCreate, appUser);
-                return new MeterReadingFileCreateOutputDto(firstFlowId, newSmsFlowId);
+                return new MeterReadingFileCreateOutputDto(closeReadingDetailCreate.FirstOrDefault().ZoneId, firstFlowId, newSmsFlowId);
             }
-            return new MeterReadingFileCreateOutputDto(0, 0);
+            return new MeterReadingFileCreateOutputDto(0, 0, 0);
         }
         private async Task<int> GenerateAndInsertCloseSms(ICollection<MeterReadingDetailDataOutputDto> closeReadingToSend, IAppUser appUser)
         {

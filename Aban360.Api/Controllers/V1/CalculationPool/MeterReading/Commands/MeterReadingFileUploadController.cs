@@ -32,10 +32,19 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingFileCreateOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Upload([FromForm] MeterReadingFileCreateDto input, CancellationToken cancellationToken)
         {
-            MeterReadingFileCreateOutputDto result = await _meterReadingFileHandle.Handle(input, CurrentUser, cancellationToken);
-            return Ok(result);
-            //await _meterReadingUploadDbFileWithSendSmsJobService.Upload(input, CurrentUser, cancellationToken);
-            //return Ok(input);
+            //MeterReadingFileCreateOutputDto result = await _meterReadingFileHandle.Handle(input, CurrentUser, cancellationToken);
+            //return Ok(result);
+            await _meterReadingUploadDbFileWithSendSmsJobService.Upload(input, CurrentUser, cancellationToken);
+            return Ok(input);
         }
+
+        //[HttpPost]
+        //[Route("send-close-sms/{flowStepId}/{smsFlowId}")]
+        //[ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
+        //public async Task<IActionResult> SendCloseSms(int flowStepId, int smsFlowId, CancellationToken cancellationToken)
+        //{
+        //    await _meterReadingUploadDbFileWithSendSmsJobService.SendSms(flowStepId, smsFlowId);
+        //    return Ok(flowStepId);
+        //}
     }
 }
