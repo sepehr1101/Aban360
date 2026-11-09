@@ -1,5 +1,13 @@
 # Aban360
 
+## اجرای تست‌ها
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\test.ps1
+```
+
+همهٔ مجموعه‌های تست اجرا می‌شوند و شکست هرکدام خروجی کلی را ناموفق می‌کند. [راهنمای اجرا و حدود بررسی](tests/README.fa.md)
+
 ## درخواست‌های مشترک با تأیید پیامکی
 
 - [راهنما، تنظیمات و اسکریپت دستی Atlas](docs/subscriber-requests/README.fa.md)

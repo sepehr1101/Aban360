@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <Folder Include="Exceptions\" />
+    <Folder Include="Features\SaveReading\" />
   </ItemGroup>
 
 </Project>

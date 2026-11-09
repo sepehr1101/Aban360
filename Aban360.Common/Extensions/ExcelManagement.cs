@@ -8,41 +8,34 @@ namespace Aban360.Common.Extensions
 {
     public static class ExcelManagement
     {
-        public static string pathBase { get; set; } = "AppData\\Excels\\";
+        public static string pathBase { get; set; } = Path.Combine("AppData", "Excels");
         public static int maxDataCount { get; set; } = 1000000;
         public static async Task<string> ExportToExcelAsync<THeader, TData>(THeader tHeader, IEnumerable<TData> tData, string reportName, string[]? excludedProperties = null)
         {
             Validate(tHeader, tData);
 
             var excelfile = new Dictionary<string, object>();
-            int sheetCount = tData.Count() / maxDataCount;
+            if (maxDataCount <= 0) throw new ArgumentOutOfRangeException(nameof(maxDataCount));
+            var rows = tData as IReadOnlyList<TData> ?? tData.ToList();
+            int sheetCount = rows.Count == 0 ? 1 : (rows.Count - 1) / maxDataCount + 1;
 
 
             excelfile[ExceptionLiterals.Header] = new List<Dictionary<string, object>> { TranslateHeader(tHeader) };
-            for (int i = 0; i < sheetCount + 1; i++)
+            for (int i = 0; i < sheetCount; i++)
             {
-                var sheetData = tData.Skip(i * maxDataCount).Take(maxDataCount).ToList();
+                var sheetData = rows.Skip(i * maxDataCount).Take(maxDataCount).ToList();
                 excelfile[ExceptionLiterals.Page(i + 1)] = TranslateData(sheetData, excludedProperties);
             }
 
             string path = GetPath(reportName);
-            try
-            {
-                await MiniExcel.SaveAsAsync(path, excelfile);
-
-                return path;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            await MiniExcel.SaveAsAsync(path, excelfile);
+            return path;
         }
         private static string GetPath(string reportName)
         {
-            string reportTitle = reportName
-                          .Replace('/', '-')
-                          .Replace(':', '-')
-                          .Replace(' ', '_');
+            var invalidCharacters = Path.GetInvalidFileNameChars().Concat(new[] { '/', '\\', ':' }).ToHashSet();
+            string reportTitle = new string((reportName ?? "report").Take(100)
+                .Select(character => invalidCharacters.Contains(character) ? '-' : character == ' ' ? '_' : character).ToArray());
 
 
             var timeNow = DateTime.Now.ToString("HH-mm-ss");
@@ -53,7 +46,8 @@ namespace Aban360.Common.Extensions
                                         .Replace(':', '-')
                                         .Replace(' ', '_');
 
-            return $"{pathBase}{reportTitle}_{persianDate}_{timeNow}.xlsx";
+            Directory.CreateDirectory(pathBase);
+            return Path.Combine(pathBase, $"{reportTitle}_{persianDate}_{timeNow}_{Guid.NewGuid():N}.xlsx");
         }
         private static void Validate<THeader, TData>(THeader tHeader, IEnumerable<TData> tData)
         {

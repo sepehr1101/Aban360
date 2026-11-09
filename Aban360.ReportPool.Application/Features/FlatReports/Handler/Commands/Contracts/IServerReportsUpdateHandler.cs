@@ -4,6 +4,7 @@ namespace Aban360.ReportPool.Application.Features.FlatReports.Handler.Commands.C
 {
     public interface IServerReportsUpdateHandler
     {
-        void Handle(ServerReportsUpdateDto UpdateDto, CancellationToken cancellationToken);
+        Task Handle(ServerReportsUpdateDto UpdateDto, CancellationToken cancellationToken);
+        Task Fail(Guid id, CancellationToken cancellationToken);
     }
 }

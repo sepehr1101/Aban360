@@ -9,6 +9,8 @@
         PreNumberEqualTodayNumber = 4,
         NotAvailableNow = 8,
         InvalidDeletionState = 9,
+        MobileDailyLimitReached = 10,
+        BillDailyLimitReached = 11,
         BadRequest = 400,
     }
 }
