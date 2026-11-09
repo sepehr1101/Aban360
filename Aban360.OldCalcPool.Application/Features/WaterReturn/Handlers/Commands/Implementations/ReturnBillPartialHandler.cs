@@ -87,7 +87,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             int domesticCAmount = 0;
             if (BurstPipe.Contains(inputDto.ReturnCauseId))
             {
-                await BurstPipeValidate(bedBesResult, inputDto.ReturnCauseId);
+                await BurstPipeValidate(bedBesResult, inputDto.ReturnCauseId, appUser);
 
                 if (inputDto.UserInput.HasValue && inputDto.UserInput.Value > 0)
                 {
@@ -250,7 +250,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         {
             return input.ReturnCauseId == (int)ReturnCauseEnum.LooleTarakidegi && !_returnBillBaseHandler.IsDomestic(usageId) && (input.UserInput is null || input.UserInput <= 0);
         }
-        private async Task BurstPipeValidate(BedBesCreateDto bedBesResult, int returnCauseId)
+        private async Task BurstPipeValidate(BedBesCreateDto bedBesResult, int returnCauseId, IAppUser appUser)
         {
             RepairDateValidateDto repairDateValidateDto = new()
             {
@@ -263,7 +263,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             BillReturnCauseGetDto returnCauseInfo = await _billReturnCauseQueryService.Get((short)returnCauseId);
 
             RepairedOutputDto? repairOutput = await _repairQueryService.GetRepairDateValidate(repairDateValidateDto);
-            if (repairOutput != null)
+            if (repairOutput != null && !appUser.IsAdmin)
             {
                 throw new ReturnedBillException(ExceptionLiterals.InvalidReturn(returnCauseInfo.Title));
             }

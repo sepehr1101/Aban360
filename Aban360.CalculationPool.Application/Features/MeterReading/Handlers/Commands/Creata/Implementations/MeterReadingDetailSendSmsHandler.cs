@@ -71,7 +71,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         public async Task Handle(int latestFlowId, Guid userId, CancellationToken cancellationToken)
         {
             MeterFlowGetDto meterFlowInfo = await _meterFlowQueryService.Get(latestFlowId);
-
+          
             _jobClient.Enqueue(() => CreateJob(meterFlowInfo.FirstFlowId, userId));
         }
         public async Task CreateJob(int firstFlowId, Guid userId)

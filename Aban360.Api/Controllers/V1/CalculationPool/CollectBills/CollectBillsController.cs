@@ -10,6 +10,7 @@ using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.Common.Timing;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
@@ -38,9 +39,11 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
 
         [HttpPost, HttpGet]
         [Route("file-create")]
-        public async Task<FileStreamResult> CreateFile(string reportDateJalali, CancellationToken cancellationToken)
+        public async Task<FileStreamResult> CreateFile(CollectBillsByDateJalaliInputDto inputDto, CancellationToken cancellationToken)
         {
-            CollectBillsGetZipFileInfo zipFileInfo = await _collectBillsFileCreateHandler.Handle(reportDateJalali, CurrentUser, cancellationToken);
+            ConvertDate.JalaliToDateTime(inputDto.DateJalali, true);
+
+            CollectBillsGetZipFileInfo zipFileInfo = await _collectBillsFileCreateHandler.Handle(inputDto.DateJalali, CurrentUser, cancellationToken);
             if (!System.IO.File.Exists(zipFileInfo.FilePath))
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.NotFoundFolder);
@@ -54,7 +57,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
         [HttpPost, HttpGet]
         [Route("get")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CollectBillsDetailWithLastStepHeaderOutputDto, CollectBillsDetailWithLastStepDataOutputDto>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SendFile(CollectBillsDetialReportInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetFile(CollectBillsDetialReportInputDto inputDto, CancellationToken cancellationToken)
         {
             ReportOutput<CollectBillsDetailWithLastStepHeaderOutputDto, CollectBillsDetailWithLastStepDataOutputDto> result = await _collectBillsDetailWithLastStepHandler.Handle(inputDto, cancellationToken);
             return Ok(result);

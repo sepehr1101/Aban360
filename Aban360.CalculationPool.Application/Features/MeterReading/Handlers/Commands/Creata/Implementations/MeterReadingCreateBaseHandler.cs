@@ -494,6 +494,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 return (false, true, ExcludedCauseEnum.Deleted_Block);
             }
+            if (readingDetail.DeletionStateId == (int)DeletionStateEnum.HazfMovaghat && readingDetail.CurrentNumber != 0)
+            {
+                return (false, true, ExcludedCauseEnum.Deleted_HasMeterNumber);
+            }
             if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Common && readingDetail.PreviousNumber > readingDetail.CurrentNumber)
             {
                 return (false, true, ExcludedCauseEnum.Error);
@@ -699,6 +703,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 ExcludedCauseEnum.Deleted_Close => ReportLiterals.Deleted_Close,
                 ExcludedCauseEnum.DuplicateBill5 => ReportLiterals.DuplicateBill5,
                 ExcludedCauseEnum.Deleted_Block => ReportLiterals.Deleted_Block,
+                ExcludedCauseEnum.Deleted_HasMeterNumber=> ReportLiterals.Deleted_HasMeterNumber,
                 _ => string.Empty,
             };
         }
