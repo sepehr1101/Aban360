@@ -2,10 +2,12 @@
 {
     public record MeterReadingFileCreateOutputDto
     {
+        public int ZoneId { get; set; }
         public int FirstFlowId { get; set; }
         public int SmsFlowId { get; set; }
-        public MeterReadingFileCreateOutputDto(int firstFlowId, int smsFlowId)
+        public MeterReadingFileCreateOutputDto(int zoneId, int firstFlowId, int smsFlowId)
         {
+            ZoneId = zoneId;
             FirstFlowId = firstFlowId;
             SmsFlowId = smsFlowId;
         }

@@ -21,6 +21,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 new MeterReadingExcludeCauseGetDto((int)ExcludedCauseEnum.Deleted_Close,ReportLiterals.Deleted_Close,false),
                 new MeterReadingExcludeCauseGetDto((int)ExcludedCauseEnum.DuplicateBill5,ReportLiterals.DuplicateBill5,false),
                 new MeterReadingExcludeCauseGetDto((int)ExcludedCauseEnum.Deleted_Block,ReportLiterals.Deleted_Block,false),
+                new MeterReadingExcludeCauseGetDto((int)ExcludedCauseEnum.Deleted_HasMeterNumber,ReportLiterals.Deleted_HasMeterNumber,false),
             };
 
             return isSelectable ? userCause : userCause.Union(backendCause);

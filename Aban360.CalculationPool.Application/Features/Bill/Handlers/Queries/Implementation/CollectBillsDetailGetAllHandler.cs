@@ -20,5 +20,4 @@ namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Imp
             return result;
         }
     }
-
 }

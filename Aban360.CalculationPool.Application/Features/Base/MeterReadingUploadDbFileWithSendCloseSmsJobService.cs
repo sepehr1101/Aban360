@@ -57,11 +57,12 @@ namespace Aban360.CalculationPool.Application.Features.Base
         public async Task Upload(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             MeterReadingFileCreateOutputDto result = await _meterReadingFileCreateHandler.Handle(input, appUser, cancellationToken);
-            if (result.FirstFlowId != 0 && result.SmsFlowId != 0)
+            if (result.FirstFlowId != 0 && result.SmsFlowId != 0 && result.ZoneId == 131301)
             {
                 _jobClient.Enqueue(() => SendSms(result.FirstFlowId, result.SmsFlowId));
             }
         }
+        [AutomaticRetry(Attempts = 2)]
         public async Task SendSms(int firstFlowId, int smsFlowId)
         {
             IEnumerable<SmsDraftGetDto> smsDraftInfo = await _draftQueryService.Get(firstFlowId.ToString(), smsFlowId, hasFetchDate: false, hasSendDate: false);
@@ -72,10 +73,10 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
                 ICollection<SendSmsDataDto> smsData = smsDraftInfo.Select(sms => new SendSmsDataDto(sms.Message, sms.MobileNumber, sms.BillId, null, Guid.Empty)).ToList();
                 await _smsOldHandler.Send(smsData);
-            
+
                 await ExecSql(new SmsDraftUpdateDto(smsDrafIds, firstFlowId.ToString(), smsFlowId), new SmsFlowUpdateDto(smsFlowId), false);
             }
-            await SendSms(firstFlowId, smsFlowId);
+            return;
         }
         public async Task ExecSql(SmsDraftUpdateDto updateDto, bool isFetch)
         {
