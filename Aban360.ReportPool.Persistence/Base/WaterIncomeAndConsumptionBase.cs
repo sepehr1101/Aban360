@@ -210,8 +210,8 @@ namespace Aban360.ReportPool.Persistence.Base
 						--SUM(Duration)/SUM(IIF(BillC<=0,1,BillC)) DailyAverage,-- روز قرائت
                         ROUND(SUM(CAST(BillUnit AS decimal(18,2))*CAST(Duration AS decimal(18,2))/IIF(SumDuration<=0,1,SumDuration)),1) AS WaterConsumptionUnit, 
 						CAST((SUM(CAST(Consumption AS decimal(18,2)))*30.0)/NULLIF((SUM(CAST(IIF(Duration<=0,1,Duration) AS decimal))*1.0/NULLIF(SUM(CAST(IIF(BillC<=0,1,BillC) AS bigint)),0))*SUM(CAST(IIF(UnitC<=0,1,UnitC) AS bigint)),0) AS decimal(18,2)) AS ConsumptionAverage,
-						SUM(CAST(Duration AS decimal(18,2)))/SUM(CAST(IIF(BillC<=0,1,BillC) AS bigint)) AS DailyAverage,
-                        AVG(SumDuration) AverageDuration,
+						SUM(CAST(Duration AS decimal(18,2)))/SUM(CAST(IIF(BillC<=0,1,BillC) AS bigint)) AS DailyAverage,-- دوره قرائت
+                        AVG(SumDuration) AverageDuration,-- متوسط روز قرائت
 						MAX(RegionId) RegionId,
 						MAX(RegionTitle) RegionTitle,
                     	{SelectKey} as GroupKey,
@@ -264,6 +264,8 @@ namespace Aban360.ReportPool.Persistence.Base
                 return isUsageGroup ?
                     ("ZoneTitle, UsageGroup2Title", "(ZoneTitle CollaTe SQL_Latin1_General_CP1_CI_AS+' - '+ UsageGroup2Title)", "ZoneTitle, UsageGroup2Title") :
                     ("ZoneTitle, UsageTitle", "(ZoneTitle Collate SQL_Latin1_General_CP1_CI_AS+' - '+UsageTitle)", "ZoneId, UsageId");
+            if (enumState == WaterIncomeAndConsumptionSummaryEnum.Customer)
+                return ("BillId", "BillId", "BillId");
 
             return ("ZoneTitle", "ZoneTitle", "ZoneTitle");
         }

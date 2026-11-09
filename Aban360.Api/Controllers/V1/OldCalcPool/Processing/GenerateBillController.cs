@@ -101,7 +101,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             IAppUser appUser = new AppUserManual();
             bool billIssued = false;
             bool failureSmsHandled = false;
-            await InsertOpLog(OpLogLiterals.NowGenerateBillRequestOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber);
+            await InsertOpLog(OpLogLiterals.NowGenerateBillRequestOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber, appUser);
             try
             {
                 NowGenerateBillOutputDto handleResult = await _nowGenerateBillHandler.Handle(inputDto, appUser, cancellationToken);
@@ -123,13 +123,13 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
                 {
                     billIssued = true;
                     await _latestBillSendSmsHandler.Handle(inputDto.BillId, inputDto.MobileNumber, appUser, cancellationToken);
-                    await InsertOpLog(OpLogLiterals.NowGenerateBillRequestSuccessedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber);
+                    await InsertOpLog(OpLogLiterals.NowGenerateBillRequestSuccessedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber, appUser);
                 }
                 else
                 {
                     EnqueueFailureSms(inputDto, handleResult);
                     failureSmsHandled = true;
-                    await InsertOpLog(OpLogLiterals.NowGenerateBillRequestFailedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber);
+                    await InsertOpLog(OpLogLiterals.NowGenerateBillRequestFailedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber, appUser);
                 }
                 if (statusResult == HttpStatusCode.TooManyRequests)
                 {
@@ -145,7 +145,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
                 {
                     EnqueueFailureSms(inputDto, result);
                 }
-                await InsertOpLog(OpLogLiterals.NowGenerateBillRequestFailedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber);
+                await InsertOpLog(OpLogLiterals.NowGenerateBillRequestFailedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber, appUser);
                 return CustomeStatus(result, HttpStatusCode.RequestedRangeNotSatisfiable, result.Message);
             }
         }
@@ -192,10 +192,10 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
                 _ => SmsTemplates.NowGenerateBillSystemReason
             };
         }
-        private async Task InsertOpLog(string baseText, string billId, int meterNumber, string mobileNumber)
+        private async Task InsertOpLog(string baseText, string billId, int meterNumber, string mobileNumber, IAppUser appUser)
         {
             string requestSeccessOpLogText = string.Format(baseText, billId, meterNumber, mobileNumber);
-            await _opLogCommandService.Insert(requestSeccessOpLogText, CurrentUser);
+            await _opLogCommandService.Insert(requestSeccessOpLogText, appUser);
         }
     }
 }

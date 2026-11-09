@@ -29,6 +29,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
         public TariffItemResult Calculate(ConsumptionInfo consumptionInfo, NerkhGetDto? nerkh, double? monthlyConsumption, int? s, int? c, ZaribGetDto zarib, string date1, string date2, int durationAll, CustomerInfoOutputDto customerInfo, double abBahaItemAmount, string currentDateJalali, bool isAbonman, bool isVillageCalculation, ConsumptionPartialInfo consumptionPartialInfo, TariffItemResult abCalcResult, [Optional] IEnumerable<int> tagIds, out double multiplier)
         {
+            //chah fellman
+            if (customerInfo.BillId == "3378884916317")
+            {
+                multiplier = 0;
+                return new TariffItemResult();
+            }
+
             if (date2.IsLtEq(date_1405_03_15))
             {
                 double sewageAmount = 0;

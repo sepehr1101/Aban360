@@ -29,7 +29,7 @@ namespace Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Crea
             _validator.NotNull(nameof(validator));
         }
 
-        public async Task<string> Handle(TicketCreateDto createDto, IAppUser currentUser, CancellationToken cancellationToken)
+        public async Task<Ticket> Handle(TicketCreateDto createDto, IAppUser currentUser, CancellationToken cancellationToken)
         {
             await TicketHandlerValidation.Validate(_validator, createDto, cancellationToken);
             currentUser.NotNull(nameof(currentUser));
@@ -49,7 +49,7 @@ namespace Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Crea
             });
             // One entity graph is committed atomically by the caller's unit of work.
             await _ticketCommandService.Add(ticket, cancellationToken);
-            return ticket.TicketNumber;
+            return ticket;
         }
     }
 }

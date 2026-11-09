@@ -9,7 +9,6 @@
         public int TransactionCount { get; set; }
         public float SewageConsumption { get; set; }
         public long Consumption { get; set; }
-        public decimal ConsumptionAverage { get; set; }
         public int BillUnitCounts { get; set; }
         public long Duration { get; set; }
         public long SumItems { get; set; }
@@ -36,5 +35,7 @@
         public int TotalUnit { get; set; }
         public double? WaterConsumptionUnit { get; set; }
         public double? DailyAverage { get; set; }
+        public decimal ConsumptionAverage { get; set; }
+        public decimal AverageDuration { get; set; }
     }
 }

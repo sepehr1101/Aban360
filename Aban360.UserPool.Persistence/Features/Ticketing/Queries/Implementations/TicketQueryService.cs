@@ -18,7 +18,10 @@ namespace Aban360.UserPool.Persistence.Features.Ticketing.Queries.Implementation
         }
 
         public Task<Ticket?> Get(long id, CancellationToken cancellationToken = default)
-            => _tickets.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+            => _tickets.Include(x => x.CreatedByUser)
+                .ThenInclude(user => user.UserRoles.Where(role => role.ValidTo == null))
+                .ThenInclude(userRole => userRole.Role)
+                .SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         public async Task<TicketPage<Ticket>> Get(TicketSearchInput input, CancellationToken cancellationToken = default)
         {

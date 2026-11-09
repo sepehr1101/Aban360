@@ -38,6 +38,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         {
             before1403_12_02 = 0;
             before1404 = 0;
+
+            //chah fellman
+            if (customerInfo.BillId == "3378884916317")
+            {
+                return new TariffItemResult();
+            }
+
             if (!IsConstruction(customerInfo.BranchType) && IsTankerSale(customerInfo.UsageId))
             {
                 return new TariffItemResult();
