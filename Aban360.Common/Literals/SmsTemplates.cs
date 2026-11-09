@@ -4,6 +4,22 @@ namespace Aban360.Common.Literals
 {
     public static class SmsTemplates
     {
+        public static string NowGenerateBillFailed =>
+            "آبفا استان اصفهان" + Environment.NewLine +
+            "مشترک گرامی، درخواست صدور قبض برای شناسه قبض {0} انجام نشد." + Environment.NewLine +
+            "علت: {1}";
+
+        public const string NowGenerateBillDailyLimitReason =
+            "تعداد درخواست‌های مجاز روزانه تکمیل شده است. لطفاً روز بعد اقدام کنید.";
+        public const string NowGenerateBillSubscriptionReason =
+            "صدور قبض برای این اشتراک امکان‌پذیر نیست.";
+        public const string NowGenerateBillReadingReviewReason =
+            "کارکرد اعلام‌شده نیاز به بررسی دارد. ";
+        public const string NowGenerateBillRecentBillReason =
+            "به دلیل صدور قبض اخیر، در حال حاضر امکان صدور قبض جدید وجود ندارد.";
+        public const string NowGenerateBillSystemReason =
+            "درخواست شما در حال حاضر قابل انجام نیست. لطفاً در زمان دیگری اقدام کنید.";
+
         public static string ServiceLinkDisconnectAlert
         {
             get

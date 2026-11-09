@@ -2,7 +2,6 @@
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Querys.Contracts;
 using Aban360.BlobPool.Domain.Features.DmsServices.Dto.Commands;
-using Aban360.BlobPool.Domain.Features.OpenKm;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.BlobPool.Persistence.Features.DmsServices.Queries.Contracts;
 using Aban360.Common.ApplicationUser;

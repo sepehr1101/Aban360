@@ -54,14 +54,14 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Im
                 throw new CustomValidationException(message);
             }
 
-            Validation(captchaCreateDto.CaptchaLanguageId, captchaCreateDto.CaptchaDisplayModeId);
+            await Validate(captchaCreateDto.CaptchaLanguageId, captchaCreateDto.CaptchaDisplayModeId);
             Captcha captcha = _mapper.Map<Captcha>(captchaCreateDto);
             await _captchaCommandService.Create(captcha);
             if (captcha.IsSelected)
                 await _captchaCommandService.SetIsSelected();
         }
 
-        private async void Validation(short languegaId, short displayModeId)
+        private async Task Validate(short languegaId, short displayModeId)
         {
             CaptchaLanguage language = await _captchaLanguageQueryService.Get(languegaId);
             if (language == null)

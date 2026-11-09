@@ -30,7 +30,8 @@ namespace Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Implement
                 reportInputJson = input.ReportInputJson,
                 handlerKey = input.HandlerKey,
             };
-            await _sqlConnection.ExecuteAsync(createQuery, @params);
+            await using var connection = _sqlConnection;
+            await connection.ExecuteAsync(createQuery, @params);
         }
 
         private string GetServerReportsCreateQuery()

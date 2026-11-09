@@ -42,6 +42,8 @@ builder.Services
     .AddCustomHttpClients(configuration);
 
 builder.Services.AddSignalR();    //todo: replace into configure signalR
+builder.Services.AddSingleton<HubConnectionRegistry>();
+builder.Services.AddHostedService<HubPresenceHeartbeatService>();
 
 builder.AddStiFonts();
 
@@ -74,7 +76,8 @@ app.UseAuthorization();
 
 app.AddHangfireDashboard(configuration);
 configuration.AddCronjobs();
-app.MapHub<NotifyHub>("/v1/notify-hub");        //todo: replace into configure signalR
+app.MapHub<NotifyHub>("/v1/notify-hub", options =>
+    options.CloseOnAuthenticationExpiration = configuration.GetValue<bool>("SignalR:CloseOnAuthenticationExpiration"));
 
 app.MapControllers();
 app.Run();

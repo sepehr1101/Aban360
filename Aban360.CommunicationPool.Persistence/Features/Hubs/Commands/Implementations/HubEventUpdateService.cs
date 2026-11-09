@@ -21,7 +21,8 @@ namespace Aban360.CommunicationPool.Persistence.Features.Hubs.Commands.Implement
                 connectionId = input.ConnectionId,
                 disconnectDateTime = DateTime.Now,
             };
-            await _sqlConnection.ExecuteAsync(updateQuery, @params);
+            await using var connection = _sqlConnection;
+            await connection.ExecuteAsync(updateQuery, @params);
         }
 
         public async Task CloseAllConnection(HubCloseConnectionsDto hubCloseConnectionsDto)
@@ -29,23 +30,24 @@ namespace Aban360.CommunicationPool.Persistence.Features.Hubs.Commands.Implement
             string query= GetColseAllConnectionsQuery();
             var @params = new
             {
-                userId = hubCloseConnectionsDto,
+                userId = hubCloseConnectionsDto.UserId,
                 disconnectDateTime = DateTime.Now,
             };
-            await _sqlConnection.ExecuteAsync(query, @params);
+            await using var connection = _sqlConnection;
+            await connection.ExecuteAsync(query, @params);
         }
 
         private string GetCloseConnectionQuery()
         {
             return @"Update [Aban360].CommunicationPool.HubEvent
                     Set DisconnectDateTime=@disconnectDateTime                  
-                    Where ConnectionId=@connectionId";
+                    Where ConnectionId=@connectionId AND DisconnectDateTime IS NULL";
         }
         private string GetColseAllConnectionsQuery()
         {
             return @"Update [Aban360].CommunicationPool.HubEvent
                     Set DisconnectDateTime=@disconnectDateTime                  
-                    Where UserId=@userId";
+                    Where UserId=@userId AND DisconnectDateTime IS NULL";
         }
     }
 }
