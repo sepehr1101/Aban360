@@ -32,19 +32,26 @@ namespace Aban360.ReportPool.Infrastructure.Features.Geo
 
         public async Task<string> GenerateMapBase64(string x, string y, CancellationToken cancellationToken)
         {
-            double latitude = (double.Parse)(y);
-            double longitude = (double.Parse)(x);
-            var (centerTileX, centerTileY) = LatLonToTile(latitude, longitude, zoom);
+            try
+            {
+                double latitude = (double.Parse)(y);
+                double longitude = (double.Parse)(x);
+                var (centerTileX, centerTileY) = LatLonToTile(latitude, longitude, zoom);
 
-            using Bitmap finalBitmap = new Bitmap(tileSize * 3, tileSize * 3);
-            using Graphics graphics = Graphics.FromImage(finalBitmap);
-            await GetGraphicLocation(finalBitmap, graphics, centerTileX, centerTileY);
-            DrawLocationIcon(graphics, latitude, longitude);
+                using Bitmap finalBitmap = new Bitmap(tileSize * 3, tileSize * 3);
+                using Graphics graphics = Graphics.FromImage(finalBitmap);
+                await GetGraphicLocation(finalBitmap, graphics, centerTileX, centerTileY);
+                DrawLocationIcon(graphics, latitude, longitude);
 
-            using MemoryStream output = new MemoryStream();
-            finalBitmap.Save(output, ImageFormat.Png);
-            string base64Rusult = Convert.ToBase64String(output.ToArray());
-            return base64Rusult;
+                using MemoryStream output = new MemoryStream();
+                finalBitmap.Save(output, ImageFormat.Png);
+                string base64Rusult = Convert.ToBase64String(output.ToArray());
+                return base64Rusult;
+            }
+            catch (Exception ex)
+            {
+                return await Base64Operation.GetNotFoundBase64(cancellationToken);
+            }
         }
         private async Task GetGraphicLocation(Bitmap finalBitmap, Graphics graphics, int centerTileX, int centerTileY)
         {
