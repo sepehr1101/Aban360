@@ -11,39 +11,39 @@ namespace Aban360.ClaimPool.Application.Features.Request.Validations
         public RequestNewBranchValidator()
         {
             RuleFor(f => f.FirstName)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .Length(3, 15).WithMessage(ExceptionLiterals.Between3And15);
+               .NotNull().WithMessage(string.Join(" , ", ExceptionLiterals.NotNull, ExceptionLiterals.FirstName))
+               .Length(3, 15).WithMessage(string.Join(" , ", ExceptionLiterals.Between3And15, ExceptionLiterals.FirstName));
 
             RuleFor(f => f.Surname)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .Length(3, 25).WithMessage(ExceptionLiterals.Between3And25);
+                .NotNull().WithMessage(string.Join(" , ", ExceptionLiterals.NotNull, ExceptionLiterals.Surname))
+                .Length(5, 25).WithMessage(string.Join(" , ", ExceptionLiterals.Between5And25, ExceptionLiterals.Surname));
 
             RuleFor(f => f.PhoneNumber)
                 .Must(IsValidPhoneNumber).WithMessage(ExceptionLiterals.PhoneNumberFormat);
 
             RuleFor(f => f.MobileNumber)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
+                .NotEmpty().WithMessage(string.Join(" , ", ExceptionLiterals.NotNull, ExceptionLiterals.MobileNumber))
                 .Must(IsValidMobileNumber).WithMessage(ExceptionLiterals.MobileNumberFormat);
 
             RuleFor(f => f.NationalCode)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .Must(IsValidNationalCode).WithMessage(ExceptionLiterals.NationalCodeFormat);
+                 .NotEmpty().WithMessage(string.Join(" , ", ExceptionLiterals.NotNull, ExceptionLiterals.NationalCode))
+                 .Must(IsValidNationalCode).WithMessage(ExceptionLiterals.NationalCodeFormat);
 
             RuleFor(f => f.Address)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .Length(5, 100).WithMessage(ExceptionLiterals.Between5And100);
+                .NotNull().WithMessage(string.Join(" , ", ExceptionLiterals.NotNull, ExceptionLiterals.Address))
+                .Length(5, 100).WithMessage(string.Join(" , ", ExceptionLiterals.Between5And100, ExceptionLiterals.Address));
 
             RuleFor(f => f.PostalCode)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .Must(IsValidPostalCode).WithMessage(ExceptionLiterals.PostalCodeFormat);
+                .NotNull().WithMessage(string.Join(" , ", ExceptionLiterals.NotNull, ExceptionLiterals.PostalCode))
+                .Must(IsValidPostalCode).WithMessage(string.Join(" , ", ExceptionLiterals.PostalCodeFormat, ExceptionLiterals.PostalCode));
 
             RuleFor(f => f.ZoneId)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull);
+               .NotEmpty().WithMessage(string.Join(" , ", ExceptionLiterals.NotNull, ExceptionLiterals.Zone))
+               .GreaterThan(0).WithMessage(string.Join(" , ", ExceptionLiterals.GreaterThanZero, ExceptionLiterals.Zone));
 
             RuleFor(f => f.SelectedServices)
-                .NotEmpty().WithMessage(ExceptionLiterals.NotNull)
-                .NotNull().WithMessage(ExceptionLiterals.NotNull)
+               .NotEmpty().WithMessage(string.Join(" , ", ExceptionLiterals.NotNull, ExceptionLiterals.InvalidZeroServiceSelected))
+               .NotEmpty().WithMessage(string.Join(" , ", ExceptionLiterals.NotNull, ExceptionLiterals.InvalidZeroServiceSelected))
                 .Must(s => s.Count() > 0).WithMessage(ExceptionLiterals.InvalidZeroServiceSelected);
         }
     }
