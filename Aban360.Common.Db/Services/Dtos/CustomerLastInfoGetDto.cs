@@ -40,8 +40,10 @@
         public string HousePlate { get; set; }
         public bool IsSpecial { get; set; }
         public int DeletionStateId { get; set; }
-        public string UseStateTitle { get; set; }//different update
+        public string UseStateTitle { get; set; }
         public int UseStateId { get; set; }
+        public string BranchTypeTitle { get; set; }
+        public int BranchTypeId { get; set; }
         public string MainSiphon { get; set; }
         public int Siphon100 { get; set; }
         public int Siphon125 { get; set; }

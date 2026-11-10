@@ -540,6 +540,8 @@ namespace Aban360.Common.Db.Services
 						m.hasf DeletionStateId,
 						m.noe_va AS BranchTypeId,
 						t7.C1 BranchTypeTitle,
+						m.noe_va AS UseStateId,
+						t7.C1 UseStateTitle,
 						m.master_sif AS MainSiphon,
 						m.sif_1 AS Siphon100,
 						m.sif_2 AS Siphon125,

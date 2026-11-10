@@ -43,6 +43,14 @@
         #endregion
 
         //SiphonCount
+        public int Siphon5 { get; set; }
+        public int Siphon6 { get; set; }
+        public int Siphon7 { get; set; }
+        public int Siphon8 { get; set; }
+        public int Siphon100 { get; set; }
+        public int Siphon125 { get; set; }
+        public int Siphon150 { get; set; }
+        public int Siphon200 { get; set; }
         public IEnumerable<SiphonsDiameterCount> SiphonsDiameterCount { get; set; }
     }
     public record SiphonsDiameterCount

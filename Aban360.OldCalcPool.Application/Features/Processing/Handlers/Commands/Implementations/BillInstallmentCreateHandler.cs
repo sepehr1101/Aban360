@@ -1,4 +1,6 @@
 ﻿using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
+using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Constants.Literals;
@@ -29,9 +31,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IMembersQueryService _membersQueryService;
         private readonly IGhestAbQueryService _ghestAbQueryService;
+        private readonly ISmsStateTemplateQueryService _smsStateTemplateQueryService;
         private readonly IVariabService _variabService;
         private readonly IValidator<BillInstallmentInputDto> _validator;
         private static int _operator = ReportLiterals.RayabOperator;
+        private static int _billInstallmentSmsGroupId = 5;
+        private static int _billTypeId = 1;
         private const long _debtAmountLimit = 1000000;
         private const string _title = "اقساط آب‌بها";
         public BillInstallmentCreateHandler(
@@ -39,6 +44,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             IMembersQueryService membersQueryService,
             IGhestAbQueryService ghestAbQueryService,
             IVariabService variabService,
+            ISmsStateTemplateQueryService smsStateTemplateQueryService,
             IValidator<BillInstallmentInputDto> validator,
             IConfiguration configuration)
             : base(configuration)
@@ -54,6 +60,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             _variabService = variabService;
             _variabService.NotNull(nameof(variabService));
+
+            _smsStateTemplateQueryService = smsStateTemplateQueryService;
+            _smsStateTemplateQueryService.NotNull(nameof(smsStateTemplateQueryService));
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
@@ -71,7 +80,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 await ExecSql(memberInfo, zoneIdCustomerNumber, installments, logText, appUser);
             }
-
+            //SendSms
             return GetResult(installments, memberInfo);
         }
         private async Task ExecSql(MemberGetDto memberInfo, ZoneIdAndCustomerNumber zoneIdCustomerNumber, ICollection<BillInstallmentCreateDto> installments, string logText, IAppUser appUser)
@@ -95,6 +104,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                     transaction.Commit();
                 }
             }
+        }
+        private async Task SendSms(ICollection<BillInstallmentCreateDto> installments, MemberGetDto memberInfo)
+        {
+            SmsStateTemplateGetDto smsStateTemplateInfo = await _smsStateTemplateQueryService.GetFirst(_billInstallmentSmsGroupId, _billTypeId);
+           // string messsage=string.Format(smsStateTemplateInfo.SmsText,memberInfo.BillId,)
         }
         private async Task<MemberGetDto> GetMemberInfo(string billId)
         {
@@ -206,5 +220,5 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 throw new InvalidInstallmentException(ExceptionLiterals.InvalidDuplicateInstallment(latestBatchInstallment?.FirstOrDefault()?.InsertedBy ?? "-", latestBatchInstallment?.Count() ?? 0, latestBatchInstallment?.FirstOrDefault()?.RegisterDateJalali ?? "-"));
             }
         }
-    }    
+    }
 }

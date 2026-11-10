@@ -707,6 +707,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 return minutesNumber.Value;
             }
 
+            int myMinutesNumber = 0;
             using (var transaction = TransactionBuilder.Create(0, 0, System.Transactions.IsolationLevel.Serializable))
             {
                 int? currentDaypreviousMinutes = await _bedBesQueryService.GetLatestJalaseNumber();
@@ -714,16 +715,17 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 {
                     var currentDateJalali = DateTime.Now.ToShortPersianDateString();
                     string jalaseNumber = currentDateJalali.Substring(3, 1) + currentDateJalali.Substring(5, 2) + currentDateJalali.Substring(8, 2) + 0;
-                    return int.Parse(jalaseNumber);
+                    myMinutesNumber = int.Parse(jalaseNumber);
                 }
                 else
                 {
                     Random rand = new Random();
                     int random = rand.Next(0, 9);
-                    return currentDaypreviousMinutes.Value + random;
+                    myMinutesNumber = currentDaypreviousMinutes.Value + random;
                 }
 
                 transaction.Complete();
+                return myMinutesNumber;
             }
         }
         public async Task FullValidate(ReturnBillFullInputDto input, CancellationToken cancellationToken)
