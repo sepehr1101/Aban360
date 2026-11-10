@@ -57,7 +57,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         public async Task Upload(MeterReadingFileCreateDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
             MeterReadingFileCreateOutputDto result = await _meterReadingFileCreateHandler.Handle(input, appUser, cancellationToken);
-            if (result.FirstFlowId != 0 && result.SmsFlowId != 0 && result.ZoneId == 131301)
+            if (result.FirstFlowId != 0 && result.SmsFlowId != 0 && result.ZoneId == 131302)
             {
                 _jobClient.Enqueue(() => SendSms(result.FirstFlowId, result.SmsFlowId));
             }

@@ -87,11 +87,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 WaterConsumptionUnit = waterIncomeAndConsumptionData.Sum(w => w.WaterConsumptionUnit),//آحاد مصرف کننده
                 AverageDuration = waterIncomeAndConsumptionData.Average(w => w.AverageDuration)//متوسط روز قرائت
             };
-            waterIncomeAndConsumptionHeader.ConsumptionAverage =//متوسط مصرف
-              (decimal)waterIncomeAndConsumptionHeader.SumConsumption * 30 /
-              ((waterIncomeAndConsumptionHeader.SumDuration == 0 ? 1 : waterIncomeAndConsumptionHeader.SumDuration) *
-               (waterIncomeAndConsumptionHeader.SumBillCount == 0 ? 1 : waterIncomeAndConsumptionHeader.SumBillCount) /
-               (waterIncomeAndConsumptionHeader.BillUnit == 0 ? 1 : waterIncomeAndConsumptionHeader.BillUnit));
+            decimal x = ((decimal)(waterIncomeAndConsumptionHeader.SumConsumption * 30) / (decimal)(waterIncomeAndConsumptionHeader.SumDuration == 0 ? 1 : waterIncomeAndConsumptionHeader.SumDuration));
+            decimal y = ((decimal)(waterIncomeAndConsumptionHeader.BillUnit == 0 ? 1 : waterIncomeAndConsumptionHeader.BillUnit) / (waterIncomeAndConsumptionHeader.SumBillCount == 0 ? 1 : waterIncomeAndConsumptionHeader.SumBillCount));
+
+            waterIncomeAndConsumptionHeader.ConsumptionAverage = x / y;//متوسط مصرف
 
             waterIncomeAndConsumptionHeader.DailyAverage = (double)waterIncomeAndConsumptionHeader.SumDuration /
                 (waterIncomeAndConsumptionHeader.SumBillCount == 0 ? 1 : waterIncomeAndConsumptionHeader.SumBillCount);//دوره قرائت
