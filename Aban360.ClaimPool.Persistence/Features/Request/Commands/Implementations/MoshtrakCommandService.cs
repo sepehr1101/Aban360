@@ -104,6 +104,15 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrak);
             }
         }
+		public async Task Update(MoshtrakCommonSiphonUpdateDto input, string dbName)
+        {
+            string command = GetCommonSiphonUpdateCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
+            if (recordCount != 1)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrak);
+            }
+        }
 
         //   private string GetInsertCommand(string dbName)
         //   {
@@ -441,6 +450,12 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 						eshtrak = @ReadingNumber , 
 						address = @Address ,
 						post_cod = @PostalCode
+					  Where TrackingNumber=@TrackNumber";
+        }
+		private string GetCommonSiphonUpdateCommand(string dbName)
+        {
+            return $@"Update [{dbName}].dbo.moshtrak
+				      Set sif_mosh_1 = @HasCommonSiphon
 					  Where TrackingNumber=@TrackNumber";
         }
     }

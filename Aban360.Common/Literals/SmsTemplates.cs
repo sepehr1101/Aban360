@@ -224,6 +224,7 @@ namespace Aban360.Common.Literals
 ش پ: {8}";
             }
         }
-      
+
+        public static string BillPerInstallment { get { return @"{0}{5} مبلغ {1}{5} شناسه قبض {2}{5} شناسه پرداخت {3}{5} مهلت پرداخت {4}{5}"; } }
     }
 }

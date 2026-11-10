@@ -52,18 +52,19 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             await InputValidation(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber motherCustomerNumberInfo = await _commonMemberQueryService.Get(inputDto.MotherBillId, true);
-            
+
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
             MoshtrakOutputDto moshtrackInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
-            if (moshtrackInfo.CommonSiphon == 0)
-            {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidZeroCommonSiphon);
-            }
 
             string dbName = GetDbName(trackingInfo.ZoneId);
             MotherInsertDto motherInsertDto = GetMotherInsertDto(inputDto, moshtrackInfo, motherCustomerNumberInfo.CustomerNumber);
+            MoshtrakCommonSiphonUpdateDto moshtrakUpdateDto = new(inputDto.TrackNumber, true);
             await DuplicateValidation(moshtrackInfo.IsRegistered, motherInsertDto.StringTrackNumber, moshtrackInfo.ZoneId);
 
+            await ExecSql(motherInsertDto, moshtrakUpdateDto, dbName);
+        }
+        private async Task ExecSql(MotherInsertDto motherInsertDto, MoshtrakCommonSiphonUpdateDto moshtrakUpdateDto, string dbName)
+        {
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -73,7 +74,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
                     MotherCommandService motherCommandService = new(connection, transaction);
+                    MoshtrakCommandService moshtrakCommand = new(connection, transaction);
+
                     await motherCommandService.Insert(motherInsertDto, dbName);
+                    await moshtrakCommand.Update(moshtrakUpdateDto, dbName);
+
                     transaction.Commit();
                 }
             }
@@ -99,7 +104,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 throw new InvalidTrackingException(ExceptionLiterals.UseUpdateApi);
             }
         }
-        private MotherInsertDto GetMotherInsertDto(CommonSiphonRequestInputDto inputDto, MoshtrakOutputDto moshtrackInfo,int motherCustomerNumber)
+        private MotherInsertDto GetMotherInsertDto(CommonSiphonRequestInputDto inputDto, MoshtrakOutputDto moshtrackInfo, int motherCustomerNumber)
         {
             return new MotherInsertDto()
             {
