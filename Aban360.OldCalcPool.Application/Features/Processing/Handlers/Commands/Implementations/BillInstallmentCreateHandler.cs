@@ -9,6 +9,7 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
+using Aban360.NotificationPool.Application.Features.Sms;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -32,6 +33,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly IMembersQueryService _membersQueryService;
         private readonly IGhestAbQueryService _ghestAbQueryService;
         private readonly ISmsStateTemplateQueryService _smsStateTemplateQueryService;
+        private readonly ISmsOldHandler _smsOldHandler;
         private readonly IVariabService _variabService;
         private readonly IValidator<BillInstallmentInputDto> _validator;
         private static int _operator = ReportLiterals.RayabOperator;
@@ -43,6 +45,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             IHttpContextAccessor contextAccessor,
             IMembersQueryService membersQueryService,
             IGhestAbQueryService ghestAbQueryService,
+            ISmsOldHandler smsOldHandler,
             IVariabService variabService,
             ISmsStateTemplateQueryService smsStateTemplateQueryService,
             IValidator<BillInstallmentInputDto> validator,
@@ -61,6 +64,9 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             _variabService = variabService;
             _variabService.NotNull(nameof(variabService));
 
+            _smsOldHandler = smsOldHandler;
+            _smsOldHandler.NotNull(nameof(smsOldHandler));
+
             _smsStateTemplateQueryService = smsStateTemplateQueryService;
             _smsStateTemplateQueryService.NotNull(nameof(smsStateTemplateQueryService));
 
@@ -70,7 +76,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
         public async Task<ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto>> Handle(BillInstallmentInputDto input, IAppUser appUser, CancellationToken cancellationToken)
         {
-            await Validation(input, cancellationToken);
+            await Validate(input, cancellationToken);
             MemberGetDto memberInfo = await GetMemberInfo(input.BillId);
             ZoneIdAndCustomerNumber zoneIdCustomerNumber = new(memberInfo.ZoneId, memberInfo.CustomerNumber);
             ICollection<BillInstallmentCreateDto> installments = await GetInstallment(memberInfo, input);
@@ -80,8 +86,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             {
                 await ExecSql(memberInfo, zoneIdCustomerNumber, installments, logText, appUser);
             }
-            //SendSms
-            return GetResult(installments, memberInfo);
+            ReportOutput<BillInstallmentHeaderOutputDto, BillInstallmentDataOutputDto> result = GetResult(installments, memberInfo);
+            if (input.IsConfirm)
+            {
+                await SendSms(result.ReportData, memberInfo);
+            }
+            return result;
         }
         private async Task ExecSql(MemberGetDto memberInfo, ZoneIdAndCustomerNumber zoneIdCustomerNumber, ICollection<BillInstallmentCreateDto> installments, string logText, IAppUser appUser)
         {
@@ -105,10 +115,18 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 }
             }
         }
-        private async Task SendSms(ICollection<BillInstallmentCreateDto> installments, MemberGetDto memberInfo)
+        private async Task SendSms(IEnumerable<BillInstallmentDataOutputDto> installments, MemberGetDto memberInfo)
         {
             SmsStateTemplateGetDto smsStateTemplateInfo = await _smsStateTemplateQueryService.GetFirst(_billInstallmentSmsGroupId, _billTypeId);
-           // string messsage=string.Format(smsStateTemplateInfo.SmsText,memberInfo.BillId,)
+            long installmentAmount = installments?.Sum(i => i.Payable) ?? 0;
+            int installmentCount = installments?.Count() ?? 0;
+            string message = string.Format(smsStateTemplateInfo.SmsText, memberInfo.BillId, installmentAmount, installmentCount, Environment.NewLine);
+            foreach (var item in installments)
+            {
+                string installmentsMessage = $"\n{string.Format(SmsTemplates.BillPerInstallment, item.QueueNumberTitle, item.Payable, item.BillId, item.PaymentId, item.DeadLineDateJalali, Environment.NewLine)}";
+                message = message + installmentsMessage;
+            }
+            await _smsOldHandler.SendNew(memberInfo.MobileNumber, message, Guid.NewGuid());
         }
         private async Task<MemberGetDto> GetMemberInfo(string billId)
         {
@@ -198,7 +216,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             return allInstallments;
         }
-        private async Task Validation(BillInstallmentInputDto inputDto, CancellationToken cancellationToken)
+        private async Task Validate(BillInstallmentInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)
