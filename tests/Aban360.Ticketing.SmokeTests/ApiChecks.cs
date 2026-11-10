@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Aban360.NotificationPool.Application.Features.Sms;
 
 internal static class ApiChecks
 {
@@ -46,6 +47,8 @@ internal static class ApiChecks
         builder.Services.AddDbContext<UserPoolContext>(options => options.UseInMemoryDatabase(databaseName));
         builder.Services.AddUserPoolPersistenceInjections();
         builder.Services.AddUserPoolApplicationInjections();
+        var sms = new TicketSmsFake();
+        builder.Services.AddSingleton<ISmsOldHandler>(sms);
         builder.Services.AddControllers().AddApplicationPart(typeof(TicketCreateController).Assembly);
         builder.Services.AddAuthentication("TicketingSmoke")
             .AddScheme<AuthenticationSchemeOptions, TicketingSmokeAuthenticationHandler>("TicketingSmoke", _ => { });
@@ -66,7 +69,7 @@ internal static class ApiChecks
             var context = (UserPoolContext)seedScope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             context.Users.AddRange(new[] { owner, agent, stranger }.Select(id => new User
             {
-                Id = id, FullName = "Test", DisplayName = "Test", Username = id.ToString(),
+                Id = id, FullName = id == owner ? "Test" : "Support", DisplayName = "Test", Username = id.ToString(),
                 Password = "unused", Mobile = "000", Hash = "unused", InsertLogInfo = "test"
             }));
             context.TicketStatuses.AddRange(new[] { "New", "InProgress", "Answered", "Closed" }
@@ -74,7 +77,7 @@ internal static class ApiChecks
             context.Set<UserRole>().AddRange(new[] { "Reporter", "Operator", "Previous" }.Select(name => new UserRole
             {
                 UserId = owner,
-                Role = new Role { Name = name, Title = name, Hash = "unused", InsertLogInfo = "test" },
+                Role = new Role { Name = name, Title = name == "Reporter" ? "گزارشگر" : name == "Operator" ? "اپراتور" : "نقش قبلی", Hash = "unused", InsertLogInfo = "test" },
                 Hash = "unused",
                 InsertLogInfo = "test",
                 ValidTo = name == "Previous" ? DateTime.UtcNow : null
@@ -105,19 +108,39 @@ internal static class ApiChecks
         form.Add(new StringContent("Please check"), "Body");
         form.Add(FilePart(), "Attachments", "first.png");
         form.Add(FilePart(), "Attachments", "second.png");
-        var number = (await Data(await client.PostAsync("/v1/ticket/create", form))).GetString();
+        using var creationResponse = await client.PostAsync("/v1/ticket/create", form);
+        var created = await Data(creationResponse);
+        var number = created.GetProperty("ticketNumber").GetString();
         var page = await Data(await client.PostAsJsonAsync("/v1/ticket/list", new { pageNumber = 1, pageSize = 20 }));
         Check(page.GetProperty("totalCount").GetInt32() == 1, "Create controller commits ticket");
         var ticket = page.GetProperty("items")[0];
         var ticketId = ticket.GetProperty("id").GetInt64();
+        var requestNumber = ticketId.ToString("D8", System.Globalization.CultureInfo.InvariantCulture);
+        Check(created.GetProperty("id").GetInt64() == ticketId
+            && created.GetProperty("requestNumber").GetString() == requestNumber
+            && ticket.GetProperty("requestNumber").GetString() == requestNumber,
+            "Create returns the saved ID, existing ticket number and display number in the response body");
+        Check(!creationResponse.Headers.Contains("X-Ticket-Request-Number"), "Create does not return a custom display number header");
+        Check(sms.Messages.Count == 1 && sms.Messages[0].Text.Contains(requestNumber)
+            && sms.Messages[0].Text.Contains("Test عزیز") && sms.Messages[0].Text.Contains("زمان ثبت:")
+            && sms.Messages[0].Mobile == "000", "Creation SMS uses owner, name, request number and local timestamp");
         Check(ticket.GetProperty("ticketNumber").GetString() == number, "Create returns saved ticket number");
         Check(ticket.GetProperty("createdByUserFullName").GetString() == "Test"
-            && ticket.GetProperty("createdByUserRoles").GetString() == "Operator, Reporter",
-            "Ticket list includes the creator's full name and comma-separated active roles");
-        await Data(await client.GetAsync($"/v1/ticket/read/{ticketId}"));
+            && ticket.GetProperty("createdByUserRoles").GetString() == "اپراتور, گزارشگر",
+            "Ticket list includes the creator's full name and Persian titles of active roles");
+        var ticketDetails = await Data(await client.GetAsync($"/v1/ticket/read/{ticketId}"));
+        Check(ticketDetails.GetProperty("createdByUserFullName").GetString() == "Test"
+            && ticketDetails.GetProperty("createdByUserRoles").GetString() == "اپراتور, گزارشگر",
+            "Ticket details include the creator's full name and Persian titles of active roles");
         var history = await Data(await client.PostAsJsonAsync("/v1/ticket-message/list", new { ticketId }));
+        var getHistory = await Data(await client.GetAsync($"/v1/ticket-message/list?ticketId={ticketId}"));
+        Check(getHistory.ToString() == history.ToString(), "GET and POST message lists return the same data");
         var initialId = history.GetProperty("items")[0].GetProperty("id").GetInt64();
-        await Data(await client.GetAsync($"/v1/ticket-message/read/{initialId}"));
+        Check(history.GetProperty("items")[0].GetProperty("createdByUserFullname").GetString() == "Test",
+            "Message list includes the ticket creator's full name");
+        var initialMessage = await Data(await client.GetAsync($"/v1/ticket-message/read/{initialId}"));
+        Check(initialMessage.GetProperty("createdByUserFullname").GetString() == "Test",
+            "Single message includes the ticket creator's full name");
         var files = await Data(await client.GetAsync($"/v1/ticket-attachment/list/{initialId}"));
         Check(files.GetArrayLength() == 2 && !files[0].TryGetProperty("fileContent", out _), "Multipart files saved and metadata excludes bytes");
         var fileId = files[0].GetProperty("id").GetInt64();
@@ -167,8 +190,19 @@ internal static class ApiChecks
         reply.Add(new StringContent(ticketId.ToString()), "TicketId");
         reply.Add(new StringContent("Fixed"), "Body");
         await Data(await client.PostAsync("/v1/ticket-message/create", reply));
+        Check(sms.Messages.Count == 2 && sms.Messages[1].Text.Contains(requestNumber)
+            && sms.Messages[1].Text.Contains("پاسخ داده شد") && sms.Messages[1].Mobile == "000",
+            "Support reply sends an SMS to the ticket owner");
         var replyHistory = await Data(await client.PostAsJsonAsync("/v1/ticket-message/list", new { ticketId }));
         var replyId = replyHistory.GetProperty("items")[1].GetProperty("id").GetInt64();
+        var pagedHistory = await Data(await client.GetAsync($"/v1/ticket-message/list?ticketId={ticketId}&pageNumber=2&pageSize=1"));
+        Check(pagedHistory.GetProperty("totalCount").GetInt32() == 2
+            && pagedHistory.GetProperty("items").GetArrayLength() == 1
+            && pagedHistory.GetProperty("items")[0].GetProperty("id").GetInt64() == replyId,
+            "GET message list binds pagination from query parameters");
+        Check(replyHistory.GetProperty("items")[1].GetProperty("senderUserId").GetGuid() == agent
+            && replyHistory.GetProperty("items")[1].GetProperty("createdByUserFullname").GetString() == "Test",
+            "Support messages expose the ticket creator's name rather than the sender's name");
         ActAs(owner);
         var noRating = await Data(await client.GetAsync($"/v1/ticket-rating/read-by-message/{replyId}"));
         Check(noRating.ValueKind == JsonValueKind.Null, "Unrated response has a null payload");
@@ -257,6 +291,38 @@ internal static class ApiChecks
         var assignedQueueFromQuery = await Data(await client.GetAsync($"/v1/ticket/list?assignedToUserId={agent}&pageNumber=2&pageSize=1"));
         Check(assignedQueueFromQuery.GetProperty("totalCount").GetInt32() == 1
             && assignedQueueFromQuery.GetProperty("items").GetArrayLength() == 0, "GET ticket list binds the assigned-user filter and pagination");
+        ActAs(owner);
+        var smsCount = sms.Messages.Count;
+        using var followup = new MultipartFormDataContent();
+        followup.Add(new StringContent(ticketId.ToString()), "TicketId");
+        followup.Add(new StringContent("Owner follow-up"), "Body");
+        await Data(await client.PostAsync("/v1/ticket-message/create", followup));
+        Check(sms.Messages.Count == smsCount, "Owner follow-up does not send a support reply SMS");
+        sms.ThrowOnSend = true;
+        using var failedSmsTicket = new MultipartFormDataContent();
+        failedSmsTicket.Add(new StringContent("SMS unavailable"), "Subject");
+        failedSmsTicket.Add(new StringContent("Still saved"), "Body");
+        var createdWithFailedSms = await Data(await client.PostAsync("/v1/ticket/create", failedSmsTicket));
+        using (var checkScope = app.Services.CreateScope())
+        {
+            var saved = checkScope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            var persisted = await saved.Set<Ticket>().SingleAsync(x => x.Subject == "SMS unavailable");
+            Check(createdWithFailedSms.GetProperty("id").GetInt64() == persisted.Id
+                && createdWithFailedSms.GetProperty("ticketNumber").GetString() == persisted.TicketNumber
+                && createdWithFailedSms.GetProperty("requestNumber").GetString() == persisted.Id.ToString("D8", System.Globalization.CultureInfo.InvariantCulture),
+                "SMS failure leaves the committed ticket and successful response intact");
+        }
+        ActAs(agent);
+        using var failedSmsReply = new MultipartFormDataContent();
+        failedSmsReply.Add(new StringContent(ticketId.ToString()), "TicketId");
+        failedSmsReply.Add(new StringContent("Reply with unavailable SMS"), "Body");
+        await Data(await client.PostAsync("/v1/ticket-message/create", failedSmsReply));
+        using (var checkScope = app.Services.CreateScope())
+        {
+            var saved = checkScope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            Check(await saved.Set<TicketMessage>().AnyAsync(x => x.Body == "Reply with unavailable SMS"),
+                "SMS failure leaves the committed support response intact");
+        }
         await app.StopAsync();
         Console.WriteLine($"PASS: {checks} ticketing HTTP checks. No SQL Server connection was opened.");
     }

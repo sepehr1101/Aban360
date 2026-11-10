@@ -24,6 +24,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const int _monthDays = 30;
         public TariffItemResult Calculate(ConsumptionPartialInfo partialConsumptionInfo, CustomerInfoOutputDto customerInfo, string currentDateJalali, double monthlyConsumption, double olgoo, ConsumptionInfo consumptionInfo)
         {
+            //chah fellman
+            if(customerInfo.BillId=="3378884916317")
+            {
+                return new TariffItemResult();
+            }
+
              double consumptionAfter1404 = 0;
             if (partialConsumptionInfo.EndDateJalali.CompareTo(date1404_01_01) < 0)
             {

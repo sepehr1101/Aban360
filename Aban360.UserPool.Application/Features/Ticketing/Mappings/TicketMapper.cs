@@ -12,8 +12,16 @@ namespace Aban360.UserPool.Application.Features.Ticketing.Mappings
             CreateMap<TicketCreateDto, Ticket>(MemberList.None);
             CreateMap<TicketUpdateDto, Ticket>(MemberList.None);
             CreateMap<Ticket, TicketGetDto>()
-                .ForMember(dto => dto.CreatedByUserFullName, options => options.Ignore())
-                .ForMember(dto => dto.CreatedByUserRoles, options => options.Ignore());
+                .ForMember(dto => dto.CreatedByUserFullName, options => options.MapFrom(ticket =>
+                    ticket.CreatedByUser != null ? ticket.CreatedByUser.FullName : null))
+                .ForMember(dto => dto.CreatedByUserRoles, options => options.MapFrom(ticket =>
+                    ticket.CreatedByUser != null
+                        ? string.Join(", ", ticket.CreatedByUser.UserRoles
+                            .Where(userRole => userRole.ValidTo == null)
+                            .Select(userRole => userRole.Role.Title)
+                            .Distinct(StringComparer.OrdinalIgnoreCase)
+                            .OrderBy(title => title, StringComparer.OrdinalIgnoreCase))
+                        : string.Empty));
         }
     }
 }

@@ -3,6 +3,7 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Create.Contracts;
 using Aban360.UserPool.Application.Features.Ticketing.Validations;
+using Aban360.UserPool.Application.Features.Ticketing.Services.Contracts;
 using Aban360.UserPool.Domain.Features.Ticketing.Dto.Commands;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +15,15 @@ namespace Aban360.Api.Controllers.V1.UserPool.Ticketing.Commands
     {
         private readonly IUnitOfWork _uow;
         private readonly ITicketMessageCreateHandler _handler;
+        private readonly ITicketNotificationService _notifications;
 
-        public TicketMessageCreateController(IUnitOfWork uow, ITicketMessageCreateHandler handler)
+        public TicketMessageCreateController(IUnitOfWork uow, ITicketMessageCreateHandler handler, ITicketNotificationService notifications)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
             _handler = handler;
             _handler.NotNull(nameof(handler));
+            _notifications = notifications;
         }
 
         [HttpPost]
@@ -38,6 +41,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Ticketing.Commands
             };
             await _handler.Handle(createDto, CurrentUser, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
+            await _notifications.Answered(createDto.TicketId, CurrentUser.UserId);
             return Ok(true);
         }
     }

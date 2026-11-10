@@ -3,6 +3,8 @@ namespace Aban360.UserPool.Domain.Features.Ticketing.Dto.Queries
     public record TicketGetDto
     {
         public long Id { get; set; }
+        // Presentation only; all commands and authorization continue to use Id.
+        public string RequestNumber => Id.ToString("D8", System.Globalization.CultureInfo.InvariantCulture);
         public string TicketNumber { get; set; } = null!;
         public string Subject { get; set; } = null!;
         public Guid CreatedByUserId { get; set; }

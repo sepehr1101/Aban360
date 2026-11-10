@@ -49,6 +49,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
             decimal multiplierAbBaha = GetMultiplier(zarib, _olgoo, IsDomesticCategory(customerInfo.UsageId), isVillageCalculation, monthlyConsumption, customerInfo.BranchType);
             villageMultiplier = GetVillageMultiplier(nerkh, customerInfo, consumptionPartialInfo, monthlyConsumption, _olgoo);
 
+            //chah fellman
+            if (customerInfo.BillId == "3378884916317" && consumptionPartialInfo.Duration>0)
+            {
+                int cVal = c ?? 143000;
+                return new TariffItemResult(cVal * consumptionPartialInfo.Consumption);
+            }
+
             if (nerkh.Date2.IsLtEq(date_1405_03_15))
             {
                 double abBahaAmount = 0, oldAbBahaAmount = 0, abBahaFromExpression = 0;

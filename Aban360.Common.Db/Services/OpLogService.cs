@@ -200,6 +200,8 @@ namespace Aban360.Common.Db.Services
         public string Ip { get; set; }
         public string SystemInfo { get; set; }
         public DateTime RegisterDateTime { get; set; }
+        public string? RegisterDateTimeJalali => RegisterDateTime < new System.Globalization.PersianCalendar().MinSupportedDateTime
+            ? null : RegisterDateTime.ToString("yyyy/MM/dd HH:mm:ss", System.Globalization.CultureInfo.GetCultureInfo("fa-IR"));
         public string RegisterDateJalali { get; set; }
         public string Description { get; set; }
         public string? Scope { get; set; }

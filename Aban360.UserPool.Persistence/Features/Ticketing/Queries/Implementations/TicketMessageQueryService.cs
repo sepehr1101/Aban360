@@ -18,7 +18,8 @@ namespace Aban360.UserPool.Persistence.Features.Ticketing.Queries.Implementation
         }
 
         public Task<TicketMessage?> Get(long id, CancellationToken cancellationToken = default)
-            => _messages.SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
+            => _messages.Include(x => x.Ticket).ThenInclude(ticket => ticket.CreatedByUser)
+                .SingleOrDefaultAsync(x => x.Id == id, cancellationToken);
 
         public async Task<TicketPage<TicketMessage>> GetByTicket(long ticketId, int pageNumber = 1, int pageSize = 20, CancellationToken cancellationToken = default)
         {
@@ -28,7 +29,9 @@ namespace Aban360.UserPool.Persistence.Features.Ticketing.Queries.Implementation
             {
                 TotalCount = await query.CountAsync(cancellationToken),
                 Items = await query.OrderBy(x => x.CreatedAt).ThenBy(x => x.Id)
-                    .Skip(skip).Take(pageSize).ToListAsync(cancellationToken),
+                    .Skip(skip).Take(pageSize)
+                    .Include(x => x.Ticket).ThenInclude(ticket => ticket.CreatedByUser)
+                    .ToListAsync(cancellationToken),
                 PageNumber = pageNumber,
                 PageSize = pageSize
             };

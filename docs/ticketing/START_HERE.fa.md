@@ -46,8 +46,8 @@
 | مرحله | هویت | درخواست | نتیجه مورد انتظار |
 |---|---|---|---|
 | ۱ | مالک | `GET /v1/ticket-status/list` | HTTP 200، چهار وضعیت داخل `data` |
-| ۲ | مالک | `POST /v1/ticket/create` با multipart `Subject`، `Body` و یک عکس کوچک در `Attachments` | شماره پیگیری رشته‌ای داخل `data` |
-| ۳ | مالک | `POST /v1/ticket/my-list` با `{}` | تیکت ساخته‌شده؛ شناسه عددی را با تطبیق دقیق شماره پیگیری پیدا کنید |
+| ۲ | مالک | `POST /v1/ticket/create` با multipart `Subject`، `Body` و یک عکس کوچک در `Attachments` | شیء شامل `id`، `ticketNumber` و `requestNumber` داخل `data`؛ شماره نمایشی در بدنه است |
+| ۳ | مالک | `POST /v1/ticket/my-list` با `{}` | تیکت ساخته‌شده با همان `id` و `requestNumber` پاسخ ثبت؛ برای رفتن به جزئیات از `data.id` پاسخ ثبت استفاده کنید |
 | ۴ | مدیر | `POST /v1/ticket/update` با `id`، `subject`، GUID واقعی مسئول و `statusId: 2` | `data: true` |
 | ۵ | مسئول | `POST /v1/ticket-message/create` با multipart `TicketId` و `Body` | `data: true`؛ تیکت پاسخ‌داده‌شده می‌شود |
 | ۶ | مالک | `POST /v1/ticket-message/list` با `{ "ticketId": شناسه_واقعی }` | پیام اولیه و پاسخ؛ شناسه هر دو را استخراج کنید |

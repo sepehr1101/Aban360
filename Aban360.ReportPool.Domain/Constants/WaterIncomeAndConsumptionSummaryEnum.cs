@@ -8,5 +8,6 @@
         AverageConsumption = 4,
         Region = 5,
         UsageAndZone = 6,
+        Customer=7
     }
 }

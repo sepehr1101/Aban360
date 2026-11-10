@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Filters;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
@@ -19,6 +20,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Commands
         [HttpPost]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<NerkhUpdateDto>), StatusCodes.Status200OK)]
+        [TypeFilter(typeof(EndpointAuthorizationFilter))]
         public async Task<IActionResult> Update(NerkhUpdateDto UpdateDto, CancellationToken cancellationToken)
         {
             await _nerkhUpdateHandler.Handle(UpdateDto, CurrentUser, cancellationToken);

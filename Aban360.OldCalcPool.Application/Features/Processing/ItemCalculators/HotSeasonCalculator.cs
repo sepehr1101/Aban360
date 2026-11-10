@@ -24,7 +24,13 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
         const double _hotSeasonRate = 0.2;
         const int _firstSewageCalculation = 1;
         public TariffItemResult CalculateAb(double abBahaAmount, CustomerInfoOutputDto customerInfo, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo, bool isVillageCalculation, double villageMultiplier)
-        {           
+        {
+            //chah fellman
+            if (customerInfo.BillId == "3378884916317")
+            {
+                return new TariffItemResult();
+            }
+
             if (IsDomesticBelow25MeterConsumption(customerInfo, monthlyConsumption))
             {
                 return new TariffItemResult();
@@ -34,6 +40,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
 
         public TariffItemResult CalcFazelab(CustomerInfoOutputDto customerInfo, double fazelabAmount, double monthlyConsumption, TariffItemResult calcResult, ConsumptionPartialInfo consumptionPartialInfo, bool isVillageCalculation, double villageMultiplier)
         {
+            //chah fellman
+            if (customerInfo.BillId == "3378884916317")
+            {
+                return new TariffItemResult();
+            }
+
             if (IsDomesticBelow25MeterConsumption(customerInfo, monthlyConsumption))
             {
                 return new TariffItemResult();

@@ -129,8 +129,8 @@ namespace Aban360.ReportPool.Persistence.Base
             //todo: rename "RegisterDay" to "PhysicalSewageInstallDateJalali"
             return @$";With cte as(
                     	Select
-                            (SUM(Consumption) OVER (PARTITION BY CustomerNumber, ZoneId)) SumConsumption,
-							(SUM(Duration) OVER (PARTITION BY CustomerNumber, ZoneId)) SumDuration,
+                            (SUM(CAST(Consumption as bigint)) OVER (PARTITION BY CustomerNumber, ZoneId)) SumConsumption,
+							(SUM(CAST(Duration as bigint)) OVER (PARTITION BY CustomerNumber, ZoneId)) SumDuration,
 							t46.C2 RegionTitle,
 							t46.C0 RegionId,
                     		b.ZoneTitle,
@@ -210,19 +210,19 @@ namespace Aban360.ReportPool.Persistence.Base
 						--SUM(Duration)/SUM(IIF(BillC<=0,1,BillC)) DailyAverage,-- روز قرائت
                         ROUND(SUM(CAST(BillUnit AS decimal(18,2))*CAST(Duration AS decimal(18,2))/IIF(SumDuration<=0,1,SumDuration)),1) AS WaterConsumptionUnit, 
 						CAST((SUM(CAST(Consumption AS decimal(18,2)))*30.0)/NULLIF((SUM(CAST(IIF(Duration<=0,1,Duration) AS decimal))*1.0/NULLIF(SUM(CAST(IIF(BillC<=0,1,BillC) AS bigint)),0))*SUM(CAST(IIF(UnitC<=0,1,UnitC) AS bigint)),0) AS decimal(18,2)) AS ConsumptionAverage,
-						SUM(CAST(Duration AS decimal(18,2)))/SUM(CAST(IIF(BillC<=0,1,BillC) AS bigint)) AS DailyAverage,
-                        AVG(SumDuration) AverageDuration,
+						SUM(CAST(Duration AS decimal(18,2)))/SUM(CAST(IIF(BillC<=0,1,BillC) AS bigint)) AS DailyAverage,-- دوره قرائت
+                        AVG(SumDuration) AverageDuration,-- متوسط روز قرائت
 						MAX(RegionId) RegionId,
 						MAX(RegionTitle) RegionTitle,
                     	{SelectKey} as GroupKey,
                         {orderKey} as OrderKey,
-                        SUM(BillC) as BillCount,
+                        SUM(CAST(BillC AS bigint)) as BillCount,
                         COUNT(1) as TransactionCount,
                     	SUM(CAST(SewageConsumption as bigint)) as SewageConsumption,
                     	SUM(CAST(Consumption as bigint)) as Consumption,                    	
                     	SUM(CAST(Duration as bigint)) as Duration,
                     	SUM(CAST(SumItems AS bigint)) AS SumItems,
-                    	SUM(BillUnitCounts) as BillUnitCounts,
+                    	SUM(CAST(BillUnitCounts AS bigint)) as BillUnitCounts,
                     	SUM(CAST(SumWater AS bigint)) AS SumWater,
                     	SUM(CAST(Item1 AS bigint)) AS Item1,
                         SUM(CAST(Item2 AS bigint)) AS Item2,
@@ -242,8 +242,8 @@ namespace Aban360.ReportPool.Persistence.Base
                         SUM(CAST(Item16 AS bigint)) AS Item16,
                         SUM(CAST(Item17 AS bigint)) AS Item17,
                         SUM(CAST(Item18 AS bigint)) AS Item18,
-                        SUM(UnitC) as BillUnit,
-                        SUM(TotalUnit) as TotalUnit
+                        SUM(CAST(UnitC as bigint)) as BillUnit,
+                        SUM(CAST(TotalUnit as bigint)) as TotalUnit
                     From cte
                     Group By {groupKey}, {orderKey}
                     Order By {orderKey}";
@@ -264,6 +264,8 @@ namespace Aban360.ReportPool.Persistence.Base
                 return isUsageGroup ?
                     ("ZoneTitle, UsageGroup2Title", "(ZoneTitle CollaTe SQL_Latin1_General_CP1_CI_AS+' - '+ UsageGroup2Title)", "ZoneTitle, UsageGroup2Title") :
                     ("ZoneTitle, UsageTitle", "(ZoneTitle Collate SQL_Latin1_General_CP1_CI_AS+' - '+UsageTitle)", "ZoneId, UsageId");
+            if (enumState == WaterIncomeAndConsumptionSummaryEnum.Customer)
+                return ("BillId", "BillId", "BillId");
 
             return ("ZoneTitle", "ZoneTitle", "ZoneTitle");
         }

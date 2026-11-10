@@ -27,7 +27,7 @@ internal sealed class HttpRequestReportQueryService(IConfiguration configuration
     {
         if (!Enum.IsDefined(kind)) throw new ArgumentOutOfRangeException(nameof(kind));
         var needRoute = kind is HttpRequestReportKind.Routes or HttpRequestReportKind.Requests || filterRoute;
-        var needUser = kind is HttpRequestReportKind.Users or HttpRequestReportKind.Requests || filterUser;
+        var needUser = kind != HttpRequestReportKind.Summary || filterUser;
         var projection = new List<string>
         {
             "TRY_CONVERT(int, P.value('(properties/property[@key=\"StatusCode\"]/text())[1]', 'nvarchar(30)')) StatusCode",
@@ -51,6 +51,7 @@ internal sealed class HttpRequestReportQueryService(IConfiguration configuration
         var aggregate = $"""
             SELECT {(group.Length > 0 ? group + "," : "")}
                 COUNT_BIG(*) RequestCount,
+                {(kind != HttpRequestReportKind.Summary ? "MAX(CASE WHEN StatusCode BETWEEN 400 AND 599 THEN Id END) ErrorId," : "")}
                 COALESCE(SUM(CONVERT(bigint, CASE WHEN StatusCode >= 500 THEN 1 ELSE 0 END)),0) ServerErrorCount,
                 COALESCE(AVG(Elapsed),0) AverageMilliseconds,
                 COALESCE(MAX(Elapsed),0) MaximumMilliseconds,
@@ -59,15 +60,17 @@ internal sealed class HttpRequestReportQueryService(IConfiguration configuration
             {(group.Length > 0 ? "GROUP BY " + group : "")}
             """;
         var selection = kind == HttpRequestReportKind.Requests
-            ? "SELECT Id, TimeStamp, RequestMethod, RouteTemplate, UserId, TraceId, StatusCode, Elapsed AverageMilliseconds, Elapsed MaximumMilliseconds, Elapsed TotalMilliseconds, CONVERT(bigint,1) RequestCount, CONVERT(bigint,CASE WHEN StatusCode >= 500 THEN 1 ELSE 0 END) ServerErrorCount FROM Filtered"
+            ? "SELECT Id, CASE WHEN StatusCode BETWEEN 400 AND 599 THEN Id END ErrorId, TimeStamp, RequestMethod, RouteTemplate, UserId, TraceId, StatusCode, Elapsed AverageMilliseconds, Elapsed MaximumMilliseconds, Elapsed TotalMilliseconds, CONVERT(bigint,1) RequestCount, CONVERT(bigint,CASE WHEN StatusCode >= 500 THEN 1 ELSE 0 END) ServerErrorCount FROM Filtered"
             : aggregate;
         var order = kind switch
         {
-            HttpRequestReportKind.Requests => "MaximumMilliseconds DESC, Id DESC",
-            HttpRequestReportKind.Routes => "MaximumMilliseconds DESC, RequestMethod, RouteTemplate",
-            HttpRequestReportKind.Users => "AverageMilliseconds DESC, UserId",
-            _ => "RequestCount DESC"
+            HttpRequestReportKind.Requests => "r.MaximumMilliseconds DESC, r.Id DESC",
+            HttpRequestReportKind.Routes => "r.MaximumMilliseconds DESC, r.RequestMethod, r.RouteTemplate",
+            HttpRequestReportKind.Users => "r.AverageMilliseconds DESC, r.UserId",
+            _ => "r.RequestCount DESC"
         };
+        var includeDetails = kind != HttpRequestReportKind.Summary;
+        var userId = kind == HttpRequestReportKind.Routes ? "error.UserId" : "r.UserId";
         // The existing MSSqlServer sink stores structured properties as XML.
         return $$"""
             WITH Source AS (
@@ -84,7 +87,10 @@ internal sealed class HttpRequestReportQueryService(IConfiguration configuration
                   {{(filterUser ? "AND UserId = @UserId" : "")}}
                   {{(filterRoute ? "AND RouteTemplate = @RouteTemplate" : "")}}
             ), Results AS ({{selection}})
-            SELECT *, COUNT_BIG(*) OVER() TotalGroups FROM Results
+            SELECT r.*, COUNT_BIG(*) OVER() TotalGroups
+                {{(includeDetails ? ", error.UserId ErrorUserId, u.DisplayName" : "")}}
+            FROM Results r
+            {{(includeDetails ? $"LEFT JOIN Filtered error ON error.Id = r.ErrorId\n            LEFT JOIN [Aban360].UserPool.[User] u ON u.Id = TRY_CONVERT(uniqueidentifier, {userId})" : "")}}
             ORDER BY {{order}} OFFSET @offset ROWS FETCH NEXT @PageSize ROWS ONLY
             OPTION (RECOMPILE);
             """;
