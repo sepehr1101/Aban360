@@ -1,4 +1,5 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+﻿using Aban360.Api.Filters;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Contracts;
 using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Contracts;
@@ -26,6 +27,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Commands
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbonmanCreateDto>), StatusCodes.Status200OK)]
+        [TypeFilter(typeof(EndpointAuthorizationFilter))]
         public async Task<IActionResult> Create(AbonmanCreateDto inputDto, CancellationToken cancellationToken)
         {
             await _abonmanCreateHandler.Handle(inputDto, CurrentUser, cancellationToken);
@@ -34,6 +36,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule.Commands
 
         [HttpPost]
         [Route("update")]
+        [TypeFilter(typeof(EndpointAuthorizationFilter))]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbonmanUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update(AbonmanUpdateDto inputDto, CancellationToken cancellationToken)
         {
