@@ -149,6 +149,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
                 return CustomeStatus(result, HttpStatusCode.RequestedRangeNotSatisfiable, result.Message);
             }
         }
+
         private void EnqueueFailureSms(NowGenerateBillInputDto inputDto, NowGenerateBillOutputDto result)
         {
             string? mobileNumber = inputDto.MobileNumber;

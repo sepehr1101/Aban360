@@ -215,7 +215,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
                 PreviousDateJalali = customerInfo.LastMeterDateJalali,
                 ConsumptionAverage = null,
                 CounterStateCode = (int)CounterStateCodeEnum.Common,
-                OperatorCode = FreeGenerateBillOperatorCodeEnum.Customer,
+                OperatorCode = FreeGenerateBillOperatorCodeEnum.SelfClaimRemote,
                 IsConfirm = isConfirm,
             };
             NewBillOutputDto freeResult = await _freeGenerateBillHandler.Handle(freeGenerateBillDto, detailLogText, appUser, cancellationToken);

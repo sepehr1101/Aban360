@@ -5,11 +5,11 @@
         public int RegionId { get; set; }
         public string RegionTitle { get; set; }
         public string GroupKey { get; set; }
-        public int BillCount { get; set; }
-        public int TransactionCount { get; set; }
+        public long BillCount { get; set; }
+        public long TransactionCount { get; set; }
         public float SewageConsumption { get; set; }
         public long Consumption { get; set; }
-        public int BillUnitCounts { get; set; }
+        public long BillUnitCounts { get; set; }
         public long Duration { get; set; }
         public long SumItems { get; set; }
         public long SumWater { get; set; }
@@ -31,8 +31,8 @@
         public long Item16 { get; set; }
         public long Item17 { get; set; }
         public long Item18 { get; set; }
-        public int BillUnit { get; set; }
-        public int TotalUnit { get; set; }
+        public long BillUnit { get; set; }
+        public long TotalUnit { get; set; }
         public double? WaterConsumptionUnit { get; set; }
         public double? DailyAverage { get; set; }
         public decimal ConsumptionAverage { get; set; }

@@ -14,12 +14,12 @@
         public int? FromConsumption{ get; set; }
         public int? ToConsumption{ get; set; }
 
-        public int SumBillCount { get; set; }
-        public int SumTransactionCount { get; set; }
+        public long SumBillCount { get; set; }
+        public long SumTransactionCount { get; set; }
         public float SumSewageConsumption { get; set; }
         public long SumConsumption { get; set; }
         public decimal SumConsumptionAverage { get; set; }
-        public int SumBillUnitCounts { get; set; }
+        public long SumBillUnitCounts { get; set; }
         public long SumDuration { get; set; }
         public long SumItems { get; set; }
         public long SumWater { get; set; }
@@ -41,8 +41,8 @@
         public long SumItem16 { get; set; }
         public long SumItem17 { get; set; }
         public long SumItem18 { get; set; }
-        public int BillUnit { get; set; }
-        public int TotalUnit { get; set; }
+        public long BillUnit { get; set; }
+        public long TotalUnit { get; set; }
         public double? WaterConsumptionUnit { get; set; }
         public double? DailyAverage { get; set; }
         public decimal ConsumptionAverage { get; set; }
@@ -62,12 +62,12 @@
         public int? FromConsumption{ get; set; }
         public int? ToConsumption{ get; set; }
 
-        public int SumBillCount { get; set; }
-        public int SumTransactionCount { get; set; }
+        public long SumBillCount { get; set; }
+        public long SumTransactionCount { get; set; }
         public float SumSewageConsumption { get; set; }
         public long SumConsumption { get; set; }
         public float SumConsumptionAverage { get; set; }
-        public int SumBillUnitCounts { get; set; }
+        public long SumBillUnitCounts { get; set; }
         public long SumDuration { get; set; }
         public long SumItemsOff { get; set; }
         public long SumOffWater { get; set; }
@@ -89,8 +89,8 @@
         public long SumItemOff16 { get; set; }
         public long SumItemOff17 { get; set; }
         public long SumItemOff18 { get; set; }
-        public int BillUnit { get; set; }
-        public int TotalUnit { get; set; }
+        public long BillUnit { get; set; }
+        public long TotalUnit { get; set; }
         public double? WaterConsumptionUnit { get; set; }
         public double? DailyAverage { get; set; }
         public decimal ConsumptionAverage { get; set; }
