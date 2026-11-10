@@ -54,6 +54,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             ZoneIdAndCustomerNumber motherCustomerNumberInfo = await _commonMemberQueryService.Get(inputDto.MotherBillId, true);
 
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
+            if (trackingInfo.ZoneId != motherCustomerNumberInfo.ZoneId)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidMotherZoneId);
+            }
             MoshtrakOutputDto moshtrackInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
 
             string dbName = GetDbName(trackingInfo.ZoneId);

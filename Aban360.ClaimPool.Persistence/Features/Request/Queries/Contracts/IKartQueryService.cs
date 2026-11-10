@@ -12,5 +12,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts
         Task<IEnumerable<KartGetDto>> GetAll(string stringTrackNumber, int zoneId);
         Task<IEnumerable<KartGetDto>> GetAll(int customerNumber, int zoneId);
         Task<IEnumerable<ServiceLinkUnconfirmedDataOutputDto>> GetTodayInfoByCustomerNumber(int customerNumber, int zoneId);
+        Task<IEnumerable<KartGetDto>> Get(int customerNumber, int zoneId, string currentDateJalali);
     }
 }

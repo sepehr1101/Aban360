@@ -50,6 +50,13 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             IEnumerable<KartGetDto> data = await _sqlReportConnection.QueryAsync<KartGetDto>(query, new { customerNumber, zoneId });
             return data;
         }
+        public async Task<IEnumerable<KartGetDto>> Get(int customerNumber, int zoneId,string currentDateJalali)
+        {
+            string dbName = GetDbName(zoneId);
+            string query = GetAllByCustomeNumberAndCurrentDateQuery(dbName);
+            IEnumerable<KartGetDto> data = await _sqlReportConnection.QueryAsync<KartGetDto>(query, new { customerNumber, zoneId, currentDateJalali });
+            return data;
+        }
         public async Task<IEnumerable<ServiceLinkUnconfirmedDataOutputDto>> GetTodayInfoByCustomerNumber(int customerNumber, int zoneId)
         {
             string dbName = GetDbName(zoneId);
@@ -194,6 +201,57 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
                         k.town=@ZoneId AND
 						CAST(CustomerWarehouse.dbo.PersianToMiladi(k.date) As date)=CAST(GETDATE() As date) AND
 						k.type IN (3,4,5)
+                    Order by k.id Asc";
+        }
+        private string GetAllByCustomeNumberAndCurrentDateQuery(string dbName)
+        {
+            return $@"Select
+                        k.id,
+                    	k.town ZoneId,
+                    	k.radif CustomerNumber,
+                    	TRIM(k.eshtrak) ReadingNumber,
+                    	k.par_no StringTrackNumber,
+                    	k.serial Serial,
+                       	k.date CurrentDateJalali,
+                    	k.cod_takh DiscountTypeId,
+                    	k.pard Amount,
+                    	k.takhfif DiscountAmount,
+                       	k.pard_n  PardN,
+                    	k.pard_g PardG,
+                    	k.jam_ha Sum,
+                    	k.type Type,
+                    	k.noe_bed AmountItemId,
+						t100.C1 AmountItemTitle,
+                       	k.ser Ser,
+                    	k.enshab MeterDiameterId,
+                    	k.siphon SiphonId,
+                    	k.cod_enshab UsageId,
+                    	k.sabt IsRegister,
+                       	k.kol_hasene TotalServicesAmount,
+                    	k.total TotalServicesAmount,
+                    	k.pish_gest FirstInstallment,
+                    	k.JGEST_FA JGEST_FA,
+                    	k.pish_fa PishFa,
+                       	k.drsd_gest InstallmentPercent,
+                    	k.tedad_gest InstallmentCount,
+                    	k.ghest Installment,
+                    	k.date_bank BankDateJalali,
+                       	k.operator Operator,
+                    	k.tedad_mas DomesticUnit,
+                    	k.tedad_tej CommercialUnit,
+                    	k.tedad_vahd OtherUnit ,
+                    	k.cat_cod KartTypeId,
+                       	k.ICT_CO InsertedBy,
+                    	k.barge Barge ,
+                        k.mohlat DueDateJalali
+                    From [{dbName}].dbo.karten75 k
+					Left Join [Db70].dbo.T100 t100
+						ON k.noe_bed = t100.C0
+                    Where 
+                        k.radif=@CustomerNumber AND
+                        k.town=@ZoneId AND
+						CAST(CustomerWarehouse.dbo.PersianToMiladi(k.date) As date)=CAST(GETDATE() As date) AND
+						k.type IN (1)
                     Order by k.id Asc";
         }
         private string GetByCustomeNumberQuery(string dbName)
