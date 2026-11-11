@@ -3,6 +3,7 @@
 <ItemGroup>
 <Compile Include="../../Aban360.SystemPool.Domain/Features/Logging/Dto/Input/HttpRequestReportInput.cs" />
 <Compile Include="../../Aban360.SystemPool.Domain/Features/Logging/Dto/Output/HttpRequestReportOutput.cs" />
+<Compile Include="../../Aban360.SystemPool.Domain/Features/Logging/Dto/Output/LoggingDateTimeFormatter.cs" />
 <Compile Include="../../Aban360.SystemPool.Persistence/Features/Logging/Queries/Contracts/IHttpRequestReportQueryService.cs" />
 <Compile Include="../../Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Conracts/IHttpRequestReportHandler.cs" />
 <Compile Include="../../Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Implementations/HttpRequestReportHandler.cs" />

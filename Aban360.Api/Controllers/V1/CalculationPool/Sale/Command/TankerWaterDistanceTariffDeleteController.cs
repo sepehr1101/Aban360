@@ -1,4 +1,5 @@
-﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
+﻿using Aban360.Api.Filters;
+using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -19,6 +20,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
         [HttpPost]
         [Route("delete")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SearchById>), StatusCodes.Status200OK)]
+        [TypeFilter(typeof(EndpointAuthorizationFilter))]
         public async Task<IActionResult> Delete([FromBody] SearchById input, CancellationToken cancellationToken)
         {
             await _deleteHadler.Handle(input, CurrentUser, cancellationToken);

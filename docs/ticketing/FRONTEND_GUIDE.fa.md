@@ -1,5 +1,7 @@
 # راهنمای پیاده‌سازی فرانت تیکتینگ Aban360
 
+برای اعمال تغییرات جدید روی فرانت فعلی، فقط [مقایسهٔ قبل و بعد و تغییرات لازم](REQUEST_NUMBER_AND_SMS.fa.md) را بخوانید. این راهنمای مقایسه‌ای شامل قرارداد جدید پاسخ ثبت، شمارهٔ نمایشی و متن دقیق پیام موفقیت است؛ نیازی به خواندن دوبارهٔ راهنمای کامل زیر نیست.
+
 مخاطب: برنامه‌نویس React یا AI Agent مسئول توسعه رابط کاربری.
 
 آخرین بازبینی: ۲۰۲۶/۱۰/۲۷. برای شروع تحویل، فایل
@@ -149,9 +151,12 @@ type ApiDate = string;
 
 interface Ticket {
   id: Id;
+  requestNumber: string; // Display only, e.g. "00000125". Use id for commands/routes.
   ticketNumber: string;
   subject: string;
   createdByUserId: Guid;
+  createdByUserFullName: string | null; // نام کامل ایجادکننده در list و read
+  createdByUserRoles: string; // عنوان فارسی نقش‌های فعال، جداشده با کاما؛ در list و read
   assignedToUserId: Guid | null;
   statusId: number;
   createdAt: ApiDate;
@@ -163,6 +168,7 @@ interface TicketMessage {
   id: Id;
   ticketId: Id;
   senderUserId: Guid;
+  createdByUserFullname: string | null; // نام کامل ایجادکنندهٔ اصلی تیکت در تمام پیام‌ها
   body: string | null;
   createdAt: ApiDate;
 }
@@ -260,19 +266,33 @@ form.append("Subject", subject.trim());
 if (body.trim()) form.append("Body", body);
 files.forEach(file => form.append("Attachments", file, file.name));
 // از client موجود استفاده کنید؛ Content-Type را دستی ست نکنید.
-const ticketNumber = await ticketingRequest<string>("/v1/ticket/create", "POST", form);
+interface TicketCreateResult {
+  id: Id;
+  ticketNumber: string;
+  requestNumber: string;
+}
+const result = await ticketingRequest<TicketCreateResult>("/v1/ticket/create", "POST", form);
+const successMessage = `تیکت شما با شماره ${result.requestNumber} با موفقیت ثبت گردید`;
+// Show result.requestNumber; use result.id to navigate to ticket details.
 ```
 
-پاسخ `data` یک **رشته شماره تیکت** است؛ نه شناسه عددی و نه آبجکت Ticket.
-برای رفتن به صفحه جزئیات، `POST /v1/ticket/list` با `searchText: ticketNumber`
-و `pageSize: 100` بفرستید و رکوردی که `ticketNumber` آن دقیقاً برابر است انتخاب کنید.
-از `items[0]` بدون بررسی تطابق استفاده نکنید. اگر نتیجه پیدا نشد، شماره پیگیری را
-نمایش بدهید و کاربر را به فهرست ببرید؛ ثبت را خودکار دوباره نفرستید.
+پاسخ ثبت در `data` یک شیء شامل `id`، `ticketNumber` و `requestNumber` است.
+شمارهٔ درخواست را از `requestNumber` نمایش دهید و برای رفتن به جزئیات، پاسخ و
+سایر عملیات از `id` استفاده کنید. جستجوی مجدد فهرست برای یافتن شناسه لازم نیست.
+شمارهٔ نمایشی رشته است تا صفرهای ابتدایی حفظ شوند و در هدر پاسخ قرار ندارد.
+
+پس از دریافت پاسخ موفق ثبت، پیام زیر را در رابط کاربری نمایش دهید و شماره را
+از `result.requestNumber` قرار دهید:
+
+> تیکت شما با شماره 00000125 با موفقیت ثبت گردید
+
+متن دقیق پیام: «تیکت شما با شماره ... با موفقیت ثبت گردید». پیام موفقیت فقط
+پس از تأیید موفقیت API نمایش داده شود؛ در صورت خطا، پیام موفقیت نمایش ندهید.
 
 ## ۱۰. بارگیری و نمایش گفتگو
 
 1. `GET /v1/ticket/read/{id}` برای مشخصات تیکت.
-2. `POST /v1/ticket-message/list` با `{ ticketId, pageNumber: 1, pageSize: 20 }` برای پیام‌ها.
+2. `GET /v1/ticket-message/list?ticketId=123&pageNumber=1&pageSize=20` برای پیام‌ها؛ روش `POST /v1/ticket-message/list` با `{ ticketId, pageNumber: 1, pageSize: 20 }` نیز پشتیبانی می‌شود.
 3. برای هر پیام قابل مشاهده، `GET /v1/ticket-attachment/list/{messageId}` برای پیوست‌ها.
 4. برای پاسخ‌های غیرمالک، `GET /v1/ticket-rating/read-by-message/{messageId}` برای امتیاز.
 

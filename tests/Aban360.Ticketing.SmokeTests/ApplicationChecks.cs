@@ -91,14 +91,15 @@ internal static class ApplicationChecks
         Check(!fileValidator.Validate(new TicketFileCreateDto { OriginalFileName = "../photo.png", ContentType = "image/png", FileContent = png }).IsValid,
             "Path-containing file name rejected");
 
-        var number = await create.Handle(new TicketCreateDto
+        var createdTicket = await create.Handle(new TicketCreateDto
         {
             Subject = "Water pressure", Body = "Please investigate",
             Attachments = new List<TicketFileCreateDto> { new() { OriginalFileName = "photo.png", ContentType = "image/png", FileContent = png } }
         }, owner, ct);
         Check(!await context.Tickets.AsNoTracking().AnyAsync(), "Create handler does not commit implicitly");
         await context.SaveChangesAsync();
-        var ticketId = await context.Tickets.Where(x => x.TicketNumber == number).Select(x => x.Id).SingleAsync();
+        var ticketId = await context.Tickets.Where(x => x.TicketNumber == createdTicket.TicketNumber).Select(x => x.Id).SingleAsync();
+        Check(createdTicket.Id == ticketId, "Staged ticket receives its saved ID on unit of work commit");
         var initialId = await context.TicketMessages.Where(x => x.TicketId == ticketId).Select(x => x.Id).SingleAsync();
         var fileId = await context.TicketAttachments.Select(x => x.Id).SingleAsync();
         context.ChangeTracker.Clear();

@@ -18,7 +18,7 @@ creation, replies and ratings are taken from authentication, never form fields.
 
 | Method | Route | Input / result |
 |---|---|---|
-| POST | `/v1/ticket/create` | Multipart `Subject`, optional `Body`, repeated `Attachments`; returns ticket number |
+| POST | `/v1/ticket/create` | Multipart `Subject`, optional `Body`, repeated `Attachments`; returns `{ id, ticketNumber, requestNumber }` inside `data` |
 | POST or PATCH | `/v1/ticket/update` | JSON `id`, `subject`, `assignedToUserId`, `statusId`; returns `true` |
 | GET | `/v1/ticket/read/{id}` | Ticket details |
 | POST | `/v1/ticket/list` | JSON search/paging; returns ticket page |
@@ -68,8 +68,10 @@ Results are paginated; follow `totalCount` to read all pages.
 
 Use `assignedToUserId` equal to the current responder's ID for their assigned
 queue. Otherwise non-admin users receive their own tickets. Administrators can
-also filter `createdByUserId` or `assignedToUserId`. Creation returns the unique
-ticket number; it can be searched with `searchText` to retrieve the ticket ID.
+also filter `createdByUserId` or `assignedToUserId`. Creation returns the saved
+`id`, existing `ticketNumber`, and display-only `requestNumber` in the response
+body. Use `id` directly for navigation and commands, and `requestNumber` for
+display. No custom response header or additional list query is needed.
 
 For the administrator queue, POST `{}` to `/v1/ticket/list` to include tickets
 from all creators and assignees, across all statuses, with pagination. Explicit

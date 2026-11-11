@@ -13,6 +13,24 @@ All endpoints require authentication and the role configured in
 `ApiSettings:AdminRoleName`, and use the existing BaseController response envelope.
 Application and persistence services are registered by the existing assembly scans.
 
+`users`, `routes` and `slowest` also return:
+
+| JSON field | Meaning |
+| --- | --- |
+| `displayName` | Current `User.DisplayName`; in `users` and `slowest`, the row's user; in `routes`, the user of the error referenced by `errorId` |
+| `errorId` | Log ID accepted by `GET /v1/logging/errors/{id}`; null when no matching HTTP 400–599 error exists |
+| `errorUserId` | User ID recorded on that error; null for anonymous errors or when `errorId` is null |
+
+For grouped `users` and `routes` rows, `errorId` is the highest log ID among
+errors in that group **within the same date range and filters**. It opens one
+representative error, not all errors in the group. Routes may include multiple
+users; `displayName` therefore identifies only that representative error's user.
+For `slowest`, `errorId` identifies the individual request if its status is 400–599;
+successful requests have a null `errorId`. Anonymous or missing users have a null
+`displayName`. Names are read from the user table, not a historical snapshot.
+Existing counts, grouping, sorting and pagination are preserved; `serverErrorCount`
+still counts only 5xx responses. Error details remain restricted to administrators.
+
 Required query parameters: `FromDate`, `ToDate` in `yyyy/MM/dd` Persian calendar.
 Optional: `FromTime`, `ToTime` in `HH:mm` (both default to `00:00`), `UserId`,
 `RouteTemplate`, `Page` (default 1), `PageSize` (default 50, maximum 200).

@@ -11,7 +11,10 @@ namespace Aban360.UserPool.Application.Features.Ticketing.Mappings
         {
             CreateMap<TicketMessageCreateDto, TicketMessage>(MemberList.None);
             CreateMap<TicketMessageUpdateDto, TicketMessage>(MemberList.None);
-            CreateMap<TicketMessage, TicketMessageGetDto>();
+            CreateMap<TicketMessage, TicketMessageGetDto>()
+                .ForMember(dto => dto.CreatedByUserFullname, options => options.MapFrom(message =>
+                    message.Ticket != null && message.Ticket.CreatedByUser != null
+                        ? message.Ticket.CreatedByUser.FullName : null));
         }
     }
 }

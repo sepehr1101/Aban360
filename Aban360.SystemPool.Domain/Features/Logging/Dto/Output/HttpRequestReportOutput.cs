@@ -6,8 +6,12 @@ public sealed class HttpRequestReportOutput
     public string? RequestMethod { get; set; }
     public string? RouteTemplate { get; set; }
     public string? UserId { get; set; }
+    public string? DisplayName { get; set; }
+    public long? ErrorId { get; set; }
+    public string? ErrorUserId { get; set; }
     public string? TraceId { get; set; }
     public DateTime? TimeStamp { get; set; }
+    public string? TimeStampJalali => LoggingDateTimeFormatter.ToJalali(TimeStamp);
     public int? StatusCode { get; set; }
     public long RequestCount { get; set; }
     public long ServerErrorCount { get; set; }

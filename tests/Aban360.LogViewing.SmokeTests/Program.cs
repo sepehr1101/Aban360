@@ -22,6 +22,44 @@ void Check(bool condition, string name)
     if (!condition) throw new Exception(name);
     checks++;
 }
+// Verify the public JSON contract, calendar boundaries, 24-hour time and null handling.
+var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+foreach (var sample in new[]
+{
+    (new DateTime(2026, 3, 20, 23, 59, 59), "1404/12/29 23:59:59"),
+    (new DateTime(2026, 3, 21, 0, 0, 0), "1405/01/01 00:00:00"),
+    (new DateTime(2026, 11, 8, 17, 45, 30, DateTimeKind.Utc), "1405/08/17 17:45:30")
+})
+{
+    var report = new HttpRequestReportOutput { TimeStamp = sample.Item1 };
+    var detail = new HttpErrorLogDetailOutput { TimeStamp = sample.Item1 };
+    var operation = new OpLogDataDto { RegisterDateTime = sample.Item1 };
+    Check(report.TimeStampJalali == sample.Item2 && detail.TimeStampJalali == sample.Item2
+        && operation.RegisterDateTimeJalali == sample.Item2,
+        $"Expected {sample.Item2}; report={report.TimeStampJalali}, detail={detail.TimeStampJalali}, operation={operation.RegisterDateTimeJalali}");
+    using var reportJson = JsonDocument.Parse(JsonSerializer.Serialize(report, jsonOptions));
+    using var detailJson = JsonDocument.Parse(JsonSerializer.Serialize(detail, jsonOptions));
+    using var operationJson = JsonDocument.Parse(JsonSerializer.Serialize(operation, jsonOptions));
+    Check(reportJson.RootElement.GetProperty("timeStampJalali").GetString() == sample.Item2
+        && detailJson.RootElement.GetProperty("timeStampJalali").GetString() == sample.Item2
+        && operationJson.RootElement.GetProperty("registerDateTimeJalali").GetString() == sample.Item2
+        && reportJson.RootElement.GetProperty("timeStamp").GetDateTime() == sample.Item1
+        && detailJson.RootElement.GetProperty("timeStamp").GetDateTime() == sample.Item1
+        && operationJson.RootElement.GetProperty("registerDateTime").GetDateTime() == sample.Item1,
+        "JSON includes correctly suffixed Jalali fields and preserves Gregorian timestamps");
+}
+Check(new HttpRequestReportOutput().TimeStampJalali is null
+    && new HttpErrorLogDetailOutput().TimeStampJalali is null
+    && new OpLogDataDto().RegisterDateTimeJalali is null,
+    "Missing or unsupported timestamps do not throw during serialization");
+foreach (var type in typeof(HttpRequestReportOutput).Assembly.GetTypes()
+    .Where(type => type.Namespace == typeof(HttpRequestReportOutput).Namespace)
+    .Append(typeof(OpLogDataDto)))
+foreach (var property in type.GetProperties().Where(property =>
+    property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?)))
+    Check(type.GetProperty(property.Name + "Jalali")?.PropertyType == typeof(string),
+        $"{type.Name}.{property.Name} has a matching Jalali output field");
+
 foreach (var kind in Enum.GetValues<HttpRequestReportKind>())
 foreach (var userFilter in new[] { false, true })
 foreach (var routeFilter in new[] { false, true })
@@ -30,7 +68,7 @@ foreach (var routeFilter in new[] { false, true })
     Check(sql.Contains("AND UserId = @UserId") == userFilter
         && sql.Contains("AND RouteTemplate = @RouteTemplate") == routeFilter,
         "Optional report filters remain parameterized and apply only when supplied");
-    var needsUser = kind is HttpRequestReportKind.Users or HttpRequestReportKind.Requests || userFilter;
+    var needsUser = kind != HttpRequestReportKind.Summary || userFilter;
     var needsRoute = kind is HttpRequestReportKind.Routes or HttpRequestReportKind.Requests || routeFilter;
     Check(sql.Contains("@key=\"UserId\"") == needsUser
         && sql.Contains("@key=\"RouteTemplate\"") == needsRoute,
@@ -41,6 +79,18 @@ foreach (var routeFilter in new[] { false, true })
         && sql.Contains("COUNT_BIG(*) OVER() TotalGroups")
         && sql.Contains("OFFSET @offset ROWS FETCH NEXT @PageSize ROWS ONLY"),
         "Date bounds, full result count and pagination are preserved");
+    Check(sql.Contains("u.DisplayName") == (kind != HttpRequestReportKind.Summary)
+        && sql.Contains("LEFT JOIN Filtered error ON error.Id = r.ErrorId") == (kind != HttpRequestReportKind.Summary),
+        "Non-summary reports enrich existing rows with their error and display name without dropping anonymous requests");
+    if (kind != HttpRequestReportKind.Summary)
+    {
+        Check(sql.Contains("CASE WHEN StatusCode BETWEEN 400 AND 599 THEN Id END")
+            && sql.Contains("error.UserId ErrorUserId"),
+            "Only IDs accepted by the error-detail API are exposed with their matching error user");
+        var displayUser = kind == HttpRequestReportKind.Routes ? "error.UserId" : "r.UserId";
+        Check(sql.Contains($"u.Id = TRY_CONVERT(uniqueidentifier, {displayUser})"),
+            "Route display name belongs to the representative error; user and request names belong to the row's user");
+    }
 }
 var query = new CaptureQuery();
 var handler = new LoggingGetyDateTimeHandler(query);

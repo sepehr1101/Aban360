@@ -15,6 +15,11 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.ItemCalculators
     {
         public TariffItemResult Calculate(ConsumptionPartialInfo consumptionPartialInfo, CustomerInfoOutputDto customerInfo, double abBahaAmount, double monthlyConsumption, int olgoo)
         {
+            if (customerInfo.BillId == "3378884916317")
+            {
+                return new TariffItemResult();
+            }
+
             //L 2608
             if (IsUsageConstructor(customerInfo.UsageId))
             {

@@ -7,6 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../Aban360.UserPool.Persistence/Aban360.UserPool.Persistence.csproj" />
+    <ProjectReference Include="../../Aban360.NotificationPool.Domain/Aban360.NotificationPool.Domain.csproj" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0" />
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
@@ -16,6 +17,7 @@
     <Using Include="Microsoft.AspNetCore.Http" />
     <Using Include="Microsoft.Extensions.Logging" />
     <Compile Include="../../Aban360.UserPool.Application/Features/Ticketing/**/*.cs" LinkBase="Production" />
+    <Compile Include="../../Aban360.NotificationPool.Application/Features/Sms/*.cs" LinkBase="Production" />
     <Compile Include="../../Aban360.UserPool.Application/Features/Auth/Validations/BaseValidator.cs" LinkBase="Production" />
     <Compile Include="../../Aban360.UserPool.Application/Exceptions/InvalidIdException.cs" LinkBase="Production" />
     <Compile Include="../../Aban360.UserPool.Application/Extensions/ConfigureServices.cs" LinkBase="Production" />
