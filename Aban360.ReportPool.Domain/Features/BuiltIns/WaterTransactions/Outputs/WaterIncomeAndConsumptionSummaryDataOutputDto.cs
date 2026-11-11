@@ -37,5 +37,7 @@
         public double? DailyAverage { get; set; }
         public decimal ConsumptionAverage { get; set; }
         public decimal AverageDuration { get; set; }
+        public long EmptySum { get; set; }
+        public long HouseholdSum { get; set; }
     }
 }
