@@ -1,8 +1,8 @@
+using Aban360.ReportPool.Application.Features.FlatReports.Services;
 using Aban360.Api.Exceptions;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.ReportPool.Application.Features.FlatReports.Handler.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Aban360.Api.Filters;
@@ -11,20 +11,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.FlatReports
 {
     public class ServerReportsController : BaseController
     {
-        private readonly IServerReportsGetFilePathHandler _c0_serverReportsGetFilePathandler;
-        private readonly IServerReportsGetAllByThresholdHandler _c1_serverReportsGetAllByThresholdHandler;
+        private readonly IServerReportsService _service;
         private readonly IConfiguration _c1_configuration;
-        private readonly IServerReportsGetAllHandler _c2_serverReportsGetAllHandler;
-        public ServerReportsController(IServerReportsGetFilePathHandler c0_serverReportsGetFilePathHandler, IServerReportsGetAllByThresholdHandler c1_serverReportsGetAllByThresholdHandler, IConfiguration c1_configuration, IServerReportsGetAllHandler c2_serverReportsGetAllHandler)
+        public ServerReportsController(IServerReportsService service, IConfiguration c1_configuration)
         {
-            _c0_serverReportsGetFilePathandler = c0_serverReportsGetFilePathHandler;
-            _c0_serverReportsGetFilePathandler.NotNull(nameof(_c0_serverReportsGetFilePathandler));
-            _c1_serverReportsGetAllByThresholdHandler = c1_serverReportsGetAllByThresholdHandler;
-            _c1_serverReportsGetAllByThresholdHandler.NotNull(nameof(_c1_serverReportsGetAllByThresholdHandler));
+            service.NotNull(nameof(service));
+            _service = service;
+            c1_configuration.NotNull(nameof(c1_configuration));
             _c1_configuration = c1_configuration;
-            _c1_configuration.NotNull(nameof(_c1_configuration));
-            _c2_serverReportsGetAllHandler = c2_serverReportsGetAllHandler;
-            _c2_serverReportsGetAllHandler.NotNull(nameof(_c2_serverReportsGetAllHandler));
         }
 
         [HttpGet]
@@ -32,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.FlatReports
         [ProducesResponseType(typeof(ApiResponseEnvelope<ServerReportsGetFilePathDto>), StatusCodes.Status200OK)]
         public async Task<FileResult> Download(Guid id, CancellationToken cancellationToken)
         {
-            ServerReportsGetFilePathDto result = await _c0_serverReportsGetFilePathandler.Handle(id, cancellationToken);
+            ServerReportsGetFilePathDto result = await _service.GetFilePathAsync(id, cancellationToken);
             string excelContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             if (!System.IO.File.Exists(result.ReportPath))
             {
@@ -52,7 +46,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.FlatReports
         public async Task<IActionResult> GetRawFromServerReportsGetAllByThreshold1(CancellationToken cancellationToken)
         {
             int tresholdDay = int.Parse(_c1_configuration["FileManagement:ExcelExpireDay"]);
-            IEnumerable<ServerReportsGetAllDto> result = await _c1_serverReportsGetAllByThresholdHandler.Handle(CurrentUser.UserId, tresholdDay + 1, cancellationToken);
+            IEnumerable<ServerReportsGetAllDto> result = await _service.GetAllByThresholdAsync(CurrentUser.UserId, tresholdDay + 1, cancellationToken);
             return Ok(result);
         }
 
@@ -63,7 +57,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.FlatReports
         [ActionName("GetRaw")]
         public async Task<IActionResult> GetRawFromServerReportsGetAll2(CancellationToken cancellationToken)
         {
-            IEnumerable<ServerReportsGetAllDto> result = await _c2_serverReportsGetAllHandler.Handle(CurrentUser.UserId, cancellationToken);
+            IEnumerable<ServerReportsGetAllDto> result = await _service.GetAllAsync(CurrentUser.UserId, cancellationToken);
             return Ok(result);
         }
     }

@@ -5,13 +5,13 @@ using System.Xml.Linq;
 using Aban360.Api.Cronjobs;
 using Aban360.Api.Hubs.Contracts;
 using Aban360.Api.Hubs.Implementations;
-using Aban360.Api.Controllers.V1.ReportPool.FlatReports.Queries;
+using Aban360.Api.Controllers.V1.ReportPool.FlatReports;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Extensions;
 using Aban360.CommunicationPool.Domain.Features.Hubs.Dto.Commands;
-using Aban360.ReportPool.Application.Features.FlatReports.Handler.Commands.Contracts;
-using Aban360.ReportPool.Application.Features.FlatReports.Handler.Queries.Contracts;
+using Aban360.ReportPool.Application.Features.FlatReports.Services;
+
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Commands;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries;
 using Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Contracts;
@@ -121,9 +121,9 @@ try
     Check(files.Distinct().Count() == 2 && files.All(File.Exists),
         "Concurrent reports with the same title get distinct safe filenames");
 
-    var downloadHandler = Proxy.For<IServerReportsGetFilePathHandler>((_, _) => Task.FromResult(
+    var downloadHandler = Proxy.For<IServerReportsService>((_, _) => Task.FromResult(
         new ServerReportsGetFilePathDto { Id = report.Id, ReportPath = report.ReportPath! }));
-    var download = (Microsoft.AspNetCore.Mvc.FileStreamResult)await new ServerReportsDownloadController(downloadHandler)
+    var download = (Microsoft.AspNetCore.Mvc.FileStreamResult)await new ServerReportsController(downloadHandler, new Microsoft.Extensions.Configuration.ConfigurationBuilder().Build())
         .Download(report.Id, CancellationToken.None);
     using (download.FileStream)
     {
@@ -266,17 +266,18 @@ sealed class Pipeline : IDisposable
     public Pipeline()
     {
         _provider = new ServiceCollection().AddSingleton<IFakeReportHandler>(Handler).BuildServiceProvider();
-        var create = Proxy.For<IServerReportsCreateHandler>((_, args) =>
+        var reports = Proxy.For<IServerReportsService>((method, args) =>
         {
-            var input = (ServerReportsCreateDto)args[0]!;
-            Record = new() { Id = input.Id, UserId = input.UserId, ConnectionId = input.ConnectionId, ReportName = input.ReportName,
-                HeaderType = input.HeaderType, DataType = input.DataType, ReportInputType = input.ReportInputType,
-                ReportInputJson = input.ReportInputJson, HandlerKey = input.HandlerKey };
-            return Task.CompletedTask;
-        });
-        var update = Proxy.For<IServerReportsUpdateHandler>((method, args) =>
-        {
-            if (method.Name == "Handle") return Save((ServerReportsUpdateDto)args[0]!);
+            if (method.Name == "CreateAsync")
+            {
+                var input = (ServerReportsCreateDto)args[0]!;
+                Record = new() { Id = input.Id, UserId = input.UserId, ConnectionId = input.ConnectionId, ReportName = input.ReportName,
+                    HeaderType = input.HeaderType, DataType = input.DataType, ReportInputType = input.ReportInputType,
+                    ReportInputJson = input.ReportInputJson, HandlerKey = input.HandlerKey };
+                return Task.CompletedTask;
+            }
+            if (method.Name == "UpdateAsync") return Save((ServerReportsUpdateDto)args[0]!);
+            if (method.Name != "FailAsync") throw new Exception("Unexpected report service call: " + method.Name);
             Failures++;
             Record.ErrorDateTimeJalali = "recorded";
             return Task.CompletedTask;
@@ -306,7 +307,7 @@ sealed class Pipeline : IDisposable
         var notifier = new ReportCompletionNotifier(hub, NullLogger<ReportCompletionNotifier>.Instance);
         var type = typeof(IReportGenerator).Assembly.GetType("Aban360.Api.Cronjobs.ReportGenerator", true)!;
         var logger = Activator.CreateInstance(typeof(NullLogger<>).MakeGenericType(type))!;
-        Generator = (IReportGenerator)Activator.CreateInstance(type, create, update, query, duplicateQuery, _provider, notifier, background, logger)!;
+        Generator = (IReportGenerator)Activator.CreateInstance(type, reports, query, duplicateQuery, _provider, notifier, background, logger)!;
     }
     public Task Enqueue(ReportInput input, CancellationToken token = default, bool summary = false) => summary
         ? Generator.FireAndInform(input, token, Handler.HandleSummary, new AppUserManual(), "گزارش تست", "old-connection", "HandleSummary", new[] { "Hidden" })

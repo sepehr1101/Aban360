@@ -1,7 +1,6 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.ReportPool.Application.Features.Tagging.Services;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.ReportPool.Application.Features.Tagging.Handlers.Commands.Contracts;
-using Aban360.ReportPool.Application.Features.Tagging.Handlers.Queries.Contracts;
 using Aban360.ReportPool.Domain.Features.Tagging;
 using Aban360.ReportPool.Domain.Features.Tagging.Commands;
 using Microsoft.AspNetCore.Mvc;
@@ -11,33 +10,11 @@ namespace Aban360.Api.Controllers.V1.ReportPool.MainTagGroupging.Commands
     [Route("v1/main-tag-group")]
     public class MainTagGroupController : BaseController
     {
-        private readonly IMainTagGroupCreateHandler _createHandler;
-        private readonly IMainTagGroupUpdateHandler _updateHandler;
-        private readonly IMainTagGroupDeleteHandler _deleteHandler;
-        private readonly IMainTagGroupGetAllHandler _getAllHandler;
-        private readonly IMainTagGroupGetHandler _getByIdHandler;
-        public MainTagGroupController(
-            IMainTagGroupCreateHandler createHandler,
-            IMainTagGroupUpdateHandler updateHandler,
-            IMainTagGroupDeleteHandler deleteHandler,
-            IMainTagGroupGetAllHandler getAllHandler,
-            IMainTagGroupGetHandler getByIdHandler)
+        private readonly IMainTagGroupService _service;
+        public MainTagGroupController(IMainTagGroupService service)
         {
-            _createHandler = createHandler;
-            _createHandler.NotNull(nameof(createHandler));
-
-            _updateHandler = updateHandler;
-            _updateHandler.NotNull(nameof(updateHandler));
-
-            _deleteHandler = deleteHandler;
-            _deleteHandler.NotNull(nameof(deleteHandler));
-
-            _getAllHandler = getAllHandler;
-            _getAllHandler.NotNull(nameof(getAllHandler));
-
-            _getByIdHandler = getByIdHandler;
-            _getByIdHandler.NotNull(nameof(getByIdHandler));
-
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [Route("create")]
@@ -45,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.MainTagGroupging.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<MainTagGroupInsertInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] MainTagGroupInsertInputDto dto)
         {
-            await _createHandler.Handle(dto);
+            await _service.CreateAsync(dto);
             return Ok(dto);
         }
 
@@ -54,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.MainTagGroupging.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<MainTagGroupUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] MainTagGroupUpdateDto input, CancellationToken cancellationToken)
         {
-            await _updateHandler.Handle(input);
+            await _service.UpdateAsync(input);
             return Ok(input);
         }
 
@@ -63,7 +40,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.MainTagGroupging.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<int>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
-            await _deleteHandler.Handle(id);
+            await _service.DeleteAsync(id);
             return Ok(id);
         }
 
@@ -72,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.MainTagGroupging.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MainTagGroupGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            IEnumerable<MainTagGroupGetDto> result = await _getAllHandler.Handle();
+            IEnumerable<MainTagGroupGetDto> result = await _service.GetAllAsync();
             return Ok(result);
         }
 
@@ -81,7 +58,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.MainTagGroupging.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<MainTagGroupGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
         {
-            MainTagGroupGetDto result = await _getByIdHandler.Handle(id);
+            MainTagGroupGetDto result = await _service.GetSingleAsync(id);
             return Ok(result);
         }
     }

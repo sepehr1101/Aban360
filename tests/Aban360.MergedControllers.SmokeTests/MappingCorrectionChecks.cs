@@ -22,7 +22,7 @@ static class MappingCorrectionChecks
             configuration.AddProfile<BeforeMappingCorrections.Aban360.BlobPool.Application.Features.Taxonomy.Mappings.DocumentTypeMapper>();
         }).CreateMapper();
 
-        object Build(Type contract, object queryResult)
+        object Build(Type contract, object queryResult, long expectedId = 7)
         {
             var implementation = contract.Assembly.GetTypes().Single(candidate => candidate.IsClass && contract.IsAssignableFrom(candidate));
             var constructor = implementation.GetConstructors().Single();
@@ -35,7 +35,7 @@ static class MappingCorrectionChecks
                     if (parameter.ParameterType.FullName!.StartsWith("FluentValidation.IValidator"))
                         return Task.FromResult(new ValidationResult());
                     Check(parameter.ParameterType.Name.EndsWith("QueryService") && method.Name == "Get"
-                        && Convert.ToInt64(arguments![0]) == 7, "Update must query its target ID without issuing persistence commands");
+                        && Convert.ToInt64(arguments![0]) == expectedId, "Update must query its target ID without issuing persistence commands");
                     queries++;
                     return queryResult;
                 };
@@ -80,7 +80,22 @@ static class MappingCorrectionChecks
         Check(category.Title == categoryInput.Title && category.Css == categoryInput.Css, "Ignoring category Icon must still map other editable fields");
         Check(type.Title == typeInput.Title && type.Css == typeInput.Css && type.DocumentCategoryId == 9, "Ignoring type Icon must still map title, CSS and category");
         Check(queries == 3, "All three updates query once and leave committing to the caller");
-        Console.WriteLine($"PASS: {checks} mapping correction checks; three old defects reproduced with frozen profiles and corrected with production profiles/services.");
+        var subscriptionId = Enum.GetValues<Aban360.ClaimPool.Domain.Constants.SubscriptionTypeEnum>()[0];
+        var subscription = new Aban360.ClaimPool.Domain.Features.Metering.Entities.SubscriptionType { Id = subscriptionId, Title = "Old title" };
+        var subscriptionInput = new Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands.SubscriptionTypeUpdateDto { Id = subscriptionId, Title = "Changed title" };
+        var original = (Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Update.Contracts.ISubscriptionTypeUpdateHandler)
+            Build(typeof(Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Update.Contracts.ISubscriptionTypeUpdateHandler), Task.FromResult(subscription), Convert.ToInt64(subscriptionId));
+        bool reverseMapFailed = false;
+        try { await original.Handle(subscriptionInput, CancellationToken.None); }
+        catch (AutoMapperMappingException) { reverseMapFailed = true; }
+        Check(reverseMapFailed && subscription.Title == "Old title", "Frozen SubscriptionType handler must reproduce the reversed mapping failure");
+        var corrected = (Aban360.ClaimPool.Application.Features.Metering.Services.ISubscriptionTypeService)
+            Build(typeof(Aban360.ClaimPool.Application.Features.Metering.Services.ISubscriptionTypeService), Task.FromResult(subscription), Convert.ToInt64(subscriptionId));
+        await corrected.UpdateAsync(subscriptionInput, CancellationToken.None);
+        Check(subscription.Id.Equals(subscriptionId) && subscription.Title == "Changed title", "SubscriptionType update must change the queried entity");
+        Check(subscriptionInput.Id.Equals(subscriptionId) && subscriptionInput.Title == "Changed title", "SubscriptionType update must not overwrite the caller DTO");
+        Check(queries == 5, "Mapping corrections must keep existing query/staging boundaries");
+        Console.WriteLine($"PASS: {checks} mapping correction checks; four old defects reproduced and corrected with production profiles/services.");
         return checks;
     }
 }

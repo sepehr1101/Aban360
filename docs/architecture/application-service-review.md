@@ -1,6 +1,6 @@
 # Application service consolidation: full review
 
-Reviewed on 2026-11-13, covering 93 capabilities: the 5, 15, 30 and 20 batches, four ticketing services and the latest 19 groups. There are now 417 consolidated operations. DynamicReport was explicitly excluded from the latest batch and remains unchanged.
+Reviewed on 2026-11-13, covering 113 capabilities: the first 93 plus the latest 20 groups. There are now 524 consolidated operations. DynamicReport remains explicitly excluded and unchanged.
 
 The first 70 capabilities covered 304 moved operations: 301 method bodies matched their previous implementations after normalizing injected field names, local variable names and whitespace. Three intentional corrections await removal in RequestFlat.DeleteAsync, RequestIndividualTag.DeleteAsync and RequestWaterMeterTag.DeleteAsync. The additional 20 ticketing operations also matched after validator field renaming and three internal delegation rewrites: my-list calls GetListAsync, my-report calls GetReportAsync, and attachment content calls GetSingleAsync. Two obsolete handler dependencies were consequently removed, without introducing self-injection. Return types, parameters, async signatures, operation counts and remaining dependency unions were checked. This structural check supplements behavioral tests; it does not prove SQL or database correctness.
 
@@ -36,6 +36,18 @@ Three additional pre-existing defects were reproduced during consolidation: a mi
 
 OriginalMappings freezes the three pre-fix mapper profiles. MappingCorrectionChecks reproduces their old failures, then exercises the corrected production profiles and real application services: tracking ID/meter/status updates preserve ownership/navigation; icon updates preserve exact uploaded bytes as base64 while changing title/CSS/category; all three query their entity once and leave committing to their caller. The main handler comparisons intentionally use the current production mapper on both sides; historical mapper behavior is checked separately with the frozen profiles. Existing copy failure/cancellation/await and validator rejection checks remain active.
 
+## Access tree, Zone and latest 20 groups
+
+The latest batch replaces 106 handlers and their contracts with 20 services containing 107 operations. ServerReports includes the existing Fail method as FailAsync. Twenty API controllers, three Zone gateways and the ReportGenerator background pipeline were migrated. The 23 controllers/gateways have frozen consumer snapshots; ReportGenerator's original text is retained separately and its behavior is exercised by ReportGeneration.SmokeTests, which is now part of the standard wrapper.
+
+All 107 operations were rechecked after implementation. Of these, 103 retain identical bodies after injected field renaming and indentation normalization. Three MainTagGroup commands preserve their body and SQL sequence while obtaining connections through an immutable factory: the public constructor still uses the original SqlConnection property, while an internal constructor permits a recording provider in tests. The remaining intentional correction reverses the erroneous SubscriptionType update mapping to map the input DTO into the queried entity. The frozen original handler still reproduces its old AutoMapper failure; focused tests verify that the corrected service changes the tracked title and preserves the caller's input DTO. Return types, parameter types/names and async signatures were compared for every operation.
+
+The critical-controller suite continues to compare real JWT validation, binding and action behavior before/after. ApplicationServiceBaseline now translates service method calls to the original handler identities in that suite, retaining its original assertions. The focused access-tree/Zone suite adds 34 checks for nested child projections, parent titles/IDs, inactive node membership, menu/order flags, exact AuthValue values, module description formatting without tracked mutations, and all three gateways using the actual Zone service, including pending count queries and duplicate IDs.
+
+MainTagGroup adds 258 checks using the actual production Dapper command services and a recording ADO.NET provider. These verify SQL target tables and parameters, related-group IDs, ReadUncommitted isolation, deletion ordering, pending commands before commit, failure/cancellation at each command, negative affected-row results, open/begin/commit failures, already-open connections and disposal. A failed/pending related-group lookup is checked before opening the connection. These tests do not execute SQL Server or establish SQL syntax/schema correctness on a live database.
+
+Existing routes, permission metadata, DTOs, entities, validators, persistence implementations and the protected TrackingFlowGetHandler were not modified by this batch. Namespace inconsistencies in old Module/Workflow files are retained in frozen snapshots; new service contracts use their canonical feature namespace. The 745-action contract fixture was not recaptured.
+
 ## Existing defects found during review
 
 | Capability | Operation | Existing mismatch |
@@ -47,12 +59,13 @@ OriginalMappings freezes the three pre-fix mapper profiles. MappingCorrectionChe
 | RequestTracking | UpdateAsync | Corrected: added the missing RequestTrackingUpdateDto-to-RequestTracking map. |
 | DocumentCategory | UpdateAsync | Corrected: Icon is ignored by DTO mapping, preserving the service's base64 conversion. |
 | DocumentType | UpdateAsync | Corrected: Icon is ignored by DTO mapping, preserving the service's base64 conversion. |
+| SubscriptionType | UpdateAsync | Corrected: map updateDto into the queried SubscriptionType instead of mapping the entity back into the input. |
 
 The four tag lookup defects remain explicitly printed as KNOWN LEGACY DEFECTS and are not presented as successful functional scenarios. Their expected scalar/collection responses and handling of multiple matches require a separate API decision. The three requested mapping corrections are verified separately against frozen pre-fix profiles and current production profiles/services.
 
 ## Validation
 
-The final combined run passed all 12 suites, including OnlineUsers signal handling and the dedicated before/after ticketing suite. Results are in artifacts/test-results/20261113-205142-a36475f2/summary.json. API and Bridge builds completed successfully. The ticketing suite adds 621 assertions. Fifteen focused mapping correction checks reproduce the three old mapper defects using frozen profiles and verify the corrected production services. The broad suite passed 33,317 assertions, including 12,688 consolidation assertions across 84 services / 387 methods and 89 consumers / 390 operations, with 4,978 before/after scenarios; the first five services have 375 separate lookup assertions. The 745-action HTTP contract fixture was not recaptured. Production validators remain in place; behavioral tests exercise valid/rejected validator results, failure, cancellation, dependency order and pending tasks. Existing wall-clock ValidFrom assignments are compared as current timestamps; deterministic dates remain exact.
+The final combined run passed all 13 suites, including OnlineUsers, before/after ticketing and the background report generation pipeline. Results are in artifacts/test-results/20261113-233958-f6cb51e3/summary.json. API and Bridge builds completed successfully. The ticketing suite adds 621 assertions. Twenty-one focused mapping correction checks reproduce four old defects (including the SubscriptionType reverse-map error) and verify the corrected production services. The critical-controller suite passed 1,639 checks; focused tree/Zone checks passed 34 assertions; Dapper transaction checks passed 258 assertions. The final source audit is saved beside the suite summary as source-review-wave20.json. The broad suite passed 36,871 assertions, including 16,242 consolidation assertions across 104 services / 494 operations (491 differential methods and 3 SQL transaction methods) and 112 consumers / 498 operations, with 6,269 before/after scenarios; the first five services have 375 separate lookup assertions. The 745-action HTTP contract fixture was not recaptured. Production validators remain in place; behavioral tests exercise valid/rejected validator results, failure, cancellation, dependency order and pending tasks. Existing wall-clock ValidFrom assignments are compared as current timestamps; deterministic dates remain exact.
 
 Run the checks with:
 
@@ -159,3 +172,23 @@ The suites isolate persistence and external services. They do not execute produc
 | [DocumentCategory](../../Aban360.BlobPool.Application/Features/Taxonomy/Services/DocumentCategoryService.cs) | 6 | Bodies, signatures, operation count and dependency union matched; frozen consumer/handler comparison. |
 | [DocumentType](../../Aban360.BlobPool.Application/Features/Taxonomy/Services/DocumentTypeService.cs) | 5 | Bodies, signatures, operation count and dependency union matched; frozen consumer/handler comparison. |
 | [ReadingBound](../../Aban360.LocationPool.Application/Features/MainHierarchy/Services/ReadingBoundService.cs) | 7 | Bodies, signatures, operation count and dependency union matched; frozen consumer/handler comparison. |
+| [Profession](../../Aban360.ClaimPool.Application/Features/Land/Services/ProfessionService.cs) | 5 | Body/signature/dependency comparison; consumer and workflow regressions. |
+| [EstateBoundType](../../Aban360.ClaimPool.Application/Features/Land/Services/EstateBoundTypeService.cs) | 5 | Body/signature/dependency comparison; consumer and workflow regressions. |
+| [SubscriptionType](../../Aban360.ClaimPool.Application/Features/Metering/Services/SubscriptionTypeService.cs) | 5 | Corrected update mapping direction; frozen old failure and entity/input assertions. |
+| [ConstructionType](../../Aban360.ClaimPool.Application/Features/Land/Services/ConstructionTypeService.cs) | 5 | Body/signature/dependency comparison; consumer and workflow regressions. |
+| [MeterType](../../Aban360.ClaimPool.Application/Features/Metering/Services/MeterTypeService.cs) | 5 | Body/signature/dependency comparison; consumer and workflow regressions. |
+| [MeterMaterial](../../Aban360.ClaimPool.Application/Features/Metering/Services/MeterMaterialService.cs) | 5 | Body/signature/dependency comparison; consumer and workflow regressions. |
+| [MeterUseType](../../Aban360.ClaimPool.Application/Features/Metering/Services/MeterUseTypeService.cs) | 5 | Body/signature/dependency comparison; consumer and workflow regressions. |
+| [UseState](../../Aban360.ClaimPool.Application/Features/Metering/Services/UseStateService.cs) | 5 | Body/signature/dependency comparison; consumer and workflow regressions. |
+| [MeterProducer](../../Aban360.ClaimPool.Application/Features/Metering/Services/MeterProducerService.cs) | 5 | Body/signature/dependency comparison; consumer and workflow regressions. |
+| [MeterDiameter](../../Aban360.ClaimPool.Application/Features/Metering/Services/MeterDiameterService.cs) | 5 | Body/signature/dependency comparison; consumer and workflow regressions. |
+| [Flat](../../Aban360.ClaimPool.Application/Features/Land/Services/FlatService.cs) | 5 | Body/signature/dependency comparison; consumer and workflow regressions. |
+| [VirtualCategory](../../Aban360.OldCalcPool.Application/Features/Db70/Services/VirtualCategoryService.cs) | 5 | Body/signature/dependency comparison; consumer and workflow regressions. |
+| [ServerReports](../../Aban360.ReportPool.Application/Features/FlatReports/Services/ServerReportsService.cs) | 6 | Body/signature/dependency comparison; consumer and workflow regressions. |
+| [Zone](../../Aban360.LocationPool.Application/Features/MainHierarchy/Services/ZoneService.cs) | 6 | Body/signature comparison plus focused tree/Zone and critical JWT/permission regressions. |
+| [App](../../Aban360.UserPool.Application/Features/AccessTree/Services/AppService.cs) | 6 | Body/signature comparison plus focused tree/Zone and critical JWT/permission regressions. |
+| [SubModule](../../Aban360.UserPool.Application/Features/AccessTree/Services/SubModuleService.cs) | 6 | Body/signature comparison plus focused tree/Zone and critical JWT/permission regressions. |
+| [Endpoint](../../Aban360.UserPool.Application/Features/AccessTree/Services/EndpointService.cs) | 5 | Body/signature comparison plus focused tree/Zone and critical JWT/permission regressions. |
+| [Module](../../Aban360.UserPool.Application/Features/AccessTree/Services/ModuleService.cs) | 6 | Body/signature comparison plus focused tree/Zone and critical JWT/permission regressions. |
+| [Workflow](../../Aban360.WorkflowPool.Application/Features/Design/Services/WorkflowService.cs) | 7 | Body/signature/dependency comparison; consumer and workflow regressions. |
+| [MainTagGroup](../../Aban360.ReportPool.Application/Features/Tagging/Services/MainTagGroupService.cs) | 5 | Connection factory preserves SQL behavior; 258 Dapper/provider checks. |

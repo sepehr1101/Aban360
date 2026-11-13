@@ -1,9 +1,6 @@
+using Aban360.UserPool.Application.Features.AccessTree.Services;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Create.Contracts;
-using Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Delete.Contracts;
-using Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Update.Contracts;
-using Aban360.UserPool.Application.Features.AccessTree.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.AceessTree.Dto.Commands;
 using Aban360.UserPool.Domain.Features.AceessTree.Dto.Queries;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
@@ -15,42 +12,13 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
     public class ModuleController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IModuleCreateHandler _moduleCreateHandler;
-        private readonly IModuleUpdateHandler _moduleUpdateHandler;
-        private readonly IModuleDeleteHandler _moduleDeleteHandler;
-        private readonly IModuleGetSingleHandler _moduleGetSingleHandler;
-        private readonly IModuleGetAllHandler _moduleGetAllHandler;
-        private readonly IModuleGetChildrensHandler _moduleGetChildrensHandler;
-
-        public ModuleController(
-            IUnitOfWork uow,
-            IModuleCreateHandler moduleCreateHandler,
-            IModuleUpdateHandler moduleUpdateHandler,
-            IModuleDeleteHandler moduleDeleteHandler,
-            IModuleGetSingleHandler moduleGetSingleHandler,
-            IModuleGetAllHandler moduleGetAllHandler,
-            IModuleGetChildrensHandler moduleGetChildrensHandler)
+        private readonly IModuleService _service;
+        public ModuleController(IUnitOfWork uow, IModuleService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _moduleCreateHandler = moduleCreateHandler;
-            _moduleCreateHandler.NotNull(nameof(moduleCreateHandler));
-
-            _moduleUpdateHandler = moduleUpdateHandler;
-            _moduleUpdateHandler.NotNull(nameof(moduleUpdateHandler));
-
-            _moduleDeleteHandler = moduleDeleteHandler;
-            _moduleDeleteHandler.NotNull(nameof(moduleDeleteHandler));
-
-            _moduleGetSingleHandler = moduleGetSingleHandler;
-            _moduleGetSingleHandler.NotNull(nameof(moduleGetSingleHandler));
-
-            _moduleGetAllHandler = moduleGetAllHandler;
-            _moduleGetAllHandler.NotNull(nameof(moduleGetAllHandler));
-
-            _moduleGetChildrensHandler = moduleGetChildrensHandler;
-            _moduleGetChildrensHandler.NotNull(nameof(_moduleGetChildrensHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -58,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
         [ProducesResponseType(typeof(ApiResponseEnvelope<ModuleCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] ModuleCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _moduleCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -69,7 +37,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
         [ProducesResponseType(typeof(ApiResponseEnvelope<ModuleUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] ModuleUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _moduleUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -80,7 +48,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
         [ProducesResponseType(typeof(ApiResponseEnvelope<ModuleDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] ModuleDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _moduleDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -91,7 +59,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
         [ProducesResponseType(typeof(ApiResponseEnvelope<ModuleGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Single(int id, CancellationToken cancellationToken)
         {
-            ModuleGetDto module = await _moduleGetSingleHandler.Handle(id, cancellationToken);
+            ModuleGetDto module = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(module);
         }
 
@@ -100,7 +68,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ModuleGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<ModuleGetDto> module = await _moduleGetAllHandler.Handle(cancellationToken);
+            ICollection<ModuleGetDto> module = await _service.GetAllAsync(cancellationToken);
             return Ok(module);
         }
 
@@ -109,7 +77,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ModuleWithSubModuleGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetChildrens(int id, CancellationToken cancellationToken)
         {
-            IEnumerable<ModuleWithSubModuleGetDto> Modules = await _moduleGetChildrensHandler.Handle(id, cancellationToken);
+            IEnumerable<ModuleWithSubModuleGetDto> Modules = await _service.GetChildrenAsync(id, cancellationToken);
             return Ok(Modules);
         }
     }

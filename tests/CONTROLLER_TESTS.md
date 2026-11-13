@@ -1,6 +1,6 @@
 # Consolidated controller regression tests
 
-Run all 12 suites on Windows:
+Run all 13 suites on Windows:
 
 ```powershell
 ./scripts/test-merged-controllers.ps1
@@ -27,8 +27,11 @@ The wrapper builds the main API and Bridge API once, then builds and runs the su
 | `PermissionChecks` | Production authorization filter with fake claims; preserved permission identifiers and allowed/denied access |
 | `WorkflowChecks` | ZIP contents/name/MIME and failures; job scheduling, awaiting and cancellation; SMS with fake services |
 | `LookupServiceChecks` | Bank, SupportedOperator, SupportedField, AccountType and CreditorType: production DI registrations, scoped lifetime, actual mapping profiles, controller/service/query execution, null and empty results, errors, cancellation and asynchronous completion |
-| `ServiceConsolidationChecks` | 84 application services / 387 operations and 89 API/Bridge/gateway/SignalR consumers (390 consumer operations); 4,978 before/after scenarios with real mapping, DI scopes, inputs, outputs, tracked mutations, dependency order, empty/missing results, flags, validation rejection, errors, cancellation and awaiting |
+| `ServiceConsolidationChecks` | 104 application services / 494 operations (491 frozen-handler comparisons plus 3 SQL transaction operations) and 112 API/Bridge/gateway/SignalR consumers (498 operations); 6,269 before/after scenarios with real mapping, DI scopes, inputs, outputs, tracked mutations, dependency order, empty/missing results, flags, validation rejection, errors, cancellation and awaiting |
 | `OnlineUsers.SmokeTests` | SignalR connection registry, connection/disconnection failures, presence, heartbeat and report notifications, including the consolidated HubEvent service boundary |
+| `AccessTreeZoneChecks` | 34 focused assertions for real hierarchy projections, parent identities, exact permission values, inactive nodes, menu/order fields, module title formatting and real-service Zone gateways |
+| `MainTagTransactionChecks` | 258 assertions using actual Dapper command services with a recording provider: SQL/parameters, isolation, deletion order, commit timing, failures, cancellation and disposal |
+| `ReportGeneration.SmokeTests` | Background report pipeline, completion/failure recording, queued execution, awaited persistence, transport failures and actual generated-file download through the consolidated ServerReports service/controller |
 | `Ticketing.SmokeTests` | 621 assertions: EF InMemory persistence, the same application and HTTP workflows against frozen handlers/controllers and the four consolidated services/controllers, service signatures and scoped registrations, pending command completion, failure/cancellation, and metadata authorization before file reads |
 | `CriticalControllers.RegressionTests` | Role, App, Endpoint, Module and Zone: real JWT validation, model binding, permission and action behavior |
 | `ControllerBatch*` and `ControllerConsolidation` | Comparison against pre-merge routes and controller snapshots, including action behavior and responses |
@@ -71,6 +74,8 @@ The four ticketing capabilities add 20 consolidated operations, bringing the tot
 The following 19-group batch adds 93 operations, bringing the complete consolidation scope to 93 capabilities / 417 operations. DynamicReport was explicitly excluded. `ServiceConsolidation19` extends the frozen handler and consumer comparisons and shared contract mapping to the same five projects that use the earlier manifests. Instrumented uploaded files verify asynchronous copy completion, errors and cancellation before persistence. Seven additional ReadingBound cases verify interval errors, sorted input and the IsValid flag. Individual and Siphon preserve their original BaseException validation results. Four previous tag lookup failures remain asserted and printed separately. The subsequently requested fixes add the RequestTracking update map and preserve base64 icons in both document update maps. OriginalMappings freezes pre-fix profiles; MappingCorrectionChecks reproduces the three original defects and verifies corrected production services, exact file bytes, other editable fields, ownership/navigation preservation and existing query/save boundaries. Frozen handler comparisons use current production profiles on both sides. No API fixture was recaptured.
 
 ## Intentional contract changes
+
+The next 20 groups add 106 original handlers / 107 operations, including ServerReports.Fail, bringing the total to 113 capabilities / 524 operations. Wave20 snapshots and manifests extend shared comparisons to the critical-controller suite as well as the existing linked projects. The critical suite retains actual JWT and MVC binding checks; service call identities normalize to old handler contracts. The separately tested MainTagGroup commands use the original production SqlConnection path through an immutable factory with an internal constructor for a recording provider. File download is exercised by ReportGeneration rather than opening a fake path in generic consumer comparison. SubscriptionType.UpdateAsync intentionally corrects the old reversed mapping; its frozen handler remains faulty, and focused/differential checks distinguish that correction. The standard wrapper now builds/runs 13 suites. Domain, DTOs, validators and persistence are unchanged.
 
 Ordinary execution never rewrites the snapshot. After reviewing an intentional API change and its client impact, capture the new contract explicitly:
 

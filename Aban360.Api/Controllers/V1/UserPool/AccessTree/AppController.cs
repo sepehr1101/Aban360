@@ -1,9 +1,6 @@
+using Aban360.UserPool.Application.Features.AccessTree.Services;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Create.Contracts;
-using Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Delete.Contracts;
-using Aban360.UserPool.Application.Features.AccessTree.Handlers.Commands.Update.Contracts;
-using Aban360.UserPool.Application.Features.AccessTree.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.AceessTree.Dto.Commands;
 using Aban360.UserPool.Domain.Features.AceessTree.Dto.Queries;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
@@ -15,42 +12,13 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
     public class AppController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IAppCreateHandler _appCreateHandler;
-        private readonly IAppUpdateHandler _appUpdateHandler;
-        private readonly IAppDeleteHandler _appDeleteHandler;
-        private readonly IAppGetSingleHandler _appGetSingleHandler;
-        private readonly IAppGetAllHandler _appGetAllHandler;
-        private readonly IAppGetChildrensHandler _appGetChildrensHandler;
-
-        public AppController(
-            IUnitOfWork uow,
-            IAppCreateHandler appCreateHandler,
-            IAppUpdateHandler appUpdateHandler,
-            IAppDeleteHandler appDeleteHandler,
-            IAppGetSingleHandler appGetSingleHandler,
-            IAppGetAllHandler appGetAllHandler,
-            IAppGetChildrensHandler appGetChildrensHandler)
+        private readonly IAppService _service;
+        public AppController(IUnitOfWork uow, IAppService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(_uow));
-
-            _appCreateHandler = appCreateHandler;
-            _appCreateHandler.NotNull(nameof(_appCreateHandler));
-
-            _appUpdateHandler = appUpdateHandler;
-            _appUpdateHandler.NotNull(nameof(_appUpdateHandler));
-
-            _appDeleteHandler = appDeleteHandler;
-            _appDeleteHandler.NotNull(nameof(_appDeleteHandler));
-
-            _appGetSingleHandler = appGetSingleHandler;
-            _appGetSingleHandler.NotNull(nameof(_appGetSingleHandler));
-
-            _appGetAllHandler = appGetAllHandler;
-            _appGetAllHandler.NotNull(nameof(_appGetAllHandler));
-
-            _appGetChildrensHandler = appGetChildrensHandler;
-            _appGetChildrensHandler.NotNull(nameof(_appGetChildrensHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -58,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
         [ProducesResponseType(typeof(ApiResponseEnvelope<AppCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] AppCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _appCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -69,7 +37,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
         [ProducesResponseType(typeof(ApiResponseEnvelope<AppUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] AppUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _appUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -80,7 +48,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
         [ProducesResponseType(typeof(ApiResponseEnvelope<AppDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] AppDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _appDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -91,7 +59,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
         [ProducesResponseType(typeof(ApiResponseEnvelope<AppGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(int id, CancellationToken cancellationToken)
         {
-            var app = await _appGetSingleHandler.Handle(id, cancellationToken);
+            var app = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(app);
         }
 
@@ -100,7 +68,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<AppGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var apps = await _appGetAllHandler.Handle(cancellationToken);
+            var apps = await _service.GetAllAsync(cancellationToken);
             return Ok(apps);
         }
 
@@ -109,7 +77,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.AccessTree
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<AppWithModuleGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetChildrens(int id, CancellationToken cancellationToken)
         {
-            IEnumerable<AppWithModuleGetDto> apps = await _appGetChildrensHandler.Handle(id, cancellationToken);
+            IEnumerable<AppWithModuleGetDto> apps = await _service.GetChildrenAsync(id, cancellationToken);
             return Ok(apps);
         }
     }

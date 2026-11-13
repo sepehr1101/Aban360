@@ -1,0 +1,227 @@
+using Aban360.Api.Hubs.Contracts;
+using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using Aban360.ReportPool.Application.Features.FlatReports.Handler.Commands.Contracts;
+using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Commands;
+using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries;
+using Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Contracts;
+using DNTPersianUtils.Core;
+using Hangfire;
+using Newtonsoft.Json;
+using System.Runtime.InteropServices;
+using System.Reflection;
+using System.Runtime.ExceptionServices;
+
+namespace Aban360.Api.Cronjobs
+{
+    public interface IReportGenerator
+    {
+        Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId, string[]? excludedProperties = null);
+        Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId, [Optional] string methodName, string[]? excludedProperties = null);
+        Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto, string myMethodName, string[]? excludedProperties = null);
+    }
+
+    internal sealed class ReportGenerator : IReportGenerator
+    {
+        private readonly IServerReportsCreateHandler _serverReportsCreateHandler;
+        private readonly IServerReportsUpdateHandler _serverReportsUpdateHandler;
+        private readonly IServerReportsGetByIdService _serverReportsGetByIdServices;
+        private readonly IServerReportsQueryService _serverReportsGetByJsonInputService;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly IReportCompletionNotifier _reportCompletionNotifier;
+        private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly ILogger<ReportGenerator> _logger;
+        private const string MethodName = "Handle";
+
+        public ReportGenerator(
+            IServerReportsCreateHandler serverReportsCreateHandler,
+            IServerReportsUpdateHandler serverReportsUpdateHandler,
+            IServerReportsGetByIdService serverReportsGetByIdServices,
+            IServerReportsQueryService serverReportsGetByJsonInputService,
+            IServiceProvider serviceProvider,
+            IReportCompletionNotifier reportCompletionNotifier,
+            IBackgroundJobClient backgroundJobClient,
+            ILogger<ReportGenerator> logger)
+        {
+            _serverReportsCreateHandler = serverReportsCreateHandler;
+            _serverReportsCreateHandler.NotNull(nameof(serverReportsCreateHandler));
+
+            _serverReportsUpdateHandler = serverReportsUpdateHandler;
+            _serverReportsUpdateHandler.NotNull(nameof(serverReportsUpdateHandler));
+
+            _serverReportsGetByIdServices = serverReportsGetByIdServices;
+            _serverReportsGetByIdServices.NotNull(nameof(serverReportsGetByIdServices));
+
+            _serverReportsGetByJsonInputService = serverReportsGetByJsonInputService;
+            _serverReportsGetByJsonInputService.NotNull(nameof(serverReportsGetByJsonInputService));
+
+            _serviceProvider = serviceProvider;
+            _serviceProvider.NotNull(nameof(serviceProvider));
+
+            _reportCompletionNotifier = reportCompletionNotifier;
+            _reportCompletionNotifier.NotNull(nameof(reportCompletionNotifier));
+            _backgroundJobClient = backgroundJobClient;
+            _logger = logger;
+        }
+        public async Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId, string[]? excludedProperties = null)
+        {
+            Guid id = Guid.NewGuid();
+            ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(id, reportInput, GetData, appUser, reportTitle, connectionId);
+            await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
+
+
+            try
+            {
+                ReportOutput<THead, TData> reportOutput = await GetData(reportInput, cancellationToken);
+                string reportPath = await ExcelManagement.ExportToExcelAsync(reportOutput.ReportHeader, reportOutput.ReportData, reportOutput.Title, excludedProperties);
+                await _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(id, reportPath, DateTime.Now, true), cancellationToken);
+            }
+            catch
+            {
+                await MarkFailed(id);
+                throw;
+            }
+        }
+        public async Task FireAndInform<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId, string? methodName = MethodName, string[]? excludedProperties = null)
+        {
+            methodName ??= GetData.Method.Name.Split('.').Last();
+            //await DuplicateReportValidation(JsonConvert.SerializeObject(reportInput), appUser.UserId);//check
+            ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(Guid.NewGuid(), reportInput, GetData, appUser, reportTitle, connectionId, methodName);
+            await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
+            try
+            {
+                _backgroundJobClient.Enqueue<IReportGenerator>(generator => generator.DoFireAndInform(serverReportsCreateDto, methodName, excludedProperties));
+            }
+            catch
+            {
+                await MarkFailed(serverReportsCreateDto.Id);
+                throw;
+            }
+        }
+
+        public async Task DoFireAndInform(ServerReportsCreateDto serverReportsCreateDto, string myMethodName, string[]? excludedProperties = null)
+        {
+            var report = await _serverReportsGetByIdServices.GetById(serverReportsCreateDto.Id)
+                ?? throw new InvalidOperationException($"Report '{serverReportsCreateDto.Id}' was not found.");
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(report.ReportPath) && File.Exists(report.ReportPath))
+                {
+                    await _reportCompletionNotifier.Notify(report.UserId, report.ReportName ?? string.Empty, report.Id);
+                    return;
+                }
+
+                var contract = ResolveReportType(report.HandlerKey);
+                if (!contract.IsInterface) throw new InvalidOperationException("The stored report handler must be an interface.");
+                var inputType = ResolveReportType(report.ReportInputType);
+                var headerType = ResolveReportType(report.HeaderType);
+                var dataType = ResolveReportType(report.DataType);
+                var reportType = typeof(ReportOutput<,>).MakeGenericType(headerType, dataType);
+                var taskType = typeof(Task<>).MakeGenericType(reportType);
+                var method = contract.GetMethods().SingleOrDefault(candidate =>
+                    candidate.Name == myMethodName && candidate.ReturnType == taskType &&
+                    candidate.GetParameters().Select(parameter => parameter.ParameterType)
+                        .SequenceEqual(new[] { inputType, typeof(CancellationToken) }))
+                    ?? throw new InvalidOperationException("The stored report method signature is not valid.");
+                var input = JsonConvert.DeserializeObject(report.ReportInputJson
+                    ?? throw new InvalidOperationException("The report input JSON is missing."), inputType)
+                    ?? throw new InvalidOperationException("The report input is null.");
+                var handler = _serviceProvider.GetRequiredService(contract);
+                var task = Invoke(method, handler, new[] { input, (object)CancellationToken.None }) as Task
+                    ?? throw new InvalidOperationException("The report handler did not return a task.");
+                await task;
+                var output = taskType.GetProperty("Result")!.GetValue(task)
+                    ?? throw new InvalidOperationException("The report handler returned a null result.");
+                var header = reportType.GetProperty("ReportHeader")!.GetValue(output);
+                var rows = reportType.GetProperty("ReportData")!.GetValue(output);
+                var export = typeof(ExcelManagement).GetMethod(nameof(ExcelManagement.ExportToExcelAsync))!
+                    .MakeGenericMethod(headerType, dataType);
+                var path = await (Task<string>)Invoke(export, null, new object?[] { header, rows, report.ReportName ?? string.Empty, excludedProperties })!;
+                await _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(report.Id, path, DateTime.Now, true), CancellationToken.None);
+                await _reportCompletionNotifier.Notify(report.UserId, report.ReportName ?? string.Empty, report.Id);
+            }
+            catch
+            {
+                await MarkFailed(report.Id);
+                throw;
+            }
+        }
+
+        private ServerReportsCreateDto CreateServerReportDto<TReportInput, THead, TData>(Guid id, TReportInput reportInput, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId, string? methodName = null)
+        {
+            var handlerType = GetData.Target?.GetType()
+                ?? throw new ArgumentException("A report handler instance is required.", nameof(GetData));
+            methodName ??= GetData.Method.Name.Split('.').Last();
+            var contracts = handlerType.GetInterfaces().Where(contract =>
+            {
+                var map = handlerType.GetInterfaceMap(contract);
+                return map.InterfaceMethods.Zip(map.TargetMethods).Any(pair =>
+                    pair.First.Name == methodName && pair.First.ReturnType == typeof(Task<ReportOutput<THead, TData>>) &&
+                    pair.First.GetParameters().Select(parameter => parameter.ParameterType)
+                        .SequenceEqual(new[] { typeof(TReportInput), typeof(CancellationToken) }) &&
+                    (pair.Second == GetData.Method || pair.First == GetData.Method));
+            }).ToArray();
+            var matchingContract = contracts.SingleOrDefault(contract => contract.Name == "I" + handlerType.Name);
+            var handlerContract = matchingContract ?? (contracts.Length == 1 ? contracts[0]
+                : throw new ArgumentException("The report handler contract cannot be selected unambiguously.", nameof(GetData)));
+            ServerReportsCreateDto serverReportsCreateDto = new()
+            {
+                Id = id,
+                UserId = appUser.UserId,
+                ReportName = reportTitle,
+                ConnectionId = connectionId,
+                HeaderType = typeof(THead).FullName!,
+                DataType = typeof(TData).FullName!,
+                ReportInputType = typeof(TReportInput).FullName!,
+                ReportInputJson = JsonConvert.SerializeObject(reportInput),
+                HandlerKey = handlerContract.FullName!
+            };
+            return serverReportsCreateDto;
+        }
+
+        private static Type ResolveReportType(string? name) =>
+            (string.IsNullOrWhiteSpace(name) ? null : Type.GetType(name, throwOnError: false)
+                ?? AppDomain.CurrentDomain.GetAssemblies().Select(assembly => assembly.GetType(name, throwOnError: false)).FirstOrDefault(type => type is not null))
+            ?? throw new InvalidOperationException($"Report type '{name}' was not found.");
+
+        private static object? Invoke(MethodInfo method, object? target, object?[] arguments)
+        {
+            try { return method.Invoke(target, arguments); }
+            catch (TargetInvocationException exception) when (exception.InnerException is not null)
+            {
+                ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
+                throw;
+            }
+        }
+
+        private async Task MarkFailed(Guid id)
+        {
+            try { await _serverReportsUpdateHandler.Fail(id, CancellationToken.None); }
+            catch (Exception exception) { _logger.LogError(exception, "Could not record failure for report {ReportId}.", id); }
+        }
+        private string GetCurrentPersianDateTime()
+        {
+            string timeNow = DateTime.Now.ToString("HH-mm-ss");
+            string persianDate = DateTime.Now.ToShortPersianDateString();
+
+            return $"{persianDate}_{timeNow}";
+        }
+        private async Task DuplicateReportValidation(string jsonInput, Guid userId)
+        {
+            ServerReportsGetByIdDto? sameReportByJsonInput = await _serverReportsGetByJsonInputService.Get(jsonInput);
+            if (sameReportByJsonInput is not null)
+            {
+                throw new InvalidReportException(ExceptionLiterals.InvalidDuplicateIncompleteReport);
+            }
+
+            ServerReportsGetByIdDto? sameReportByUserId = await _serverReportsGetByJsonInputService.Get(userId);
+            if (sameReportByUserId is not null)
+            {
+                throw new InvalidReportException(ExceptionLiterals.InvalidIncompleteReportByUserId);
+            }
+        }
+    }
+}

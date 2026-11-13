@@ -356,7 +356,7 @@ public sealed class ProbeState
     };
     public object? Invoke(Type contract, MethodInfo method, object?[] args)
     {
-        Calls.Add(contract.FullName + "." + method.Name + "(" + string.Join("|", args.Select(Argument)) + ")");
+        Calls.Add(Aban360.Tests.ServiceBaselines.ApplicationServiceBaseline.CallName(contract, method) + "(" + string.Join("|", args.Select(Argument)) + ")");
         int step = Calls.Count;
         if (method.ReturnType == typeof(Task)) { AsyncSteps.Add(step); return CompleteVoid(step); }
         if (method.ReturnType.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))

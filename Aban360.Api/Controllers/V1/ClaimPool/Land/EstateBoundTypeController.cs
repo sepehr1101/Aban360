@@ -1,7 +1,4 @@
-using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts;
-using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
-using Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.Land.Services;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
@@ -14,37 +11,13 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
     public class EstateBoundTypeController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IEstateBoundTypeCreateHandler _estateBoundTypeCreateHandler;
-        private readonly IEstateBoundTypeUpdateHandler _estateBoundTypeUpdateHandler;
-        private readonly IEstateBoundTypeDeleteHandler _estateBoundTypeDeleteHandler;
-        private readonly IEstateBoundTypeGetSingleHandler _estateBoundTypeGetSingleHandler;
-        private readonly IEstateBoundTypeGetAllHandler _estateBoundTypeGetAllHandler;
-
-        public EstateBoundTypeController(
-            IUnitOfWork uow,
-            IEstateBoundTypeCreateHandler estateBoundTypeCreateHandler,
-            IEstateBoundTypeUpdateHandler estateBoundTypeUpdateHandler,
-            IEstateBoundTypeDeleteHandler estateBoundTypeDeleteHandler,
-            IEstateBoundTypeGetSingleHandler estateBoundTypeGetSingleHandler,
-            IEstateBoundTypeGetAllHandler estateBoundTypeGetAllHandler)
+        private readonly IEstateBoundTypeService _service;
+        public EstateBoundTypeController(IUnitOfWork uow, IEstateBoundTypeService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(_uow));
-
-            _estateBoundTypeCreateHandler = estateBoundTypeCreateHandler;
-            _estateBoundTypeCreateHandler.NotNull(nameof(_estateBoundTypeCreateHandler));
-
-            _estateBoundTypeUpdateHandler = estateBoundTypeUpdateHandler;
-            _estateBoundTypeUpdateHandler.NotNull(nameof(_estateBoundTypeUpdateHandler));
-
-            _estateBoundTypeDeleteHandler = estateBoundTypeDeleteHandler;
-            _estateBoundTypeDeleteHandler.NotNull(nameof(_estateBoundTypeDeleteHandler));
-
-            _estateBoundTypeGetSingleHandler = estateBoundTypeGetSingleHandler;
-            _estateBoundTypeGetSingleHandler.NotNull(nameof(_estateBoundTypeGetSingleHandler));
-
-            _estateBoundTypeGetAllHandler = estateBoundTypeGetAllHandler;
-            _estateBoundTypeGetAllHandler.NotNull(nameof(_estateBoundTypeGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -52,7 +25,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateBoundTypeCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] EstateBoundTypeCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _estateBoundTypeCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -63,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateBoundTypeUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] EstateBoundTypeUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _estateBoundTypeUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +48,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateBoundTypeDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] EstateBoundTypeDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _estateBoundTypeDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +59,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateBoundTypeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            EstateBoundTypeGetDto estateBoundType = await _estateBoundTypeGetSingleHandler.Handle(id, cancellationToken);
+            EstateBoundTypeGetDto estateBoundType = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(estateBoundType);
         }
 
@@ -95,7 +68,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<EstateBoundTypeGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<EstateBoundTypeGetDto> estateBoundType = await _estateBoundTypeGetAllHandler.Handle(cancellationToken);
+            ICollection<EstateBoundTypeGetDto> estateBoundType = await _service.GetAllAsync(cancellationToken);
             return Ok(estateBoundType);
         }
     }

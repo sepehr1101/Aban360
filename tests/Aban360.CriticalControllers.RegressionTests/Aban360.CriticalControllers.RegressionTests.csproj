@@ -11,4 +11,13 @@
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.1" />
     <ProjectReference Include="../../Aban360.Api/Aban360.Api.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationWave20/Contracts/**/*.cs" Link="LegacyContractsWave20/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidation15/ApplicationServiceBaseline.cs" Link="ApplicationServiceBaseline.cs" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidation15.json" Link="ServiceConsolidation15.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidation30.json" Link="ServiceConsolidation30.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidation20.json" Link="ServiceConsolidation20.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidation19.json" Link="ServiceConsolidation19.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidationWave20.json" Link="ServiceConsolidationWave20.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>
