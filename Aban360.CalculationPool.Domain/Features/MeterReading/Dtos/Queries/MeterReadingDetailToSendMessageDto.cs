@@ -11,6 +11,9 @@
         public string PreviousDateJalali { get; set; }
         public string CurrentDateJalali { get; set; }
         public long Payable { get; set; }
+        public long Sum { get; set; }
+        public long Baha { get; set; }
+        public long DiscountAmount { get; set; }
         public string BillId { get; set; }
         public string PaymentId { get; set; }
         public int CounterSatetCode { get; set; }
@@ -21,6 +24,7 @@
         public string FullName { get; set; }
         public string MobileNumber { get; set; }
         public long DebtAmount { get; set; }
+        public int BranchTypeId { get; set; }
 
     }
 }

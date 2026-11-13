@@ -1,4 +1,6 @@
-﻿namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Queries
+﻿using DNTPersianUtils.Core;
+
+namespace Aban360.ClaimPool.Domain.Features.Land.Dto.Queries
 {
     public record ConnectDisconnectGetDto
     {
@@ -8,10 +10,12 @@
         public string BillId { get; set; }
         public long WaterDebt { get; set; }
         public DateTime CommandDateTime { get; set; }
+        public string CommandDateJalali { get { return CommandDateTime.ToShortPersianDateString(); } }
         public Guid CommandBy { get; set; }
         public int CommandCauseId { get; set; }
         public string CommandCauseTitle { get; set; }
         public DateTime? ResultDateTime { get; set; }
+        public string? ResultDateJalali { get { return ResultDateTime?.ToShortPersianDateString() ?? string.Empty; } }
         public Guid? ResultBy { get; set; }
         public int? ResultId { get; set; }
         public string? ResultTitle { get; set; }

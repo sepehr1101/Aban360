@@ -36,7 +36,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Validations
                 return false;
             }
             DateTime dateTime = ConvertDate.JalaliToDateTime(dateJalali, true).Value;
-            if (dateTime.CompareTo(DateTime.Now) > 0 || dateTime.CompareTo(DateTime.Now.AddDays(-5)) < 0)
+            if (dateTime.CompareTo(DateTime.Now) > 0 || dateTime.CompareTo(DateTime.Now.AddDays(-7)) < 0)
             {
                 return false;
             }

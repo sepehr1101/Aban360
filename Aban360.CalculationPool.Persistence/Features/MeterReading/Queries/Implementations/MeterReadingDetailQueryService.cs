@@ -838,7 +838,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
         }
         private string GetDataToSendSms(string dbName)
         {
-            return $@"Select Top 5
+            return $@"Select
                     	md.Id MeterReadingDetailId,
                     	md.FlowImportedId ,
 	                    m.town ZoneId,
@@ -848,11 +848,15 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                     	b.pri_date PreviousDateJalali,
                     	b.today_date CurrentDateJalali,
                     	b.pard Payable,
+                        b.jam Sum,
+                        b.baha Baha,
+                        b.kasr_ha DiscountAmount,
                     	b.sh_ghabs1 BillId,
                     	b.sh_pard1 PaymentId,
                     	b.cod_vas CounterSatetCode,
                     	b.date_bed RegisterDateJalali,
 	                    b.mohlat DueDateJalali,
+                        b.noe_va BranchTypeId,
                     	TRIM(m.name) FirstName,
                     	TRIM(m.family) Surname,
                     	TRIM(m.name)+' '+TRIM(m.family) FullName,
@@ -873,6 +877,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                     	b.ab_baha = md.ab_baha AND
                     	b.operator = @abanOperator AND
                     	b.baha = md.baha AND
+                        b.cod_vas NOT IN (4,7) AND
                     	b.rate = md.MonthlyConsumption AND
                     	b.date_bed Collate Persian_100_CI_AI >= md.date_bed Collate Persian_100_CI_AI AND
                         md.FlowImportedId = @flowImportedId AND
