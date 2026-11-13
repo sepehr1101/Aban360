@@ -182,8 +182,8 @@ namespace Aban360.ReportPool.Persistence.Base
 								When b.TypeCode IN (1) AND b.UsageId NOT IN (1,3) AND (b.OtherCount+b.CommercialCount+DomesticCount)>0 THEN (b.OtherCount+b.CommercialCount+DomesticCount)
 							    Else 0 
 						   END UnitC,
-                           ISNULL(b.EmptyCount,0) EmptyCount,
-                           ISNULL(b.HouseholdCount,0) HouseholdCount
+                           IIF(b.UsageId IN (1,3), ISNULL(b.EmptyCount, 0), 0) EmptyCount,
+                           IIF(b.UsageId IN (1,3), ISNULL(b.HouseholdCount, 0), 0) HouseholdCount
                     From [CustomerWarehouse].dbo.Bills b
                     Join [Db70].dbo.T41 t41
                     	ON b.UsageId=t41.C0

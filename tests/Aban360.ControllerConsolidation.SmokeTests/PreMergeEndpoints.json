@@ -6381,5 +6381,2212 @@
     "Responses": [
       "200:ApiResponseEnvelope<ICollection<RegionGetDto>>"
     ]
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.ZoneController",
+    "Route": "v1/zone/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "ZoneCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ZoneCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.ZoneController",
+    "Route": "v1/zone/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "ZoneUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ZoneUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.ZoneController",
+    "Route": "v1/zone/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "ZoneDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ZoneDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.ZoneController",
+    "Route": "v1/zone/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetSingle",
+    "Parameters": [
+      "int id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ZoneGetDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.ZoneController",
+    "Route": "v1/zone/my-default",
+    "Verbs": [
+      "GET"
+    ],
+    "Action": "GetMyDefaultZone",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<NumericDictionary>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.ZoneController",
+    "Route": "v1/zone/all-2",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<ZoneGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.ZoneController",
+    "Route": "v1/zone/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAllPrinciple",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<UserZoneIdsOutputDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.CounterStateController",
+    "Route": "v1/counter-state/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "CounterStateCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<CounterStateCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.CounterStateController",
+    "Route": "v1/counter-state/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "CounterStateUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<CounterStateUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.CounterStateController",
+    "Route": "v1/counter-state/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "CounterStateDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<CounterStateDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.CounterStateController",
+    "Route": "v1/counter-state/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetSingle",
+    "Parameters": [
+      "short id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<CounterStateGetDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.CounterStateController",
+    "Route": "v1/counter-state/all-aban360",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAllAban360",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<CounterStateGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.CounterStateController",
+    "Route": "v1/counter-state/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "bool isReadable",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<IEnumerable<CounterStateCodeDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "isReadable": true,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingConfigDefaultController",
+    "Route": "v1/reading-config-default/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "ReadingConfigDefaultCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ReadingConfigDefaultCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingConfigDefaultController",
+    "Route": "v1/reading-config-default/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "ReadingConfigDefaultUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ReadingConfigDefaultUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingConfigDefaultController",
+    "Route": "v1/reading-config-default/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "ReadingConfigDefaultDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ReadingConfigDefaultDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingConfigDefaultController",
+    "Route": "v1/reading-config-default/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetSingle",
+    "Parameters": [
+      "short id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ReadingConfigDefaultGetDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingConfigDefaultController",
+    "Route": "v1/reading-config-default/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<ReadingConfigDefaultGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodController",
+    "Route": "v1/reading-period/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "ReadingPeriodCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ReadingPeriodCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodController",
+    "Route": "v1/reading-period/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "ReadingPeriodUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ReadingPeriodUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodController",
+    "Route": "v1/reading-period/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "ReadingPeriodDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ReadingPeriodDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodController",
+    "Route": "v1/reading-period/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetSingle",
+    "Parameters": [
+      "short id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ReadingPeriodGetDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodController",
+    "Route": "v1/reading-period/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<ReadingPeriodGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodTypeController",
+    "Route": "v1/reading-period-type/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "ReadingPeriodTypeCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ReadingPeriodTypeCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodTypeController",
+    "Route": "v1/reading-period-type/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "ReadingPeriodTypeUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ReadingPeriodTypeUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodTypeController",
+    "Route": "v1/reading-period-type/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "ReadingPeriodTypeDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ReadingPeriodTypeDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodTypeController",
+    "Route": "v1/reading-period-type/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetSingle",
+    "Parameters": [
+      "short id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ReadingPeriodTypeGetDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodTypeController",
+    "Route": "v1/reading-period-type/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<ReadingPeriodTypeGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.BankAccountController",
+    "Route": "v1/bank-account/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "BankAccountCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<BankAccountCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.BankAccountController",
+    "Route": "v1/bank-account/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "BankAccountUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<BankAccountUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.BankAccountController",
+    "Route": "v1/bank-account/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "BankAccountDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<BankAccountDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.BankAccountController",
+    "Route": "v1/bank-account/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetSingle",
+    "Parameters": [
+      "short id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<BankAccountGetDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.BankAccountController",
+    "Route": "v1/bank-account/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<BankAccountGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.BankFileStructureController",
+    "Route": "v1/bank-file-structure/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "BankFileStructureCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<BankFileStructureCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.BankFileStructureController",
+    "Route": "v1/bank-file-structure/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "BankFileStructureUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<BankFileStructureUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.BankFileStructureController",
+    "Route": "v1/bank-file-structure/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "BankFileStructureDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<BankFileStructureDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.BankFileStructureController",
+    "Route": "v1/bank-file-structure/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetSingle",
+    "Parameters": [
+      "short id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<BankFileStructureGetDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.BankFileStructureController",
+    "Route": "v1/bank-file-structure/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<BankFileStructureGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.AppController",
+    "Route": "v1/app/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "AppCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<AppCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.AppController",
+    "Route": "v1/app/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "AppUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<AppUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.AppController",
+    "Route": "v1/app/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "AppDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<AppDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.AppController",
+    "Route": "v1/app/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetSingle",
+    "Parameters": [
+      "int id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<AppGetDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.AppController",
+    "Route": "v1/app/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<AppGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.AppController",
+    "Route": "v1/app/childrens/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetChildrens",
+    "Parameters": [
+      "int id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<IEnumerable<AppWithModuleGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.EndpointController",
+    "Route": "v1/endpoint/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "EndpointCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<EndpointCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.EndpointController",
+    "Route": "v1/endpoint/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "EndpointUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<EndpointUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.EndpointController",
+    "Route": "v1/endpoint/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "EndpointDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<EndpointDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.EndpointController",
+    "Route": "v1/endpoint/single",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "Single",
+    "Parameters": [
+      "int id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<EndpointGetDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.EndpointController",
+    "Route": "v1/endpoint/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<EndpointGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.ModuleController",
+    "Route": "v1/module/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "ModuleCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ModuleCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.ModuleController",
+    "Route": "v1/module/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "ModuleUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ModuleUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.ModuleController",
+    "Route": "v1/module/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "ModuleDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<ModuleDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.ModuleController",
+    "Route": "v1/module/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "Single",
+    "Parameters": [
+      "int id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ModuleGetDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.ModuleController",
+    "Route": "v1/module/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<ModuleGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.AccessTree.ModuleController",
+    "Route": "v1/module/childrens/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetChildrens",
+    "Parameters": [
+      "int id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<IEnumerable<ModuleWithSubModuleGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.Auth.RoleController",
+    "Route": "v1/role/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "RoleCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<RoleCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.Auth.RoleController",
+    "Route": "v1/role/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "RoleUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<RoleUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.Auth.RoleController",
+    "Route": "v1/role/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "RoleDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<RoleDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.Auth.RoleController",
+    "Route": "v1/role/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetSingle",
+    "Parameters": [
+      "int id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<RoleDisplayDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.Auth.RoleController",
+    "Route": "v1/role/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<RoleGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.UserPool.Auth.RoleController",
+    "Route": "v1/role/params-create",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetRoleParamsOfCreate",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<RoleParamsOfCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": false,
+    "RawResponse": true
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.WorkflowPool.Design.WorkflowController",
+    "Route": "v1/workflow/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "WorkflowCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<WorkflowCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.WorkflowPool.Design.WorkflowController",
+    "Route": "v1/workflow/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "WorkflowUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.WorkflowPool.Design.WorkflowController",
+    "Route": "v1/workflow/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "WorkflowDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<WorkflowDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.WorkflowPool.Design.WorkflowController",
+    "Route": "v1/workflow/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetSingle",
+    "Parameters": [
+      "short id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<WorkflowGetDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.WorkflowPool.Design.WorkflowController",
+    "Route": "v1/workflow/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<WorkflowGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.WorkflowPool.Design.WorkflowController",
+    "Route": "v1/workflow/json_definition_update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "WorkflowJsonDefinitionUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.WorkflowPool.Design.WorkflowController",
+    "Route": "v1/workflow/master",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetMaster",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<WorkflowGetMasterDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.BlobController.Taxonomy.DocumentController",
+    "Route": "v1/document/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "DocumentCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Form"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<DocumentCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.BlobController.Taxonomy.DocumentController",
+    "Route": "v1/document/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "Get",
+    "Parameters": [
+      "Guid id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [],
+    "ReturnType": "Task<FileResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.BlobController.Taxonomy.DocumentController",
+    "Route": "v1/document/by-bill-id-category-id",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetByBillIdCategoryId",
+    "Parameters": [
+      "string billId",
+      "short documentCategoryId",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<DocumentGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "billId": false,
+      "documentCategoryId": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.CalculationPool.Rule.SupportedFieldController",
+    "Route": "v1/supported-field/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetSingle",
+    "Parameters": [
+      "short id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<SupportedFieldGetDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.CalculationPool.Rule.SupportedFieldController",
+    "Route": "v1/supported-field/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<SupportedFieldGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.CalculationPool.Rule.SupportedOperatorController",
+    "Route": "v1/supported-operator/single/{id}",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetSingle",
+    "Parameters": [
+      "short id",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<SupportedOperatorGetDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "id": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.CalculationPool.Rule.SupportedOperatorController",
+    "Route": "v1/supported-operator/all",
+    "Verbs": [
+      "GET",
+      "POST"
+    ],
+    "Action": "GetAll",
+    "Parameters": [
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {},
+    "Responses": [
+      "200:ApiResponseEnvelope<ICollection<SupportedOperatorGetDto>>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestEstateController",
+    "Route": "v1/request-estate/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "EstateRequestCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<EstateRequestCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestEstateController",
+    "Route": "v1/request-estate/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "EstateRequestUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<EstateRequestUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestEstateController",
+    "Route": "v1/request-estate/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "EstateRequestDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<EstateRequestDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestFlatController",
+    "Route": "v1/request-flat/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "FlatRequestCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<FlatRequestCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestFlatController",
+    "Route": "v1/request-flat/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "FlatRequestUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<FlatRequestUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestFlatController",
+    "Route": "v1/request-flat/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "FlatRequestDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<FlatRequestDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestIndividualController",
+    "Route": "v1/request-individual/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "IndividualRequestCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<IndividualRequestCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestIndividualController",
+    "Route": "v1/request-individual/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "IndividualRequestUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<IndividualRequestUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestIndividualController",
+    "Route": "v1/request-individual/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "IndividualRequestDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<IndividualRequestDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestIndividualEstateController",
+    "Route": "v1/request-individual-estate/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "IndividualEstateRequestCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<IndividualEstateRequestCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestIndividualEstateController",
+    "Route": "v1/request-individual-estate/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "IndividualEstateRequestUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<IndividualEstateRequestUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestIndividualEstateController",
+    "Route": "v1/request-individual-estate/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "IndividualEstateRequestDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<IndividualEstateRequestDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestIndividualTagController",
+    "Route": "v1/request-individual-tag/create",
+    "Verbs": [
+      "POST"
+    ],
+    "Action": "Create",
+    "Parameters": [
+      "IndividualTagRequestCreateDto createDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "createDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<IndividualTagRequestCreateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "createDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestIndividualTagController",
+    "Route": "v1/request-individual-tag/update",
+    "Verbs": [
+      "PATCH",
+      "POST"
+    ],
+    "Action": "Update",
+    "Parameters": [
+      "IndividualTagRequestUpdateDto updateDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "updateDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<IndividualTagRequestUpdateDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "updateDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
+  },
+  {
+    "Controller": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestIndividualTagController",
+    "Route": "v1/request-individual-tag/delete",
+    "Verbs": [
+      "DELETE",
+      "POST"
+    ],
+    "Action": "Delete",
+    "Parameters": [
+      "IndividualTagRequestDeleteDto deleteDto",
+      "CancellationToken cancellationToken"
+    ],
+    "ExplicitBindings": {
+      "deleteDto": "Body"
+    },
+    "Responses": [
+      "200:ApiResponseEnvelope<IndividualTagRequestDeleteDto>"
+    ],
+    "ReturnType": "Task<IActionResult>",
+    "OptionalParameters": {
+      "deleteDto": false,
+      "cancellationToken": false
+    },
+    "RequiresAuthorization": true,
+    "RawResponse": false
   }
 ]

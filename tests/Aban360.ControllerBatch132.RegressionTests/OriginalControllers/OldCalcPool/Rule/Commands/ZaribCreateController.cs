@@ -1,0 +1,30 @@
+using Aban360.Api.Filters;
+using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
+using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Contracts;
+using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Aban360.Api.Controllers.V1.BeforeBatch132.OldCalcPool.Rule.Commands
+{
+    [Route("v1/zarib")]
+    public class ZaribCreateController : BaseController
+    {
+        private readonly IZaribCreateHandler _zaribCreateHandler;
+        public ZaribCreateController(IZaribCreateHandler zaribCreateHandler)
+        {
+            _zaribCreateHandler = zaribCreateHandler;
+            _zaribCreateHandler.NotNull(nameof(zaribCreateHandler));
+        }
+
+        [HttpPost]
+        [Route("create")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<ZaribCreateInputDto>), StatusCodes.Status200OK)]
+        [TypeFilter(typeof(EndpointAuthorizationFilter))]
+        public async Task<IActionResult> Create(ZaribCreateInputDto createDto, CancellationToken cancellationToken)
+        {
+            await _zaribCreateHandler.Handle(createDto, CurrentUser, cancellationToken);
+            return Ok(createDto);
+        }
+    }
+}

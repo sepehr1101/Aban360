@@ -1,0 +1,2 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><Compile Include="../../Aban360.Api/Models/Ticketing/TicketFileFormMapper.cs"/><FrameworkReference Include="Microsoft.AspNetCore.App"/><Using Include="Microsoft.AspNetCore.Http"/><ProjectReference Include="../../Aban360.Api/Aban360.Api.csproj"/><None Update="Groups.json" CopyToOutputDirectory="PreserveNewest"/></ItemGroup></Project>
+

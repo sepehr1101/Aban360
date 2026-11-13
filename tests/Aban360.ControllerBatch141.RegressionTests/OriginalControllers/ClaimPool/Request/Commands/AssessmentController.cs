@@ -1,0 +1,224 @@
+using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using Aban360.NotificationPool.Application.Features.Sms;
+using Hangfire;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
+
+namespace Aban360.Api.Controllers.V1.BeforeBatch141.ClaimPool.Request.Commands
+{
+    [Route("v1/assessment")]
+    public class AssessmentController : BaseController
+    {
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ISetAssessmentResultHandler _setAssessmentResultHandler;
+        private readonly IAssessmentResultCompletionHandler _assessmentResultCompletionHandler;
+        private readonly ISetAssessmentTimeHandler _setAssessmentTimeHandler;
+        private readonly ISetLightAssessmentResultHandler _setLightAssessmentResultHandler;
+        private readonly ISetPreAssessmentResultHandler _setPreAssessmentResultHandler;
+        private readonly IAssessmentByTrackIdGetHandler _assessmentByIdGetHandler;
+        private readonly IReAssessmentRequestHandler _reAssessmentRequestHandler;
+        private readonly ISmsOldHandler _smsOldHandler;
+        private readonly IBackgroundJobClient _backgroudJobClient;
+
+        public AssessmentController(
+            IHttpContextAccessor contextAccessor,
+            ISetAssessmentResultHandler setAssessmentResultHandler, 
+            IAssessmentResultCompletionHandler assessmentResultCompletionHandler,
+            ISetAssessmentTimeHandler setAssessmentTimeHandler,
+            ISetLightAssessmentResultHandler setLightAssessmentResultHandler,
+            ISetPreAssessmentResultHandler setPreAssessmentResultHandler,
+            IAssessmentByTrackIdGetHandler assessmentByIdGetHandler,
+            IReAssessmentRequestHandler reAssessmentRequestHandler,
+            ISmsOldHandler smsOldHandler,
+            IBackgroundJobClient backgroudJobClient)
+        {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
+            _setAssessmentResultHandler = setAssessmentResultHandler;
+            _setAssessmentResultHandler.NotNull(nameof(setAssessmentResultHandler));
+
+            _assessmentResultCompletionHandler = assessmentResultCompletionHandler;
+            _assessmentResultCompletionHandler.NotNull(nameof(assessmentResultCompletionHandler));
+
+            _setAssessmentTimeHandler = setAssessmentTimeHandler;
+            _setAssessmentTimeHandler.NotNull(nameof(setAssessmentTimeHandler));
+
+            _setLightAssessmentResultHandler = setLightAssessmentResultHandler;
+            _setLightAssessmentResultHandler.NotNull(nameof(setLightAssessmentResultHandler));
+
+            _setPreAssessmentResultHandler = setPreAssessmentResultHandler;
+            _setPreAssessmentResultHandler.NotNull(nameof(setPreAssessmentResultHandler));
+
+            _assessmentByIdGetHandler = assessmentByIdGetHandler;
+            _assessmentByIdGetHandler.NotNull(nameof(assessmentByIdGetHandler));
+
+            _reAssessmentRequestHandler = reAssessmentRequestHandler;
+            _reAssessmentRequestHandler.NotNull(nameof(reAssessmentRequestHandler));
+
+            _smsOldHandler = smsOldHandler;
+            _smsOldHandler.NotNull(nameof(smsOldHandler));
+
+            _backgroudJobClient = backgroudJobClient;
+            _backgroudJobClient.NotNull(nameof(backgroudJobClient));
+        }
+
+        [HttpPost]
+        [Route("result")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentResultInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetReult(CancellationToken cancellationToken)
+        {
+            int examinerCode = UserService.GetUserCode(CurrentUser.Username);
+            AssessmentResultInputDto inputDto = await _setAssessmentResultHandler.Handle(examinerCode, cancellationToken);
+            return Ok(inputDto);
+        }
+        
+        [HttpPost]
+        [Route("result-completion")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentResultInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetCompletionReult(CancellationToken cancellationToken)
+        {
+            AssessmentResultInputDto inputDto = await _assessmentResultCompletionHandler.Handle(CurrentUser, cancellationToken);
+            return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("result-assessment-sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetResultAssessmentSti([FromBody] GuidInput input, CancellationToken cancellationToken)
+        {
+            int reportCode = 2021;
+            JsonReportId reportId = await GetSetResultJsonReport(input.Input, reportCode, cancellationToken);
+            return Ok(reportId);
+        }
+
+        [HttpPost]
+        [Route("result-address-sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetResultAddressSti([FromBody] GuidInput input, CancellationToken cancellationToken)
+        {
+            int reportCode = 2022;
+            JsonReportId reportId = await GetSetResultJsonReport(input.Input, reportCode, cancellationToken);
+            return Ok(reportId);
+        }
+
+        [HttpPost]
+        [Route("result-trench-sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetResultTrenchSti([FromBody] GuidInput input, CancellationToken cancellationToken)
+        {
+            int reportCode = 2023;
+            JsonReportId reportId = await GetSetResultJsonReport(input.Input, reportCode, cancellationToken);
+            return Ok(reportId);
+        }
+
+        [HttpPost]
+        [Route("set-time")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<SetAssessmentTimeOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetTime([FromBody] AssessmentSetTimeInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int examinerCode = UserService.GetUserCode(CurrentUser.Username);
+            SetAssessmentTimeDataOutputDto result = await _setAssessmentTimeHandler.Handle(inputDto, examinerCode, cancellationToken);
+            SetAssessmentTimeOutputDto outputDto = GetAssessmentTimeOutputDto(inputDto.HasCustomerSms, inputDto.HasAssessmentSms, result);
+
+            return Ok(outputDto);
+        }
+
+        [HttpPost]
+        [Route("set-light-result")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakUpdateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetAssessmentLite([FromBody] LightAssessmentResultInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int userName = UserService.GetUserCode(CurrentUser.Username);
+            await _setLightAssessmentResultHandler.Handle(inputDto, userName, cancellationToken);
+            return Ok(inputDto);
+        }
+
+
+        [HttpPost]
+        [Route("set-pre-result")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakUpdateInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetPreAssessment([FromBody] PreAssessmentResultInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int userName = UserService.GetUserCode(CurrentUser.Username);
+            await _setPreAssessmentResultHandler.Handle(inputDto, userName, cancellationToken);
+            return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("reAssessment")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<SetAssessmentTimeOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ReAssessment([FromBody] SetReAssessmentTimeInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int userName = UserService.GetUserCode(CurrentUser.Username);
+            SetAssessmentTimeDataOutputDto result = await _reAssessmentRequestHandler.Handle(inputDto, userName, cancellationToken);
+            SetAssessmentTimeOutputDto outputDto = GetAssessmentTimeOutputDto(hasCustomerSms: true, hasAssessmentSms: true, result);
+
+            return Ok(outputDto);
+        }
+        private SetAssessmentTimeOutputDto GetAssessmentTimeOutputDto(bool hasCustomerSms, bool hasAssessmentSms, SetAssessmentTimeDataOutputDto result)
+        {
+            string customerText = string.Format(SmsTemplates.RequestTimeSet, result.AssessmentName, result.AssessmentMobileNumber, result.AssessmentDateJalai, result.TrackNumber);
+            string assessmentText = result.ServiceGroupId == 1 ?
+                string.Format(SmsTemplates.NewRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.NeighbourBillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber, result.NeighbourBillId) :
+                string.Format(SmsTemplates.AfterSaleRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.BillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber);
+            if (hasAssessmentSms)
+            {
+                _backgroudJobClient.Enqueue(() => _smsOldHandler.SendNew(result.AssessmentMobileNumber, assessmentText, result.TrackId));
+            }
+            if (hasCustomerSms)
+            {
+                _backgroudJobClient.Enqueue(() => _smsOldHandler.SendNew(result.MobileNumber, customerText, result.TrackId));
+            }
+            return new SetAssessmentTimeOutputDto(result.TrackNumber, hasAssessmentSms, hasCustomerSms, hasAssessmentSms ? assessmentText : null, hasCustomerSms ? customerText : null);
+
+        }
+        private async Task<JsonReportId> GetSetResultJsonReport(Guid id, int reportCode, CancellationToken cancellationToken)
+        {
+            AssessmentDataOutputDto result = await _assessmentByIdGetHandler.Handle(id, cancellationToken);
+            if (result is null || result.AllInJson is null || string.IsNullOrWhiteSpace(result.AllInJson))
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidShowPreviousRequest);
+            }
+
+            JObject jsonObject = new JObject
+            {
+                ["reportData"] = JToken.Parse(result.AllInJson)
+            };
+            // Transform the embedded JSON string into an actual array
+            JObject reportData = (JObject)jsonObject["reportData"];
+            if (reportData != null)
+            {
+                var property = reportData.Property("commercialUnitsDetailsJson");
+                if (property != null && property.Value.Type == JTokenType.String)
+                {
+                    string arrayJson = property.Value.ToString();
+                    // Guard against empty / whitespace JSON string
+                    if (!string.IsNullOrWhiteSpace(arrayJson))
+                    {
+                        // Parse the string into a JArray and replace the value
+                        property.Value = JToken.Parse(arrayJson);
+                    }
+                    else
+                    {
+                        // Optionally set to an empty array or leave as null
+                        property.Value = new JArray();
+                    }
+                }
+            }
+            JsonReportId reportId = await JsonOperation.ExportToJsonFlat(jsonObject, cancellationToken, reportCode);
+            return reportId;
+        }
+    }
+}

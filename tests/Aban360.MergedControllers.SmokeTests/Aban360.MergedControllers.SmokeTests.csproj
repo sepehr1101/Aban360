@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.1" />
+    <ProjectReference Include="../../Aban360.Api/Aban360.Api.csproj" />
+    <ProjectReference Include="../../Aban360.BrdigeApi/Aban360.BrdigeApi.csproj" />
+    <None Update="Contracts.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

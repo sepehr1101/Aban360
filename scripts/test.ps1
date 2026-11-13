@@ -4,6 +4,7 @@ param(
     [string] $Configuration = 'Debug',
     [string[]] $Suite = @('*'),
     [switch] $NoRestore,
+    [switch] $NoBuild,
     [switch] $List
 )
 
@@ -23,7 +24,7 @@ foreach ($project in $projects) {
     [xml] $definition = Get-Content -LiteralPath $project.FullName -Raw
     $isTestProject = $definition.SelectSingleNode("/Project/PropertyGroup/IsTestProject[translate(text(), 'TRUE', 'true')='true']")
     $testSdk = $definition.SelectSingleNode("/Project/ItemGroup/PackageReference[@Include='Microsoft.NET.Test.Sdk']")
-    if ($project.BaseName -like '*.SmokeTests') {
+    if ($project.BaseName -like '*.SmokeTests' -or $project.BaseName -like '*.RegressionTests') {
         $kind = 'Smoke'
     }
     elseif ($isTestProject -or $testSdk) {
@@ -81,6 +82,7 @@ try {
             $arguments = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $item.Path)
         }
         if ($NoRestore -and $item.Kind -ne 'PowerShell') { $arguments += '--no-restore' }
+        if ($NoBuild -and $item.Kind -ne 'PowerShell') { $arguments += '--no-build' }
         $timer = [Diagnostics.Stopwatch]::StartNew()
         $exitCode = 1
         $detail = ''

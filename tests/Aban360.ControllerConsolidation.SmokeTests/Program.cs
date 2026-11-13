@@ -1,6 +1,9 @@
 using System.Reflection;
 using System.Text.Json;
 using Aban360.Api.Controllers.V1;
+using Aban360.Common.Categories.ApiResponse;
+using Aban360.UserPool.Domain.Constants;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
@@ -33,10 +36,11 @@ string TypeName(Type type) => type.IsGenericTypeDefinition
     : type.IsGenericType
     ? type.Name.Split('`')[0] + "<" + string.Join(",", type.GetGenericArguments().Select(TypeName)) + ">"
     : type == typeof(short) ? "short" : type == typeof(int) ? "int"
-    : type == typeof(long) ? "long" : type == typeof(string) ? "string" : type.Name;
+    : type == typeof(long) ? "long" : type == typeof(string) ? "string"
+    : type == typeof(bool) ? "bool" : type.Name;
 
-Check(controllerNames.Count == 70, "Expected all 70 consolidated controllers.");
-Check(actions.Count == baseline.Count, "An action was lost or added during consolidation.");
+Check(controllerNames.Count == 90, "Expected all 90 consolidated controllers.");
+Check(actions.Count >= baseline.Count, "A baseline action was lost during consolidation."); // Additional actions are checked by the later consolidation batches.
 foreach (var expected in baseline)
 {
     var candidates = actions.Where(a => a.ControllerTypeInfo.FullName == expected.Controller
@@ -46,6 +50,15 @@ foreach (var expected in baseline)
     Check(action.ActionName == expected.Action, "MVC action name changed: " + expected.Route);
     Check(action.Parameters.Select(p => TypeName(p.ParameterType) + " " + p.Name)
         .SequenceEqual(expected.Parameters), "Parameter signature changed: " + expected.Route);
+    if (expected.ReturnType != null)
+        Check(TypeName(action.MethodInfo.ReturnType) == expected.ReturnType,
+            "Return type changed: " + expected.Route);
+    if (expected.OptionalParameters != null)
+    {
+        foreach (var parameter in action.MethodInfo.GetParameters())
+            Check(parameter.IsOptional == expected.OptionalParameters[parameter.Name!],
+                "Optional parameter changed: " + expected.Route + " / " + parameter.Name);
+    }
     foreach (var binding in expected.ExplicitBindings)
     {
         var parameter = action.Parameters.Single(p => p.Name == binding.Key);
@@ -55,8 +68,11 @@ foreach (var expected in baseline)
     var responses = action.MethodInfo.GetCustomAttributes<ProducesResponseTypeAttribute>()
         .Select(r => r.StatusCode + ":" + TypeName(r.Type)).OrderBy(x => x).ToArray();
     Check(responses.SequenceEqual(expected.Responses), "Response metadata changed: " + expected.Route);
-    Check(action.ControllerTypeInfo.IsDefined(typeof(AuthorizeAttribute), inherit: true),
-        "Authorization attribute missing: " + expected.Controller);
+    bool anonymous = action.MethodInfo.IsDefined(typeof(AllowAnonymousAttribute), inherit: true)
+        || action.ControllerTypeInfo.IsDefined(typeof(AllowAnonymousAttribute), inherit: true);
+    bool authorized = !anonymous && (action.ControllerTypeInfo.IsDefined(typeof(AuthorizeAttribute), inherit: true)
+        || action.MethodInfo.IsDefined(typeof(AuthorizeAttribute), inherit: true));
+    Check(authorized == expected.RequiresAuthorization, "Authorization changed: " + expected.Route);
     foreach (var verb in expected.Verbs)
     {
         // Include all other API controllers when looking for an ambiguous endpoint.
@@ -73,7 +89,66 @@ foreach (var controller in actions.Select(a => a.ControllerTypeInfo.AsType()).Di
         return DispatchProxy.Create(p.ParameterType, typeof(ConstructorOnlyProxy));
     }).ToArray();
     var instance = constructor.Invoke(dependencies);
-    Check(instance is BaseController, "Controller construction failed: " + controller.Name);
+    Check(instance is ControllerBase, "Controller construction failed: " + controller.Name);
+    foreach (var expected in baseline.Where(e => e.Controller == controller.FullName && e.RawResponse))
+    {
+        // The original Role params-create controller returned its DTO directly, without the shared envelope.
+        var action = actions.Single(a => a.ControllerTypeInfo.AsType() == controller
+            && a.AttributeRouteInfo?.Template == expected.Route);
+        Check(!action.MethodInfo.IsDefined(typeof(AllowAnonymousAttribute), inherit: true),
+            "Anonymous action must preserve the existing JWT token-validation flow: " + expected.Route);
+        int handlerIndex = Array.FindIndex(constructor.GetParameters(),
+            p => p.ParameterType.Name == "IRoleQueryParamsOfCreateHandler");
+        var proxy = (ConstructorOnlyProxy)dependencies[handlerIndex];
+        var resultType = constructor.GetParameters()[handlerIndex].ParameterType.GetMethod("Handle")!
+            .ReturnType.GetGenericArguments().Single();
+        var payloadConstructor = resultType.GetConstructors().OrderBy(c => c.GetParameters().Length).First();
+        var payload = payloadConstructor.Invoke(payloadConstructor.GetParameters()
+            .Select(p => p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType) : null).ToArray());
+        proxy.AllowedMethod = "Handle";
+        proxy.Result = payload;
+        var response = await (Task<IActionResult>)action.MethodInfo.Invoke(instance,
+            new object[] { CancellationToken.None })!;
+        Check(response is OkObjectResult ok && ReferenceEquals(ok.Value, payload) && ok.StatusCode == 200,
+            "Raw response was wrapped or altered: " + expected.Route);
+        Check(proxy.Calls == 1, "Handler invocation changed: " + expected.Route);
+
+        var createHandler = (ConstructorOnlyProxy)dependencies[Array.FindIndex(constructor.GetParameters(),
+            p => p.ParameterType.Name == "IRoleCreateHandler")];
+        createHandler.AllowedMethod = "Handle";
+        var unitOfWork = (ConstructorOnlyProxy)dependencies[Array.FindIndex(constructor.GetParameters(),
+            p => p.ParameterType.Name == "IUnitOfWork")];
+        unitOfWork.AllowedMethod = "SaveChangesAsync";
+        unitOfWork.Result = 0;
+        var createDto = new RoleCreateDto { Name = "review", Title = "review" };
+        var createAction = actions.Single(a => a.ControllerTypeInfo.AsType() == controller
+            && a.AttributeRouteInfo?.Template == "v1/role/create");
+        var createResponse = await (Task<IActionResult>)createAction.MethodInfo.Invoke(instance,
+            new object[] { createDto, CancellationToken.None })!;
+        Check(createResponse is OkObjectResult created
+            && created.Value is ApiResponseEnvelope<RoleCreateDto> envelope
+            && ReferenceEquals(envelope.Data, createDto) && envelope.Success
+            && envelope.HttpStatusCode == 200 && envelope.SuccessMessage == MessageResources.SuccessfulProccess,
+            "Role's normal response envelope changed.");
+        Check(createHandler.Calls == 1 && unitOfWork.Calls == 1, "Role create/save behavior changed.");
+    }
+}
+string exportName = "controller-consolidation-smoke.csv";
+string exportPath = Path.Combine(AppContext.BaseDirectory, "AppData", "Excels", exportName);
+try
+{
+    Aban360.Api.Tools.ControllerInspector.ExportControllerActions(exportName);
+    var exportedRoleRoutes = File.ReadLines(exportPath).Skip(1)
+        .Select(line => line.Split(','))
+        .Where(columns => columns[1].Trim() == "Role")
+        .Select(columns => columns[^1].Trim()).OrderBy(x => x).ToArray();
+    var expectedRoleRoutes = baseline.Where(e => e.Controller.EndsWith(".RoleController") && e.RequiresAuthorization)
+        .Select(e => e.Route).OrderBy(x => x).ToArray();
+    Check(exportedRoleRoutes.SequenceEqual(expectedRoleRoutes), "Role actions disappeared from controller export.");
+}
+finally
+{
+    if (File.Exists(exportPath)) File.Delete(exportPath);
 }
 Console.WriteLine($"PASS: {checks} checks; {controllerNames.Count} controllers, {baseline.Count} actions, " +
     $"{baseline.Sum(a => a.Verbs.Length)} HTTP method/route combinations match the pre-merge baseline.");
@@ -81,8 +156,22 @@ Console.WriteLine("MVC discovery, route conflicts, bindings, response metadata, 
 
 public class ConstructorOnlyProxy : DispatchProxy
 {
-    protected override object? Invoke(MethodInfo? targetMethod, object?[]? args) =>
-        throw new InvalidOperationException("Constructor unexpectedly called a dependency: " + targetMethod?.Name);
+    public string? AllowedMethod { get; set; }
+    public object? Result { get; set; }
+    public int Calls { get; private set; }
+
+    protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
+    {
+        if (AllowedMethod == null || targetMethod?.Name != AllowedMethod)
+            throw new InvalidOperationException("Unexpected dependency call: " + targetMethod?.Name);
+        Calls++;
+        if (targetMethod.ReturnType == typeof(Task)) return Task.CompletedTask;
+        return typeof(Task).GetMethod(nameof(Task.FromResult))!
+            .MakeGenericMethod(targetMethod.ReturnType.GetGenericArguments().Single())
+            .Invoke(null, new[] { Result });
+    }
 }
 public record ExpectedAction(string Controller, string Route, string[] Verbs, string Action,
-    string[] Parameters, Dictionary<string, string> ExplicitBindings, string[] Responses);
+    string[] Parameters, Dictionary<string, string> ExplicitBindings, string[] Responses,
+    string? ReturnType = null, Dictionary<string, bool>? OptionalParameters = null,
+    bool RequiresAuthorization = true, bool RawResponse = false);
