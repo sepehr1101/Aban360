@@ -102,6 +102,8 @@ foreach (var project in selected)
 checks += await WorkflowChecks.Run(descriptors["Api"]);
 checks += await PermissionChecks.Run(expected, descriptors["Api"]);
 checks += await CrudChecks.Run(expected, descriptors["Api"]);
+checks += await LookupServiceChecks.Run();
+checks += await ServiceConsolidationChecks.Run();
 Console.WriteLine($"PASS: {checks} checks; {expected.Length} frozen contracts; {selected.Sum(p => p.Value.Select(a => a.ControllerTypeInfo.FullName).Distinct().Count())} controllers; {httpCases} HTTP routing/authentication cases.");
 Console.WriteLine("No database, SMS provider, external HTTP service or real background job was invoked.");
 

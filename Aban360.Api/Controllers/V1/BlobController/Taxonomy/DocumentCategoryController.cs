@@ -1,7 +1,4 @@
-using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Create.Contracts;
-using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Delete.Contracts;
-using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Update.Contracts;
-using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Contracts;
+using Aban360.BlobPool.Application.Features.Taxonomy.Services;
 using Aban360.BlobPool.Domain.Features.Taxonomy.Dto.Commands;
 using Aban360.BlobPool.Domain.Features.Taxonomy.Dto.Queries;
 using Aban360.BlobPool.Persistence.Contexts.Contracts;
@@ -16,42 +13,13 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
     public class DocumentCategoryController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IDocumentCategoryCreateHandler _documentCategoryCreateHandler;
-        private readonly IDocumentCategoryUpdateHandler _documentCategoryUpdateHandler;
-        private readonly IDocumentCategoryDeleteHandler _documentCategoryDeleteHandler;
-        private readonly IDocumentCategoryGetSingleHandler _documentCategoryGetSingleHandler;
-        private readonly IDocumentCategoryGetAllHandler _documentCategoryGetAllHandler;
-        private readonly IDocumentCategoryGetByBillIdHandler _documentCategoryGetBillIdHandler;
-
-        public DocumentCategoryController(
-            IUnitOfWork uow,
-            IDocumentCategoryCreateHandler documentCategoryCreateHandler,
-            IDocumentCategoryUpdateHandler documentCategoryUpdateHandler,
-            IDocumentCategoryDeleteHandler documentCategoryDeleteHandler,
-            IDocumentCategoryGetSingleHandler documentCategoryGetSingleHandler,
-            IDocumentCategoryGetAllHandler documentCategoryGetAllHandler,
-            IDocumentCategoryGetByBillIdHandler documentCategoryGetBillIdHandler)
+        private readonly IDocumentCategoryService _service;
+        public DocumentCategoryController(IUnitOfWork uow, IDocumentCategoryService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _documentCategoryCreateHandler = documentCategoryCreateHandler;
-            _documentCategoryCreateHandler.NotNull(nameof(documentCategoryCreateHandler));
-
-            _documentCategoryUpdateHandler = documentCategoryUpdateHandler;
-            _documentCategoryUpdateHandler.NotNull(nameof(documentCategoryUpdateHandler));
-
-            _documentCategoryDeleteHandler = documentCategoryDeleteHandler;
-            _documentCategoryDeleteHandler.NotNull(nameof(documentCategoryDeleteHandler));
-
-            _documentCategoryGetSingleHandler = documentCategoryGetSingleHandler;
-            _documentCategoryGetSingleHandler.NotNull(nameof(documentCategoryGetSingleHandler));
-
-            _documentCategoryGetAllHandler = documentCategoryGetAllHandler;
-            _documentCategoryGetAllHandler.NotNull(nameof(documentCategoryGetAllHandler));
-
-            _documentCategoryGetBillIdHandler = documentCategoryGetBillIdHandler;
-            _documentCategoryGetBillIdHandler.NotNull(nameof(documentCategoryGetBillIdHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -59,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<DocumentCategoryCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromForm] DocumentCategoryCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _documentCategoryCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -70,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<DocumentCategoryUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromForm] DocumentCategoryUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _documentCategoryUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -81,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<DocumentCategoryDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] DocumentCategoryDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _documentCategoryDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -92,7 +60,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<DocumentCategoryGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var documentCategorys = await _documentCategoryGetSingleHandler.Handle(id, cancellationToken);
+            var documentCategorys = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(documentCategorys);
         }
 
@@ -101,7 +69,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<DocumentCategoryGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var documentCategorys = await _documentCategoryGetAllHandler.Handle(cancellationToken);
+            var documentCategorys = await _service.GetAllAsync(cancellationToken);
             return Ok(documentCategorys);
         }
 
@@ -110,7 +78,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<DocumentCategoryGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ByBillId([FromBody] SearchInput inputDate,CancellationToken cancellationToken)
         {
-            var documentCategories = await _documentCategoryGetBillIdHandler.Handle(inputDate.Input, cancellationToken);
+            var documentCategories = await _service.GetByBillIdAsync(inputDate.Input, cancellationToken);
             return Ok(documentCategories);
         }
     }

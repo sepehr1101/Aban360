@@ -1,7 +1,4 @@
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts;
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Contracts;
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Contracts;
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Application.Features.Bill.Services;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
@@ -15,37 +12,14 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
     public class LineItemTypeGroupController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly ILineItemTypeGroupCreateHandler _lineItemTypeGroupCreateHandler;
-        private readonly ILineItemTypeGroupUpdateHandler _lineItemTypeGroupUpdateHandler;
-        private readonly ILineItemTypeGroupDeleteHandler _lineItemTypeGroupDeleteHandler;
-        private readonly ILineItemTypeGroupGetSingleHandler _lineItemTypeGroupGetSingleHandler;
-        private readonly ILineItemTypeGroupGetAllHandler _lineItemTypeGroupGetAllHandler;
+        private readonly ILineItemTypeGroupService _service;
 
-        public LineItemTypeGroupController(
-            IUnitOfWork uow,
-            ILineItemTypeGroupCreateHandler lineItemTypeGroupCreateHandler,
-            ILineItemTypeGroupUpdateHandler lineItemTypeGroupUpdateHandler,
-            ILineItemTypeGroupDeleteHandler lineItemTypeGroupDeleteHandler,
-            ILineItemTypeGroupGetSingleHandler lineItemTypeGroupGetSingleHandler,
-            ILineItemTypeGroupGetAllHandler LineItemTypeGroupGetAllHandler)
+        public LineItemTypeGroupController(IUnitOfWork uow, ILineItemTypeGroupService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _lineItemTypeGroupCreateHandler = lineItemTypeGroupCreateHandler;
-            _lineItemTypeGroupCreateHandler.NotNull(nameof(lineItemTypeGroupCreateHandler));
-
-            _lineItemTypeGroupUpdateHandler = lineItemTypeGroupUpdateHandler;
-            _lineItemTypeGroupUpdateHandler.NotNull(nameof(lineItemTypeGroupUpdateHandler));
-
-            _lineItemTypeGroupDeleteHandler = lineItemTypeGroupDeleteHandler;
-            _lineItemTypeGroupDeleteHandler.NotNull(nameof(lineItemTypeGroupDeleteHandler));
-
-            _lineItemTypeGroupGetSingleHandler = lineItemTypeGroupGetSingleHandler;
-            _lineItemTypeGroupGetSingleHandler.NotNull(nameof(lineItemTypeGroupGetSingleHandler));
-
-            _lineItemTypeGroupGetAllHandler = LineItemTypeGroupGetAllHandler;
-            _lineItemTypeGroupGetAllHandler.NotNull(nameof(LineItemTypeGroupGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<LineItemTypeGroupCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] LineItemTypeGroupCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _lineItemTypeGroupCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -64,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<LineItemTypeGroupUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] LineItemTypeGroupUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _lineItemTypeGroupUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<LineItemTypeGroupDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] LineItemTypeGroupDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _lineItemTypeGroupDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +60,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<LineItemTypeGroupGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            LineItemTypeGroupGetDto lineItemTypeGroups = await _lineItemTypeGroupGetSingleHandler.Handle(id, cancellationToken);
+            LineItemTypeGroupGetDto lineItemTypeGroups = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(lineItemTypeGroups);
         }
 
@@ -95,7 +69,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<LineItemTypeGroupGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<LineItemTypeGroupGetDto> lineItemTypeGroups = await _lineItemTypeGroupGetAllHandler.Handle(cancellationToken);
+            ICollection<LineItemTypeGroupGetDto> lineItemTypeGroups = await _service.GetAllAsync(cancellationToken);
             return Ok(lineItemTypeGroups);
         }
     }

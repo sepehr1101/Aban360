@@ -1,6 +1,7 @@
+using Aban360.ClaimPool.Application.Features.Draft.Services;
 using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Delete.Contracts;
-using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.Contracts;
+
+
 using Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
@@ -13,24 +14,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
     public class RequestWaterMeterSiphonController : BaseController
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IRequestWaterMeterSiphonCreateHandler _requestWaterMeterSiphonCreateHandler;
-        private readonly IRequestWaterMeterSiphonDeleteHandler _requestWaterMeterSiphonDeleteHandler;
-        private readonly IRequestWaterMeterSiphonUpdateHandler _requestWaterMeterSiphonUpdateHandler;
+        private readonly IRequestWaterMeterSiphonService _service;
 
-        public RequestWaterMeterSiphonController(
-            IUnitOfWork unitOfWork,
-            IRequestWaterMeterSiphonCreateHandler requestWaterMeterSiphonCreateHandler,
-            IRequestWaterMeterSiphonDeleteHandler requestWaterMeterSiphonDeleteHandler,
-            IRequestWaterMeterSiphonUpdateHandler requestWaterMeterSiphonUpdateHandler)
+        public RequestWaterMeterSiphonController(IUnitOfWork unitOfWork, IRequestWaterMeterSiphonService service)
         {
+            unitOfWork.NotNull(nameof(unitOfWork));
             _unitOfWork = unitOfWork;
-            _unitOfWork.NotNull(nameof(unitOfWork));
-            _requestWaterMeterSiphonCreateHandler = requestWaterMeterSiphonCreateHandler;
-            _requestWaterMeterSiphonCreateHandler.NotNull(nameof(requestWaterMeterSiphonCreateHandler));
-            _requestWaterMeterSiphonDeleteHandler = requestWaterMeterSiphonDeleteHandler;
-            _requestWaterMeterSiphonDeleteHandler.NotNull(nameof(requestWaterMeterSiphonDeleteHandler));
-            _requestWaterMeterSiphonUpdateHandler = requestWaterMeterSiphonUpdateHandler;
-            _requestWaterMeterSiphonUpdateHandler.NotNull(nameof(requestWaterMeterSiphonUpdateHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -38,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterSiphonRequestCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] WaterMeterSiphonRequestCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _requestWaterMeterSiphonCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -49,7 +40,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterSiphonRequestDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] WaterMeterSiphonRequestDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _requestWaterMeterSiphonDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -60,7 +51,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterSiphonRequestUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] WaterMeterSiphonRequestUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _requestWaterMeterSiphonUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);

@@ -1,6 +1,7 @@
+using Aban360.ClaimPool.Application.Features.Draft.Services;
 using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Delete.Contracts;
-using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.Contracts;
+
+
 using Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
@@ -13,27 +14,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
     public class RequestFlatController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IRequestFlatCreateHandler _requestFlatCreateHandler;
-        private readonly IRequestFlatUpdateHandler _requestFlatUpdateHandler;
-        private readonly IRequestFlatDeleteHandler _requestFlatDeleteHandler;
+        private readonly IRequestFlatService _service;
 
-        public RequestFlatController(
-            IUnitOfWork uow,
-            IRequestFlatCreateHandler requestFlatCreateHandler,
-            IRequestFlatUpdateHandler requestFlatUpdateHandler,
-            IRequestFlatDeleteHandler requestFlatDeleteHandler)
+        public RequestFlatController(IUnitOfWork uow, IRequestFlatService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _requestFlatCreateHandler = requestFlatCreateHandler;
-            _requestFlatCreateHandler.NotNull(nameof(requestFlatCreateHandler));
-
-            _requestFlatUpdateHandler = requestFlatUpdateHandler;
-            _requestFlatUpdateHandler.NotNull(nameof(requestFlatUpdateHandler));
-
-            _requestFlatDeleteHandler = requestFlatDeleteHandler;
-            _requestFlatDeleteHandler.NotNull(nameof(requestFlatDeleteHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -41,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<FlatRequestCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] FlatRequestCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _requestFlatCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -52,7 +40,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<FlatRequestUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] FlatRequestUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _requestFlatUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -63,7 +51,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<FlatRequestDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] FlatRequestDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _requestFlatDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);

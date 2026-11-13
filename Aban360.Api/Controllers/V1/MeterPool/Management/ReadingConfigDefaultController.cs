@@ -1,9 +1,10 @@
+using Aban360.MeterPool.Application.Features.Management.Services;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Create.Contracts;
-using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Delete.Contracts;
-using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Contracts;
-using Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Contracts;
+
+
+
+
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Commands;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Queries;
 using Aban360.MeterPool.Persistence.Contexts.Contracts;
@@ -15,37 +16,14 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
     public class ReadingConfigDefaultController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IReadingConfigDefaultCreateHandler _readingConfigDefaultCreateHandler;
-        private readonly IReadingConfigDefaultUpdateHandler _readingConfigDefaultUpdateHandler;
-        private readonly IReadingConfigDefaultDeleteHandler _readingConfigDefaultDeleteHandler;
-        private readonly IReadingConfigDefaultGetSingleHandler _readingConfigDefaultGetSingleHandler;
-        private readonly IReadingConfigDefaultGetAllHandler _readingConfigDefaultGetAllHandler;
+        private readonly IReadingConfigDefaultService _service;
 
-        public ReadingConfigDefaultController(
-            IUnitOfWork uow,
-            IReadingConfigDefaultCreateHandler readingConfigDefaultCreateHandler,
-            IReadingConfigDefaultUpdateHandler readingConfigDefaultUpdateHandler,
-            IReadingConfigDefaultDeleteHandler readingConfigDefaultDeleteHandler,
-            IReadingConfigDefaultGetSingleHandler readingConfigDefaultGetSingleHandler,
-            IReadingConfigDefaultGetAllHandler readingConfigDefaultGetAllHandler)
+        public ReadingConfigDefaultController(IUnitOfWork uow, IReadingConfigDefaultService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _readingConfigDefaultCreateHandler = readingConfigDefaultCreateHandler;
-            _readingConfigDefaultCreateHandler.NotNull(nameof(readingConfigDefaultCreateHandler));
-
-            _readingConfigDefaultUpdateHandler = readingConfigDefaultUpdateHandler;
-            _readingConfigDefaultUpdateHandler.NotNull(nameof(readingConfigDefaultUpdateHandler));
-
-            _readingConfigDefaultDeleteHandler = readingConfigDefaultDeleteHandler;
-            _readingConfigDefaultDeleteHandler.NotNull(nameof(readingConfigDefaultDeleteHandler));
-
-            _readingConfigDefaultGetSingleHandler = readingConfigDefaultGetSingleHandler;
-            _readingConfigDefaultGetSingleHandler.NotNull(nameof(readingConfigDefaultGetSingleHandler));
-
-            _readingConfigDefaultGetAllHandler = readingConfigDefaultGetAllHandler;
-            _readingConfigDefaultGetAllHandler.NotNull(nameof(readingConfigDefaultGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReadingConfigDefaultCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] ReadingConfigDefaultCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _readingConfigDefaultCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -64,7 +42,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReadingConfigDefaultUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] ReadingConfigDefaultUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _readingConfigDefaultUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +53,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReadingConfigDefaultDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] ReadingConfigDefaultDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _readingConfigDefaultDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +64,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReadingConfigDefaultGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            ReadingConfigDefaultGetDto readingConfigDefaults = await _readingConfigDefaultGetSingleHandler.Handle(id, cancellationToken);
+            ReadingConfigDefaultGetDto readingConfigDefaults = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(readingConfigDefaults);
         }
 
@@ -95,7 +73,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ReadingConfigDefaultGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<ReadingConfigDefaultGetDto> readingConfigDefaults = await _readingConfigDefaultGetAllHandler.Handle(cancellationToken);
+            ICollection<ReadingConfigDefaultGetDto> readingConfigDefaults = await _service.GetAllAsync(cancellationToken);
             return Ok(readingConfigDefaults);
         }
     }

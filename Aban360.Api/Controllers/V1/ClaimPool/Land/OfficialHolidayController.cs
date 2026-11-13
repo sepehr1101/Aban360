@@ -1,3 +1,4 @@
+using Aban360.ClaimPool.Application.Features.Land.Services;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
@@ -15,37 +16,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
     public class OfficialHolidayController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IOfficialHolidayCreateHandler _officialHolidayCreateHandler;
-        private readonly IOfficialHolidayUpdateHandler _officialHolidayUpdateHandler;
-        private readonly IOfficialHolidayDeleteHandler _officialHolidayDeleteHandler;
-        private readonly IOfficialHolidayGetSingleHandler _officialHolidayGetSingleHandler;
-        private readonly IOfficialHolidayGetAllHandler _officialHolidayGetAllHandler;
+        private readonly IOfficialHolidayService _service;
 
-        public OfficialHolidayController(
-            IUnitOfWork uow,
-            IOfficialHolidayCreateHandler officialHolidayCreateHandler,
-            IOfficialHolidayUpdateHandler officialHolidayUpdateHandler,
-            IOfficialHolidayDeleteHandler officialHolidayDeleteHandler,
-            IOfficialHolidayGetSingleHandler officialHolidayGetSingleHandler,
-            IOfficialHolidayGetAllHandler officialHolidayGetAllHandler)
+        public OfficialHolidayController(IUnitOfWork uow, IOfficialHolidayService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _officialHolidayCreateHandler = officialHolidayCreateHandler;
-            _officialHolidayCreateHandler.NotNull(nameof(officialHolidayCreateHandler));
-
-            _officialHolidayUpdateHandler = officialHolidayUpdateHandler;
-            _officialHolidayUpdateHandler.NotNull(nameof(officialHolidayUpdateHandler));
-
-            _officialHolidayDeleteHandler = officialHolidayDeleteHandler;
-            _officialHolidayDeleteHandler.NotNull(nameof(officialHolidayDeleteHandler));
-
-            _officialHolidayGetSingleHandler = officialHolidayGetSingleHandler;
-            _officialHolidayGetSingleHandler.NotNull(nameof(officialHolidayGetSingleHandler));
-
-            _officialHolidayGetAllHandler = officialHolidayGetAllHandler;
-            _officialHolidayGetAllHandler.NotNull(nameof(officialHolidayGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<OfficialHolidayCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] OfficialHolidayCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _officialHolidayCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -63,7 +41,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] OfficialHolidayUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _officialHolidayUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -74,7 +52,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<OfficialHolidayDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] OfficialHolidayDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _officialHolidayDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -85,7 +63,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<OfficialHolidayGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var officialHolidays = await _officialHolidayGetSingleHandler.Handle(id, cancellationToken);
+            var officialHolidays = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(officialHolidays);
         }
 
@@ -94,7 +72,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<OfficialHolidayGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var officialHolidays = await _officialHolidayGetAllHandler.Handle(cancellationToken);
+            var officialHolidays = await _service.GetAllAsync(cancellationToken);
             return Ok(officialHolidays);
         }
     }

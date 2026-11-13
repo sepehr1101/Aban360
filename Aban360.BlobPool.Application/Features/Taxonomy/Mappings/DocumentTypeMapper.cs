@@ -11,7 +11,8 @@ namespace Aban360.BlobPool.Application.Features.Taxonomy.Mappings
         {
             CreateMap<DocumentTypeCreateDto, DocumentType>();
             CreateMap<DocumentTypeDeleteDto, DocumentType>();
-            CreateMap<DocumentTypeUpdateDto, DocumentType>();
+            CreateMap<DocumentTypeUpdateDto, DocumentType>()
+                .ForMember(destination => destination.Icon, options => options.Ignore());
             CreateMap<DocumentType, DocumentTypeGetDto>();
         }
     }

@@ -1,3 +1,4 @@
+using Aban360.ClaimPool.Application.Features.Draft.Services;
 using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Draft.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands;
@@ -16,20 +17,18 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         private readonly IUnitOfWork _c0_unitOfWork;
         private readonly IRequestSubscriptionCreateHandler _c0_requestSubscriptionCreateHandler;
         private readonly IRequestSubscriptionGetHandler _c0_requestSubscriptionGetHandler;
-        private readonly IRequestUserGetAllHandler _c1_requestUserGetAllHandler;
-        private readonly IRequestUserGetSingleHandler _c1_requestUserGetSingleHandler;
-        public RequestSubscriptionController(IUnitOfWork c0_unitOfWork, IRequestSubscriptionCreateHandler c0_requestSubscriptionCreateHandler, IRequestSubscriptionGetHandler c0_requestSubscriptionGetHandler, IRequestUserGetAllHandler c1_requestUserGetAllHandler, IRequestUserGetSingleHandler c1_requestUserGetSingleHandler)
+        private readonly IRequestUserService _service;
+
+        public RequestSubscriptionController(IUnitOfWork c0_unitOfWork, IRequestSubscriptionCreateHandler c0_requestSubscriptionCreateHandler, IRequestSubscriptionGetHandler c0_requestSubscriptionGetHandler, IRequestUserService service)
         {
+            c0_unitOfWork.NotNull(nameof(c0_unitOfWork));
             _c0_unitOfWork = c0_unitOfWork;
-            _c0_unitOfWork.NotNull(nameof(c0_unitOfWork));
+            c0_requestSubscriptionCreateHandler.NotNull(nameof(c0_requestSubscriptionCreateHandler));
             _c0_requestSubscriptionCreateHandler = c0_requestSubscriptionCreateHandler;
-            _c0_requestSubscriptionCreateHandler.NotNull(nameof(c0_requestSubscriptionCreateHandler));
+            c0_requestSubscriptionGetHandler.NotNull(nameof(c0_requestSubscriptionGetHandler));
             _c0_requestSubscriptionGetHandler = c0_requestSubscriptionGetHandler;
-            _c0_requestSubscriptionGetHandler.NotNull(nameof(c0_requestSubscriptionGetHandler));
-            _c1_requestUserGetAllHandler = c1_requestUserGetAllHandler;
-            _c1_requestUserGetAllHandler.NotNull(nameof(c1_requestUserGetAllHandler));
-            _c1_requestUserGetSingleHandler = c1_requestUserGetSingleHandler;
-            _c1_requestUserGetSingleHandler.NotNull(nameof(c1_requestUserGetSingleHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -57,7 +56,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<RequestUserQueryDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var RequestUsers = await _c1_requestUserGetAllHandler.Handle(cancellationToken);
+            var RequestUsers = await _service.GetAllAsync(cancellationToken);
             return Ok(RequestUsers);
         }
 
@@ -66,7 +65,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<RequestUserQueryDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var RequestUsers = await _c1_requestUserGetSingleHandler.Handle(id, cancellationToken);
+            var RequestUsers = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(RequestUsers);
         }
     }

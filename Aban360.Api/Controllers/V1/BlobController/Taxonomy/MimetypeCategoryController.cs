@@ -1,3 +1,4 @@
+using Aban360.BlobPool.Application.Features.Taxonomy.Services;
 using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Create.Contracts;
 using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Delete.Contracts;
 using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Update.Contracts;
@@ -15,37 +16,14 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
     public class MimetypeCategoryController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IMimetypeCategoryCreateHandler _mimetypeCategoryCreateHandler;
-        private readonly IMimetypeCategoryUpdateHandler _mimetypeCategoryUpdateHandler;
-        private readonly IMimetypeCategoryDeleteHandler _mimetypeCategoryDeleteHandler;
-        private readonly IMimetypeCategoryGetSingleHandler _mimetypeCategoryGetSingleHandler;
-        private readonly IMimetypeCategoryGetAllHandler _mimetypeCategoryGetAllHandler;
+        private readonly IMimetypeCategoryService _service;
 
-        public MimetypeCategoryController(
-            IUnitOfWork uow,
-            IMimetypeCategoryCreateHandler mimetypeCategoryCreateHandler,
-            IMimetypeCategoryUpdateHandler mimetypeCategoryUpdateHandler,
-            IMimetypeCategoryDeleteHandler mimetypeCategoryDeleteHandler,
-            IMimetypeCategoryGetSingleHandler mimetypeCategoryGetSingleHandler,
-            IMimetypeCategoryGetAllHandler mimetypeCategoryGetAllHandler)
+        public MimetypeCategoryController(IUnitOfWork uow, IMimetypeCategoryService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _mimetypeCategoryCreateHandler = mimetypeCategoryCreateHandler;
-            _mimetypeCategoryCreateHandler.NotNull(nameof(mimetypeCategoryCreateHandler));
-
-            _mimetypeCategoryUpdateHandler = mimetypeCategoryUpdateHandler;
-            _mimetypeCategoryUpdateHandler.NotNull(nameof(mimetypeCategoryUpdateHandler));
-
-            _mimetypeCategoryDeleteHandler = mimetypeCategoryDeleteHandler;
-            _mimetypeCategoryDeleteHandler.NotNull(nameof(mimetypeCategoryDeleteHandler));
-
-            _mimetypeCategoryGetSingleHandler = mimetypeCategoryGetSingleHandler;
-            _mimetypeCategoryGetSingleHandler.NotNull(nameof(mimetypeCategoryGetSingleHandler));
-
-            _mimetypeCategoryGetAllHandler = mimetypeCategoryGetAllHandler;
-            _mimetypeCategoryGetAllHandler.NotNull(nameof(mimetypeCategoryGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<MimetypeCategoryCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] MimetypeCategoryCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _mimetypeCategoryCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -64,7 +42,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<MimetypeCategoryUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] MimetypeCategoryUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _mimetypeCategoryUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +53,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<MimetypeCategoryDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] MimetypeCategoryDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _mimetypeCategoryDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +64,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<MimetypeCategoryGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var mimetypeCategorys = await _mimetypeCategoryGetSingleHandler.Handle(id, cancellationToken);
+            var mimetypeCategorys = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(mimetypeCategorys);
         }
 
@@ -95,7 +73,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<MimetypeCategoryGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var mimetypeCategorys = await _mimetypeCategoryGetAllHandler.Handle(cancellationToken);
+            var mimetypeCategorys = await _service.GetAllAsync(cancellationToken);
             return Ok(mimetypeCategorys);
         }
     }

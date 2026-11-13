@@ -1,0 +1,560 @@
+[
+  {
+    "Feature": "PaymentMethod",
+    "Assembly": "Aban360.PaymentPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.PaymentPool.Application.Features.Remuneration.Handlers.Queries.Implementations.PaymentMethodGetAllHandler",
+    "OldContract": "Aban360.PaymentPool.Application.Features.Remuneration.Handlers.Queries.Contracts.IPaymentMethodGetAllHandler",
+    "Service": "Aban360.PaymentPool.Application.Features.Remuneration.Services.IPaymentMethodService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "PaymentMethod",
+    "Assembly": "Aban360.PaymentPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.PaymentPool.Application.Features.Remuneration.Handlers.Queries.Implementations.PaymentMethodGetSingleHandler",
+    "OldContract": "Aban360.PaymentPool.Application.Features.Remuneration.Handlers.Queries.Contracts.IPaymentMethodGetSingleHandler",
+    "Service": "Aban360.PaymentPool.Application.Features.Remuneration.Services.IPaymentMethodService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ChangeMeterReason",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Implementations.ChangeMeterReasonGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts.IChangeMeterReasonGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Metering.Services.IChangeMeterReasonService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ChangeMeterReason",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Implementations.ChangeMeterReasonGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts.IChangeMeterReasonGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Metering.Services.IChangeMeterReasonService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "WaterMeterChangeNumberHistory",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation.WaterMeterChangeNumberHistoryGetAllHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.IWaterMeterChangeNumberHistoryGetAllHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IWaterMeterChangeNumberHistoryService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "WaterMeterChangeNumberHistory",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation.WaterMeterChangeNumberHistoryGetSingleHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.IWaterMeterChangeNumberHistoryGetSingleHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IWaterMeterChangeNumberHistoryService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "DiscountType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations.DiscountTypeGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts.IDiscountTypeGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IDiscountTypeService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "DiscountType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations.DiscountTypeGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts.IDiscountTypeGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IDiscountTypeService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketStatus",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketStatusGetAllHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketStatusGetAllHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketStatusService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketStatus",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketStatusGetSingleHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketStatusGetSingleHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketStatusService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CordinalDirection",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Implementations.CordinalDirectionCreateHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Contracts.ICordinalDirectionCreateHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.ICordinalDirectionService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CordinalDirection",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Implementations.CordinalDirectionDeleteHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Contracts.ICordinalDirectionDeleteHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.ICordinalDirectionService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CordinalDirection",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Implementations.CordinalDirectionUpdateHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Contracts.ICordinalDirectionUpdateHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.ICordinalDirectionService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CordinalDirection",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.CordinalDirectionGetAllHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.ICordinalDirectionGetAllHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.ICordinalDirectionService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Country",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Implementations.CountryCreateHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Contracts.ICountryCreateHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.ICountryService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Country",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Implementations.CountryDeleteHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Contracts.ICountryDeleteHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.ICountryService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Country",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Implementations.CountryUpdateHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Contracts.ICountryUpdateHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.ICountryService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Country",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.CountryGetAllHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.ICountryGetAllHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.ICountryService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Country",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.CountryGetSingleHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.ICountryGetSingleHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.ICountryService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Province",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Implementations.ProvinceCreateHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Contracts.IProvinceCreateHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IProvinceService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Province",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Implementations.ProvinceDeleteHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Contracts.IProvinceDeleteHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IProvinceService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Province",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Implementations.ProvinceUpdateHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Contracts.IProvinceUpdateHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IProvinceService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Province",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.ProvinceGetAllHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.IProvinceGetAllHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IProvinceService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Province",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.ProvinceGetSingleHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.IProvinceGetSingleHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IProvinceService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Uploader",
+    "Assembly": "Aban360.PaymentPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Create.Implementations.UploaderCreateHandler",
+    "OldContract": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Create.Contracts.IUploaderCreateHandler",
+    "Service": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Services.IUploaderService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Uploader",
+    "Assembly": "Aban360.PaymentPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Delete.Implementations.UploaderDeleteHandler",
+    "OldContract": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Delete.Contracts.IUploaderDeleteHandler",
+    "Service": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Services.IUploaderService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Uploader",
+    "Assembly": "Aban360.PaymentPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Update.Implementations.UploaderUpdateHandler",
+    "OldContract": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Update.Contracts.IUploaderUpdateHandler",
+    "Service": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Services.IUploaderService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Uploader",
+    "Assembly": "Aban360.PaymentPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Queries.Implementations.UploaderGetAllHandler",
+    "OldContract": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Queries.Contracts.IUploaderGetAllHandler",
+    "Service": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Services.IUploaderService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Uploader",
+    "Assembly": "Aban360.PaymentPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Queries.Implementations.UploaderGetSingleHandler",
+    "OldContract": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Queries.Contracts.IUploaderGetSingleHandler",
+    "Service": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Services.IUploaderService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "BankFileStructure",
+    "Assembly": "Aban360.PaymentPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Create.Implementations.BankFileStructureCreateHandler",
+    "OldContract": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Create.Contracts.IBankFileStructureCreateHandler",
+    "Service": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Services.IBankFileStructureService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "BankFileStructure",
+    "Assembly": "Aban360.PaymentPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Delete.Implementations.BankFileStructureDeleteHandler",
+    "OldContract": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Delete.Contracts.IBankFileStructureDeleteHandler",
+    "Service": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Services.IBankFileStructureService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "BankFileStructure",
+    "Assembly": "Aban360.PaymentPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Update.Implementations.BankFileStructureUpdateHandler",
+    "OldContract": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Update.Contracts.IBankFileStructureUpdateHandler",
+    "Service": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Services.IBankFileStructureService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "BankFileStructure",
+    "Assembly": "Aban360.PaymentPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Queries.Implementations.BankFileStructureGetAllHandler",
+    "OldContract": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Queries.Contracts.IBankFileStructureGetAllHandler",
+    "Service": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Services.IBankFileStructureService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "BankFileStructure",
+    "Assembly": "Aban360.PaymentPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Queries.Implementations.BankFileStructureGetSingleHandler",
+    "OldContract": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Queries.Contracts.IBankFileStructureGetSingleHandler",
+    "Service": "Aban360.PaymentPool.Application.Features.NegotiableInstrument.Services.IBankFileStructureService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingPeriod",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Create.Implementations.ReadingPeriodCreateHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Create.Contracts.IReadingPeriodCreateHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingPeriodService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingPeriod",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Delete.Implementations.ReadingPeriodDeleteHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Delete.Contracts.IReadingPeriodDeleteHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingPeriodService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingPeriod",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Implementations.ReadingPeriodUpdateHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Contracts.IReadingPeriodUpdateHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingPeriodService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingPeriod",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Implementations.ReadingPeriodGetAllHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Contracts.IReadingPeriodGetAllHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingPeriodService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingPeriod",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Implementations.ReadingPeriodGetSingleHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Contracts.IReadingPeriodGetSingleHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingPeriodService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Headquarter",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Implementations.HeadquarterCreateHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Contracts.IHeadquarterCreateHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IHeadquarterService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Headquarter",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Implementations.HeadquarterDeleteHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Contracts.IHeadquarterDeleteHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IHeadquarterService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Headquarter",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Implementations.HeadquarterUpdateHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Contracts.IHeadquarterUpdateHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IHeadquarterService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Headquarter",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.HeadquarterGetAllHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.IHeadquarterGetAllHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IHeadquarterService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Headquarter",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.HeadquarterGetSingleHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.IHeadquarterGetSingleHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IHeadquarterService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Municipality",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Implementations.MunicipalityCreateHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Contracts.IMunicipalityCreateHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IMunicipalityService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Municipality",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Implementations.MunicipalityDeleteHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Contracts.IMunicipalityDeleteHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IMunicipalityService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handel"
+  },
+  {
+    "Feature": "Municipality",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Implementations.MunicipalityUpdateHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Contracts.IMunicipalityUpdateHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IMunicipalityService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handel"
+  },
+  {
+    "Feature": "Municipality",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.MunicipalityByZoneIdGetlHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.IMunicipalityByZoneIdGetlHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IMunicipalityService",
+    "Method": "GetByZoneIdAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Municipality",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.MunicipalityGetAllHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.IMunicipalityGetAllHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IMunicipalityService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Municipality",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.MunicipalityGetSingleHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.IMunicipalityGetSingleHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IMunicipalityService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Region",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Implementations.RegionCreateHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Create.Contracts.IRegionCreateHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IRegionService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Region",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Implementations.RegionDeleteHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Delete.Contracts.IRegionDeleteHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IRegionService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Region",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Implementations.RegionUpdateHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Commands.Update.Contracts.IRegionUpdateHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IRegionService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Region",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.RegionDictionaryGetAllHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.IRegionDictionaryGetAllHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IRegionService",
+    "Method": "GetDictionaryAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Region",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.RegionGetAllHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.IRegionGetAllHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IRegionService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Region",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.RegionGetSingleHandler",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.IRegionGetSingleHandler",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.IRegionService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingPeriodType",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Create.Implementations.ReadingPeriodTypeCreateHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Create.Contracts.IReadingPeriodTypeCreateHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingPeriodTypeService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingPeriodType",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Delete.Implementations.ReadingPeriodTypeDeleteHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Delete.Contracts.IReadingPeriodTypeDeleteHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingPeriodTypeService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingPeriodType",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Implementations.ReadingPeriodTypeUpdateHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Contracts.IReadingPeriodTypeUpdateHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingPeriodTypeService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingPeriodType",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Implementations.ReadingPeriodTypeGetAllHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Contracts.IReadingPeriodTypeGetAllHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingPeriodTypeService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingPeriodType",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Implementations.ReadingPeriodTypeGetSingleHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Contracts.IReadingPeriodTypeGetSingleHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingPeriodTypeService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CordinalDirection",
+    "Assembly": "Aban360.LocationPool.Application",
+    "Original": "BeforeServiceConsolidation15.Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Implementations.CordinalDirectionGetSingleService",
+    "OldContract": "Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts.ICordinalDirectionGetSingleService",
+    "Service": "Aban360.LocationPool.Application.Features.MainHierarchy.Services.ICordinalDirectionService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  }
+]

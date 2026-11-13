@@ -11,6 +11,7 @@ static class CrudChecks
     public static async Task<int> Run(Contract[] contracts, ControllerActionDescriptor[] actions)
     {
         int checks = 0, covered = 0, scenarios = 0;
+        var services = Aban360.Tests.ServiceBaselines.ApplicationServiceBaseline.Operations.Select(o => o.Service).ToHashSet();
         void Check(bool condition, string text) { if (!condition) throw new InvalidOperationException(text); checks++; }
         foreach (var expected in contracts.Where(c => c.Project == "Api" && c.Action is "Create" or "Update" or "Delete"))
         {
@@ -21,8 +22,8 @@ static class CrudChecks
             var ctor = action.ControllerTypeInfo.GetConstructors().Single();
             var dependencies = ctor.GetParameters();
             // Complex notification/file/job workflows have their own focused tests.
-            if (dependencies.Any(p => !p.ParameterType.Name.EndsWith("Handler") && p.ParameterType.Name != "IUnitOfWork")) continue;
-            var handlers = dependencies.Select(p => p.ParameterType).Where(t => t.GetMethods().Any(m => m.Name == "Handle" && m.ReturnType == typeof(Task)
+            if (dependencies.Any(p => !p.ParameterType.Name.EndsWith("Handler") && p.ParameterType.Name != "IUnitOfWork" && !services.Contains(p.ParameterType.FullName!))) continue;
+            var handlers = dependencies.Select(p => p.ParameterType).Where(t => t.GetMethods().Any(m => (m.Name == "Handle" || services.Contains(t.FullName!) && m.Name == expected.Action + "Async") && m.ReturnType == typeof(Task)
                 && m.GetParameters().Any(p => p.ParameterType == parameters[0].ParameterType))).Distinct().ToArray();
             if (handlers.Length != 1) continue;
             var responseType = action.MethodInfo.GetCustomAttributes<ProducesResponseTypeAttribute>().FirstOrDefault(r => r.Type.IsGenericType
@@ -55,7 +56,7 @@ static class CrudChecks
                 }
                 var state = new InvocationState((contract, method, args) =>
                 {
-                    if (contract == handler && method.Name == "Handle")
+                    if (contract == handler && (method.Name == "Handle" || method.Name == expected.Action + "Async"))
                     {
                         Check(calls.Count == 0, "Handler ordering changed: " + expected.Route);
                         Check(args.Any(a => ReferenceEquals(a, payload)), "Wrong input object: " + expected.Route);
@@ -109,6 +110,7 @@ static class CrudChecks
             }
         }
         Check(covered > 0, "No simple CRUD actions were tested.");
+        Check(covered >= 276, "CRUD coverage shrank after application service consolidation");
         Console.WriteLine($"PASS: {checks} CRUD checks; {covered} actions; {scenarios} success/error/cancellation/await scenarios.");
         return checks;
     }

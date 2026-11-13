@@ -1,7 +1,4 @@
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts;
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Contracts;
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Contracts;
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Application.Features.Bill.Services;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
@@ -15,37 +12,14 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
     public class InvoiceStatusController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IInvoiceStatusCreateHandler _invoiceStatusCreateHandler;
-        private readonly IInvoiceStatusUpdateHandler _invoiceStatusUpdateHandler;
-        private readonly IInvoiceStatusDeleteHandler _invoiceStatusDeleteHandler;
-        private readonly IInvoiceStatusGetSingleHandler _invoiceStatusGetSingleHandler;
-        private readonly IInvoiceStatusGetAllHandler _invoiceStatusGetAllHandler;
+        private readonly IInvoiceStatusService _service;
 
-        public InvoiceStatusController(
-            IUnitOfWork uow,
-            IInvoiceStatusCreateHandler invoiceStatusCreateHandler,
-            IInvoiceStatusUpdateHandler invoiceStatusUpdateHandler,
-            IInvoiceStatusDeleteHandler invoiceStatusDeleteHandler,
-            IInvoiceStatusGetSingleHandler invoiceStatusGetSingleHandler,
-            IInvoiceStatusGetAllHandler invoiceStatusGetAllHandler)
+        public InvoiceStatusController(IUnitOfWork uow, IInvoiceStatusService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _invoiceStatusCreateHandler = invoiceStatusCreateHandler;
-            _invoiceStatusCreateHandler.NotNull(nameof(invoiceStatusCreateHandler));
-
-            _invoiceStatusUpdateHandler = invoiceStatusUpdateHandler;
-            _invoiceStatusUpdateHandler.NotNull(nameof(invoiceStatusUpdateHandler));
-
-            _invoiceStatusDeleteHandler = invoiceStatusDeleteHandler;
-            _invoiceStatusDeleteHandler.NotNull(nameof(invoiceStatusDeleteHandler));
-
-            _invoiceStatusGetSingleHandler = invoiceStatusGetSingleHandler;
-            _invoiceStatusGetSingleHandler.NotNull(nameof(invoiceStatusGetSingleHandler));
-
-            _invoiceStatusGetAllHandler = invoiceStatusGetAllHandler;
-            _invoiceStatusGetAllHandler.NotNull(nameof(invoiceStatusGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<InvoiceStatusCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] InvoiceStatusCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _invoiceStatusCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -64,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<InvoiceStatusUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] InvoiceStatusUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _invoiceStatusUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<InvoiceStatusDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] InvoiceStatusDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _invoiceStatusDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +60,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<InvoiceStatusGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            InvoiceStatusGetDto InvoiceStatuss = await _invoiceStatusGetSingleHandler.Handle(id, cancellationToken);
+            InvoiceStatusGetDto InvoiceStatuss = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(InvoiceStatuss);
         }
 
@@ -95,7 +69,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ICollection<InvoiceStatusGetDto>>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<InvoiceStatusGetDto> InvoiceStatuss = await _invoiceStatusGetAllHandler.Handle(cancellationToken);
+            ICollection<InvoiceStatusGetDto> InvoiceStatuss = await _service.GetAllAsync(cancellationToken);
             return Ok(InvoiceStatuss);
         }
     }

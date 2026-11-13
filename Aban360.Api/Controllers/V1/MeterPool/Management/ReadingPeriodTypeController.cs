@@ -1,9 +1,6 @@
+using Aban360.MeterPool.Application.Features.Management.Services;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Create.Contracts;
-using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Delete.Contracts;
-using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Contracts;
-using Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Contracts;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Commands;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Queries;
 using Aban360.MeterPool.Persistence.Contexts.Contracts;
@@ -15,37 +12,14 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
     public class ReadingPeriodTypeController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IReadingPeriodTypeCreateHandler _readingPeriodTypeCreateHandler;
-        private readonly IReadingPeriodTypeUpdateHandler _readingPeriodTypeUpdateHandler;
-        private readonly IReadingPeriodTypeDeleteHandler _readingPeriodTypeDeleteHandler;
-        private readonly IReadingPeriodTypeGetSingleHandler _readingPeriodTypeGetSingleHandler;
-        private readonly IReadingPeriodTypeGetAllHandler _readingPeriodTypeGetAllHandler;
+        private readonly IReadingPeriodTypeService _service;
 
-        public ReadingPeriodTypeController(
-            IUnitOfWork uow,
-            IReadingPeriodTypeCreateHandler readingPeriodTypeCreateHandler,
-            IReadingPeriodTypeUpdateHandler readingPeriodTypeUpdateHandler,
-            IReadingPeriodTypeDeleteHandler readingPeriodTypeDeleteHandler,
-            IReadingPeriodTypeGetSingleHandler readingPeriodTypeGetSingleHandler,
-            IReadingPeriodTypeGetAllHandler readingPeriodTypeGetAllHandler)
+        public ReadingPeriodTypeController(IUnitOfWork uow, IReadingPeriodTypeService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _readingPeriodTypeCreateHandler = readingPeriodTypeCreateHandler;
-            _readingPeriodTypeCreateHandler.NotNull(nameof(readingPeriodTypeCreateHandler));
-
-            _readingPeriodTypeUpdateHandler = readingPeriodTypeUpdateHandler;
-            _readingPeriodTypeUpdateHandler.NotNull(nameof(readingPeriodTypeUpdateHandler));
-
-            _readingPeriodTypeDeleteHandler = readingPeriodTypeDeleteHandler;
-            _readingPeriodTypeDeleteHandler.NotNull(nameof(readingPeriodTypeDeleteHandler));
-
-            _readingPeriodTypeGetSingleHandler = readingPeriodTypeGetSingleHandler;
-            _readingPeriodTypeGetSingleHandler.NotNull(nameof(readingPeriodTypeGetSingleHandler));
-
-            _readingPeriodTypeGetAllHandler = readingPeriodTypeGetAllHandler;
-            _readingPeriodTypeGetAllHandler.NotNull(nameof(readingPeriodTypeGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReadingPeriodTypeCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] ReadingPeriodTypeCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _readingPeriodTypeCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -64,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReadingPeriodTypeUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] ReadingPeriodTypeUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _readingPeriodTypeUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReadingPeriodTypeDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] ReadingPeriodTypeDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _readingPeriodTypeDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +60,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReadingPeriodTypeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            ReadingPeriodTypeGetDto readingPeriodTypes = await _readingPeriodTypeGetSingleHandler.Handle(id, cancellationToken);
+            ReadingPeriodTypeGetDto readingPeriodTypes = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(readingPeriodTypes);
         }
 
@@ -95,7 +69,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ReadingPeriodTypeGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<ReadingPeriodTypeGetDto> readingPeriodTypes = await _readingPeriodTypeGetAllHandler.Handle(cancellationToken);
+            ICollection<ReadingPeriodTypeGetDto> readingPeriodTypes = await _service.GetAllAsync(cancellationToken);
             return Ok(readingPeriodTypes);
         }
     }

@@ -1,14 +1,12 @@
+using Aban360.UserPool.Application.Features.Ticketing.Services;
 using Aban360.Api.Models.Ticketing;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Create.Contracts;
 using Aban360.UserPool.Application.Features.Ticketing.Validations;
 using Aban360.UserPool.Application.Features.Ticketing.Services.Contracts;
 using Aban360.UserPool.Domain.Features.Ticketing.Dto.Commands;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
-using Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Update.Contracts;
-using Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Ticketing.Dto.Queries;
 using Aban360.Api.Filters;
 
@@ -16,34 +14,17 @@ namespace Aban360.Api.Controllers.V1.UserPool.Ticketing
 {
     public class TicketController : BaseController
     {
-        private readonly IUnitOfWork _c0_uow;
-        private readonly ITicketCreateHandler _c0_handler;
-        private readonly ITicketNotificationService _c0_notifications;
-        private readonly IUnitOfWork _c1_uow;
-        private readonly ITicketUpdateHandler _c1_handler;
-        private readonly ITicketGetListHandler _c2_handler;
-        private readonly ITicketGetMyListHandler _c3_handler;
-        private readonly ITicketGetSingleHandler _c4_handler;
-        private readonly ITicketReportGetHandler _c5_handler;
-        public TicketController(IUnitOfWork c0_uow, ITicketCreateHandler c0_handler, ITicketNotificationService c0_notifications, IUnitOfWork c1_uow, ITicketUpdateHandler c1_handler, ITicketGetListHandler c2_handler, ITicketGetMyListHandler c3_handler, ITicketGetSingleHandler c4_handler, ITicketReportGetHandler c5_handler)
+        private readonly IUnitOfWork _uow;
+        private readonly ITicketService _service;
+        private readonly ITicketNotificationService _notifications;
+        public TicketController(IUnitOfWork uow, ITicketService service, ITicketNotificationService notifications)
         {
-            _c0_uow = c0_uow;
-            _c0_uow.NotNull(nameof(c0_uow));
-            _c0_handler = c0_handler;
-            _c0_handler.NotNull(nameof(c0_handler));
-            _c0_notifications = c0_notifications;
-            _c1_uow = c1_uow;
-            _c1_uow.NotNull(nameof(c1_uow));
-            _c1_handler = c1_handler;
-            _c1_handler.NotNull(nameof(c1_handler));
-            _c2_handler = c2_handler;
-            _c2_handler.NotNull(nameof(c2_handler));
-            _c3_handler = c3_handler;
-            _c3_handler.NotNull(nameof(c3_handler));
-            _c4_handler = c4_handler;
-            _c4_handler.NotNull(nameof(c4_handler));
-            _c5_handler = c5_handler;
-            _c5_handler.NotNull(nameof(c5_handler));
+            uow.NotNull(nameof(uow));
+            _uow = uow;
+            service.NotNull(nameof(service));
+            _service = service;
+            notifications.NotNull(nameof(notifications));
+            _notifications = notifications;
         }
 
         [HttpPost]
@@ -60,14 +41,14 @@ namespace Aban360.Api.Controllers.V1.UserPool.Ticketing
                 Body = inputDto.Body,
                 Attachments = await TicketFileFormMapper.Read(inputDto.Attachments, cancellationToken)
             };
-            var ticket = await _c0_handler.Handle(createDto, CurrentUser, cancellationToken);
-            await _c0_uow.SaveChangesAsync(cancellationToken);
+            var ticket = await _service.CreateAsync(createDto, CurrentUser, cancellationToken);
+            await _uow.SaveChangesAsync(cancellationToken);
             var result = new TicketCreateResultDto
             {
                 Id = ticket.Id,
                 TicketNumber = ticket.TicketNumber
             };
-            await _c0_notifications.Created(ticket.TicketNumber);
+            await _notifications.Created(ticket.TicketNumber);
             return Ok(result);
         }
 
@@ -76,8 +57,8 @@ namespace Aban360.Api.Controllers.V1.UserPool.Ticketing
         [ProducesResponseType(typeof(ApiResponseEnvelope<bool>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] TicketUpdateDto inputDto, CancellationToken cancellationToken)
         {
-            await _c1_handler.Handle(inputDto, CurrentUser, cancellationToken);
-            await _c1_uow.SaveChangesAsync(cancellationToken);
+            await _service.UpdateAsync(inputDto, CurrentUser, cancellationToken);
+            await _uow.SaveChangesAsync(cancellationToken);
             return Ok(true);
         }
 
@@ -96,7 +77,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Ticketing
         [ActionName("Read")]
         public async Task<IActionResult> ReadFromTicketGetList([FromBody] TicketSearchInput inputDto, CancellationToken cancellationToken)
         {
-            var result = await _c2_handler.Handle(inputDto, CurrentUser, cancellationToken);
+            var result = await _service.GetListAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -115,7 +96,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Ticketing
         [ActionName("Read")]
         public async Task<IActionResult> ReadFromTicketGetMyList([FromBody] TicketMySearchInput inputDto, CancellationToken cancellationToken)
         {
-            var result = await _c3_handler.Handle(inputDto, CurrentUser, cancellationToken);
+            var result = await _service.GetMyListAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -125,7 +106,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Ticketing
         [ActionName("Read")]
         public async Task<IActionResult> ReadFromTicketGetSingle([FromRoute] long id, CancellationToken cancellationToken)
         {
-            var result = await _c4_handler.Handle(id, CurrentUser, cancellationToken);
+            var result = await _service.GetSingleAsync(id, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -142,7 +123,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Ticketing
         [ProducesResponseType(typeof(ApiResponseEnvelope<TicketReportOutput>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Report([FromBody] TicketSearchInput inputDto, CancellationToken cancellationToken)
         {
-            var result = await _c5_handler.Handle(inputDto, CurrentUser, cancellationToken);
+            var result = await _service.GetReportAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -159,7 +140,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Ticketing
         [ProducesResponseType(typeof(ApiResponseEnvelope<TicketReportOutput>), StatusCodes.Status200OK)]
         public async Task<IActionResult> MyReport([FromBody] TicketMySearchInput inputDto, CancellationToken cancellationToken)
         {
-            var result = await _c5_handler.HandleMine(inputDto, CurrentUser, cancellationToken);
+            var result = await _service.GetMyReportAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

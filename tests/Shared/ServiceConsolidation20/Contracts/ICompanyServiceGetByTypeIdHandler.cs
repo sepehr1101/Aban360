@@ -1,0 +1,10 @@
+// Test-only contract retained for pre-refactor snapshots.
+using Aban360.Common.BaseEntities;
+
+namespace Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts
+{
+    public interface ICompanyServiceGetByTypeIdHandler
+    {
+        Task<IEnumerable<NumericDictionary>> Handle(int typeId, CancellationToken cancellationToken);
+    }
+}

@@ -1,7 +1,4 @@
-using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Delete.Contracts;
-using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Update.Contracts;
-using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.WasteWater.Services;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
@@ -15,37 +12,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.WasteWater
     public class SiphonDiameterController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly ISiphonDiameterCreateHandler _siphonDiameterCreateHandler;
-        private readonly ISiphonDiameterUpdateHandler _siphonDiameterUpdateHandler;
-        private readonly ISiphonDiameterDeleteHandler _siphonDiameterDeleteHandler;
-        private readonly ISiphonDiameterGetSingleHandler _siphonDiameterGetSingleHandler;
-        private readonly ISiphonDiameterGetAllHandler _siphonDiameterGetAllHandler;
+        private readonly ISiphonDiameterService _service;
 
-        public SiphonDiameterController(
-            IUnitOfWork uow,
-            ISiphonDiameterCreateHandler siphonDiameterCreateHandler,
-            ISiphonDiameterUpdateHandler siphonDiameterUpdateHandler,
-            ISiphonDiameterDeleteHandler siphonDiameterDeleteHandler,
-            ISiphonDiameterGetSingleHandler siphonDiameterGetSingleHandler,
-            ISiphonDiameterGetAllHandler siphonDiameterGetAllHandler)
+        public SiphonDiameterController(IUnitOfWork uow, ISiphonDiameterService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _siphonDiameterCreateHandler = siphonDiameterCreateHandler;
-            _siphonDiameterCreateHandler.NotNull(nameof(siphonDiameterCreateHandler));
-
-            _siphonDiameterUpdateHandler = siphonDiameterUpdateHandler;
-            _siphonDiameterUpdateHandler.NotNull(nameof(siphonDiameterUpdateHandler));
-
-            _siphonDiameterDeleteHandler = siphonDiameterDeleteHandler;
-            _siphonDiameterDeleteHandler.NotNull(nameof(siphonDiameterDeleteHandler));
-
-            _siphonDiameterGetSingleHandler = siphonDiameterGetSingleHandler;
-            _siphonDiameterGetSingleHandler.NotNull(nameof(siphonDiameterGetSingleHandler));
-
-            _siphonDiameterGetAllHandler = siphonDiameterGetAllHandler;
-            _siphonDiameterGetAllHandler.NotNull(nameof(siphonDiameterGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.WasteWater
         [ProducesResponseType(typeof(ApiResponseEnvelope<SiphonDiameterCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] SiphonDiameterCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _siphonDiameterCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -64,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.WasteWater
         [ProducesResponseType(typeof(ApiResponseEnvelope<SiphonDiameterUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] SiphonDiameterUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _siphonDiameterUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.WasteWater
         [ProducesResponseType(typeof(ApiResponseEnvelope<SiphonDiameterDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] SiphonDiameterDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _siphonDiameterDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +60,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.WasteWater
         [ProducesResponseType(typeof(ApiResponseEnvelope<SiphonDiameterGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            SiphonDiameterGetDto siphonDiameter = await _siphonDiameterGetSingleHandler.Handle(id, cancellationToken);
+            SiphonDiameterGetDto siphonDiameter = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(siphonDiameter);
         }
 
@@ -95,7 +69,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.WasteWater
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<SiphonDiameterGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<SiphonDiameterGetDto> siphonDiameter = await _siphonDiameterGetAllHandler.Handle(cancellationToken);
+            ICollection<SiphonDiameterGetDto> siphonDiameter = await _service.GetAllAsync(cancellationToken);
             return Ok(siphonDiameter);
         }
     }

@@ -1,5 +1,6 @@
+using Aban360.ClaimPool.Application.Features.People.Services;
 using Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Delete.Contracts;
+
 using Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.People.Dto.Commands;
@@ -14,37 +15,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
     public class IndividualTypeController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IIndividualTypeCreateHandler _individualTypeCreateHandler;
-        private readonly IIndividualTypeUpdateHandler _individualTypeUpdateHandler;
-        private readonly IIndividualTypeDeleteHandler _individualTypeDeleteHandler;
-        private readonly IIndividualTypeGetSingleHandler _individualTypeGetSingleHandler;
-        private readonly IIndividualTypeGetAllHandler _individualTypeGetAllHandler;
+        private readonly IIndividualTypeService _service;
 
-        public IndividualTypeController(
-            IUnitOfWork uow,
-            IIndividualTypeCreateHandler individualTypeCreateHandler,
-            IIndividualTypeUpdateHandler individualTypeUpdateHandler,
-            IIndividualTypeDeleteHandler individualTypeDeleteHandler,
-            IIndividualTypeGetSingleHandler individualTypeGetSingleHandler,
-            IIndividualTypeGetAllHandler individualTypeGetAllHandler)
+        public IndividualTypeController(IUnitOfWork uow, IIndividualTypeService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _individualTypeCreateHandler = individualTypeCreateHandler;
-            _individualTypeCreateHandler.NotNull(nameof(individualTypeCreateHandler));
-
-            _individualTypeUpdateHandler = individualTypeUpdateHandler;
-            _individualTypeUpdateHandler.NotNull(nameof(individualTypeUpdateHandler));
-
-            _individualTypeDeleteHandler = individualTypeDeleteHandler;
-            _individualTypeDeleteHandler.NotNull(nameof(individualTypeDeleteHandler));
-
-            _individualTypeGetSingleHandler = individualTypeGetSingleHandler;
-            _individualTypeGetSingleHandler.NotNull(nameof(individualTypeGetSingleHandler));
-
-            _individualTypeGetAllHandler = individualTypeGetAllHandler;
-            _individualTypeGetAllHandler.NotNull(nameof(individualTypeGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -52,7 +30,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualTypeCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] IndividualTypeCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _individualTypeCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -63,7 +41,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualTypeUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] IndividualTypeUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _individualTypeUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -74,7 +52,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualTypeDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] IndividualTypeDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _individualTypeDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -85,7 +63,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualTypeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            IndividualTypeGetDto IndividualType = await _individualTypeGetSingleHandler.Handle(id, cancellationToken);
+            IndividualTypeGetDto IndividualType = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(IndividualType);
         }
 
@@ -94,7 +72,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<IndividualTypeGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<IndividualTypeGetDto> IndividualType = await _individualTypeGetAllHandler.Handle(cancellationToken);
+            ICollection<IndividualTypeGetDto> IndividualType = await _service.GetAllAsync(cancellationToken);
             return Ok(IndividualType);
         }
     }

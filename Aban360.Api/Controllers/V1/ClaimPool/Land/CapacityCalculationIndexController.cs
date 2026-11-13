@@ -1,3 +1,4 @@
+using Aban360.ClaimPool.Application.Features.Land.Services;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
@@ -15,37 +16,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
     public class CapacityCalculationIndexController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly ICapacityCalculationIndexCreateHandler _capacityCalculationIndexCreateHandler;
-        private readonly ICapacityCalculationIndexUpdateHandler _capacityCalculationIndexUpdateHandler;
-        private readonly ICapacityCalculationIndexDeleteHandler _capacityCalculationIndexDeleteHandler;
-        private readonly ICapacityCalculationIndexGetSingleHandler _capacityCalculationIndexGetSingleHandler;
-        private readonly ICapacityCalculationIndexGetAllHandler _capacityCalculationIndexGetAllHandler;
+        private readonly ICapacityCalculationIndexService _service;
 
-        public CapacityCalculationIndexController(
-            IUnitOfWork uow,
-            ICapacityCalculationIndexCreateHandler capacityCalculationIndexCreateHandler,
-            ICapacityCalculationIndexUpdateHandler capacityCalculationIndexUpdateHandler,
-            ICapacityCalculationIndexDeleteHandler capacityCalculationIndexDeleteHandler,
-            ICapacityCalculationIndexGetSingleHandler capacityCalculationIndexGetSingleHandler,
-            ICapacityCalculationIndexGetAllHandler capacityCalculationIndexGetAllHandler)
+        public CapacityCalculationIndexController(IUnitOfWork uow, ICapacityCalculationIndexService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _capacityCalculationIndexCreateHandler = capacityCalculationIndexCreateHandler;
-            _capacityCalculationIndexCreateHandler.NotNull(nameof(capacityCalculationIndexCreateHandler));
-
-            _capacityCalculationIndexUpdateHandler = capacityCalculationIndexUpdateHandler;
-            _capacityCalculationIndexUpdateHandler.NotNull(nameof(capacityCalculationIndexUpdateHandler));
-
-            _capacityCalculationIndexDeleteHandler = capacityCalculationIndexDeleteHandler;
-            _capacityCalculationIndexDeleteHandler.NotNull(nameof(capacityCalculationIndexDeleteHandler));
-
-            _capacityCalculationIndexGetSingleHandler = capacityCalculationIndexGetSingleHandler;
-            _capacityCalculationIndexGetSingleHandler.NotNull(nameof(capacityCalculationIndexGetSingleHandler));
-
-            _capacityCalculationIndexGetAllHandler = capacityCalculationIndexGetAllHandler;
-            _capacityCalculationIndexGetAllHandler.NotNull(nameof(capacityCalculationIndexGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<CapacityCalculationIndexCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] CapacityCalculationIndexCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _capacityCalculationIndexCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -64,7 +42,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<CapacityCalculationIndexUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] CapacityCalculationIndexUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _capacityCalculationIndexUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +53,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<CapacityCalculationIndexDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] CapacityCalculationIndexDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _capacityCalculationIndexDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +64,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<CapacityCalculationIndexGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var capacityCalculationIndexs = await _capacityCalculationIndexGetSingleHandler.Handle(id, cancellationToken);
+            var capacityCalculationIndexs = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(capacityCalculationIndexs);
         }
 
@@ -95,7 +73,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<CapacityCalculationIndexGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var capacityCalculationIndexs = await _capacityCalculationIndexGetAllHandler.Handle(cancellationToken);
+            var capacityCalculationIndexs = await _service.GetAllAsync(cancellationToken);
             return Ok(capacityCalculationIndexs);
         }
     }

@@ -1,4 +1,4 @@
-using Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Application.Features.Rule.Services;
 using Aban360.CalculationPool.Domain.Features.Rule.Dto.Queries;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -9,18 +9,12 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
     [Route("v1/supported-operator")]
     public class SupportedOperatorController : BaseController
     {
-        private readonly ISupportedOperatorGetSingleHandler _supportedOperatorGetSingleHandler;
-        private readonly ISupportedOperatorGetAllHandler _supportedOperatorGetAllHandler;
+        private readonly ISupportedOperatorService _service;
 
-        public SupportedOperatorController(
-            ISupportedOperatorGetSingleHandler supportedOperatorGetSingleHandler,
-            ISupportedOperatorGetAllHandler supportedOperatorGetAllHandler)
+        public SupportedOperatorController(ISupportedOperatorService service)
         {
-            _supportedOperatorGetSingleHandler = supportedOperatorGetSingleHandler;
-            _supportedOperatorGetSingleHandler.NotNull(nameof(supportedOperatorGetSingleHandler));
-
-            _supportedOperatorGetAllHandler = supportedOperatorGetAllHandler;
-            _supportedOperatorGetAllHandler.NotNull(nameof(supportedOperatorGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost, HttpGet]
@@ -28,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<SupportedOperatorGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var supportedOperators = await _supportedOperatorGetSingleHandler.Handle(id, cancellationToken);
+            var supportedOperators = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(supportedOperators);
         }
 
@@ -37,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<SupportedOperatorGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var supportedOperators = await _supportedOperatorGetAllHandler.Handle(cancellationToken);
+            var supportedOperators = await _service.GetAllAsync(cancellationToken);
             return Ok(supportedOperators);
         }
     }

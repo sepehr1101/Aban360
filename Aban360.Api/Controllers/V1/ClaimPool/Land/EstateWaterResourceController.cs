@@ -1,7 +1,4 @@
-using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts;
-using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
-using Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.Land.Services;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
@@ -15,37 +12,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
     public class EstateWaterResourceController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IEstateWaterResourceCreateHandler _estateWaterResourceCreateHandler;
-        private readonly IEstateWaterResourceUpdateHandler _estateWaterResourceUpdateHandler;
-        private readonly IEstateWaterResourceDeleteHandler _estateWaterResourceDeleteHandler;
-        private readonly IEstateWaterResourceGetSingleHandler _estateWaterResourceGetSingleHandler;
-        private readonly IEstateWaterResourceGetAllHandler _estateWaterResourceGetAllHandler;
+        private readonly IEstateWaterResourceService _service;
 
-        public EstateWaterResourceController(
-            IUnitOfWork uow,
-            IEstateWaterResourceCreateHandler estateWaterResourceCreateHandler,
-            IEstateWaterResourceUpdateHandler estateWaterResourceUpdateHandler,
-            IEstateWaterResourceDeleteHandler estateWaterResourceDeleteHandler,
-            IEstateWaterResourceGetSingleHandler estateWaterResourceGetSingleHandler,
-            IEstateWaterResourceGetAllHandler estateWaterResourceGetAllHandler)
+        public EstateWaterResourceController(IUnitOfWork uow, IEstateWaterResourceService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _estateWaterResourceCreateHandler = estateWaterResourceCreateHandler;
-            _estateWaterResourceCreateHandler.NotNull(nameof(estateWaterResourceCreateHandler));
-
-            _estateWaterResourceUpdateHandler = estateWaterResourceUpdateHandler;
-            _estateWaterResourceUpdateHandler.NotNull(nameof(estateWaterResourceUpdateHandler));
-
-            _estateWaterResourceDeleteHandler = estateWaterResourceDeleteHandler;
-            _estateWaterResourceDeleteHandler.NotNull(nameof(estateWaterResourceDeleteHandler));
-
-            _estateWaterResourceGetSingleHandler = estateWaterResourceGetSingleHandler;
-            _estateWaterResourceGetSingleHandler.NotNull(nameof(estateWaterResourceGetSingleHandler));
-
-            _estateWaterResourceGetAllHandler = estateWaterResourceGetAllHandler;
-            _estateWaterResourceGetAllHandler.NotNull(nameof(estateWaterResourceGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateWaterResourceCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] EstateWaterResourceCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _estateWaterResourceCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -64,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateWaterResourceUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] EstateWaterResourceUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _estateWaterResourceUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateWaterResourceDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] EstateWaterResourceDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _estateWaterResourceDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +60,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateWaterResourceGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            EstateWaterResourceGetDto estateWaterResources = await _estateWaterResourceGetSingleHandler.Handle(id, cancellationToken);
+            EstateWaterResourceGetDto estateWaterResources = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(estateWaterResources);
         }
 
@@ -95,7 +69,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<EstateWaterResourceGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<EstateWaterResourceGetDto> estateWaterResources = await _estateWaterResourceGetAllHandler.Handle(cancellationToken);
+            ICollection<EstateWaterResourceGetDto> estateWaterResources = await _service.GetAllAsync(cancellationToken);
             return Ok(estateWaterResources);
         }
     }

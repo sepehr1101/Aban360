@@ -1,9 +1,6 @@
+using Aban360.MeterPool.Application.Features.Management.Services;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Create.Contracts;
-using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Delete.Contracts;
-using Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Contracts;
-using Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Contracts;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Commands;
 using Aban360.MeterPool.Domain.Features.Management.Dtos.Queries;
 using Aban360.MeterPool.Persistence.Contexts.Contracts;
@@ -11,7 +8,6 @@ using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
-using meterPool = Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Contracts;
 using oldCalcPool = Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
@@ -21,32 +17,20 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
 {
     public class CounterStateController : BaseController
     {
-        private readonly IUnitOfWork _c0_uow;
-        private readonly ICounterStateCreateHandler _c0_counterStateCreateHandler;
-        private readonly ICounterStateUpdateHandler _c0_counterStateUpdateHandler;
-        private readonly ICounterStateDeleteHandler _c0_counterStateDeleteHandler;
-        private readonly ICounterStateGetSingleHandler _c0_counterStateGetSingleHandler;
-        private readonly meterPool.ICounterStateGetAllHandler _c0_meterPoolCounterStateGetAllHandler;
+        private readonly IUnitOfWork _uow;
+        private readonly ICounterStateService _service;
         private readonly oldCalcPool.ICounterStateGetAllHandler _c0_oldCalcPoolCounterStateGetAllHandler;
         private readonly ICounterStateGetHandler _c1_counterStateGetHandler;
-        public CounterStateController(IUnitOfWork c0_uow, ICounterStateCreateHandler c0_counterStateCreateHandler, ICounterStateUpdateHandler c0_counterStateUpdateHandler, ICounterStateDeleteHandler c0_counterStateDeleteHandler, ICounterStateGetSingleHandler c0_counterStateGetSingleHandler, meterPool.ICounterStateGetAllHandler c0_meterPoolCounterStateGetAllHandler, oldCalcPool.ICounterStateGetAllHandler c0_oldCalcPoolCounterStateGetAllHandler, ICounterStateGetHandler c1_counterStateGetHandler)
+        public CounterStateController(IUnitOfWork uow, ICounterStateService service, oldCalcPool.ICounterStateGetAllHandler c0_oldCalcPoolCounterStateGetAllHandler, ICounterStateGetHandler c1_counterStateGetHandler)
         {
-            _c0_uow = c0_uow;
-            _c0_uow.NotNull(nameof(c0_uow));
-            _c0_counterStateCreateHandler = c0_counterStateCreateHandler;
-            _c0_counterStateCreateHandler.NotNull(nameof(c0_counterStateCreateHandler));
-            _c0_counterStateUpdateHandler = c0_counterStateUpdateHandler;
-            _c0_counterStateUpdateHandler.NotNull(nameof(c0_counterStateUpdateHandler));
-            _c0_counterStateDeleteHandler = c0_counterStateDeleteHandler;
-            _c0_counterStateDeleteHandler.NotNull(nameof(c0_counterStateDeleteHandler));
-            _c0_counterStateGetSingleHandler = c0_counterStateGetSingleHandler;
-            _c0_counterStateGetSingleHandler.NotNull(nameof(c0_counterStateGetSingleHandler));
-            _c0_meterPoolCounterStateGetAllHandler = c0_meterPoolCounterStateGetAllHandler;
-            _c0_meterPoolCounterStateGetAllHandler.NotNull(nameof(c0_meterPoolCounterStateGetAllHandler));
+            uow.NotNull(nameof(uow));
+            _uow = uow;
+            service.NotNull(nameof(service));
+            _service = service;
+            c0_oldCalcPoolCounterStateGetAllHandler.NotNull(nameof(c0_oldCalcPoolCounterStateGetAllHandler));
             _c0_oldCalcPoolCounterStateGetAllHandler = c0_oldCalcPoolCounterStateGetAllHandler;
-            _c0_oldCalcPoolCounterStateGetAllHandler.NotNull(nameof(c0_oldCalcPoolCounterStateGetAllHandler));
+            c1_counterStateGetHandler.NotNull(nameof(c1_counterStateGetHandler));
             _c1_counterStateGetHandler = c1_counterStateGetHandler;
-            _c1_counterStateGetHandler.NotNull(nameof(c1_counterStateGetHandler));
         }
 
         [HttpPost]
@@ -54,8 +38,8 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<CounterStateCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] CounterStateCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _c0_counterStateCreateHandler.Handle(createDto, cancellationToken);
-            await _c0_uow.SaveChangesAsync(cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
+            await _uow.SaveChangesAsync(cancellationToken);
             return Ok(createDto);
         }
 
@@ -64,8 +48,8 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<CounterStateUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] CounterStateUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _c0_counterStateUpdateHandler.Handle(updateDto, cancellationToken);
-            await _c0_uow.SaveChangesAsync(cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
+            await _uow.SaveChangesAsync(cancellationToken);
             return Ok(updateDto);
         }
 
@@ -74,8 +58,8 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<CounterStateDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] CounterStateDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _c0_counterStateDeleteHandler.Handle(deleteDto, cancellationToken);
-            await _c0_uow.SaveChangesAsync(cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
+            await _uow.SaveChangesAsync(cancellationToken);
             return Ok(deleteDto);
         }
 
@@ -84,7 +68,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<CounterStateGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            CounterStateGetDto counterStates = await _c0_counterStateGetSingleHandler.Handle(id, cancellationToken);
+            CounterStateGetDto counterStates = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(counterStates);
         }
 
@@ -93,7 +77,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<CounterStateGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllAban360(CancellationToken cancellationToken)
         {
-            ICollection<CounterStateGetDto> counterStates = await _c0_meterPoolCounterStateGetAllHandler.Handle(cancellationToken);
+            ICollection<CounterStateGetDto> counterStates = await _service.GetAllAsync(cancellationToken);
             return Ok(counterStates);
         }
 

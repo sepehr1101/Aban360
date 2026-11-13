@@ -1,0 +1,102 @@
+[
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.UserPool.Ticketing.TicketStatusController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Ticketing.TicketStatusController"
+  },
+  {
+    "Assembly": "Aban360.BrdigeApi",
+    "Original": "BeforeServiceConsumers15.Aban360.BrdigeApi.Controllers.V1.ReportPool.LocationsInfo.VillageByZoneIdGetController",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.ReportPool.LocationsInfo.VillageByZoneIdGetController"
+  },
+  {
+    "Assembly": "Aban360.BrdigeApi",
+    "Original": "BeforeServiceConsumers15.Aban360.BrdigeApi.Controllers.V1.ReportPool.LocationsInfo.RegionDictionaryGetAllController",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.ReportPool.LocationsInfo.RegionDictionaryGetAllController"
+  },
+  {
+    "Assembly": "Aban360.BrdigeApi",
+    "Original": "BeforeServiceConsumers15.Aban360.BrdigeApi.Controllers.V1.CalculationPool.DiscountTypeGetAllController",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.CalculationPool.DiscountTypeGetAllController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.PaymentPool.Remuneration.PaymentMethodController",
+    "Current": "Aban360.Api.Controllers.V1.PaymentPool.Remuneration.PaymentMethodController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.BankFileStructureController",
+    "Current": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.BankFileStructureController"
+  },
+  {
+    "Assembly": "Aban360.LocationPool.GatewayAdhoc",
+    "Original": "BeforeServiceConsumers15.Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.RegionTitleAddhoc",
+    "Current": "Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.RegionTitleAddhoc"
+  },
+  {
+    "Assembly": "Aban360.LocationPool.GatewayAdhoc",
+    "Original": "BeforeServiceConsumers15.Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.ProvienceQueryAddhoc",
+    "Current": "Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.ProvienceQueryAddhoc"
+  },
+  {
+    "Assembly": "Aban360.LocationPool.GatewayAdhoc",
+    "Original": "BeforeServiceConsumers15.Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.HeadquartersAddhoc",
+    "Current": "Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.HeadquartersAddhoc"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodTypeController",
+    "Current": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodTypeController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodController",
+    "Current": "Aban360.Api.Controllers.V1.MeterPool.Management.ReadingPeriodController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.RegionController",
+    "Current": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.RegionController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.ProvinceController",
+    "Current": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.ProvinceController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.MunicipalityController",
+    "Current": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.MunicipalityController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.HeadquartersController",
+    "Current": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.HeadquartersController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.CountryController",
+    "Current": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.CountryController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.CordinalDirectionController",
+    "Current": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.CordinalDirectionController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.ClaimPool.People.DiscountTypeController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.People.DiscountTypeController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.ClaimPool.Metering.ChangeMeterReasonController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Metering.ChangeMeterReasonController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers15.Aban360.Api.Controllers.V1.CalculationPool.Bill.WaterMeterChangeNumberHistoryController",
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.Bill.WaterMeterChangeNumberHistoryController"
+  }
+]

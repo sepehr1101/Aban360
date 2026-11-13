@@ -1,7 +1,8 @@
-using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Delete.Contracts;
-using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Update.Contracts;
-using Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.WasteWater.Services;
+
+
+
+
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
@@ -13,32 +14,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
     public class WaterMeterTagController : BaseController
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IWaterMeterTagCreateHandler _waterMeterTagCreateHandler;
-        private readonly IWaterMeterTagDeleteHandler _waterMeterTagDeleteHandler;
-        private readonly IWaterMeterTagUpdateHandler _waterMeterTagUpdateHandler;
-        private readonly IWaterMeterTagGetSinglBySearchInputeHandler _waterMeterTagGetSinglBySearchInputeHandler;
-        private readonly IWaterMeterTagGetSingleHandler _waterMeterTagGetSingleHandler;
+        private readonly IWaterMeterTagService _service;
 
-        public WaterMeterTagController(
-            IUnitOfWork unitOfWork,
-            IWaterMeterTagCreateHandler waterMeterTagCreateHandler,
-            IWaterMeterTagDeleteHandler waterMeterTagDeleteHandler,
-            IWaterMeterTagUpdateHandler waterMeterTagUpdateHandler,
-            IWaterMeterTagGetSinglBySearchInputeHandler waterMeterTagGetSinglBySearchInputeHandler,
-            IWaterMeterTagGetSingleHandler waterMeterTagGetSingleHandler)
+        public WaterMeterTagController(IUnitOfWork unitOfWork, IWaterMeterTagService service)
         {
+            unitOfWork.NotNull(nameof(unitOfWork));
             _unitOfWork = unitOfWork;
-            _unitOfWork.NotNull(nameof(unitOfWork));
-            _waterMeterTagCreateHandler = waterMeterTagCreateHandler;
-            _waterMeterTagCreateHandler.NotNull(nameof(waterMeterTagCreateHandler));
-            _waterMeterTagDeleteHandler = waterMeterTagDeleteHandler;
-            _waterMeterTagDeleteHandler.NotNull(nameof(waterMeterTagDeleteHandler));
-            _waterMeterTagUpdateHandler = waterMeterTagUpdateHandler;
-            _waterMeterTagUpdateHandler.NotNull(nameof(waterMeterTagUpdateHandler));
-            _waterMeterTagGetSinglBySearchInputeHandler = waterMeterTagGetSinglBySearchInputeHandler;
-            _waterMeterTagGetSinglBySearchInputeHandler.NotNull(nameof(waterMeterTagGetSinglBySearchInputeHandler));
-            _waterMeterTagGetSingleHandler = waterMeterTagGetSingleHandler;
-            _waterMeterTagGetSingleHandler.NotNull(nameof(waterMeterTagGetSingleHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -46,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterTagCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] WaterMeterTagCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _waterMeterTagCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -57,7 +40,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterTagDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] WaterMeterTagDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _waterMeterTagDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -68,7 +51,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterTagUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] WaterMeterTagUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _waterMeterTagUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -79,7 +62,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterTagGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Search(string input, CancellationToken cancellationToken)
         {
-            WaterMeterTagGetDto WaterMeterTag = await _waterMeterTagGetSinglBySearchInputeHandler.Handle(input, cancellationToken);
+            WaterMeterTagGetDto WaterMeterTag = await _service.GetBySearchAsync(input, cancellationToken);
             return Ok(WaterMeterTag);
         }
 
@@ -88,7 +71,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<WaterMeterTagGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(int id, CancellationToken cancellationToken)
         {
-            ICollection<WaterMeterTagGetDto> WaterMeterTag = await _waterMeterTagGetSingleHandler.Handle(id, cancellationToken);
+            ICollection<WaterMeterTagGetDto> WaterMeterTag = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(WaterMeterTag);
         }
     }

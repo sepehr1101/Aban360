@@ -1,10 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
   <ItemGroup>
+    <Using Include="Microsoft.AspNetCore.Http" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="8.0.1" />
     <ProjectReference Include="../../Aban360.Api/Aban360.Api.csproj" />
     <ProjectReference Include="../../Aban360.BrdigeApi/Aban360.BrdigeApi.csproj" />
     <None Update="Contracts.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidation15/Contracts/**/*.cs" Link="LegacyContracts15/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidation15/ApplicationServiceBaseline.cs" Link="ApplicationServiceBaseline.cs" />
+    <None Update="ServiceConsolidation15.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="ServiceConsumers15.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidation30/Contracts/**/*.cs" Link="LegacyContracts30/%(Filename)%(Extension)" />
+    <None Update="ServiceConsolidation30.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="ServiceConsumers30.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidation20/Contracts/**/*.cs" Link="LegacyContracts20/%(Filename)%(Extension)" />
+    <None Update="ServiceConsolidation20.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="ServiceConsumers20.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidation19/Contracts/**/*.cs" Link="LegacyContracts19/%(Filename)%(Extension)" />
+    <None Update="ServiceConsolidation19.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="ServiceConsumers19.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

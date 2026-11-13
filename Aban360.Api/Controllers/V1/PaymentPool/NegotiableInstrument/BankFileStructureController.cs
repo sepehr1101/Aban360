@@ -1,9 +1,6 @@
+using Aban360.PaymentPool.Application.Features.NegotiableInstrument.Services;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Create.Contracts;
-using Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Delete.Contracts;
-using Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Update.Contracts;
-using Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Queries.Contracts;
 using Aban360.PaymentPool.Domain.Features.NegotiableInstrument.Dto.Commands;
 using Aban360.PaymentPool.Domain.Features.NegotiableInstrument.Dto.Queries;
 using Aban360.PaymentPool.Persistence.Contexts.Contracts;
@@ -15,37 +12,14 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
     public class BankFileStructureController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IBankFileStructureCreateHandler _bankFileStructureCreateHandler;
-        private readonly IBankFileStructureUpdateHandler _bankFileStructureUpdateHandler;
-        private readonly IBankFileStructureDeleteHandler _bankFileStructureDeleteHandler;
-        private readonly IBankFileStructureGetSingleHandler _bankFileStructureGetSingleHandler;
-        private readonly IBankFileStructureGetAllHandler _bankFileStructureGetAllHandler;
+        private readonly IBankFileStructureService _service;
 
-        public BankFileStructureController(
-            IUnitOfWork uow,
-            IBankFileStructureCreateHandler bankFileStructureCreateHandler,
-            IBankFileStructureUpdateHandler bankFileStructureUpdateHandler,
-            IBankFileStructureDeleteHandler bankFileStructureDeleteHandler,
-            IBankFileStructureGetSingleHandler bankFileStructureGetSingleHandler,
-            IBankFileStructureGetAllHandler bankFileStructureGetAllHandler)
+        public BankFileStructureController(IUnitOfWork uow, IBankFileStructureService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _bankFileStructureCreateHandler = bankFileStructureCreateHandler;
-            _bankFileStructureCreateHandler.NotNull(nameof(bankFileStructureCreateHandler));
-
-            _bankFileStructureUpdateHandler = bankFileStructureUpdateHandler;
-            _bankFileStructureUpdateHandler.NotNull(nameof(bankFileStructureUpdateHandler));
-
-            _bankFileStructureDeleteHandler = bankFileStructureDeleteHandler;
-            _bankFileStructureDeleteHandler.NotNull(nameof(bankFileStructureDeleteHandler));
-
-            _bankFileStructureGetSingleHandler = bankFileStructureGetSingleHandler;
-            _bankFileStructureGetSingleHandler.NotNull(nameof(bankFileStructureGetSingleHandler));
-
-            _bankFileStructureGetAllHandler = bankFileStructureGetAllHandler;
-            _bankFileStructureGetAllHandler.NotNull(nameof(bankFileStructureGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
         [ProducesResponseType(typeof(ApiResponseEnvelope<BankFileStructureCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] BankFileStructureCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _bankFileStructureCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -64,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
         [ProducesResponseType(typeof(ApiResponseEnvelope<BankFileStructureUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] BankFileStructureUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _bankFileStructureUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
         [ProducesResponseType(typeof(ApiResponseEnvelope<BankFileStructureDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] BankFileStructureDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _bankFileStructureDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +60,7 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
         [ProducesResponseType(typeof(ApiResponseEnvelope<BankFileStructureGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var bankFileStructures = await _bankFileStructureGetSingleHandler.Handle(id, cancellationToken);
+            var bankFileStructures = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(bankFileStructures);
         }
 
@@ -95,7 +69,7 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<BankFileStructureGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var bankFileStructures = await _bankFileStructureGetAllHandler.Handle(cancellationToken);
+            var bankFileStructures = await _service.GetAllAsync(cancellationToken);
             return Ok(bankFileStructures);
         }
     }

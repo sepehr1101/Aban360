@@ -1,0 +1,1262 @@
+[
+  {
+    "Feature": "RequestUser",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Draft.Handlers.Queries.Implementations.RequestUserGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Draft.Handlers.Queries.Contracts.IRequestUserGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Draft.Services.IRequestUserService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "RequestUser",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Draft.Handlers.Queries.Implementations.RequestUserGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Draft.Handlers.Queries.Contracts.IRequestUserGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Draft.Services.IRequestUserService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "MimetypeCategory",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Implementations.MimetypeCategoryGetSingleHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Contracts.IMimetypeCategoryGetSingleHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IMimetypeCategoryService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "MimetypeCategory",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Implementations.MimetypeCategoryGetAllHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Contracts.IMimetypeCategoryGetAllHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IMimetypeCategoryService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "MimetypeCategory",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Update.Implementations.MimetypeCategoryUpdateHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Update.Contracts.IMimetypeCategoryUpdateHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IMimetypeCategoryService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "MimetypeCategory",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Delete.Implementations.MimetypeCategoryDeleteHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Delete.Contracts.IMimetypeCategoryDeleteHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IMimetypeCategoryService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "MimetypeCategory",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Create.Implementations.MimetypeCategoryCreateHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Create.Contracts.IMimetypeCategoryCreateHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IMimetypeCategoryService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ExecutableMimetype",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Implementations.ExecutableMimetypeGetSingleHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Contracts.IExecutableMimetypeGetSingleHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IExecutableMimetypeService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ExecutableMimetype",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Implementations.ExecutableMimetypeGetAllHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Contracts.IExecutableMimetypeGetAllHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IExecutableMimetypeService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ExecutableMimetype",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Update.Implementations.ExecutableMimetypeUpdateHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Update.Contracts.IExecutableMimetypeUpdateHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IExecutableMimetypeService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ExecutableMimetype",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Delete.Implementations.ExecutableMimetypeDeleteHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Delete.Contracts.IExecutableMimetypeDeleteHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IExecutableMimetypeService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ExecutableMimetype",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Create.Implementations.ExecutableMimetypeCreateHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Create.Contracts.IExecutableMimetypeCreateHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IExecutableMimetypeService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualEstateRelationType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations.IndividualEstateRelationTypeGetSingelHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts.IIndividualEstateRelationTypeGetSingelHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualEstateRelationTypeService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualEstateRelationType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations.IndividualEstateRelationTypeGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts.IIndividualEstateRelationTypeGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualEstateRelationTypeService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualEstateRelationType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Implementations.IndividualEstateRelationTypeUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Contracts.IIndividualEstateRelationTypeUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualEstateRelationTypeService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualEstateRelationType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Delete.Implementations.IndividualEstateRelationTypeDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Delete.Contracts.IIndividualEstateRelationTypeDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualEstateRelationTypeService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualEstateRelationType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Implementations.IndividualEstateRelationTypeCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Contracts.IIndividualEstateRelationTypeCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualEstateRelationTypeService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations.IndividualTypeGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts.IIndividualTypeGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualTypeService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations.IndividualTypeGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts.IIndividualTypeGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualTypeService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Implementations.IndividualTypeUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Contracts.IIndividualTypeUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualTypeService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Delete.Implementations.IndividualTypeDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Delete.Contracts.IIndividualTypeDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualTypeService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Implementations.IndividualTypeCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Contracts.IIndividualTypeCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualTypeService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SiphonType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Implementations.SiphonTypeGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts.ISiphonTypeGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.ISiphonTypeService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SiphonType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Implementations.SiphonTypeGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts.ISiphonTypeGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.ISiphonTypeService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SiphonType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Update.Implementations.SiphonTypeUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Update.Contracts.ISiphonTypeUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.ISiphonTypeService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SiphonType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Delete.Implementations.SiphonTypeDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Delete.Contracts.ISiphonTypeDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.ISiphonTypeService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SiphonType",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Implementations.SiphonTypeCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Contracts.ISiphonTypeCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.ISiphonTypeService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SiphonMaterial",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Implementations.SiphonMaterialGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts.ISiphonMaterialGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.ISiphonMaterialService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SiphonMaterial",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Implementations.SiphonMaterialGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts.ISiphonMaterialGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.ISiphonMaterialService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SiphonMaterial",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Update.Implementations.SiphonMaterialUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Update.Contracts.ISiphonMaterialUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.ISiphonMaterialService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SiphonMaterial",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Delete.Implementations.SiphonMaterialDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Delete.Contracts.ISiphonMaterialDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.ISiphonMaterialService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SiphonMaterial",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Implementations.SiphonMaterialCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Contracts.ISiphonMaterialCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.ISiphonMaterialService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "WaterMeterInstallationMethod",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Implementations.WaterMeterInstallationMethodGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts.IWaterMeterInstallationMethodGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Metering.Services.IWaterMeterInstallationMethodService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "WaterMeterInstallationMethod",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Implementations.WaterMeterInstallationMethodGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts.IWaterMeterInstallationMethodGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Metering.Services.IWaterMeterInstallationMethodService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "WaterMeterInstallationMethod",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Update.Implementations.WaterMeterInstallationMethodUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Update.Contracts.IWaterMeterInstallationMethodUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Metering.Services.IWaterMeterInstallationMethodService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "WaterMeterInstallationMethod",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Delete.Implementations.WaterMeterInstallationMethodDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Delete.Contracts.IWaterMeterInstallationMethodDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Metering.Services.IWaterMeterInstallationMethodService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "WaterMeterInstallationMethod",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Create.Implementations.WaterMeterInstallationMethodCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Create.Contracts.IWaterMeterInstallationMethodCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Metering.Services.IWaterMeterInstallationMethodService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfferingUnit",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation.OfferingUnitGetSingleHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.IOfferingUnitGetSingleHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IOfferingUnitService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfferingUnit",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation.OfferingUnitGetAllHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.IOfferingUnitGetAllHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IOfferingUnitService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfferingUnit",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Implementation.OfferingUnitUpdateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Contracts.IOfferingUnitUpdateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IOfferingUnitService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfferingUnit",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Implementation.OfferingUnitDeleteHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Contracts.IOfferingUnitDeleteHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IOfferingUnitService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfferingUnit",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation.OfferingUnitCreateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts.IOfferingUnitCreateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IOfferingUnitService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfferingGroup",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation.OfferingGroupGetSingleHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.IOfferingGroupGetSingleHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IOfferingGroupService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfferingGroup",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation.OfferingGroupGetAllHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.IOfferingGroupGetAllHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IOfferingGroupService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfferingGroup",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Implementation.OfferingGroupUpdateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Contracts.IOfferingGroupUpdateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IOfferingGroupService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfferingGroup",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Implementation.OfferingGroupDeleteHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Contracts.IOfferingGroupDeleteHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IOfferingGroupService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfferingGroup",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation.OfferingGroupCreateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts.IOfferingGroupCreateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IOfferingGroupService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CompanyServiceType",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation.CompanyServiceTypeGetSingleHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.ICompanyServiceTypeGetSingleHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.ICompanyServiceTypeService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CompanyServiceType",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation.CompanyServiceTypeGetAllHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.ICompanyServiceTypeGetAllHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.ICompanyServiceTypeService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CompanyServiceType",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Implementation.CompanyServiceTypeUpdateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Contracts.ICompanyServiceTypeUpdateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.ICompanyServiceTypeService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CompanyServiceType",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Implementation.CompanyServiceTypeDeleteHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Contracts.ICompanyServiceTypeDeleteHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.ICompanyServiceTypeService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CompanyServiceType",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bil.Handlers.Commands.Create.Implementation.CompanyServiceTypeCreateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts.ICompanyServiceTypeCreateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.ICompanyServiceTypeService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "InvoiceLineItemInsertMode",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation.InvoiceLineItemInsertModeGetSingleHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.IInvoiceLineItemInsertModeGetSingleHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IInvoiceLineItemInsertModeService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "InvoiceLineItemInsertMode",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation.InvoiceLineItemInsertModeGetAllHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.IInvoiceLineItemInsertModeGetAllHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IInvoiceLineItemInsertModeService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "InvoiceLineItemInsertMode",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Implementation.InvoiceLineItemInsertModeUpdateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Contracts.IInvoiceLineItemInsertModeUpdateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IInvoiceLineItemInsertModeService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "InvoiceLineItemInsertMode",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Implementation.InvoiceLineItemInsertModeDeleteHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Contracts.IInvoiceLineItemInsertModeDeleteHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IInvoiceLineItemInsertModeService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "InvoiceLineItemInsertMode",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation.InvoiceLineItemInsertModeCreateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts.IInvoiceLineItemInsertModeCreateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IInvoiceLineItemInsertModeService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfficialHoliday",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.OfficialHolidayGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IOfficialHolidayGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IOfficialHolidayService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfficialHoliday",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.OfficialHolidayGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IOfficialHolidayGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IOfficialHolidayService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfficialHoliday",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.OfficialHolidayUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.IOfficialHolidayUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IOfficialHolidayService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfficialHoliday",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations.OfficialHolidayDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts.IOfficialHolidayDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IOfficialHolidayService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "OfficialHoliday",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.OfficialHolidayCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IOfficialHolidayCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IOfficialHolidayService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Handover",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.HandoverGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IHandoverGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IHandoverService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Handover",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.HandoverGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IHandoverGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IHandoverService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Handover",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.HandoverUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.IHandoverUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IHandoverService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Handover",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations.HandoverDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts.IHandoverDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IHandoverService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Handover",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.HandoverCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IHandoverCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IHandoverService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Gateway",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations.GatewayGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts.IGatewayGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.IGatewayService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Gateway",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations.GatewayGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts.IGatewayGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.IGatewayService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Gateway",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Implementations.GatewayUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Contracts.IGatewayUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.IGatewayService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Gateway",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete.Implementations.GatewayDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete.Contracts.IGatewayDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.IGatewayService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Gateway",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations.GatewayCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts.IGatewayCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.IGatewayService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CapacityCalculationIndex",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.CapacityCalculationIndexGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.ICapacityCalculationIndexGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.ICapacityCalculationIndexService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CapacityCalculationIndex",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.CapacityCalculationIndexGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.ICapacityCalculationIndexGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.ICapacityCalculationIndexService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CapacityCalculationIndex",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.CapacityCalculationIndexUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.ICapacityCalculationIndexUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.ICapacityCalculationIndexService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CapacityCalculationIndex",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations.CapacityCalculationIndexDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts.ICapacityCalculationIndexDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.ICapacityCalculationIndexService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "CapacityCalculationIndex",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.CapacityCalculationIndexCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.ICapacityCalculationIndexCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.ICapacityCalculationIndexService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "EquipmentBroker",
+    "Assembly": "Aban360.InstallationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.InstallationPool.Application.Features.Definition.Handlers.Queries.Implementations.EquipmentBrokerGetSingleHandler",
+    "OldContract": "Aban360.InstallationPool.Application.Features.Definition.Handlers.Queries.Contracts.IEquipmentBrokerGetSingleHandler",
+    "Service": "Aban360.InstallationPool.Application.Features.Definition.Services.IEquipmentBrokerService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "EquipmentBroker",
+    "Assembly": "Aban360.InstallationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.InstallationPool.Application.Features.Definition.Handlers.Queries.Implementations.EquipmentBrokerGetAllHandler",
+    "OldContract": "Aban360.InstallationPool.Application.Features.Definition.Handlers.Queries.Contracts.IEquipmentBrokerGetAllHandler",
+    "Service": "Aban360.InstallationPool.Application.Features.Definition.Services.IEquipmentBrokerService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "EquipmentBroker",
+    "Assembly": "Aban360.InstallationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.InstallationPool.Application.Features.Definition.Handlers.Commands.Update.Implementations.EquipmentBrokerUpdateHandler",
+    "OldContract": "Aban360.InstallationPool.Application.Features.Definition.Handlers.Commands.Update.Contracts.IEquipmentBrokerUpdateHandler",
+    "Service": "Aban360.InstallationPool.Application.Features.Definition.Services.IEquipmentBrokerService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "EquipmentBroker",
+    "Assembly": "Aban360.InstallationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.InstallationPool.Application.Features.Definition.Handlers.Commands.Delete.Implementations.EquipmentBrokerDeleteHandler",
+    "OldContract": "Aban360.InstallationPool.Application.Features.Definition.Handlers.Commands.Delete.Contracts.IEquipmentBrokerDeleteHandler",
+    "Service": "Aban360.InstallationPool.Application.Features.Definition.Services.IEquipmentBrokerService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "EquipmentBroker",
+    "Assembly": "Aban360.InstallationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.InstallationPool.Application.Features.Definition.Handlers.Commands.Create.Implementations.EquipmentBrokerCreateHandler",
+    "OldContract": "Aban360.InstallationPool.Application.Features.Definition.Handlers.Commands.Create.Contracts.IEquipmentBrokerCreateHandler",
+    "Service": "Aban360.InstallationPool.Application.Features.Definition.Services.IEquipmentBrokerService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SewageEquipmentBroker",
+    "Assembly": "Aban360.InstallationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.InstallationPool.Application.Features.Definition.Handlers.Queries.Implementations.SewageEquipmentBrokerGetSingleHandler",
+    "OldContract": "Aban360.InstallationPool.Application.Features.Definition.Handlers.Queries.Contracts.ISewageEquipmentBrokerGetSingleHandler",
+    "Service": "Aban360.InstallationPool.Application.Features.Definition.Services.ISewageEquipmentBrokerService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SewageEquipmentBroker",
+    "Assembly": "Aban360.InstallationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.InstallationPool.Application.Features.Definition.Handlers.Queries.Implementations.SewageEquipmentBrokerGetAllHandler",
+    "OldContract": "Aban360.InstallationPool.Application.Features.Definition.Handlers.Queries.Contracts.ISewageEquipmentBrokerGetAllHandler",
+    "Service": "Aban360.InstallationPool.Application.Features.Definition.Services.ISewageEquipmentBrokerService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SewageEquipmentBroker",
+    "Assembly": "Aban360.InstallationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.InstallationPool.Application.Features.Definition.Handlers.Commands.Update.Implementations.SewageEquipmentBrokerUpdateHandler",
+    "OldContract": "Aban360.InstallationPool.Application.Features.Definition.Handlers.Commands.Update.Contracts.ISewageEquipmentBrokerUpdateHandler",
+    "Service": "Aban360.InstallationPool.Application.Features.Definition.Services.ISewageEquipmentBrokerService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SewageEquipmentBroker",
+    "Assembly": "Aban360.InstallationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.InstallationPool.Application.Features.Definition.Handlers.Commands.Delete.Implementations.SewageEquipmentBrokerDeleteHandler",
+    "OldContract": "Aban360.InstallationPool.Application.Features.Definition.Handlers.Commands.Delete.Contracts.ISewageEquipmentBrokerDeleteHandler",
+    "Service": "Aban360.InstallationPool.Application.Features.Definition.Services.ISewageEquipmentBrokerService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "SewageEquipmentBroker",
+    "Assembly": "Aban360.InstallationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.InstallationPool.Application.Features.Definition.Handlers.Commands.Create.Implementations.SewageEquipmentBrokerCreateHandler",
+    "OldContract": "Aban360.InstallationPool.Application.Features.Definition.Handlers.Commands.Create.Contracts.ISewageEquipmentBrokerCreateHandler",
+    "Service": "Aban360.InstallationPool.Application.Features.Definition.Services.ISewageEquipmentBrokerService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel1",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageLevel1GetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageLevel1GetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel1Service",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel1",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageLevel1GetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageLevel1GetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel1Service",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel1",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.UsageLevel1UpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.IUsageLevel1UpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel1Service",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel1",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations.UsageLevel1DeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts.IUsageLevel1DeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel1Service",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel1",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.UsageLevel1CreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IUsageLevel1CreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel1Service",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel2",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageLevel2GetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageLevel2GetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel2Service",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel2",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageLevel2GetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageLevel2GetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel2Service",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel2",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.UsageLevel2UpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.IUsageLevel2UpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel2Service",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel2",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations.UsageLevel2DeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts.IUsageLevel2DeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel2Service",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel2",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.UsageLevel2CreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IUsageLevel2CreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel2Service",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel3",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageLevel3GetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageLevel3GetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel3Service",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel3",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageLevel3GetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageLevel3GetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel3Service",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel3",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.UsageLevel3UpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.IUsageLevel3UpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel3Service",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel3",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations.UsageLevel3DeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts.IUsageLevel3DeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel3Service",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel3",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.UsageLevel3CreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IUsageLevel3CreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel3Service",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel4",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageLevel4GetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageLevel4GetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel4Service",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel4",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageLevel4GetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageLevel4GetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel4Service",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel4",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.UsageLevel4UpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.IUsageLevel4UpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel4Service",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel4",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations.UsageLevel4DeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts.IUsageLevel4DeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel4Service",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "UsageLevel4",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.UsageLevel4CreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IUsageLevel4CreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageLevel4Service",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "State",
+    "Assembly": "Aban360.WorkflowPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.WorkflowPool.Application.Features.Design.Handlers.Queries.Implementations.StateGetSingleHandler",
+    "OldContract": "Aban360.WorkflowPool.Application.Features.Design.Handlers.Queries.Contracts.IStateGetSingleHandler",
+    "Service": "Aban360.WorkflowPool.Application.Features.Design.Services.IStateService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "State",
+    "Assembly": "Aban360.WorkflowPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.WorkflowPool.Application.Features.Design.Handlers.Queries.Implementations.StateGetAllHandler",
+    "OldContract": "Aban360.WorkflowPool.Application.Features.Design.Handlers.Queries.Contracts.IStateGetAllHandler",
+    "Service": "Aban360.WorkflowPool.Application.Features.Design.Services.IStateService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "State",
+    "Assembly": "Aban360.WorkflowPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.WorkflowPool.Application.Features.Design.Handlers.Commands.Update.Implementations.StateUpdateHandler",
+    "OldContract": "Aban360.WorkflowPool.Application.Features.Design.Handlers.Commands.Update.Contracts.IStateUpdateHandler",
+    "Service": "Aban360.WorkflowPool.Application.Features.Design.Services.IStateService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "State",
+    "Assembly": "Aban360.WorkflowPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.WorkflowPool.Application.Features.Design.Handlers.Commands.Delete.Implementations.StateDeleteHandler",
+    "OldContract": "Aban360.WorkflowPool.Application.Features.Design.Handlers.Commands.Delete.Contracts.IStateDeleteHandler",
+    "Service": "Aban360.WorkflowPool.Application.Features.Design.Services.IStateService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "RequestFlat",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.Implementations.RequestFlatUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.Contracts.IRequestFlatUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Draft.Services.IRequestFlatService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "RequestFlat",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Delete.Implementations.RequestFlatDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Delete.Contracts.IRequestFlatDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Draft.Services.IRequestFlatService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "RequestFlat",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Implementations.RequestFlatCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Contracts.IRequestFlatCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Draft.Services.IRequestFlatService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "RequestWaterMeterSiphon",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.Implementations.RequestWaterMeterSiphonUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.Contracts.IRequestWaterMeterSiphonUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Draft.Services.IRequestWaterMeterSiphonService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "RequestWaterMeterSiphon",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Delete.Implementations.RequestWaterMeterSiphonDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Delete.Contracts.IRequestWaterMeterSiphonDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Draft.Services.IRequestWaterMeterSiphonService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "RequestWaterMeterSiphon",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Implementations.RequestWaterMeterSiphonCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Contracts.IRequestWaterMeterSiphonCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Draft.Services.IRequestWaterMeterSiphonService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "DocumentEntity",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.DMS.Handlers.Queries.Implementations.DocumentEntityGetSingleHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.DMS.Handlers.Queries.Contracts.IDocumentEntityGetSingleHandler",
+    "Service": "Aban360.BlobPool.Application.Features.DMS.Services.IDocumentEntityService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "DocumentEntity",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.DMS.Handlers.Queries.Implementations.DocumentEntityGetByBillIdHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.DMS.Handlers.Queries.Contracts.IDocumentEntityGetByBillIdHandler",
+    "Service": "Aban360.BlobPool.Application.Features.DMS.Services.IDocumentEntityService",
+    "Method": "GetByBillIdAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "DocumentEntity",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.DMS.Handlers.Queries.Implementations.DocumentEntityGetAllHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.DMS.Handlers.Queries.Contracts.IDocumentEntityGetAllHandler",
+    "Service": "Aban360.BlobPool.Application.Features.DMS.Services.IDocumentEntityService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "DocumentEntity",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.DMS.Handlers.Commands.Update.Implementations.DocumentEntityUpdateHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.DMS.Handlers.Commands.Update.Contracts.IDocumentEntityUpdateHandler",
+    "Service": "Aban360.BlobPool.Application.Features.DMS.Services.IDocumentEntityService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "DocumentEntity",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.DMS.Handlers.Commands.Delete.Implementations.DocumentEntityDeleteHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.DMS.Handlers.Commands.Delete.Contracts.IDocumentEntityDeleteHandler",
+    "Service": "Aban360.BlobPool.Application.Features.DMS.Services.IDocumentEntityService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "DocumentEntity",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.DMS.Handlers.Commands.Create.Implementations.DocumentEntityCreateHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.DMS.Handlers.Commands.Create.Contracts.IDocumentEntityCreateHandler",
+    "Service": "Aban360.BlobPool.Application.Features.DMS.Services.IDocumentEntityService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "WaterMeterTag",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Implementations.WaterMeterTagGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts.IWaterMeterTagGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.IWaterMeterTagService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "WaterMeterTag",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Implementations.WaterMeterTagGetSinglBySearchInputeHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts.IWaterMeterTagGetSinglBySearchInputeHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.IWaterMeterTagService",
+    "Method": "GetBySearchAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "WaterMeterTag",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Update.Implementations.WaterMeterTagUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Update.Contracts.IWaterMeterTagUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.IWaterMeterTagService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "WaterMeterTag",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Delete.Implementations.WaterMeterTagDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Delete.Contracts.IWaterMeterTagDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.IWaterMeterTagService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "WaterMeterTag",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Implementations.WaterMeterTagCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Commands.Create.Contracts.IWaterMeterTagCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.WasteWater.Services.IWaterMeterTagService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualTag",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations.IndividualTagGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts.IIndividualTagGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualTagService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualTag",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations.IndividualTagGetSinglBySearchInputeHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts.IIndividualTagGetSinglBySearchInputeHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualTagService",
+    "Method": "GetBySearchAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualTag",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Implementations.IndividualTagUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Contracts.IIndividualTagUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualTagService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualTag",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Delete.Implementations.IndividualTagDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Delete.Contracts.IIndividualTagDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualTagService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "IndividualTag",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Implementations.IndividualTagCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Contracts.IIndividualTagCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IIndividualTagService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingConfigDefault",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Implementations.ReadingConfigDefaultGetSingleHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Contracts.IReadingConfigDefaultGetSingleHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingConfigDefaultService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingConfigDefault",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Implementations.ReadingConfigDefaultGetAllHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Queries.Contracts.IReadingConfigDefaultGetAllHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingConfigDefaultService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingConfigDefault",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Implementations.ReadingConfigDefaultUpdateHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Update.Contracts.IReadingConfigDefaultUpdateHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingConfigDefaultService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingConfigDefault",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Delete.Implementations.ReadingConfigDefaultDeleteHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Delete.Contracts.IReadingConfigDefaultDeleteHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingConfigDefaultService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "ReadingConfigDefault",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Create.Implementations.ReadingConfigDefaultCreateHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Management.Handlers.Commands.Create.Contracts.IReadingConfigDefaultCreateHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Management.Services.IReadingConfigDefaultService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "HubEvent",
+    "Assembly": "Aban360.CommunicationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CommunicationPool.Application.Features.Hubs.Handlers.Commands.Implementations.HubEventUpdateHandler",
+    "OldContract": "Aban360.CommunicationPool.Application.Features.Hubs.Handlers.Commands.Contracts.IHubEventUpdateHandler",
+    "Service": "Aban360.CommunicationPool.Application.Features.Hubs.Services.IHubEventService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "HubEvent",
+    "Assembly": "Aban360.CommunicationPool.Application",
+    "Original": "BeforeServiceConsolidation30.Aban360.CommunicationPool.Application.Features.Hubs.Handlers.Commands.Implementations.HubEventCreateHandler",
+    "OldContract": "Aban360.CommunicationPool.Application.Features.Hubs.Handlers.Commands.Contracts.IHubEventCreateHandler",
+    "Service": "Aban360.CommunicationPool.Application.Features.Hubs.Services.IHubEventService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  }
+]

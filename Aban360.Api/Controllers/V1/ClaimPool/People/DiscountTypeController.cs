@@ -1,4 +1,4 @@
-using Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.People.Services;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.People.Dto.Queries;
 using Aban360.Common.Categories.ApiResponse;
@@ -12,17 +12,12 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
     [Route("v1/discount-type")]
     public class DiscountTypeController : BaseController
     {
-        private readonly IDiscountTypeGetAllHandler _discountTypeGetAllHandler;
-        private readonly IDiscountTypeGetSingleHandler _discountTypeGetSingleHandler;
+        private readonly IDiscountTypeService _service;
 
-        public DiscountTypeController(
-            IDiscountTypeGetAllHandler discountTypeGetAllHandler,
-            IDiscountTypeGetSingleHandler discountTypeGetSingleHandler)
+        public DiscountTypeController(IDiscountTypeService service)
         {
-            _discountTypeGetAllHandler = discountTypeGetAllHandler;
-            _discountTypeGetAllHandler.NotNull(nameof(discountTypeGetAllHandler));
-            _discountTypeGetSingleHandler = discountTypeGetSingleHandler;
-            _discountTypeGetSingleHandler.NotNull(nameof(discountTypeGetSingleHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost, HttpGet]
@@ -30,7 +25,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
         [ProducesResponseType(typeof(ApiResponseEnvelope<DiscountTypeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll([Optional] bool isReturn, CancellationToken cancellationToken)
         {
-            var discountTypes = await _discountTypeGetAllHandler.Handle(isReturn, cancellationToken);
+            var discountTypes = await _service.GetAllAsync(isReturn, cancellationToken);
             return Ok(discountTypes);
         }
 
@@ -39,7 +34,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
         [ProducesResponseType(typeof(ApiResponseEnvelope<DiscountTypeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(DiscountTypeEnum id, CancellationToken cancellationToken)
         {
-            var discountTypes = await _discountTypeGetSingleHandler.Handle(id, cancellationToken);
+            var discountTypes = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(discountTypes);
         }
     }

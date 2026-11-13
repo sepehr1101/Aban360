@@ -1,3 +1,4 @@
+using Aban360.ClaimPool.Application.Features.Land.Services;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
@@ -17,42 +18,17 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
     public class HandoverController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IHandoverCreateHandler _handoverCreateHandler;
-        private readonly IHandoverUpdateHandler _handoverUpdateHandler;
-        private readonly IHandoverDeleteHandler _handoverDeleteHandler;
-        private readonly IHandoverGetSingleHandler _handoverGetSingleHandler;
-        private readonly IHandoverGetAllHandler _handoverGetAllHandler;
+        private readonly IHandoverService _service;
         private readonly IHandoverHandler _handoverHandler;
 
-        public HandoverController(
-            IUnitOfWork uow,
-            IHandoverCreateHandler handoverCreateHandler,
-            IHandoverUpdateHandler handoverUpdateHandler,
-            IHandoverDeleteHandler handoverDeleteHandler,
-            IHandoverGetSingleHandler handoverGetSingleHandler,
-            IHandoverGetAllHandler handoverGetAllHandler,
-            IHandoverHandler handoverHandler)
+        public HandoverController(IUnitOfWork uow, IHandoverService service, IHandoverHandler handoverHandler)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _handoverCreateHandler = handoverCreateHandler;
-            _handoverCreateHandler.NotNull(nameof(handoverCreateHandler));
-
-            _handoverUpdateHandler = handoverUpdateHandler;
-            _handoverUpdateHandler.NotNull(nameof(handoverUpdateHandler));
-
-            _handoverDeleteHandler = handoverDeleteHandler;
-            _handoverDeleteHandler.NotNull(nameof(handoverDeleteHandler));
-
-            _handoverGetSingleHandler = handoverGetSingleHandler;
-            _handoverGetSingleHandler.NotNull(nameof(handoverGetSingleHandler));
-
-            _handoverGetAllHandler = handoverGetAllHandler;
-            _handoverGetAllHandler.NotNull(nameof(handoverGetAllHandler));
-
+            service.NotNull(nameof(service));
+            _service = service;
+            handoverHandler.NotNull(nameof(handoverHandler));
             _handoverHandler = handoverHandler;
-            _handoverHandler.NotNull(nameof(handoverHandler));
         }
 
         [HttpPost]
@@ -60,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<HandoverCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] HandoverCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _handoverCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -71,7 +47,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<HandoverUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] HandoverUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _handoverUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -82,7 +58,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<HandoverDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] HandoverDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _handoverDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -93,7 +69,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<HandoverGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var handovers = await _handoverGetSingleHandler.Handle(id, cancellationToken);
+            var handovers = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(handovers);
         }
 
@@ -102,7 +78,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<HandoverGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var handovers = await _handoverGetAllHandler.Handle(cancellationToken);
+            var handovers = await _service.GetAllAsync(cancellationToken);
             return Ok(handovers);
         }
 

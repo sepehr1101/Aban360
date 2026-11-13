@@ -1,9 +1,6 @@
+using Aban360.PaymentPool.Application.Features.NegotiableInstrument.Services;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Create.Contracts;
-using Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Delete.Contracts;
-using Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Commands.Update.Contracts;
-using Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Queries.Contracts;
 using Aban360.PaymentPool.Domain.Features.NegotiableInstrument.Dto.Commands;
 using Aban360.PaymentPool.Domain.Features.NegotiableInstrument.Dto.Queries;
 using Aban360.PaymentPool.Persistence.Contexts.Contracts;
@@ -15,37 +12,14 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
     public class BankAccountController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IBankAccountCreateHandler _bankAccountCreateHandler;
-        private readonly IBankAccountUpdateHandler _bankAccountUpdateHandler;
-        private readonly IBankAccountDeleteHandler _bankAccountDeleteHandler;
-        private readonly IBankAccountGetSingleHandler _bankAccountGetSingleHandler;
-        private readonly IBankAccountGetAllHandler _bankAccountGetAllHandler;
+        private readonly IBankAccountService _service;
 
-        public BankAccountController(
-            IUnitOfWork uow,
-            IBankAccountCreateHandler bankAccountCreateHandler,
-            IBankAccountUpdateHandler bankAccountUpdateHandler,
-            IBankAccountDeleteHandler bankAccountDeleteHandler,
-            IBankAccountGetSingleHandler bankAccountGetSingleHandler,
-            IBankAccountGetAllHandler bankAccountGetAllHandler)
+        public BankAccountController(IUnitOfWork uow, IBankAccountService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _bankAccountCreateHandler = bankAccountCreateHandler;
-            _bankAccountCreateHandler.NotNull(nameof(bankAccountCreateHandler));
-
-            _bankAccountUpdateHandler = bankAccountUpdateHandler;
-            _bankAccountUpdateHandler.NotNull(nameof(bankAccountUpdateHandler));
-
-            _bankAccountDeleteHandler = bankAccountDeleteHandler;
-            _bankAccountDeleteHandler.NotNull(nameof(bankAccountDeleteHandler));
-
-            _bankAccountGetSingleHandler = bankAccountGetSingleHandler;
-            _bankAccountGetSingleHandler.NotNull(nameof(bankAccountGetSingleHandler));
-
-            _bankAccountGetAllHandler = bankAccountGetAllHandler;
-            _bankAccountGetAllHandler.NotNull(nameof(bankAccountGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
         [ProducesResponseType(typeof(ApiResponseEnvelope<BankAccountCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] BankAccountCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _bankAccountCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -64,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
         [ProducesResponseType(typeof(ApiResponseEnvelope<BankAccountUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] BankAccountUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _bankAccountUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
         [ProducesResponseType(typeof(ApiResponseEnvelope<BankAccountDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] BankAccountDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _bankAccountDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +60,7 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
         [ProducesResponseType(typeof(ApiResponseEnvelope<BankAccountGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var bankAccounts = await _bankAccountGetSingleHandler.Handle(id, cancellationToken);
+            var bankAccounts = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(bankAccounts);
         }
 
@@ -95,7 +69,7 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<BankAccountGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var bankAccounts = await _bankAccountGetAllHandler.Handle(cancellationToken);
+            var bankAccounts = await _service.GetAllAsync(cancellationToken);
             return Ok(bankAccounts);
         }
     }

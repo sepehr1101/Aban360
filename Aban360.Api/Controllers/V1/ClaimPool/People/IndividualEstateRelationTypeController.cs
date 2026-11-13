@@ -1,5 +1,6 @@
+using Aban360.ClaimPool.Application.Features.People.Services;
 using Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Delete.Contracts;
+
 using Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
@@ -16,37 +17,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
     public class IndividualEstateRelationTypeController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IIndividualEstateRelationTypeCreateHandler _individualEstateRelationTypeCreateHandler;
-        private readonly IIndividualEstateRelationTypeUpdateHandler _individualEstateRelationTypeUpdateHandler;
-        private readonly IIndividualEstateRelationTypeDeleteHandler _individualEstateRelationTypeDeleteHandler;
-        private readonly IIndividualEstateRelationTypeGetSingelHandler _individualEstateRelationTypeGetSingelHandler;
-        private readonly IIndividualEstateRelationTypeGetAllHandler _individualEstateRelationTypeGetAllHandler;
+        private readonly IIndividualEstateRelationTypeService _service;
 
-        public IndividualEstateRelationTypeController(
-            IUnitOfWork uow,
-            IIndividualEstateRelationTypeCreateHandler individualEstateRelationTypeCreateHandler,
-            IIndividualEstateRelationTypeUpdateHandler individualEstateRelationTypeUpdateHandler,
-            IIndividualEstateRelationTypeDeleteHandler individualEstateRelationTypeDeleteHandler,
-            IIndividualEstateRelationTypeGetSingelHandler individualEstateRelationTypeGetSingelHandler,
-            IIndividualEstateRelationTypeGetAllHandler individualEstateRelationTypeGetAllHandler)
+        public IndividualEstateRelationTypeController(IUnitOfWork uow, IIndividualEstateRelationTypeService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _individualEstateRelationTypeCreateHandler = individualEstateRelationTypeCreateHandler;
-            _individualEstateRelationTypeCreateHandler.NotNull(nameof(individualEstateRelationTypeCreateHandler));
-
-            _individualEstateRelationTypeUpdateHandler = individualEstateRelationTypeUpdateHandler;
-            _individualEstateRelationTypeUpdateHandler.NotNull(nameof(individualEstateRelationTypeUpdateHandler));
-
-            _individualEstateRelationTypeDeleteHandler = individualEstateRelationTypeDeleteHandler;
-            _individualEstateRelationTypeDeleteHandler.NotNull(nameof(individualEstateRelationTypeDeleteHandler));
-
-            _individualEstateRelationTypeGetSingelHandler = individualEstateRelationTypeGetSingelHandler;
-            _individualEstateRelationTypeGetSingelHandler.NotNull(nameof(individualEstateRelationTypeGetSingelHandler));
-
-            _individualEstateRelationTypeGetAllHandler = individualEstateRelationTypeGetAllHandler;
-            _individualEstateRelationTypeGetAllHandler.NotNull(nameof(individualEstateRelationTypeGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -54,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualEstateRelationTypeCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] IndividualEstateRelationTypeCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _individualEstateRelationTypeCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -65,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualEstateRelationTypeUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] IndividualEstateRelationTypeUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _individualEstateRelationTypeUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -76,7 +54,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualEstateRelationTypeDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] IndividualEstateRelationTypeDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _individualEstateRelationTypeDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -87,7 +65,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualEstateRelationTypeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle (IndividualEstateRelationTypeEnum id,CancellationToken cancellationToken)
         {
-            IndividualEstateRelationTypeGetDto individualEstateRelationType = await _individualEstateRelationTypeGetSingelHandler.Handle(id, cancellationToken);
+            IndividualEstateRelationTypeGetDto individualEstateRelationType = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(individualEstateRelationType);
         }
 
@@ -96,7 +74,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.People
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<IndividualEstateRelationTypeGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<IndividualEstateRelationTypeGetDto> individualEstateRelationTypes = await _individualEstateRelationTypeGetAllHandler.Handle(cancellationToken);
+            ICollection<IndividualEstateRelationTypeGetDto> individualEstateRelationTypes = await _service.GetAllAsync(cancellationToken);
             return Ok(individualEstateRelationTypes);
         }
     }

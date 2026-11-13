@@ -1,4 +1,4 @@
-using Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Application.Features.Rule.Services;
 using Aban360.CalculationPool.Domain.Features.Rule.Dto.Queries;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -9,18 +9,12 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
     [Route("v1/supported-field")]
     public class SupportedFieldController : BaseController
     {
-        private readonly ISupportedFieldGetSingleHandler _supportedFieldGetSingleHandler;
-        private readonly ISupportedFieldGetAllHandler _supportedFieldGetAllHandler;
+        private readonly ISupportedFieldService _service;
 
-        public SupportedFieldController(
-            ISupportedFieldGetSingleHandler supportedFieldGetSingleHandler,
-            ISupportedFieldGetAllHandler supportedFieldGetAllHandler)
+        public SupportedFieldController(ISupportedFieldService service)
         {
-            _supportedFieldGetSingleHandler = supportedFieldGetSingleHandler;
-            _supportedFieldGetSingleHandler.NotNull(nameof(supportedFieldGetSingleHandler));
-
-            _supportedFieldGetAllHandler = supportedFieldGetAllHandler;
-            _supportedFieldGetAllHandler.NotNull(nameof(supportedFieldGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost, HttpGet]
@@ -28,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<SupportedFieldGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var supportedFields = await _supportedFieldGetSingleHandler.Handle(id, cancellationToken);
+            var supportedFields = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(supportedFields);
         }
 
@@ -37,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<SupportedFieldGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var supportedFields = await _supportedFieldGetAllHandler.Handle(cancellationToken);
+            var supportedFields = await _service.GetAllAsync(cancellationToken);
             return Ok(supportedFields);
         }
     }

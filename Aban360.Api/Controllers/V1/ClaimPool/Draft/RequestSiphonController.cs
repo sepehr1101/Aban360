@@ -1,6 +1,4 @@
-using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Delete.Contracts;
-using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.Contracts;
+using Aban360.ClaimPool.Application.Features.Draft.Services;
 using Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
@@ -12,25 +10,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
     [Route("v1/request-siphon")]
     public class RequestSiphonController : BaseController
     {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IRequestSiphonCreateHandler _requestSiphonCreateHandler;
-        private readonly IRequestSiphonDeleteHandler _requestSiphonDeleteHandler;
-        private readonly IRequestSiphonUpdateHandler _requestSiphonUpdateHandler;
-
-        public RequestSiphonController(
-            IUnitOfWork unitOfWork,
-            IRequestSiphonCreateHandler requestSiphonCreateHandler,
-            IRequestSiphonDeleteHandler requestSiphonDeleteHandler,
-            IRequestSiphonUpdateHandler requestSiphonUpdateHandler)
+        private readonly IUnitOfWork _uow;
+        private readonly IRequestSiphonService _service;
+        public RequestSiphonController(IUnitOfWork uow, IRequestSiphonService service)
         {
-            _unitOfWork = unitOfWork;
-            _unitOfWork.NotNull(nameof(unitOfWork));
-            _requestSiphonCreateHandler = requestSiphonCreateHandler;
-            _requestSiphonCreateHandler.NotNull(nameof(requestSiphonCreateHandler));
-            _requestSiphonDeleteHandler = requestSiphonDeleteHandler;
-            _requestSiphonDeleteHandler.NotNull(nameof(requestSiphonDeleteHandler));
-            _requestSiphonUpdateHandler = requestSiphonUpdateHandler;
-            _requestSiphonUpdateHandler.NotNull(nameof(requestSiphonUpdateHandler));
+            uow.NotNull(nameof(uow));
+            _uow = uow;
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -38,8 +25,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<SiphonRequestCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] SiphonRequestCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _requestSiphonCreateHandler.Handle(CurrentUser,createDto, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _service.CreateAsync(CurrentUser,createDto, cancellationToken);
+            await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
         }
@@ -49,8 +36,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<SiphonRequestDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] SiphonRequestDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _requestSiphonDeleteHandler.Handle(deleteDto, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
+            await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
         }
@@ -60,8 +47,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<SiphonRequestUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] SiphonRequestUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _requestSiphonUpdateHandler.Handle(CurrentUser,updateDto, cancellationToken);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _service.UpdateAsync(CurrentUser,updateDto, cancellationToken);
+            await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
         }

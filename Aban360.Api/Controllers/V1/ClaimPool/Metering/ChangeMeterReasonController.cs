@@ -1,4 +1,4 @@
-using Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.Metering.Services;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
 using Aban360.Common.Categories.ApiResponse;
@@ -10,17 +10,12 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
     [Route("v1/change-meter-reason")]
     public class ChangeMeterReasonController : BaseController
     {
-        private readonly IChangeMeterReasonGetAllHandler _changeMeterReasonGetAllHandler;
-        private readonly IChangeMeterReasonGetSingleHandler _changeMeterReasonGetSingleHandler;
+        private readonly IChangeMeterReasonService _service;
 
-        public ChangeMeterReasonController(
-            IChangeMeterReasonGetAllHandler changeMeterReasonGetAllHandler,
-            IChangeMeterReasonGetSingleHandler changeMeterReasonGetSingleHandler)
+        public ChangeMeterReasonController(IChangeMeterReasonService service)
         {
-            _changeMeterReasonGetAllHandler = changeMeterReasonGetAllHandler;
-            _changeMeterReasonGetAllHandler.NotNull(nameof(changeMeterReasonGetAllHandler));
-            _changeMeterReasonGetSingleHandler = changeMeterReasonGetSingleHandler;
-            _changeMeterReasonGetSingleHandler.NotNull(nameof(changeMeterReasonGetSingleHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost, HttpGet]
@@ -28,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ChangeMeterReasonGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<ChangeMeterReasonGetDto> changeMeterReasons = await _changeMeterReasonGetAllHandler.Handle(cancellationToken);
+            ICollection<ChangeMeterReasonGetDto> changeMeterReasons = await _service.GetAllAsync(cancellationToken);
             return Ok(changeMeterReasons);
         }
 
@@ -37,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
         [ProducesResponseType(typeof(ApiResponseEnvelope<ChangeMeterReasonGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(ChangeMeterReasonEnum id, CancellationToken cancellationToken)
         {
-            ChangeMeterReasonGetDto changeMeterReasons = await _changeMeterReasonGetSingleHandler.Handle(id, cancellationToken);
+            ChangeMeterReasonGetDto changeMeterReasons = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(changeMeterReasons);
         }
     }

@@ -1,6 +1,4 @@
-using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Delete.Contracts;
-using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.Contracts;
+using Aban360.ClaimPool.Application.Features.Draft.Services;
 using Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
@@ -13,27 +11,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
     public class RequestIndividualTagController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IRequestIndividualTagCreateHandler _requestIndividualTagCreateHandler;
-        private readonly IRequestIndividualTagUpdateHandler _requestIndividualTagUpdateHandler;
-        private readonly IRequestIndividualTagDeleteHandler _requestIndividualTagDeleteHandler;
+        private readonly IRequestIndividualTagService _service;
 
-        public RequestIndividualTagController(
-            IUnitOfWork uow,
-            IRequestIndividualTagCreateHandler requestIndividualTagCreateHandler,
-            IRequestIndividualTagUpdateHandler requestIndividualTagUpdateHandler,
-            IRequestIndividualTagDeleteHandler requestIndividualTagDeleteHandler)
+        public RequestIndividualTagController(IUnitOfWork uow, IRequestIndividualTagService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _requestIndividualTagCreateHandler = requestIndividualTagCreateHandler;
-            _requestIndividualTagCreateHandler.NotNull(nameof(requestIndividualTagCreateHandler));
-
-            _requestIndividualTagUpdateHandler = requestIndividualTagUpdateHandler;
-            _requestIndividualTagUpdateHandler.NotNull(nameof(requestIndividualTagUpdateHandler));
-
-            _requestIndividualTagDeleteHandler = requestIndividualTagDeleteHandler;
-            _requestIndividualTagDeleteHandler.NotNull(nameof(requestIndividualTagDeleteHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -41,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualTagRequestCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] IndividualTagRequestCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _requestIndividualTagCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -52,7 +37,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualTagRequestUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] IndividualTagRequestUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _requestIndividualTagUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -63,7 +48,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<IndividualTagRequestDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] IndividualTagRequestDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _requestIndividualTagDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);

@@ -1,3 +1,4 @@
+using Aban360.ClaimPool.Application.Features.Land.Services;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts;
 using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
@@ -15,37 +16,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
     public class UsageLevel4Controller : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IUsageLevel4CreateHandler _usageLevel4CreateHandler;
-        private readonly IUsageLevel4UpdateHandler _usageLevel4UpdateHandler;
-        private readonly IUsageLevel4DeleteHandler _usageLevel4DeleteHandler;
-        private readonly IUsageLevel4GetSingleHandler _usageLevel4GetSingleHandler;
-        private readonly IUsageLevel4GetAllHandler _usageLevel4GetAllHandler;
+        private readonly IUsageLevel4Service _service;
 
-        public UsageLevel4Controller(
-            IUnitOfWork uow,
-            IUsageLevel4CreateHandler usageLevel4CreateHandler,
-            IUsageLevel4UpdateHandler usageLevel4UpdateHandler,
-            IUsageLevel4DeleteHandler usageLevel4DeleteHandler,
-            IUsageLevel4GetSingleHandler usageLevel4GetSingleHandler,
-            IUsageLevel4GetAllHandler usageLevel4GetAllHandler)
+        public UsageLevel4Controller(IUnitOfWork uow, IUsageLevel4Service service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _usageLevel4CreateHandler = usageLevel4CreateHandler;
-            _usageLevel4CreateHandler.NotNull(nameof(usageLevel4CreateHandler));
-
-            _usageLevel4UpdateHandler = usageLevel4UpdateHandler;
-            _usageLevel4UpdateHandler.NotNull(nameof(usageLevel4UpdateHandler));
-
-            _usageLevel4DeleteHandler = usageLevel4DeleteHandler;
-            _usageLevel4DeleteHandler.NotNull(nameof(usageLevel4DeleteHandler));
-
-            _usageLevel4GetSingleHandler = usageLevel4GetSingleHandler;
-            _usageLevel4GetSingleHandler.NotNull(nameof(usageLevel4GetSingleHandler));
-
-            _usageLevel4GetAllHandler = usageLevel4GetAllHandler;
-            _usageLevel4GetAllHandler.NotNull(nameof(usageLevel4GetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<UsageLevel4CreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] UsageLevel4CreateDto createDto, CancellationToken cancellationToken)
         {
-            await _usageLevel4CreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -63,7 +41,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] UsageLevel4UpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _usageLevel4UpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -74,7 +52,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<UsageLevel4DeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] UsageLevel4DeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _usageLevel4DeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -85,7 +63,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<UsageLevel4GetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var usageLevel4s = await _usageLevel4GetSingleHandler.Handle(id, cancellationToken);
+            var usageLevel4s = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(usageLevel4s);
         }
 
@@ -94,7 +72,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<UsageLevel4GetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var usageLevel4s = await _usageLevel4GetAllHandler.Handle(cancellationToken);
+            var usageLevel4s = await _service.GetAllAsync(cancellationToken);
             return Ok(usageLevel4s);
         }
     }

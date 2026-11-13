@@ -26,5 +26,7 @@
     <Compile Include="../../Aban360.Api/Controllers/V1/BaseController.cs" LinkBase="Production" />
     <Compile Include="../../Aban360.Api/Filters/EndpointAuthorizationFilter.cs" LinkBase="Production" />
     <Compile Include="../../Aban360.Api/ExceptionHandlers/GlobalExceptionHandler.cs" LinkBase="Production" />
+    <Compile Include="../Shared/ServiceConsolidationTicket/Contracts/**/*.cs" Link="LegacyContracts/%(Filename)%(Extension)" />
+    <None Include="../Shared/ServiceConsolidationTicket/Operations.json" Link="TicketOperations.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

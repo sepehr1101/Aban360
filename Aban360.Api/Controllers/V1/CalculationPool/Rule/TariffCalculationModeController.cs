@@ -1,7 +1,4 @@
-using Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Create.Contracts;
-using Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Delete.Contracts;
-using Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Update.Contracts;
-using Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Application.Features.Rule.Services;
 using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.Rule.Dto.Commands;
 using Aban360.CalculationPool.Domain.Features.Rule.Dto.Queries;
@@ -16,37 +13,14 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
     public class TariffCalculationModeController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly ITariffCalculationModeCreateHandler _tariffCalculationModeCreateHandler;
-        private readonly ITariffCalculationModeUpdateHandler _tariffCalculationModeUpdateHandler;
-        private readonly ITariffCalculationModeDeleteHandler _tariffCalculationModeDeleteHandler;
-        private readonly ITariffCalculationModeGetSingleHandler _tariffCalculationModeGetSingleHandler;
-        private readonly ITariffCalculationModeGetAllHandler _tariffCalculationModeGetAllHandler;
+        private readonly ITariffCalculationModeService _service;
 
-        public TariffCalculationModeController(
-            IUnitOfWork uow,
-            ITariffCalculationModeCreateHandler tariffCalculationModeCreateHandler,
-            ITariffCalculationModeUpdateHandler tariffCalculationModeUpdateHandler,
-            ITariffCalculationModeDeleteHandler tariffCalculationModeDeleteHandler,
-            ITariffCalculationModeGetSingleHandler tariffCalculationModeGetSingleHandler,
-            ITariffCalculationModeGetAllHandler tariffCalculationModeGetAllHandler)
+        public TariffCalculationModeController(IUnitOfWork uow, ITariffCalculationModeService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _tariffCalculationModeCreateHandler = tariffCalculationModeCreateHandler;
-            _tariffCalculationModeCreateHandler.NotNull(nameof(tariffCalculationModeCreateHandler));
-
-            _tariffCalculationModeUpdateHandler = tariffCalculationModeUpdateHandler;
-            _tariffCalculationModeUpdateHandler.NotNull(nameof(tariffCalculationModeUpdateHandler));
-
-            _tariffCalculationModeDeleteHandler = tariffCalculationModeDeleteHandler;
-            _tariffCalculationModeDeleteHandler.NotNull(nameof(tariffCalculationModeDeleteHandler));
-
-            _tariffCalculationModeGetSingleHandler = tariffCalculationModeGetSingleHandler;
-            _tariffCalculationModeGetSingleHandler.NotNull(nameof(tariffCalculationModeGetSingleHandler));
-
-            _tariffCalculationModeGetAllHandler = tariffCalculationModeGetAllHandler;
-            _tariffCalculationModeGetAllHandler.NotNull(nameof(tariffCalculationModeGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -54,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<TariffCalculationModeCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] TariffCalculationModeCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _tariffCalculationModeCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -65,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<TariffCalculationModeUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] TariffCalculationModeUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _tariffCalculationModeUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -76,7 +50,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<TariffCalculationModeDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] TariffCalculationModeDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _tariffCalculationModeDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -87,7 +61,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<TariffCalculationModeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(TariffCalculationModeEnum id, CancellationToken cancellationToken)
         {
-            TariffCalculationModeGetDto tariffCalculationModes = await _tariffCalculationModeGetSingleHandler.Handle(id, cancellationToken);
+            TariffCalculationModeGetDto tariffCalculationModes = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(tariffCalculationModes);
         }
 
@@ -96,7 +70,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<TariffCalculationModeGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<TariffCalculationModeGetDto> tariffCalculationModes = await _tariffCalculationModeGetAllHandler.Handle(cancellationToken);
+            ICollection<TariffCalculationModeGetDto> tariffCalculationModes = await _service.GetAllAsync(cancellationToken);
             return Ok(tariffCalculationModes);
         }
     }

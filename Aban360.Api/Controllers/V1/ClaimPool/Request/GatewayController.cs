@@ -1,3 +1,4 @@
+using Aban360.ClaimPool.Application.Features.Request.Services;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Contracts;
@@ -16,37 +17,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request
     public class GatewayController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IGatewayCreateHandler _gatewayCreateHandler;
-        private readonly IGatewayUpdateHandler _gatewayUpdateHandler;
-        private readonly IGatewayDeleteHandler _gatewayDeleteHandler;
-        private readonly IGatewayGetSingleHandler _gatewayGetSingleHandler;
-        private readonly IGatewayGetAllHandler _gatewayGetAllHandler;
+        private readonly IGatewayService _service;
 
-        public GatewayController(
-            IUnitOfWork uow,
-            IGatewayCreateHandler gatewayCreateHandler,
-            IGatewayUpdateHandler gatewayUpdateHandler,
-            IGatewayDeleteHandler gatewayDeleteHandler,
-            IGatewayGetSingleHandler gatewayGetSingleHandler,
-            IGatewayGetAllHandler gatewayGetAllHandler)
+        public GatewayController(IUnitOfWork uow, IGatewayService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _gatewayCreateHandler = gatewayCreateHandler;
-            _gatewayCreateHandler.NotNull(nameof(gatewayCreateHandler));
-
-            _gatewayUpdateHandler = gatewayUpdateHandler;
-            _gatewayUpdateHandler.NotNull(nameof(gatewayUpdateHandler));
-
-            _gatewayDeleteHandler = gatewayDeleteHandler;
-            _gatewayDeleteHandler.NotNull(nameof(gatewayDeleteHandler));
-
-            _gatewayGetSingleHandler = gatewayGetSingleHandler;
-            _gatewayGetSingleHandler.NotNull(nameof(gatewayGetSingleHandler));
-
-            _gatewayGetAllHandler = gatewayGetAllHandler;
-            _gatewayGetAllHandler.NotNull(nameof(gatewayGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -54,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request
         [ProducesResponseType(typeof(ApiResponseEnvelope<GatewayCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] GatewayCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _gatewayCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -64,7 +42,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] GatewayUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _gatewayUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +53,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request
         [ProducesResponseType(typeof(ApiResponseEnvelope<GatewayDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] GatewayDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _gatewayDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +64,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request
         [ProducesResponseType(typeof(ApiResponseEnvelope<GatewayGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var gateways = await _gatewayGetSingleHandler.Handle(id, cancellationToken);
+            var gateways = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(gateways);
         }
 
@@ -95,7 +73,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<GatewayGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var gateways = await _gatewayGetAllHandler.Handle(cancellationToken);
+            var gateways = await _service.GetAllAsync(cancellationToken);
             return Ok(gateways);
         }
     }

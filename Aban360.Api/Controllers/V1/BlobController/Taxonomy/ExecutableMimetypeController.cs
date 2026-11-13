@@ -1,3 +1,4 @@
+using Aban360.BlobPool.Application.Features.Taxonomy.Services;
 using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Create.Contracts;
 using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Delete.Contracts;
 using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Update.Contracts;
@@ -15,37 +16,14 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
     public class ExecutableMimetypeController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IExecutableMimetypeCreateHandler _executableMimetypeCreateHandler;
-        private readonly IExecutableMimetypeUpdateHandler _executableMimetypeUpdateHandler;
-        private readonly IExecutableMimetypeDeleteHandler _executableMimetypeDeleteHandler;
-        private readonly IExecutableMimetypeGetSingleHandler _executableMimetypeGetSingleHandler;
-        private readonly IExecutableMimetypeGetAllHandler _executableMimetypeGetAllHandler;
+        private readonly IExecutableMimetypeService _service;
 
-        public ExecutableMimetypeController(
-            IUnitOfWork uow,
-            IExecutableMimetypeCreateHandler executableMimetypeCreateHandler,
-            IExecutableMimetypeUpdateHandler executableMimetypeUpdateHandler,
-            IExecutableMimetypeDeleteHandler executableMimetypeDeleteHandler,
-            IExecutableMimetypeGetSingleHandler executableMimetypeGetSingleHandler,
-            IExecutableMimetypeGetAllHandler executableMimetypeGetAllHandler)
+        public ExecutableMimetypeController(IUnitOfWork uow, IExecutableMimetypeService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _executableMimetypeCreateHandler = executableMimetypeCreateHandler;
-            _executableMimetypeCreateHandler.NotNull(nameof(executableMimetypeCreateHandler));
-
-            _executableMimetypeUpdateHandler = executableMimetypeUpdateHandler;
-            _executableMimetypeUpdateHandler.NotNull(nameof(executableMimetypeUpdateHandler));
-
-            _executableMimetypeDeleteHandler = executableMimetypeDeleteHandler;
-            _executableMimetypeDeleteHandler.NotNull(nameof(executableMimetypeDeleteHandler));
-
-            _executableMimetypeGetSingleHandler = executableMimetypeGetSingleHandler;
-            _executableMimetypeGetSingleHandler.NotNull(nameof(executableMimetypeGetSingleHandler));
-
-            _executableMimetypeGetAllHandler = executableMimetypeGetAllHandler;
-            _executableMimetypeGetAllHandler.NotNull(nameof(executableMimetypeGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<ExecutableMimetypeCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] ExecutableMimetypeCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _executableMimetypeCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -64,7 +42,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<ExecutableMimetypeUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] ExecutableMimetypeUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _executableMimetypeUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +53,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<ExecutableMimetypeDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] ExecutableMimetypeDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _executableMimetypeDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +64,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<ExecutableMimetypeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var executableMimetypes = await _executableMimetypeGetSingleHandler.Handle(id, cancellationToken);
+            var executableMimetypes = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(executableMimetypes);
         }
 
@@ -95,7 +73,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.Taxonomy
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ExecutableMimetypeGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var executableMimetypes = await _executableMimetypeGetAllHandler.Handle(cancellationToken);
+            var executableMimetypes = await _service.GetAllAsync(cancellationToken);
             return Ok(executableMimetypes);
         }
     }

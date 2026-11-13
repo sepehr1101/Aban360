@@ -1,6 +1,6 @@
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.PaymentPool.Application.Features.NegotiableInstrument.Handler.Queries.Contracts;
+using Aban360.PaymentPool.Application.Features.NegotiableInstrument.Services;
 using Aban360.PaymentPool.Domain.Features.NegotiableInstrument.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
 using Aban360.PaymentPool.Domain.Constansts;
@@ -10,14 +10,12 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
 {
     public class CreditorTypeController : BaseController
     {
-        private readonly ICreditorTypeGetAllHandler _c0_creditorTypeGetAllHandler;
-        private readonly ICreditorTypeGetSingleHandler _c1_creditorTypeGetSingleHandler;
-        public CreditorTypeController(ICreditorTypeGetAllHandler c0_creditorTypeGetAllHandler, ICreditorTypeGetSingleHandler c1_creditorTypeGetSingleHandler)
+        private readonly ICreditorTypeService _service;
+
+        public CreditorTypeController(ICreditorTypeService service)
         {
-            _c0_creditorTypeGetAllHandler = c0_creditorTypeGetAllHandler;
-            _c0_creditorTypeGetAllHandler.NotNull(nameof(c0_creditorTypeGetAllHandler));
-            _c1_creditorTypeGetSingleHandler = c1_creditorTypeGetSingleHandler;
-            _c1_creditorTypeGetSingleHandler.NotNull(nameof(c1_creditorTypeGetSingleHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost, HttpGet]
@@ -25,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<CreditorTypeGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var creditorTypes = await _c0_creditorTypeGetAllHandler.Handle(cancellationToken);
+            var creditorTypes = await _service.GetAllAsync(cancellationToken);
             return Ok(creditorTypes);
         }
 
@@ -34,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument
         [ProducesResponseType(typeof(ApiResponseEnvelope<CreditorTypeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(CreditorTypeEnum id, CancellationToken cancellationToken)
         {
-            var creditorTypes = await _c1_creditorTypeGetSingleHandler.Handle(id, cancellationToken);
+            var creditorTypes = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(creditorTypes);
         }
     }

@@ -1,7 +1,4 @@
-using Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Create.Contracts;
-using Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Delete.Contracts;
-using Aban360.CalculationPool.Application.Features.Rule.Handlers.Commands.Update.Contracts;
-using Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Application.Features.Rule.Services;
 using Aban360.CalculationPool.Domain.Features.Rule.Dto.Commands;
 using Aban360.CalculationPool.Domain.Features.Rule.Dto.Queries;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
@@ -16,42 +13,13 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
     public class TariffConstantController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly ITariffConstantCreateHandler _tariffConstantCreateHandler;
-        private readonly ITariffConstantUpdateHandler _tariffConstantUpdateHandler;
-        private readonly ITariffConstantDeleteHandler _tariffConstantDeleteHandler;
-        private readonly ITariffConstantGetSingleHandler _tariffConstantGetSingleHandler;
-        private readonly ITariffConstantGetAllHandler _tariffConstantGetAllHandler;
-        private readonly ITariffConstantDictionaryHandler _tariffConstantDictionaryHandler;
-
-        public TariffConstantController(
-            IUnitOfWork uow,
-            ITariffConstantCreateHandler tariffConstantCreateHandler,
-            ITariffConstantUpdateHandler tariffConstantUpdateHandler,
-            ITariffConstantDeleteHandler tariffConstantDeleteHandler,
-            ITariffConstantGetSingleHandler tariffConstantGetSingleHandler,
-            ITariffConstantGetAllHandler tariffConstantGetAllHandler,
-            ITariffConstantDictionaryHandler tariffConstantDictionaryHandler)
+        private readonly ITariffConstantService _service;
+        public TariffConstantController(IUnitOfWork uow, ITariffConstantService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _tariffConstantCreateHandler = tariffConstantCreateHandler;
-            _tariffConstantCreateHandler.NotNull(nameof(tariffConstantCreateHandler));
-
-            _tariffConstantUpdateHandler = tariffConstantUpdateHandler;
-            _tariffConstantUpdateHandler.NotNull(nameof(tariffConstantUpdateHandler));
-
-            _tariffConstantDeleteHandler = tariffConstantDeleteHandler;
-            _tariffConstantDeleteHandler.NotNull(nameof(tariffConstantDeleteHandler));
-
-            _tariffConstantGetSingleHandler = tariffConstantGetSingleHandler;
-            _tariffConstantGetSingleHandler.NotNull(nameof(tariffConstantGetSingleHandler));
-
-            _tariffConstantGetAllHandler = tariffConstantGetAllHandler;
-            _tariffConstantGetAllHandler.NotNull(nameof(tariffConstantGetAllHandler));
-
-            _tariffConstantDictionaryHandler = tariffConstantDictionaryHandler;
-            _tariffConstantDictionaryHandler.NotNull(nameof(tariffConstantDictionaryHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -59,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<TariffConstantCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] TariffConstantCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _tariffConstantCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -70,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<TariffConstantUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] TariffConstantUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _tariffConstantUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -81,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<TariffConstantDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] TariffConstantDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _tariffConstantDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -92,7 +60,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<TariffConstantGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            TariffConstantGetDto tariffConstants = await _tariffConstantGetSingleHandler.Handle(id, cancellationToken);
+            TariffConstantGetDto tariffConstants = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(tariffConstants);
         }
 
@@ -101,7 +69,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<TariffConstantGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<TariffConstantGetDto> tariffConstants = await _tariffConstantGetAllHandler.Handle(cancellationToken);
+            ICollection<TariffConstantGetDto> tariffConstants = await _service.GetAllAsync(cancellationToken);
             return Ok(tariffConstants);
         }
 
@@ -110,7 +78,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<StringDictionary>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Dictionary(CancellationToken cancellationToken)
         {
-            ICollection<StringDictionary> tariffConstants = await _tariffConstantDictionaryHandler.Handle(cancellationToken);
+            ICollection<StringDictionary> tariffConstants = await _service.GetDictionaryAsync(cancellationToken);
             return Ok(tariffConstants);
         }
     }

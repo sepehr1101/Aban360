@@ -1,7 +1,4 @@
-using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts;
-using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
-using Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.Land.Services;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
@@ -15,37 +12,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
     public class UserLeaveController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IUserLeaveCreateHandler _userLeaveCreateHandler;
-        private readonly IUserLeaveUpdateHandler _userLeaveUpdateHandler;
-        private readonly IUserLeaveDeleteHandler _userLeaveDeleteHandler;
-        private readonly IUserLeaveGetSingleHandler _userLeaveGetSingleHandler;
-        private readonly IUserLeaveGetAllHandler _userLeaveGetAllHandler;
+        private readonly IUserLeaveService _service;
 
-        public UserLeaveController(
-            IUnitOfWork uow,
-            IUserLeaveCreateHandler userLeaveCreateHandler,
-            IUserLeaveUpdateHandler userLeaveUpdateHandler,
-            IUserLeaveDeleteHandler userLeaveDeleteHandler,
-            IUserLeaveGetSingleHandler userLeaveGetSingleHandler,
-            IUserLeaveGetAllHandler userLeaveGetAllHandler)
+        public UserLeaveController(IUnitOfWork uow, IUserLeaveService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _userLeaveCreateHandler = userLeaveCreateHandler;
-            _userLeaveCreateHandler.NotNull(nameof(userLeaveCreateHandler));
-
-            _userLeaveUpdateHandler = userLeaveUpdateHandler;
-            _userLeaveUpdateHandler.NotNull(nameof(userLeaveUpdateHandler));
-
-            _userLeaveDeleteHandler = userLeaveDeleteHandler;
-            _userLeaveDeleteHandler.NotNull(nameof(userLeaveDeleteHandler));
-
-            _userLeaveGetSingleHandler = userLeaveGetSingleHandler;
-            _userLeaveGetSingleHandler.NotNull(nameof(userLeaveGetSingleHandler));
-
-            _userLeaveGetAllHandler = userLeaveGetAllHandler;
-            _userLeaveGetAllHandler.NotNull(nameof(userLeaveGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<UserLeaveCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] UserLeaveCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _userLeaveCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -63,7 +37,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [Route("update")]
         public async Task<IActionResult> Update([FromBody] UserLeaveUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _userLeaveUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -74,7 +48,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<UserLeaveDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] UserLeaveDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _userLeaveDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -85,7 +59,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<UserLeaveGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            var userLeaves = await _userLeaveGetSingleHandler.Handle(id, cancellationToken);
+            var userLeaves = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(userLeaves);
         }
 
@@ -94,7 +68,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<UserLeaveGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var userLeaves = await _userLeaveGetAllHandler.Handle(cancellationToken);
+            var userLeaves = await _service.GetAllAsync(cancellationToken);
             return Ok(userLeaves);
         }
     }

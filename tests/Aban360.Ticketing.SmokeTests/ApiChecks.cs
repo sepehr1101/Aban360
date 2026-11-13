@@ -1,10 +1,11 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using Aban360.Api.Controllers.V1.UserPool.Ticketing.Commands;
+using Aban360.Api.Controllers.V1.UserPool.Ticketing;
 using Aban360.Api.ExceptionHandlers;
 using Aban360.UserPool.Application.Extensions;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
@@ -16,6 +17,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -23,7 +26,7 @@ using Aban360.NotificationPool.Application.Features.Sms;
 
 internal static class ApiChecks
 {
-    public static async Task Run()
+    public static async Task Run(bool consolidated)
     {
         var checks = 0;
         void Check(bool condition, string name)
@@ -49,7 +52,13 @@ internal static class ApiChecks
         builder.Services.AddUserPoolApplicationInjections();
         var sms = new TicketSmsFake();
         builder.Services.AddSingleton<ISmsOldHandler>(sms);
-        builder.Services.AddControllers().AddApplicationPart(typeof(TicketCreateController).Assembly);
+        var controllerAssembly = typeof(TicketController).Assembly;
+        var controllerNames = new[] { "Ticket", "TicketMessage", "TicketRating", "TicketAttachment" };
+        var controllerNamespace = (consolidated ? "" : "BeforeTicketConsumers.") + "Aban360.Api.Controllers.V1.UserPool.Ticketing.";
+        var selectedControllers = controllerNames.Select(name => controllerAssembly.GetType(controllerNamespace + name + "Controller", true)!)
+            .Append(typeof(TicketStatusController)).ToArray();
+        builder.Services.AddControllers().AddApplicationPart(controllerAssembly)
+            .ConfigureApplicationPartManager(manager => manager.FeatureProviders.Add(new TicketControllerSelection(selectedControllers)));
         builder.Services.AddAuthentication("TicketingSmoke")
             .AddScheme<AuthenticationSchemeOptions, TicketingSmokeAuthenticationHandler>("TicketingSmoke", _ => { });
         builder.Services.AddAuthorization();
@@ -324,7 +333,16 @@ internal static class ApiChecks
                 "SMS failure leaves the committed support response intact");
         }
         await app.StopAsync();
-        Console.WriteLine($"PASS: {checks} ticketing HTTP checks. No SQL Server connection was opened.");
+        Console.WriteLine($"PASS: {checks} ticketing HTTP checks against {(consolidated ? "consolidated controllers/services" : "frozen controllers/handlers")}. No SQL Server connection was opened.");
+    }
+}
+
+internal sealed class TicketControllerSelection(Type[] selected) : IApplicationFeatureProvider<ControllerFeature>
+{
+    public void PopulateFeature(IEnumerable<ApplicationPart> parts, ControllerFeature feature)
+    {
+        for (var i = feature.Controllers.Count - 1; i >= 0; i--)
+            if (!selected.Contains(feature.Controllers[i].AsType())) feature.Controllers.RemoveAt(i);
     }
 }
 

@@ -1,6 +1,4 @@
-using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Delete.Contracts;
-using Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Update.Contracts;
+using Aban360.ClaimPool.Application.Features.Draft.Services;
 using Aban360.ClaimPool.Domain.Features.Draft.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
@@ -13,24 +11,14 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
     public class RequestWaterMeterTagController : BaseController
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IRequestWaterMeterTagCreateHandler _requestWaterMeterTagCreateHandler;
-        private readonly IRequestWaterMeterTagDeleteHandler _requestWaterMeterTagDeleteHandler;
-        private readonly IRequestWaterMeterTagUpdateHandler _requestWaterMeterTagUpdateHandler;
+        private readonly IRequestWaterMeterTagService _service;
 
-        public RequestWaterMeterTagController(
-            IUnitOfWork unitOfWork,
-            IRequestWaterMeterTagCreateHandler requestWaterMeterTagCreateHandler,
-            IRequestWaterMeterTagDeleteHandler requestWaterMeterTagDeleteHandler,
-            IRequestWaterMeterTagUpdateHandler requestWaterMeterTagUpdateHandler)
+        public RequestWaterMeterTagController(IUnitOfWork unitOfWork, IRequestWaterMeterTagService service)
         {
+            unitOfWork.NotNull(nameof(unitOfWork));
             _unitOfWork = unitOfWork;
-            _unitOfWork.NotNull(nameof(unitOfWork));
-            _requestWaterMeterTagCreateHandler = requestWaterMeterTagCreateHandler;
-            _requestWaterMeterTagCreateHandler.NotNull(nameof(requestWaterMeterTagCreateHandler));
-            _requestWaterMeterTagDeleteHandler = requestWaterMeterTagDeleteHandler;
-            _requestWaterMeterTagDeleteHandler.NotNull(nameof(requestWaterMeterTagDeleteHandler));
-            _requestWaterMeterTagUpdateHandler = requestWaterMeterTagUpdateHandler;
-            _requestWaterMeterTagUpdateHandler.NotNull(nameof(requestWaterMeterTagUpdateHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -38,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterTagRequestCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] WaterMeterTagRequestCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _requestWaterMeterTagCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -49,7 +37,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterTagRequestDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] WaterMeterTagRequestDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _requestWaterMeterTagDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -60,7 +48,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Draft
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterTagRequestUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] WaterMeterTagRequestUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _requestWaterMeterTagUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);

@@ -1,0 +1,11 @@
+// Test-only contract for unchanged pre-refactor snapshots.
+using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
+
+namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts
+{
+    public interface IWaterMeterTagGetSingleHandler
+    {
+        Task<ICollection<WaterMeterTagGetDto>> Handle(int id, CancellationToken cancellationToken);
+
+    }
+}

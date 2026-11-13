@@ -1,7 +1,4 @@
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts;
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Delete.Contracts;
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Contracts;
-using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Application.Features.Bill.Services;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Contexts.Contracts;
@@ -15,37 +12,13 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
     public class CompanyServiceOfferingController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly ICompanyServiceOfferingCreateHandler _companyServiceOfferingCreateHandler;
-        private readonly ICompanyServiceOfferingUpdateHandler _companyServiceOfferingUpdateHandler;
-        private readonly ICompanyServiceOfferingDeleteHandler _companyServiceOfferingDeleteHandler;
-        private readonly ICompanyServiceOfferingGetSingleHandler _companyServiceOfferingGetSingleHandler;
-        private readonly ICompanyServiceOfferingGetAllHandler _companyServiceOfferingGetAllHandler;
-
-        public CompanyServiceOfferingController(
-            IUnitOfWork uow,
-            ICompanyServiceOfferingCreateHandler companyServiceOfferingCreateHandler,
-            ICompanyServiceOfferingUpdateHandler companyServiceOfferingUpdateHandler,
-            ICompanyServiceOfferingDeleteHandler companyServiceOfferingDeleteHandler,
-            ICompanyServiceOfferingGetSingleHandler companyServiceOfferingGetSingleHandler,
-            ICompanyServiceOfferingGetAllHandler companyServiceOfferingGetAllHandler)
+        private readonly ICompanyServiceOfferingService _service;
+        public CompanyServiceOfferingController(IUnitOfWork uow, ICompanyServiceOfferingService service)
         {
+            uow.NotNull(nameof(uow));
             _uow = uow;
-            _uow.NotNull(nameof(uow));
-
-            _companyServiceOfferingCreateHandler = companyServiceOfferingCreateHandler;
-            _companyServiceOfferingCreateHandler.NotNull(nameof(companyServiceOfferingCreateHandler));
-
-            _companyServiceOfferingUpdateHandler = companyServiceOfferingUpdateHandler;
-            _companyServiceOfferingUpdateHandler.NotNull(nameof(companyServiceOfferingUpdateHandler));
-
-            _companyServiceOfferingDeleteHandler = companyServiceOfferingDeleteHandler;
-            _companyServiceOfferingDeleteHandler.NotNull(nameof(companyServiceOfferingDeleteHandler));
-
-            _companyServiceOfferingGetSingleHandler = companyServiceOfferingGetSingleHandler;
-            _companyServiceOfferingGetSingleHandler.NotNull(nameof(companyServiceOfferingGetSingleHandler));
-
-            _companyServiceOfferingGetAllHandler = companyServiceOfferingGetAllHandler;
-            _companyServiceOfferingGetAllHandler.NotNull(nameof(companyServiceOfferingGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost]
@@ -53,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<CompanyServiceOfferingCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] CompanyServiceOfferingCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _companyServiceOfferingCreateHandler.Handle(createDto, cancellationToken);
+            await _service.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(createDto);
@@ -64,7 +37,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<CompanyServiceOfferingUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] CompanyServiceOfferingUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _companyServiceOfferingUpdateHandler.Handle(updateDto, cancellationToken);
+            await _service.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(updateDto);
@@ -75,7 +48,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<CompanyServiceOfferingDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] CompanyServiceOfferingDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _companyServiceOfferingDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _service.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
 
             return Ok(deleteDto);
@@ -86,7 +59,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<CompanyServiceOfferingGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            CompanyServiceOfferingGetDto companyServiceOfferings = await _companyServiceOfferingGetSingleHandler.Handle(id, cancellationToken);
+            CompanyServiceOfferingGetDto companyServiceOfferings = await _service.GetSingleAsync(id, cancellationToken);
             return Ok(companyServiceOfferings);
         }
 
@@ -95,7 +68,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<CompanyServiceOfferingGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<CompanyServiceOfferingGetDto> companyServiceOfferings = await _companyServiceOfferingGetAllHandler.Handle(cancellationToken);
+            ICollection<CompanyServiceOfferingGetDto> companyServiceOfferings = await _service.GetAllAsync(cancellationToken);
             return Ok(companyServiceOfferings);
         }
     }
