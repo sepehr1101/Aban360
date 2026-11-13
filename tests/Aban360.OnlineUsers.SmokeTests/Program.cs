@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Security.Claims;
 using Aban360.Api.Extensions;
 using Aban360.Api.Hubs.Contracts;
-using Aban360.ReportPool.Application.Features.FlatReports.Handler.Commands.Contracts;
+using Aban360.ReportPool.Application.Features.FlatReports.Services;
 using Aban360.ReportPool.Application.Features.FlatReports.Validations;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Commands;
 using Aban360.ReportPool.Persistence.Features.FlatReports.Commands.Contracts;
@@ -158,17 +158,23 @@ var saveService = TestProxy.For<IServerReportsUpdateService>((_, args) =>
     saveToken = (CancellationToken)args[1]!;
     return failSave ? Task.FromException(new InvalidOperationException("Save failed")) : saveCompletion.Task;
 });
-var updateType = typeof(IServerReportsUpdateHandler).Assembly.GetType(
-    "Aban360.ReportPool.Application.Features.FlatReports.Handler.Commands.Implementations.ServerReportsUpdateHandler", true)!;
-var updateHandler = (IServerReportsUpdateHandler)Activator.CreateInstance(updateType, saveService, new ServerReportsUpdateValidator())!;
-var updateTask = updateHandler.Handle(new ServerReportsUpdateDto(reportId, "test-report.xlsx", now, true), cancellation.Token);
+var updateType = typeof(IServerReportsService).Assembly.GetTypes().Single(type => type.IsClass && typeof(IServerReportsService).IsAssignableFrom(type));
+var updateHandler = (IServerReportsService)updateType.GetConstructors().Single().Invoke(updateType.GetConstructors().Single().GetParameters().Select(parameter =>
+{
+    if (parameter.ParameterType == typeof(IServerReportsUpdateService)) return (object)saveService;
+    if (parameter.ParameterType == typeof(FluentValidation.IValidator<ServerReportsUpdateDto>)) return new ServerReportsUpdateValidator();
+    var proxy = (TestProxy)DispatchProxy.Create(parameter.ParameterType, typeof(TestProxy));
+    proxy.Callback = (_, _) => throw new Exception("Unexpected report dependency call");
+    return (object)proxy;
+}).ToArray());
+var updateTask = updateHandler.UpdateAsync(new ServerReportsUpdateDto(reportId, "test-report.xlsx", now, true), cancellation.Token);
 Check(!updateTask.IsCompleted && saveToken == cancellation.Token,
     "Report completion handler awaits persistence and forwards cancellation");
 saveCompletion.SetResult();
 await updateTask;
 failSave = true;
 bool saveFailed = false;
-try { await updateHandler.Handle(new ServerReportsUpdateDto(reportId, "test-report.xlsx", now, true), CancellationToken.None); }
+try { await updateHandler.UpdateAsync(new ServerReportsUpdateDto(reportId, "test-report.xlsx", now, true), CancellationToken.None); }
 catch (InvalidOperationException) { saveFailed = true; }
 Check(saveFailed, "Report persistence errors propagate through Task instead of async void");
 

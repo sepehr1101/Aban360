@@ -1,0 +1,117 @@
+[
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.WorkflowPool.Design.WorkflowController",
+    "Current": "Aban360.Api.Controllers.V1.WorkflowPool.Design.WorkflowController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.UserPool.AccessTree.SubModuleController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.AccessTree.SubModuleController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.UserPool.AccessTree.ModuleController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.AccessTree.ModuleController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.UserPool.AccessTree.EndpointController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.AccessTree.EndpointController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.UserPool.AccessTree.AppController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.AccessTree.AppController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.ZoneController",
+    "Current": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.ZoneController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.ReportPool.MainTagGroupging.Commands.MainTagGroupController",
+    "Current": "Aban360.Api.Controllers.V1.ReportPool.MainTagGroupging.Commands.MainTagGroupController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.ReportPool.FlatReports.ServerReportsController",
+    "Current": "Aban360.Api.Controllers.V1.ReportPool.FlatReports.ServerReportsController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.ClaimPool.Metering.UseStateController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Metering.UseStateController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.ClaimPool.Metering.SubscriptionTypeController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Metering.SubscriptionTypeController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.ClaimPool.Metering.MeterUseTypeController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Metering.MeterUseTypeController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.ClaimPool.Metering.MeterTypeController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Metering.MeterTypeController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.ClaimPool.Metering.MeterProducerController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Metering.MeterProducerController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.ClaimPool.Metering.MeterMaterialController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Metering.MeterMaterialController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.ClaimPool.Metering.MeterDiameterController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Metering.MeterDiameterController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.OldCalcPool.Db70.VirtualCategoryController",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.Db70.VirtualCategoryController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.ClaimPool.Land.ProfessionController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.ProfessionController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.ClaimPool.Land.FlatController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.FlatController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.ClaimPool.Land.EstateBoundTypeController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.EstateBoundTypeController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumersWave20.Aban360.Api.Controllers.V1.ClaimPool.Land.ConstructionTypeController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.ConstructionTypeController"
+  },
+  {
+    "Assembly": "Aban360.LocationPool.GatewayAdhoc",
+    "Original": "BeforeServiceConsumersWave20.Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.ZoneTitleAddhoc",
+    "Current": "Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.ZoneTitleAddhoc"
+  },
+  {
+    "Assembly": "Aban360.LocationPool.GatewayAdhoc",
+    "Original": "BeforeServiceConsumersWave20.Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.ZoneCountQueryAddhoc",
+    "Current": "Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.ZoneCountQueryAddhoc"
+  },
+  {
+    "Assembly": "Aban360.LocationPool.GatewayAdhoc",
+    "Original": "BeforeServiceConsumersWave20.Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.ZoneAllQueryAddhoc",
+    "Current": "Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.ZoneAllQueryAddhoc"
+  }
+]

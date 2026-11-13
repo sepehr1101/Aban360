@@ -7,7 +7,7 @@ namespace Aban360.Tests.ServiceBaselines;
 // This lets older controller comparisons keep checking calls, inputs and ordering.
 public static class ApplicationServiceBaseline
 {
-    public static readonly ServiceOperation[] Operations = new[] { "ServiceConsolidation15.json", "ServiceConsolidation30.json", "ServiceConsolidation20.json", "ServiceConsolidation19.json" }
+    public static readonly ServiceOperation[] Operations = new[] { "ServiceConsolidation15.json", "ServiceConsolidation30.json", "ServiceConsolidation20.json", "ServiceConsolidation19.json", "ServiceConsolidationWave20.json" }
         .SelectMany(file => JsonSerializer.Deserialize<ServiceOperation[]>(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, file)))!).ToArray();
     private static readonly Dictionary<(string, string), string> Names = Operations.ToDictionary(
         o => (o.Service, o.Method), o => o.OldContract + "." + o.OldMethod);

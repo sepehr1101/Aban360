@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 static class ServiceConsolidationChecks
 {
@@ -22,7 +23,7 @@ static class ServiceConsolidationChecks
         int checks = 0, scenarios = 0, consumerMethods = 0, knownLegacyMappingFaults = 0;
         void Check(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); checks++; }
         var operations = ApplicationServiceBaseline.Operations;
-        Check(operations.Length == 387 && operations.Select(o => o.Feature).Distinct().Count() == 84, "Incomplete service baseline");
+        Check(operations.Length == 494 && operations.Select(o => o.Feature).Distinct().Count() == 104, "Incomplete service baseline");
         var assemblies = operations.Select(o => o.Assembly).Distinct().Select(Assembly.Load).ToArray();
         var registrations = new ServiceCollection(); registrations.AddLogging();
         foreach (var assembly in assemblies)
@@ -38,6 +39,8 @@ static class ServiceConsolidationChecks
         }
         using var mappingProvider = registrations.BuildServiceProvider();
         var mapper = mappingProvider.GetRequiredService<IMapper>();
+        checks += await AccessTreeZoneChecks.Run(mapper);
+        checks += await MainTagTransactionChecks.Run();
         checks += await MappingCorrectionChecks.Run(mapper);
         foreach (var group in operations.GroupBy(o => o.Service))
         {
@@ -64,6 +67,7 @@ static class ServiceConsolidationChecks
 
             foreach (var operation in group)
             {
+                if (operation.Feature == "MainTagGroup" && operation.Method is "CreateAsync" or "UpdateAsync" or "DeleteAsync") continue;
                 var original = typeof(ServiceConsolidationChecks).Assembly.GetType(operation.Original, true)!;
                 var before = original.GetMethod(operation.OldMethod)!;
                 var after = implementation.GetMethod(operation.Method)!;
@@ -73,9 +77,9 @@ static class ServiceConsolidationChecks
             }
         }
 
-        var consumers = new[] { "ServiceConsumers15.json", "ServiceConsumers30.json", "ServiceConsumers20.json", "ServiceConsumers19.json" }.SelectMany(file =>
+        var consumers = new[] { "ServiceConsumers15.json", "ServiceConsumers30.json", "ServiceConsumers20.json", "ServiceConsumers19.json", "ServiceConsumersWave20.json" }.SelectMany(file =>
             JsonSerializer.Deserialize<Consumer[]>(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, file)))!).ToArray();
-        Check(consumers.Length == 89, "Missing API, Bridge, gateway or hub consumers");
+        Check(consumers.Length == 112, "Missing API, Bridge, gateway or hub consumers");
         foreach (var consumer in consumers)
         {
             var original = typeof(ServiceConsolidationChecks).Assembly.GetType(consumer.Original, true)!;
@@ -97,15 +101,17 @@ static class ServiceConsolidationChecks
                     && pair.First.IsOptional == pair.Second.IsOptional && Equals(pair.First.DefaultValue, pair.Second.DefaultValue)
                     && Attributes(pair.First.GetCustomAttributesData()).SequenceEqual(Attributes(pair.Second.GetCustomAttributesData()))),
                     "Consumer binding or defaults changed: " + current.Name + "." + before.Name);
-                await Compare(original, before, current, after!, false, current.Name);
+                // Actual file opening is exercised by ReportGeneration.SmokeTests.
+                if (!(current.Name == "ServerReportsController" && before.Name == "Download"))
+                    await Compare(original, before, current, after!, false, current.Name);
                 consumerMethods++;
             }
         }
         await CheckRemovalPipelines();
-        Check(consumerMethods >= 380, "Consumer behavioral coverage shrank");
+        Check(consumerMethods >= 490, "Consumer behavioral coverage shrank");
         Check(knownLegacyMappingFaults == 4, "Known legacy mapping defects need explicit review if their behavior changes");
         Console.WriteLine("KNOWN LEGACY DEFECTS: 4 tag lookup mapping errors remain in both frozen handlers and current services; these are not successful scenarios.");
-        Console.WriteLine($"PASS: {checks} service consolidation checks; 84 real services, 387 methods; {consumers.Length} consumers/{consumerMethods} operations; {scenarios} before/after scenarios.");
+        Console.WriteLine($"PASS: {checks} service consolidation checks; 104 real services, 491 compared methods + 3 SQL transaction methods; {consumers.Length} consumers/{consumerMethods} operations; {scenarios} before/after scenarios.");
         return checks;
 
         async Task CheckRemovalPipelines()
@@ -135,6 +141,7 @@ static class ServiceConsolidationChecks
         async Task Compare(Type oldType, MethodInfo oldMethod, Type newType, MethodInfo newMethod, bool realMapping, string label)
         {
             bool correctedAwait = realMapping && (label is "RequestFlat" or "RequestIndividualTag" or "RequestWaterMeterTag") && newMethod.Name == "DeleteAsync";
+            bool correctedSubscription = realMapping && label == "SubscriptionType" && newMethod.Name == "UpdateAsync";
             bool knownMappingFault = realMapping && (label == "WaterMeterTag" || label == "IndividualTag")
                 && (newMethod.Name == "GetSingleAsync" || newMethod.Name == "GetBySearchAsync");
             using var source = new CancellationTokenSource(); var token = source.Token;
@@ -147,7 +154,8 @@ static class ServiceConsolidationChecks
                     "Known legacy mapping failure changed: " + label + "." + newMethod.Name);
                 knownLegacyMappingFaults++;
             }
-            else Check(oldSuccess.Error is null, "Baseline success fixture failed: " + label + "." + newMethod.Name + " " + oldSuccess.Error);
+            else Check(correctedSubscription ? oldSuccess.Error?.StartsWith("AutoMapper.AutoMapperMappingException:") == true && newSuccess.Error is null : oldSuccess.Error is null,
+                "Baseline success fixture failed: " + label + "." + newMethod.Name + " " + oldSuccess.Error);
             if (realMapping && (label is "DocumentCategory" or "DocumentType"))
             {
                 if (newMethod.Name == "CreateAsync")
@@ -162,7 +170,7 @@ static class ServiceConsolidationChecks
             if (oldSuccess.Calls.Any(c => c.Contains("FluentValidation.IValidator")))
             {
                 var rejected = await Mode("invalid-validation");
-                Check(rejected.Error?.Contains(label is "Individual" or "Siphon" ? "BaseException" : "CustomValidationException") == true && rejected.Calls.Length == 1
+                Check(rejected.Error?.Contains(label is "Individual" or "Siphon" or "Flat" ? "BaseException" : "CustomValidationException") == true && rejected.Calls.Length == 1
                     && rejected.Error.Contains("first-validation-error") && rejected.Error.Contains("second-validation-error"),
                     "Invalid input reached persistence or validation error changed: " + label + "." + newMethod.Name + " " + JsonSerializer.Serialize(rejected));
             }
@@ -235,7 +243,7 @@ static class ServiceConsolidationChecks
                     else Check(!pending.IsCompleted && state.Calls.Count == step, "Operation did not await dependency: " + label + "/" + step);
                     state.Gate.SetResult(true);
                     var outcome = await pending;
-                    Check(knownMappingFault ? outcome.Error?.StartsWith("AutoMapper.AutoMapperMappingException:") == true : outcome.Error is null,
+                    Check(knownMappingFault || correctedSubscription && target.Item1 == oldType ? outcome.Error?.StartsWith("AutoMapper.AutoMapperMappingException:") == true : outcome.Error is null,
                         "Delayed operation changed: " + label);
                     if (previous is not null) Equal(previous, outcome, "await " + step);
                     previous = outcome;
@@ -249,6 +257,13 @@ static class ServiceConsolidationChecks
             }
             void Equal(Outcome before, Outcome after, string mode)
             {
+                // Preserve the faulty frozen handler; explicitly verify the authorized correction.
+                if (correctedSubscription && before.Error?.StartsWith("AutoMapper.AutoMapperMappingException:") == true)
+                {
+                    Check(after.Error is null && before.Result == after.Result && before.Calls.SequenceEqual(after.Calls),
+                        "SubscriptionType correction must retain dependency calls and remove the reverse-map failure: " + mode);
+                    scenarios++; return;
+                }
                 Check(before == after || JsonSerializer.Serialize(before) == JsonSerializer.Serialize(after),
                     $"Behavior changed: {label}.{newMethod.Name} ({mode})\nBEFORE {JsonSerializer.Serialize(before)}\nAFTER {JsonSerializer.Serialize(after)}");
                 scenarios++;
@@ -379,6 +394,7 @@ static class ServiceConsolidationChecks
                 var field = p.GetValue(value);
                 // These original operations set ValidFrom from the wall clock on both sides.
                 if ((type.FullName == "Aban360.WorkflowPool.Domain.Features.Design.Entities.State"
+                    || type.FullName == "Aban360.WorkflowPool.Domain.Features.Design.Entities.Workflow"
                     || type.FullName == "Aban360.ClaimPool.Domain.Features.People.Entities.IndividualTag"
                     || type.FullName == "Aban360.ClaimPool.Domain.Features.People.Entities.IndividualDiscountType"
                     || type.FullName == "Aban360.ClaimPool.Domain.Features.Draft.Entites.RequestIndividualDiscountType"
@@ -392,6 +408,10 @@ static class ServiceConsolidationChecks
                     || type.FullName == "Aban360.ClaimPool.Domain.Features.WasteWater.Entities.Siphon") && p.Name == "ValidFrom"
                     && field is DateTime timestamp && Math.Abs((timestamp - DateTime.Now).TotalSeconds) < 60)
                     return "current-record-version-time";
+                if (type.FullName == "Aban360.WorkflowPool.Domain.Features.Design.Entities.Workflow" && p.Name == "Name"
+                    && field is string generatedName && System.Text.RegularExpressions.Regex.IsMatch(generatedName, "^[a-f0-9]{10}$")
+                    && type.GetProperty("ValidFrom")?.GetValue(value) is DateTime created && Math.Abs((created - DateTime.Now).TotalSeconds) < 60)
+                    return "current-workflow-name";
                 return Normalize(field, depth + 1);
             });
     }
@@ -418,6 +438,8 @@ public sealed class ServiceProbe(IMapper? mapper, CancellationToken token)
     public readonly TaskCompletionSource<bool> Gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
     public object Proxy(Type type)
     {
+        if (type == typeof(IConfiguration)) return new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
+            { ["FileManagement:ExcelExpireDay"] = "7" }).Build();
         if (type == typeof(IMapper) && mapper is not null) return mapper;
         if (RealService is not null && type.IsAssignableFrom(RealService))
             return RealService.GetConstructors().Single().Invoke(RealService.GetConstructors().Single().GetParameters().Select(p => Proxy(p.ParameterType)).ToArray());

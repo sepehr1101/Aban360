@@ -27,4 +27,8 @@
     <Compile Include="../Shared/ServiceConsolidation19/Contracts/**/*.cs" Link="LegacyContracts19/%(Filename)%(Extension)" />
     <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidation19.json" Link="ServiceConsolidation19.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationWave20/Contracts/**/*.cs" Link="LegacyContractsWave20/%(Filename)%(Extension)" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidationWave20.json" Link="ServiceConsolidationWave20.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

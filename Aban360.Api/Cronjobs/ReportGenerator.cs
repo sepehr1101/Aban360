@@ -1,10 +1,10 @@
-﻿using Aban360.Api.Hubs.Contracts;
+using Aban360.ReportPool.Application.Features.FlatReports.Services;
+using Aban360.Api.Hubs.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.ReportPool.Application.Features.FlatReports.Handler.Commands.Contracts;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Commands;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries;
 using Aban360.ReportPool.Persistence.Features.FlatReports.Queries.Contracts;
@@ -26,58 +26,43 @@ namespace Aban360.Api.Cronjobs
 
     internal sealed class ReportGenerator : IReportGenerator
     {
-        private readonly IServerReportsCreateHandler _serverReportsCreateHandler;
-        private readonly IServerReportsUpdateHandler _serverReportsUpdateHandler;
+        private const string MethodName = "Handle";
+        private readonly IServerReportsService _service;
         private readonly IServerReportsGetByIdService _serverReportsGetByIdServices;
         private readonly IServerReportsQueryService _serverReportsGetByJsonInputService;
         private readonly IServiceProvider _serviceProvider;
         private readonly IReportCompletionNotifier _reportCompletionNotifier;
         private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly ILogger<ReportGenerator> _logger;
-        private const string MethodName = "Handle";
-
-        public ReportGenerator(
-            IServerReportsCreateHandler serverReportsCreateHandler,
-            IServerReportsUpdateHandler serverReportsUpdateHandler,
-            IServerReportsGetByIdService serverReportsGetByIdServices,
-            IServerReportsQueryService serverReportsGetByJsonInputService,
-            IServiceProvider serviceProvider,
-            IReportCompletionNotifier reportCompletionNotifier,
-            IBackgroundJobClient backgroundJobClient,
-            ILogger<ReportGenerator> logger)
+        public ReportGenerator(IServerReportsService service, IServerReportsGetByIdService serverReportsGetByIdServices, IServerReportsQueryService serverReportsGetByJsonInputService, IServiceProvider serviceProvider, IReportCompletionNotifier reportCompletionNotifier, IBackgroundJobClient backgroundJobClient, ILogger<ReportGenerator> logger)
         {
-            _serverReportsCreateHandler = serverReportsCreateHandler;
-            _serverReportsCreateHandler.NotNull(nameof(serverReportsCreateHandler));
-
-            _serverReportsUpdateHandler = serverReportsUpdateHandler;
-            _serverReportsUpdateHandler.NotNull(nameof(serverReportsUpdateHandler));
-
+            service.NotNull(nameof(service));
+            _service = service;
+            serverReportsGetByIdServices.NotNull(nameof(serverReportsGetByIdServices));
             _serverReportsGetByIdServices = serverReportsGetByIdServices;
-            _serverReportsGetByIdServices.NotNull(nameof(serverReportsGetByIdServices));
-
+            serverReportsGetByJsonInputService.NotNull(nameof(serverReportsGetByJsonInputService));
             _serverReportsGetByJsonInputService = serverReportsGetByJsonInputService;
-            _serverReportsGetByJsonInputService.NotNull(nameof(serverReportsGetByJsonInputService));
-
+            serviceProvider.NotNull(nameof(serviceProvider));
             _serviceProvider = serviceProvider;
-            _serviceProvider.NotNull(nameof(serviceProvider));
-
+            reportCompletionNotifier.NotNull(nameof(reportCompletionNotifier));
             _reportCompletionNotifier = reportCompletionNotifier;
-            _reportCompletionNotifier.NotNull(nameof(reportCompletionNotifier));
+            backgroundJobClient.NotNull(nameof(backgroundJobClient));
             _backgroundJobClient = backgroundJobClient;
+            logger.NotNull(nameof(logger));
             _logger = logger;
         }
         public async Task DirectExecute<TReportInput, THead, TData>(TReportInput reportInput, CancellationToken cancellationToken, Func<TReportInput, CancellationToken, Task<ReportOutput<THead, TData>>> GetData, IAppUser appUser, string reportTitle, string connectionId, string[]? excludedProperties = null)
         {
             Guid id = Guid.NewGuid();
             ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(id, reportInput, GetData, appUser, reportTitle, connectionId);
-            await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
+            await _service.CreateAsync(serverReportsCreateDto, cancellationToken);
 
 
             try
             {
                 ReportOutput<THead, TData> reportOutput = await GetData(reportInput, cancellationToken);
                 string reportPath = await ExcelManagement.ExportToExcelAsync(reportOutput.ReportHeader, reportOutput.ReportData, reportOutput.Title, excludedProperties);
-                await _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(id, reportPath, DateTime.Now, true), cancellationToken);
+                await _service.UpdateAsync(new ServerReportsUpdateDto(id, reportPath, DateTime.Now, true), cancellationToken);
             }
             catch
             {
@@ -90,7 +75,7 @@ namespace Aban360.Api.Cronjobs
             methodName ??= GetData.Method.Name.Split('.').Last();
             //await DuplicateReportValidation(JsonConvert.SerializeObject(reportInput), appUser.UserId);//check
             ServerReportsCreateDto serverReportsCreateDto = CreateServerReportDto(Guid.NewGuid(), reportInput, GetData, appUser, reportTitle, connectionId, methodName);
-            await _serverReportsCreateHandler.Handle(serverReportsCreateDto, cancellationToken);
+            await _service.CreateAsync(serverReportsCreateDto, cancellationToken);
             try
             {
                 _backgroundJobClient.Enqueue<IReportGenerator>(generator => generator.DoFireAndInform(serverReportsCreateDto, methodName, excludedProperties));
@@ -140,7 +125,7 @@ namespace Aban360.Api.Cronjobs
                 var export = typeof(ExcelManagement).GetMethod(nameof(ExcelManagement.ExportToExcelAsync))!
                     .MakeGenericMethod(headerType, dataType);
                 var path = await (Task<string>)Invoke(export, null, new object?[] { header, rows, report.ReportName ?? string.Empty, excludedProperties })!;
-                await _serverReportsUpdateHandler.Handle(new ServerReportsUpdateDto(report.Id, path, DateTime.Now, true), CancellationToken.None);
+                await _service.UpdateAsync(new ServerReportsUpdateDto(report.Id, path, DateTime.Now, true), CancellationToken.None);
                 await _reportCompletionNotifier.Notify(report.UserId, report.ReportName ?? string.Empty, report.Id);
             }
             catch
@@ -199,7 +184,7 @@ namespace Aban360.Api.Cronjobs
 
         private async Task MarkFailed(Guid id)
         {
-            try { await _serverReportsUpdateHandler.Fail(id, CancellationToken.None); }
+            try { await _service.FailAsync(id, CancellationToken.None); }
             catch (Exception exception) { _logger.LogError(exception, "Could not record failure for report {ReportId}.", id); }
         }
         private string GetCurrentPersianDateTime()

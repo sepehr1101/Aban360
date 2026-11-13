@@ -1,21 +1,21 @@
-﻿using Aban360.Common.Extensions;
-using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts;
+using Aban360.LocationPool.Application.Features.MainHierarchy.Services;
+using Aban360.Common.Extensions;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 
 namespace Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations
 {
     internal sealed class ZoneCountQueryAddhoc : IZoneCountQueryAddhoc
     {
-        private readonly IZoneGetCountHandler _zoneGetCountHandler;
-        public ZoneCountQueryAddhoc(IZoneGetCountHandler zoneGetCountHandler)
+        private readonly IZoneService _service;
+        public ZoneCountQueryAddhoc(IZoneService service)
         {
-            _zoneGetCountHandler = zoneGetCountHandler;
-            _zoneGetCountHandler.NotNull(nameof(zoneGetCountHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         public async Task<int> GetCount(ICollection<int> input, CancellationToken cancellationToken)
         {
-            return await _zoneGetCountHandler.Handle(input, cancellationToken);
+            return await _service.GetCountAsync(input, cancellationToken);
         }
     }
 }
