@@ -1,0 +1,31 @@
+// Frozen handler before application service consolidation; test-only.
+using Aban360.BlobPool.Domain.Features.DMS.Dto.Queries;
+using Aban360.BlobPool.Application.Features.DMS.Handlers.Queries.Contracts;
+using Aban360.BlobPool.Persistence.Features.DMS.Queries.Contracts;
+using Aban360.Common.Extensions;
+using AutoMapper;
+
+namespace BeforeServiceConsolidation30.Aban360.BlobPool.Application.Features.DMS.Handlers.Queries.Implementations
+{
+    internal sealed class DocumentEntityGetAllHandler : IDocumentEntityGetAllHandler
+    {
+        private readonly IMapper _mapper;
+        private readonly IDocumentEntityQueryService _documentEntityQueryService;
+        public DocumentEntityGetAllHandler(
+            IMapper mapper,
+            IDocumentEntityQueryService documentEntityQueryService)
+        {
+            _mapper = mapper;
+            _mapper.NotNull(nameof(_mapper));
+
+            _documentEntityQueryService = documentEntityQueryService;
+            _documentEntityQueryService.NotNull(nameof(_documentEntityQueryService));
+        }
+
+        public async Task<ICollection<DocumentEntityGetDto>> Handle(CancellationToken cancellationToken)
+        {
+            var documentEntity = await _documentEntityQueryService.Get();
+            return _mapper.Map<ICollection<DocumentEntityGetDto>>(documentEntity);
+        }
+    }
+}

@@ -84,8 +84,10 @@ namespace Aban360.ReportPool.Persistence.Features.BuiltIns.WaterTransactions.Imp
                 SumItem18 = waterIncomeAndConsumptionData.Sum(w => w.Item18),
                 BillUnit = waterIncomeAndConsumptionData.Sum(w => w.BillUnit),
                 TotalUnit = waterIncomeAndConsumptionData.Sum(w => w.TotalUnit),
+                WaterConsumptionUnit= waterIncomeAndConsumptionData.Sum(w=>w.WaterConsumptionUnit),
                 AverageDuration = waterIncomeAndConsumptionData.Average(w => w.AverageDuration),
-                WaterConsumptionUnit= waterIncomeAndConsumptionData.Sum(w=>w.WaterConsumptionUnit)
+                EmptySum=waterIncomeAndConsumptionData.Sum(w=>w.EmptySum),
+                HouseholdSum=waterIncomeAndConsumptionData.Sum(w=>w.HouseholdSum)
             };
             decimal x = ((decimal)(waterIncomeAndConsumptionHeader.SumConsumption * 30) / (decimal)(waterIncomeAndConsumptionHeader.SumDuration == 0 ? 1 : waterIncomeAndConsumptionHeader.SumDuration));
             decimal y= ((decimal)(waterIncomeAndConsumptionHeader.BillUnit == 0 ? 1 : waterIncomeAndConsumptionHeader.BillUnit)/(waterIncomeAndConsumptionHeader.SumBillCount == 0 ? 1 : waterIncomeAndConsumptionHeader.SumBillCount) ) ;

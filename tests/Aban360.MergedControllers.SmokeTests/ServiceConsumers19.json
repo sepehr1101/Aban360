@@ -1,0 +1,97 @@
+[
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.MeterPool.Management.CounterStateController",
+    "Current": "Aban360.Api.Controllers.V1.MeterPool.Management.CounterStateController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.ReadingBoundeController",
+    "Current": "Aban360.Api.Controllers.V1.LocationPool.MainHierarchy.ReadingBoundeController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.InstallationPool.Definition.SewageEquipmentBrokerZoneController",
+    "Current": "Aban360.Api.Controllers.V1.InstallationPool.Definition.SewageEquipmentBrokerZoneController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.InstallationPool.Definition.EquipmentBrokerZoneController",
+    "Current": "Aban360.Api.Controllers.V1.InstallationPool.Definition.EquipmentBrokerZoneController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.ClaimPool.WasteWater.SiphonController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.WasteWater.SiphonController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.ClaimPool.People.IndividualTagDefinitionController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.People.IndividualTagDefinitionController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.ClaimPool.People.IndividualController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.People.IndividualController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.ClaimPool.Metering.WaterMeterTagDefinitionController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Metering.WaterMeterTagDefinitionController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.ClaimPool.Land.WaterResourceController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.WaterResourceController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.ClaimPool.Land.UserWorkdayController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.UserWorkdayController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.ClaimPool.Land.GuildController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.GuildController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestWaterMeterController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestWaterMeterController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestTrackingController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestTrackingController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestSiphonController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestSiphonController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestIndividualController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestIndividualController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.CalculationPool.Rule.TariffConstantController",
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.Rule.TariffConstantController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.CalculationPool.Bill.CompanyServiceOfferingController",
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.Bill.CompanyServiceOfferingController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.BlobController.Taxonomy.DocumentTypeController",
+    "Current": "Aban360.Api.Controllers.V1.BlobController.Taxonomy.DocumentTypeController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeServiceConsumers19.Aban360.Api.Controllers.V1.BlobController.Taxonomy.DocumentCategoryController",
+    "Current": "Aban360.Api.Controllers.V1.BlobController.Taxonomy.DocumentCategoryController"
+  }
+]

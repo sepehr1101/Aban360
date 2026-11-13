@@ -33,8 +33,8 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
         private readonly INowGenerateBillRequestService _requestService;
         private static string _xApiKey = ReportLiterals.XApiKey;
         private static string _nowGenerateBillXApiKey = ReportLiterals.NowGenerateBillXApiKey;
-        private static float _invalidGTConsumptionPercent = 1.5f;
-        private static float _invalidLTConsumptionPercent = 0.5f;
+        private static float _invalidGTConsumptionPercent = 1.3f;
+        private static float _invalidLTConsumptionPercent = 0.3f;
         private static int[] _invalidDeletionStateCodes = { (int)DeletionStateEnum.JamAvari, (int)DeletionStateEnum.JabejaShode, (int)DeletionStateEnum.HazfMovaghat };
         private static int _invalidGTAmount = 50_000_000;
         private static int _invalidLTConsumption = 1;
@@ -182,12 +182,12 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             if (freeBillResult.AbBahaCalculationDetail.MonthlyConsumption >= customerInfo.LastMonthlyConsumption * _invalidGTConsumptionPercent)
             {
-                returnMessage = "میانگین مصرف دوره جاری بیش از 50درصد دوره قبلی است.";
+                returnMessage = "میانگین مصرف دوره جاری بیش از 30درصد دوره قبلی است.";
                 return new NowGenerateBillOutputDto(returnMessage, (int)NowGenerateBillErrorCodeEnum.High);
             }
             if (freeBillResult.AbBahaCalculationDetail.MonthlyConsumption <= customerInfo.LastMonthlyConsumption * _invalidLTConsumptionPercent)
             {
-                returnMessage = "میانگین مصرف دوره جاری کمتر از 50درصد دوره قبلی است.";
+                returnMessage = "میانگین مصرف دوره جاری کمتر از 30درصد دوره قبلی است.";
                 return new NowGenerateBillOutputDto(returnMessage, (int)NowGenerateBillErrorCodeEnum.Low);
             }
             if (freeBillResult.AbBahaCalculationDetail.SumItems >= _invalidGTAmount)

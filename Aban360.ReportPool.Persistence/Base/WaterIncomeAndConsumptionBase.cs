@@ -181,7 +181,9 @@ namespace Aban360.ReportPool.Persistence.Base
 							    When b.TypeCode IN (1) AND b.UsageId IN (1,3) AND (b.OtherCount+b.CommercialCount+b.DomesticCount)>0 THEN (b.OtherCount+b.CommercialCount+b.DomesticCount - ISNULL(b.EmptyCount,0) + ISNULL(b.HouseholdCount,0))
 								When b.TypeCode IN (1) AND b.UsageId NOT IN (1,3) AND (b.OtherCount+b.CommercialCount+DomesticCount)>0 THEN (b.OtherCount+b.CommercialCount+DomesticCount)
 							    Else 0 
-						   END UnitC
+						   END UnitC,
+                           IIF(b.UsageId IN (1,3), ISNULL(b.EmptyCount, 0), 0) EmptyCount,
+                           IIF(b.UsageId IN (1,3), ISNULL(b.HouseholdCount, 0), 0) HouseholdCount
                     From [CustomerWarehouse].dbo.Bills b
                     Join [Db70].dbo.T41 t41
                     	ON b.UsageId=t41.C0
@@ -243,7 +245,9 @@ namespace Aban360.ReportPool.Persistence.Base
                         SUM(CAST(Item17 AS bigint)) AS Item17,
                         SUM(CAST(Item18 AS bigint)) AS Item18,
                         SUM(CAST(UnitC as bigint)) as BillUnit,
-                        SUM(CAST(TotalUnit as bigint)) as TotalUnit
+                        SUM(CAST(TotalUnit as bigint)) as TotalUnit,
+                        SUM(CAST(HouseholdCount as bigint)) as HouseholdSum,
+                        SUM(CAST(EmptyCount as bigint)) as EmptySum
                     From cte
                     Group By {groupKey}, {orderKey}
                     Order By {orderKey}";

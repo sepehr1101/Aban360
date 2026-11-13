@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><FrameworkReference Include="Microsoft.AspNetCore.App"/><Using Include="Microsoft.AspNetCore.Http"/><ProjectReference Include="../../Aban360.Api/Aban360.Api.csproj"/><None Update="Groups.json" CopyToOutputDirectory="PreserveNewest"/></ItemGroup>  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidation15/Contracts/**/*.cs" Link="LegacyContracts15/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidation15/ApplicationServiceBaseline.cs" Link="ApplicationServiceBaseline.cs" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidation15.json" Link="ServiceConsolidation15.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidation30/Contracts/**/*.cs" Link="LegacyContracts30/%(Filename)%(Extension)" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidation30.json" Link="ServiceConsolidation30.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidation20/Contracts/**/*.cs" Link="LegacyContracts20/%(Filename)%(Extension)" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidation20.json" Link="ServiceConsolidation20.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidation19/Contracts/**/*.cs" Link="LegacyContracts19/%(Filename)%(Extension)" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidation19.json" Link="ServiceConsolidation19.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
+
+

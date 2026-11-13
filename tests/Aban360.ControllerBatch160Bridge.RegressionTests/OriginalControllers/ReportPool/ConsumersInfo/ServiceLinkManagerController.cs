@@ -1,0 +1,40 @@
+using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
+using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Aban360.BrdigeApi.Controllers.V1.BeforeBatch160Bridge.ReportPool.ConsumersInfo
+{
+    [Route("v1/service-link")]
+    public class ServiceLinkManagerController : BaseController
+    {
+        private readonly IConnectDisconnectSetResultHandler _connectDisconnectSetResultHandler;
+        string successfullyDone = "با موفقیت انجام شد";
+        int _disconnectState = 5;
+        int _connectState = 0;
+        public ServiceLinkManagerController(IConnectDisconnectSetResultHandler connectDisconnectSetResultHandler)
+        {
+            _connectDisconnectSetResultHandler = connectDisconnectSetResultHandler;
+            _connectDisconnectSetResultHandler.NotNull(nameof(connectDisconnectSetResultHandler));
+        }
+
+        [HttpPost]
+        [Route("disconnect")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Disconnect([FromBody] ServiceLinkConnectionInput input, CancellationToken cancellationToken)
+        {
+            await _connectDisconnectSetResultHandler.Handle(input, false, CurrentUser, cancellationToken);
+            return Ok(successfullyDone);
+        }
+
+        [HttpPost]
+        [Route("reconnect")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Reconnect([FromBody] ServiceLinkConnectionInput input, CancellationToken cancellationToken)
+        {
+            await _connectDisconnectSetResultHandler.Handle(input, true, CurrentUser, cancellationToken);
+            return Ok(successfullyDone);
+        }
+    }
+}

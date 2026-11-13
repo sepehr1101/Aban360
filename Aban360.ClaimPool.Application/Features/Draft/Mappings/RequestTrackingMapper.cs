@@ -10,6 +10,7 @@ namespace Aban360.ClaimPool.Application.Features.Draft.Mappings
         public RequestTrackingMapper()
         {
             CreateMap<RequestTrackingCreateDto, RequestTracking>();
+            CreateMap<RequestTrackingUpdateDto, RequestTracking>();
             CreateMap<RequestTrackingDeleteDto, RequestTracking>();
             CreateMap< RequestTracking, RequestTrackingGetDto>();
         }

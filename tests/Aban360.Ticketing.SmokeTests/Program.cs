@@ -129,5 +129,7 @@ Check(sqlContext.Model.FindEntityType(typeof(TicketRating))!.GetForeignKeys()
 Check(sqlContext.Model.FindEntityType(typeof(TicketStatus))!.FindProperty("Id")!.ValueGenerated == Microsoft.EntityFrameworkCore.Metadata.ValueGenerated.Never,
     "Status lookup ID is not an identity");
 Console.WriteLine($"PASS: {checks} ticketing persistence checks. No SQL Server connection was opened.");
-await ApplicationChecks.Run();
-await ApiChecks.Run();
+await ApplicationChecks.Run(consolidated: false);
+await ApplicationChecks.Run(consolidated: true);
+await ApiChecks.Run(consolidated: false);
+await ApiChecks.Run(consolidated: true);

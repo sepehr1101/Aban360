@@ -1,5 +1,5 @@
-﻿using Aban360.Common.Extensions;
-using Aban360.LocationPool.Application.Features.MainHierarchy.Handlers.Queries.Contracts;
+using Aban360.LocationPool.Application.Features.MainHierarchy.Services;
+using Aban360.Common.Extensions;
 using Aban360.LocationPool.Domain.Features.MainHierarchy.Dto.Queries;
 using Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Contracts;
 
@@ -7,15 +7,16 @@ namespace Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementatio
 {
     internal sealed class RegionTitleAddhoc : IRegionTitleAddhoc
     {
-        private readonly IRegionGetSingleHandler _regionGetSingleHandler;
-        public RegionTitleAddhoc(IRegionGetSingleHandler regionGetSingleHandler)
+        private readonly IRegionService _service;
+
+        public RegionTitleAddhoc(IRegionService service)
         {
-            _regionGetSingleHandler = regionGetSingleHandler;
-            _regionGetSingleHandler.NotNull(nameof(regionGetSingleHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
         public async Task<string> Handle(int id, CancellationToken cancellationToken)
         {
-            RegionGetDto region = await _regionGetSingleHandler.Handle(id, cancellationToken);
+            RegionGetDto region = await _service.GetSingleAsync(id, cancellationToken);
             return region.Title;
         }
     }

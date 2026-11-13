@@ -1,4 +1,4 @@
-﻿using Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.People.Services;
 using Aban360.ClaimPool.Domain.Features.People.Dto.Queries;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
@@ -9,11 +9,12 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
     [Route("v1/discount-type")]
     public class DiscountTypeGetAllController : BaseController
     {
-        private readonly IDiscountTypeGetAllHandler _discountTypeGetAllHandler;
-        public DiscountTypeGetAllController(IDiscountTypeGetAllHandler discountTypeGetAllHandler)
+        private readonly IDiscountTypeService _service;
+
+        public DiscountTypeGetAllController(IDiscountTypeService service)
         {
-            _discountTypeGetAllHandler = discountTypeGetAllHandler;
-            _discountTypeGetAllHandler.NotNull(nameof(discountTypeGetAllHandler));
+            service.NotNull(nameof(service));
+            _service = service;
         }
 
         [HttpPost, HttpGet]
@@ -21,7 +22,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<DiscountTypeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(bool isReturun, CancellationToken cancellationToken)
         {
-            ICollection<DiscountTypeGetDto> discountTypes = await _discountTypeGetAllHandler.Handle(isReturun, cancellationToken);
+            ICollection<DiscountTypeGetDto> discountTypes = await _service.GetAllAsync(isReturun, cancellationToken);
             return Ok(discountTypes);
         }
     }

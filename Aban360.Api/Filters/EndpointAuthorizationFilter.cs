@@ -1,4 +1,4 @@
-﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.ApplicationUser;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Domain.Constants;
@@ -15,8 +15,10 @@ namespace Aban360.Api.Filters
     public class EndpointAuthorizationFilter: IAsyncAuthorizationFilter
     {
         private readonly IUserClaimQueryService _userClaimQueryService;
-        public EndpointAuthorizationFilter(IUserClaimQueryService userClaimQueryService)
+        private readonly string? _controllerName;
+        public EndpointAuthorizationFilter(IUserClaimQueryService userClaimQueryService, string? controllerName = null)
         {
+            _controllerName = controllerName;
             _userClaimQueryService = userClaimQueryService;
             _userClaimQueryService.NotNull(nameof(_userClaimQueryService));
         }
@@ -57,7 +59,7 @@ namespace Aban360.Api.Filters
             if (actionDescriptor == null)
                 return null;
 
-            return $"{actionDescriptor.ControllerName}.{actionDescriptor.ActionName}";
+            return $"{_controllerName ?? actionDescriptor.ControllerName}.{actionDescriptor.ActionName}";
         }
 
         private ApiResponseEnvelope<object> CreateEnvelope()

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Aban360.Api.Hubs.Implementations;
-using Aban360.CommunicationPool.Application.Features.Hubs.Handlers.Commands.Contracts;
+using Aban360.CommunicationPool.Application.Features.Hubs.Services;
 using Aban360.CommunicationPool.Domain.Features.Hubs.Dto.Commands;
 using Aban360.CommunicationPool.Persistence.Features.Hubs.Commands.Contracts;
 using Aban360.CommunicationPool.Persistence.Extensions;
@@ -73,7 +73,7 @@ Check(!(await handler.Handle(CancellationToken.None)).Any(), "Empty connections 
 
 var registry = new HubConnectionRegistry();
 var events = new HubEvents();
-NotifyHub Hub(string id) => new(events, events, registry) { Context = new Caller(id, userId) };
+NotifyHub Hub(string id) => new(events, registry) { Context = new Caller(id, userId) };
 using var firstTab = Hub("tab-a");
 using var secondTab = Hub("tab-b");
 await firstTab.OnConnectedAsync();
@@ -221,18 +221,18 @@ sealed class OnlineConnections : IOnlineUsersGetQueryService
     public Task<IEnumerable<OnlineUserGetDto>> Get() => Task.FromResult(Rows);
 }
 
-sealed class HubEvents : IHubEventCreateHandler, IHubEventUpdateHandler
+sealed class HubEvents : IHubEventService
 {
     public Dictionary<string, Guid> Connections = new();
     public bool FailClose;
     public bool FailCreate;
-    public Task Handle(HubEventCreateDto input, CancellationToken token)
+    public Task CreateAsync(HubEventCreateDto input, CancellationToken token)
     {
         if (FailCreate) throw new InvalidOperationException("Registration failed");
         Connections.Add(input.ConnectionId, input.UserId);
         return Task.CompletedTask;
     }
-    public Task Handle(HubEventUpdateDto input, CancellationToken token)
+    public Task UpdateAsync(HubEventUpdateDto input, CancellationToken token)
     {
         if (FailClose) throw new InvalidOperationException("Database unavailable");
         Connections.Remove(input.ConnectionId);

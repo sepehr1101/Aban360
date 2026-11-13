@@ -1,0 +1,182 @@
+[
+  {
+    "Feature": "TicketAttachment",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Create.Implementations.TicketAttachmentCreateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Create.Contracts.ITicketAttachmentCreateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketAttachmentService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Ticket",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Create.Implementations.TicketCreateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Create.Contracts.ITicketCreateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketMessage",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Create.Implementations.TicketMessageCreateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Create.Contracts.ITicketMessageCreateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketMessageService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketRating",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Create.Implementations.TicketRatingCreateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Create.Contracts.ITicketRatingCreateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketRatingService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketAttachment",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Update.Implementations.TicketAttachmentUpdateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Update.Contracts.ITicketAttachmentUpdateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketAttachmentService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketMessage",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Update.Implementations.TicketMessageUpdateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Update.Contracts.ITicketMessageUpdateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketMessageService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketRating",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Update.Implementations.TicketRatingUpdateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Update.Contracts.ITicketRatingUpdateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketRatingService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Ticket",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Update.Implementations.TicketUpdateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Commands.Update.Contracts.ITicketUpdateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketAttachment",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketAttachmentContentGetHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketAttachmentContentGetHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketAttachmentService",
+    "Method": "GetContentAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketAttachment",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketAttachmentGetListHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketAttachmentGetListHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketAttachmentService",
+    "Method": "GetListAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketAttachment",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketAttachmentGetSingleHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketAttachmentGetSingleHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketAttachmentService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Ticket",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketGetListHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketGetListHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketService",
+    "Method": "GetListAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Ticket",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketGetMyListHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketGetMyListHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketService",
+    "Method": "GetMyListAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Ticket",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketGetSingleHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketGetSingleHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketMessage",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketMessageGetListHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketMessageGetListHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketMessageService",
+    "Method": "GetListAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketMessage",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketMessageGetSingleHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketMessageGetSingleHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketMessageService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketRating",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketRatingGetByMessageHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketRatingGetByMessageHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketRatingService",
+    "Method": "GetByMessageAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "TicketRating",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketRatingGetSingleHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketRatingGetSingleHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketRatingService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Ticket",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketReportGetHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketReportGetHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketService",
+    "Method": "GetReportAsync",
+    "OldMethod": "Handle"
+  },
+  {
+    "Feature": "Ticket",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeTicketConsolidation.Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Implementations.TicketReportGetHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Ticketing.Handlers.Queries.Contracts.ITicketReportGetHandler",
+    "Service": "Aban360.UserPool.Application.Features.Ticketing.Services.ITicketService",
+    "Method": "GetMyReportAsync",
+    "OldMethod": "HandleMine"
+  }
+]

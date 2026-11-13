@@ -18,7 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 internal static class ApplicationChecks
 {
-    public static async Task Run()
+    public static async Task Run(bool consolidated)
     {
         var checks = 0;
         void Check(bool condition, string name)
@@ -38,9 +38,32 @@ internal static class ApplicationChecks
         services.AddDbContext<UserPoolContext>(options => options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
         services.AddUserPoolPersistenceInjections();
         services.AddUserPoolApplicationInjections();
+        if (consolidated) ConsolidationBaseline.UseConsolidatedServices(services);
         using var provider = services.BuildServiceProvider();
         using var scope = provider.CreateScope();
         var sp = scope.ServiceProvider;
+        var serviceTypes = ConsolidationBaseline.Operations.Select(o => o.Service).Distinct()
+            .Select(name => typeof(ApplicationChecks).Assembly.GetType(name, true)!).ToArray();
+        Check(serviceTypes.Length == 4 && ConsolidationBaseline.Operations.Length == 20, "Four ticketing services cover all twenty original operations");
+        using (var otherScope = provider.CreateScope())
+        {
+            foreach (var type in serviceTypes)
+            {
+                var registration = services.Single(d => d.ServiceType == type);
+                Check(registration.Lifetime == ServiceLifetime.Scoped, "Production scoped service registration: " + type.Name);
+                Check(ReferenceEquals(sp.GetRequiredService(type), sp.GetRequiredService(type))
+                    && !ReferenceEquals(sp.GetRequiredService(type), otherScope.ServiceProvider.GetRequiredService(type)), "Ticketing service scope: " + type.Name);
+            }
+        }
+        foreach (var operation in ConsolidationBaseline.Operations)
+        {
+            var assembly = typeof(ApplicationChecks).Assembly;
+            var before = assembly.GetType(operation.OldContract, true)!.GetMethod(operation.OldMethod)!;
+            var after = assembly.GetType(operation.Service, true)!.GetMethod(operation.Method)!;
+            Check(before.ReturnType == after.ReturnType && before.GetParameters().Select(p => p.ParameterType)
+                .SequenceEqual(after.GetParameters().Select(p => p.ParameterType)), "Ticketing operation signature: " + operation.Method);
+        }
+        if (consolidated) await BoundaryChecks.Run(sp);
         var context = (UserPoolContext)sp.GetRequiredService<IUnitOfWork>();
         var ct = CancellationToken.None;
         var owner = new TicketTestUser(Guid.NewGuid());
@@ -181,7 +204,7 @@ internal static class ApplicationChecks
         cancelled.Cancel();
         try { await getList.Handle(new TicketSearchInput(), owner, cancelled.Token); throw new Exception("Cancellation ignored"); }
         catch (OperationCanceledException) { checks++; }
-        Console.WriteLine($"PASS: {checks} ticketing application checks. No SQL Server connection was opened.");
+        Console.WriteLine($"PASS: {checks} ticketing application checks against {(consolidated ? "consolidated services" : "frozen handlers")}. No SQL Server connection was opened.");
     }
 }
 

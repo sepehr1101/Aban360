@@ -1,0 +1,32 @@
+// Frozen handler before application service consolidation; test-only.
+using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
+using Aban360.CalculationPool.Domain.Features.Bill.Entities;
+using Aban360.CalculationPool.Persistence.Features.Bill.Queries.Contracts;
+using Aban360.Common.Extensions;
+using AutoMapper;
+
+namespace BeforeServiceConsolidation30.Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation
+{
+    internal sealed class OfferingUnitGetSingleHandler : IOfferingUnitGetSingleHandler
+    {
+        private readonly IMapper _mapper;
+        private readonly IOfferingUnitQueryService _offeringUnitQueryService;
+        public OfferingUnitGetSingleHandler(
+            IMapper mapper,
+            IOfferingUnitQueryService offeringUnitQueryService)
+        {
+            _mapper = mapper;
+            _mapper.NotNull(nameof(mapper));
+
+            _offeringUnitQueryService = offeringUnitQueryService;
+            _offeringUnitQueryService.NotNull(nameof(offeringUnitQueryService));
+        }
+
+        public async Task<OfferingUnitGetDto> Handle(short id, CancellationToken cancellationToken)
+        {
+            OfferingUnit offeringUnit = await _offeringUnitQueryService.Get(id);
+            return _mapper.Map<OfferingUnitGetDto>(offeringUnit);
+        }
+    }
+}

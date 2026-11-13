@@ -1,0 +1,10 @@
+// Test-only contract for unchanged pre-refactor snapshots.
+using Aban360.ClaimPool.Domain.Features.WasteWater.Dto.Queries;
+
+namespace Aban360.ClaimPool.Application.Features.WasteWater.Handlers.Queries.Contracts
+{
+    public interface ISiphonMaterialGetAllHandler
+    {
+        Task<ICollection<SiphonMaterialGetDto>> Handle(CancellationToken cancellationToken);
+    }
+}
