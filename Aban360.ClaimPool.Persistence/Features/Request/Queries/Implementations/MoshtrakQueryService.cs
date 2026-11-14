@@ -236,7 +236,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 					Left Join Db70.dbo.T5 t5
 						ON enshab=t5.C0
 					Left Join Db70.dbo.T41 t41
-						ON enshab=t41.C0
+						ON cod_enshab=t41.C0
 					Left Join Db70.dbo.T15 t15
 						ON enshab=t15.C0
                     Left join [Db70].dbo.T7 t7

@@ -112,8 +112,8 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 DiscountTypeId = moshtrakInfo.DiscountTypeId,
                 IsSewageDiscount = moshtrakInfo.HasAdamTakhfifFazelab,
                 IsWaterDiscount = moshtrakInfo.HasAdamTakhfifAb,
-                HasWaterArticle11 = false,//todo
-                HasSewageArticle11 = false,//todo
+                HasWaterArticle11 = true,
+                HasSewageArticle11 = moshtrakInfo.MainSiphon > 0,
             };
             ReportOutput<SaleHeaderOutputDto, SaleDataOutputDto> saleResult = await _saleGetHandler.Handle(saleInputDto, cancellationToken);
 
