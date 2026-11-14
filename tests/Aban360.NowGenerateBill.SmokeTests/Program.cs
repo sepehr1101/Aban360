@@ -4,6 +4,7 @@ using Aban360.Common.Db.Services.Dtos;
 using DNTPersianUtils.Core;
 using Aban360.Api.Controllers.V1.OldCalcPool.Processing;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Db.Services;
@@ -19,6 +20,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Persistence.Extensions;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -89,7 +91,7 @@ foreach (var code in new[] { NowGenerateBillErrorCodeEnum.MobileDailyLimitReache
         })).ToArray();
     var controller = (GenerateBillController)Activator.CreateInstance(typeof(GenerateBillController), controllerArgs)!;
     controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
-    var response = (ObjectResult)await controller.NowCalcuation(valid, cancellation.Token);
+    var response = (ObjectResult)await controller.GetInstantly(valid, cancellation.Token);
     var envelope = (ApiResponseEnvelope<NowGenerateBillOutputDto>)response.Value!;
     Check(response.StatusCode == 429 && envelope.Data?.ErrorCode == (int)code,
         $"{code} returns actual HTTP 429 and preserves the specific error code");
@@ -128,6 +130,71 @@ var recentBill = (NowGenerateBillOutputDto)handlerType.GetMethod("PreviousInfoVa
     } })!;
 Check(recentBill.ErrorCode == (int)NowGenerateBillErrorCodeEnum.Low && recentBill.SmsCategory == NowGenerateBillSmsCategoryEnum.RecentBill,
     "Recent issuance keeps its API error code and is distinct from low consumption for SMS");
+
+foreach (bool limitReached in new[] { true, false })
+{
+    int historyCalls = 0;
+    int calculationCalls = 0;
+    var context = new DefaultHttpContext();
+    context.Request.Headers[Aban360.ReportPool.Domain.Base.ReportLiterals.XApiKey] =
+        Aban360.ReportPool.Domain.Base.ReportLiterals.NowGenerateBillXApiKey;
+    var limitArguments = handlerType.GetConstructors().Single().GetParameters().Select(parameter =>
+        parameter.ParameterType == typeof(INowGenerateBillRequestService) ? (object)requestService :
+        parameter.ParameterType == typeof(IConfiguration) ? configuration :
+        parameter.ParameterType == typeof(IHttpContextAccessor) ? new HttpContextAccessor { HttpContext = context } :
+        parameter.ParameterType.IsInstanceOfType(new NowGenerateBillValidator()) ? new NowGenerateBillValidator() :
+        Stub.For(parameter.ParameterType, (method, values) =>
+        {
+            if (parameter.ParameterType == typeof(ICommonMemberQueryService))
+            {
+                if (method.Name == "Get")
+                    return Task.FromResult<ZoneIdAndCustomerNumber?>(new ZoneIdAndCustomerNumber(1, 42));
+                if (method.Name == "GetMembersBedBesTavizFlatInfo")
+                    return Task.FromResult<CustomerLastInfoGetDto?>(new CustomerLastInfoGetDto
+                    {
+                        ZoneId = 1, CustomerNumber = 42, LastMeterNumber = 10,
+                        LastMeterDateJalali = DateTime.Now.AddDays(-30).ToShortPersianDateString()
+                    });
+            }
+            if (parameter.ParameterType == typeof(IBedBesQueryService)
+                && method.Name == "HasConsecutiveSelfClaimBills")
+            {
+                historyCalls++;
+                Check((int)values[0]! == 1 && (int)values[1]! == 42 && (int)values[2]! == 3,
+                    "History check receives customer identity and the handler period limit");
+                return Task.FromResult(limitReached);
+            }
+            if (parameter.ParameterType == typeof(IFreeGenerateBillHandler))
+            {
+                calculationCalls++;
+                throw new InvalidOperationException("Calculation reached");
+            }
+            throw new Exception("Unexpected dependency: " + method.Name);
+        })).ToArray();
+    var limitHandler = (INowGenerateBillHandler)Activator.CreateInstance(handlerType, limitArguments)!;
+    if (limitReached)
+    {
+        var output = await limitHandler.Handle(valid, new AppUserManual(), CancellationToken.None);
+        Check(output.ErrorCode == (int)NowGenerateBillErrorCodeEnum.NotAvailableNow
+            && output.Message == "به سقف 3 دوره متوالی صدور قبض خوداظهاری رسیده‌اید.",
+            "Consecutive period limit returns the existing error code and the configured limit");
+        Check(historyCalls == 1 && calculationCalls == 0,
+            "Limit rejection happens before any calculation or issuance");
+    }
+    else
+    {
+        try
+        {
+            await limitHandler.Handle(valid, new AppUserManual(), CancellationToken.None);
+            throw new Exception("Expected calculation to be reached");
+        }
+        catch (InvalidOperationException exception) when (exception.Message == "Calculation reached")
+        {
+            Check(historyCalls == 1 && calculationCalls == 1,
+                "Requests below the consecutive period limit continue to calculation");
+        }
+    }
+}
 
 var categoryCases = new (NowGenerateBillErrorCodeEnum Code, string Detail, NowGenerateBillSmsCategoryEnum? Category, string PublicReason)[]
 {
@@ -210,7 +277,7 @@ async Task<(ObjectResult Response, List<Job> Jobs, int SuccessSmsCalls)> InvokeC
         })).ToArray();
     var controller = (GenerateBillController)Activator.CreateInstance(typeof(GenerateBillController), args)!;
     controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
-    var response = (ObjectResult)await controller.NowCalcuation(input, CancellationToken.None);
+    var response = (ObjectResult)await controller.GetInstantly(input, CancellationToken.None);
     return (response, jobs, successSmsCalls);
 }
 

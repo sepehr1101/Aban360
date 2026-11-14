@@ -10,6 +10,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts
 {
     public interface IBedBesQueryService
     {
+        Task<bool> HasConsecutiveSelfClaimBills(int zoneId, int customerNumber, int periodLimit);
         Task<BedBesConsumptionOutputDto> Get(string billId);
         Task<BedBesDataInfoOutptuDto> GetInAtlas(int id);
         Task<BedBesWithAmountOutputDto> GetLatest(ZoneIdAndCustomerNumberOutputDto input);
