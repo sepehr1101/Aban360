@@ -1,4 +1,5 @@
 ﻿using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Contracts;
+using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.ServiceLink;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
@@ -14,16 +15,21 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
     public class ServiceLinkOtherExpensesController : BaseController
     {
         private readonly IOtherExpensesInsertHandler _otherExpensesInsertHandler;
+        private readonly IOtheExpensesGetCurrentDateGetHandler _otherExpensesGetCurrentDateGetHandler;
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IBackgroundJobClient _backgroundJobClient;
         private int _taxItemId = 550;
         public ServiceLinkOtherExpensesController(
             IOtherExpensesInsertHandler otherExpensesInsertHandler,
+            IOtheExpensesGetCurrentDateGetHandler otherExpensesGetCurrentDateGetHandler,
             ISmsOldHandler smsOldHandler,
             IBackgroundJobClient backgroundJobClient)
         {
             _otherExpensesInsertHandler = otherExpensesInsertHandler;
             _otherExpensesInsertHandler.NotNull(nameof(otherExpensesInsertHandler));
+
+            _otherExpensesGetCurrentDateGetHandler = otherExpensesGetCurrentDateGetHandler;
+            _otherExpensesGetCurrentDateGetHandler.NotNull(nameof(otherExpensesGetCurrentDateGetHandler));
 
             _smsOldHandler = smsOldHandler;
             _smsOldHandler.NotNull(nameof(smsOldHandler));
@@ -42,6 +48,17 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
             string offeringTitle = result?.ReportData?.Where(r => r.OfferingId != _taxItemId)?.FirstOrDefault()?.OfferingTitle ?? string.Empty;
             string message = string.Format(SmsTemplates.ServiceLinkOtherExpensesInsert, offeringTitle, result?.ReportHeader?.TrackNumber, result?.ReportHeader?.FinalAmount, result?.ReportHeader?.BillId, result?.ReportHeader?.PaymentId, Environment.NewLine);
             _backgroundJobClient.Enqueue(() => _smsOldHandler.SendNew(result.ReportHeader.MobileNumber, message, Guid.NewGuid()));
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
+
+        [HttpPost]
+        [Route("sti/{id}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSti(int id, CancellationToken cancellationToken)
+        {
+            int reportCode = 2540;
+            ReportOutput<OtherExpensesHeaderOutputDto, OtherExpensesDataOutputDto> result = await _otherExpensesGetCurrentDateGetHandler.Handle(id, CurrentUser, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }

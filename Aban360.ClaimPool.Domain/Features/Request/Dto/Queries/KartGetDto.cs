@@ -21,6 +21,7 @@
         public int Type { get; set; }
         public int Ser { get; set; }
         public int AmountItemId { get; set; }
+        public string? AmountItemTitle { get; set; }
         public int MeterDiameterId { get; set; }
         public int SiphonId { get; set; }
         public int UsageId { get; set; }

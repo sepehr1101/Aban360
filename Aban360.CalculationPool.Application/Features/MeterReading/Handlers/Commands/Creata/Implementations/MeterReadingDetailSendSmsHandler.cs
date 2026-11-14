@@ -3,6 +3,7 @@ using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Implementations;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
@@ -29,7 +30,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly ISmsFlowQueryService _meterSmsFlowQueryService;
         private readonly ICalculationConfirmationHandler _calcConfirmationHandler;
         private readonly ISmsDraftQueryService _smsDraftQueryService;
-        private const long _minWaterDebt = 100_000;
+        private const long _minWaterDebt = 30_000;
         private int _smsGroupId = CommonLiterals.SmsStateGroupCollectBills_LastSms;
         public MeterReadingDetailSendSmsHandler(
             IBackgroundJobClient jobClient,
@@ -66,14 +67,38 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
             _smsDraftQueryService = smsDraftQueryService;
             _smsDraftQueryService.NotNull(nameof(smsDraftQueryService));
-        }
 
+
+
+            string BillToDateTable = @"آبفا {ZoneTitle}{newLine}{BillTypeLiteral}{newLine}{FullName}{newLine}از: {PreviousDateJalali}{newLine}تا: {CurrentDateJalali}{newLine}از شماره: {PreviousNumber}{newLine}تا شماره: {CurrentNumber}{newLine}{TarefeSaxtValue}دوره: {ThisPeriodAmountValue} ریال{newLine}{PreBedBesLiteral}{PreBedBesValue} ریال{newLine}مبلغ: {Payable} ریال{newLine}ش ق: {BillId}{newLine}{PayText}{LinkValue}";
+            string Bill = @"{ZoneTitle}{newLine}" +
+                @"{BillTypeLiteral}{newLine}" +
+                @"{FullName}{newLine}" +
+                @"از: {PreviousDateJalali}{newLine}" +
+                @"تا: {CurrentDateJalali}{newLine}" +
+                @"از شماره: {PreviousNumber}{newLine}" +
+                @"تا شماره: {CurrentNumber}{newLine}" +
+                @"{TarefeSaxtValue}" +
+                @"دوره: {ThisPeriodAmountValue} ریال{newLine}" +
+                @"{PreBedBesLiteral}{PreBedBesValue} ریال{newLine}" +
+                @"مبلغ: {Payable} ریال{newLine}" +
+                @"ش ق: {BillId}{newLine}" +
+                @"{PayText}" +
+                @"{LinkValue}";
+
+            string dueBill = @"آبفا {ZoneTitle}{newLine}مهلت صورتحساب آب‌بها {FullName} به پایان رسیده است. جهت استمرار خدمات مبلغ {Payable} ریال پرداخت گردد.{newLine}ش ق: {BillId}{newLine}ش پ: {PaymentId}{newLine}لطفاً جهت پرداخت مبلغ در ساعات اداری از طریق لینک زیر و در ساعات غیر‌اداری از طریق شناسه قبض و پرداخت اقدام نمائید.{newLine}{LinkValue}";
+            string rimember = @"آبفا {ZoneTitle}{newLine}مهلت صورتحساب آب‌بها {FullName} رو به پایان است لطفاً جهت استمرار خدمات مبلغ {Payable} ریال پرداخت گردد.{newLine}ش ق: {BillId}{newLine}ش پ: {PaymentId}{newLine}لطفاً جهت پرداخت مبلغ در ساعات اداری از طریق لینک زیر و در ساعات غیر‌اداری از طریق شناسه قبض و پرداخت اقدام نمائید.{newLine}{LinkValue}";
+        }
         public async Task Handle(int latestFlowId, Guid userId, CancellationToken cancellationToken)
         {
             MeterFlowGetDto meterFlowInfo = await _meterFlowQueryService.Get(latestFlowId);
-          
+            if (meterFlowInfo.ZoneId != 131302)
+            {
+                return;
+            }
             _jobClient.Enqueue(() => CreateJob(meterFlowInfo.FirstFlowId, userId));
         }
+        [AutomaticRetry(Attempts = 2)]
         public async Task CreateJob(int firstFlowId, Guid userId)
         {
             MeterFlowGetDto meterFlowInfo = await _meterFlowQueryService.Get(firstFlowId);
@@ -86,10 +111,11 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 return;
             }
-            string jobId = _jobClient.Schedule(() => SendSms(firstFlowId, newSmsFlowId, userId), new DateTimeOffset(newSmsFlowInfo.DueDateTime));
+            string jobId = _jobClient.Schedule(() => SendSms(firstFlowId, newSmsFlowId, userId), new DateTimeOffset(newSmsFlowInfo.DueDateTime));//ToDo: changeDateTimeType
 
             return;
         }
+        [AutomaticRetry(Attempts = 2)]
         public async Task SendSms(int firstFlowId, int newSmsFlowId, Guid userId)
         {
             SmsFlowGetDto? newSmsFlowInfo = await _meterSmsFlowQueryService.Get(newSmsFlowId, false);
@@ -120,11 +146,29 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 foreach (var customerInfo in customerInfoToSendSms)
                 {
+                    string billTypeLiteral = customerInfo.CounterSatetCode == (int)CounterStateCodeEnum.Close ? "صورتحساب آب بها" : "نحوه محاسبه: براوردی";
+                    long preBedBes = customerInfo.Sum + customerInfo.DiscountAmount - customerInfo.Baha;
+                    long preBedBesValue = Math.Abs(preBedBes);
+                    string preBedBesLiteral = preBedBes < 0 ? "بستانکاری: " : "بدهی: ";
+                    string tarefeSaxtValue = customerInfo.BranchTypeId == (int)BranchTypeEnum.SakhtOSaz ? @"تعرفه: ساخت و ساز{newLine}" : "";
+                    var thisPeriodAmountValue = customerInfo.Baha + customerInfo.DiscountAmount;
+                    var hasBillPayDead = customerInfo.Payable > 0 ? true : false;
+                    var deadlineValue = customerInfo.Sum - customerInfo.Baha > 10000 ? "فوری" : "{DueDateJalali}";
+                    string payText = hasBillPayDead ? @"ش پ: {PaymentId}{newLine}مهلت: {DueDateJalali}{newLine}" : string.Empty;
+                    string linkValue = @"https://crm.abfaesfahan.ir/" + customerInfo.BillId.Trim() + "/sms/bill";
+
                     string message = nextTemplate.SmsText
                                             .Replace("{ZoneTitle}", customerInfo.ZoneTitle)
                                             .Replace("{FullName}", customerInfo.FullName)
                                             .Replace("{Register}", customerInfo.RegisterDateJalali)
                                             .Replace("{Payable}", customerInfo.Payable.ToString())
+                                            .Replace("{Baha}", customerInfo.Baha.ToString())
+                                            .Replace("{Jam}", customerInfo.Sum.ToString())
+                                            .Replace("{DiscountAmount}", customerInfo.DiscountAmount.ToString())
+                                            .Replace("{PreBedBes}", preBedBes.ToString())
+                                            .Replace("{PreBedBesValue}", preBedBesValue.ToString())
+                                            .Replace("{PreBedBesLiteral}", preBedBesLiteral)
+                                            .Replace("{PayText}", payText)
                                             .Replace("{BillId}", customerInfo.BillId)
                                             .Replace("{PaymentId}", customerInfo.PaymentId)
                                             .Replace("{DueDateJalali}", customerInfo.DueDateJalali)
@@ -132,6 +176,10 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                                             .Replace("{CurrentNumber}", customerInfo.CurrentNumber.ToString())
                                             .Replace("{PreviousDateJalali}", customerInfo.PreviousDateJalali)
                                             .Replace("{CurrentDateJalali}", customerInfo.CurrentDateJalali)
+                                            .Replace("{TarefeSaxtValue}", tarefeSaxtValue)
+                                            .Replace("{ThisPeriodAmountValue}", thisPeriodAmountValue.ToString())
+                                            .Replace("{LinkValue}", linkValue)
+                                            .Replace("{BillTypeLiteral}", billTypeLiteral)
                                             .Replace("{newLine}", Environment.NewLine);
                     SmsDraftInsertDto newSms = new(null, customerInfo.BillId, customerInfo.PaymentId, smsFlowId, message, customerInfo.MobileNumber, customerInfo.FlowImportedId.ToString(), customerInfo.MeterReadingDetailId.ToString());
                     smsDraftList.Add(newSms);
@@ -229,7 +277,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private IEnumerable<SendSmsDataDto> GetSmsDto(IEnumerable<SmsDraftGetDto> input)
         {
             return input.Select(s =>
-            new SendSmsDataDto(s.Message + "-" + s.Id.ToString(), "09925306265"/*s.MobileNumber*/, s.BillId, s.PaymentId, s.Id)
+            new SendSmsDataDto(s.Message, s.MobileNumber, s.BillId, s.PaymentId, s.Id)
             ).ToList();
         }
     }
