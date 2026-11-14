@@ -96,7 +96,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [Route("now")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<NowGenerateBillOutputDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponseEnvelope<NowGenerateBillOutputDto>), StatusCodes.Status429TooManyRequests)]
-        public async Task<IActionResult> NowCalcuation(NowGenerateBillInputDto inputDto, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetInstantly(NowGenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
             IAppUser appUser = new AppUserManual();
             bool billIssued = false;

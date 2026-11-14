@@ -24,6 +24,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 {
     internal sealed class NowGenerateBillHandler : AbstractBaseConnection, INowGenerateBillHandler
     {
+        private const int MaxConsecutiveSelfClaimPeriods = 3;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IFreeGenerateBillHandler _freeGenerateBillHandler;
         private readonly IBedBesQueryService _bedBesQueryService;
@@ -93,6 +94,17 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
             if (previousInfoValidate is not null)
             {
                 return previousInfoValidate;
+            }
+
+            bool limitReached = await _bedBesQueryService.HasConsecutiveSelfClaimBills(
+                customerInfo.ZoneId,
+                customerInfo.CustomerNumber,
+                MaxConsecutiveSelfClaimPeriods);
+            if (limitReached)
+            {
+                return new NowGenerateBillOutputDto(
+                    $"به سقف {MaxConsecutiveSelfClaimPeriods} دوره متوالی صدور قبض خوداظهاری رسیده‌اید.",
+                    (int)NowGenerateBillErrorCodeEnum.NotAvailableNow);
             }
 
             NewBillOutputDto freeBillResultTemp = await CalcFreeBill(inputDto, customerInfo, false, appUser, cancellationToken);

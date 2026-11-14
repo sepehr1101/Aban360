@@ -5,7 +5,6 @@ using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Features.FlatReports.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
-using Aban360.Api.Filters;
 
 namespace Aban360.Api.Controllers.V1.ReportPool.FlatReports
 {

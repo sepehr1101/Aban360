@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Aban360.Api.Controllers.V1.UserPool.Auth
 {
     [ApiController]
-    [ApiVersion("0.0.1")]
+    [ApiVersion("1.0")]
     [Route("v1/role")]
     public class RoleController : ControllerBase
     {
