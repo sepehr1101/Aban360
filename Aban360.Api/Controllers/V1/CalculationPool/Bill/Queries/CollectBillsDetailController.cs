@@ -16,7 +16,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Queries
             _collectBillsDetailGetAllHandler.NotNull(nameof(collectBillsDetailGetAllHandler));
         }
 
-        [HttpPost, HttpGet]
+        [HttpGet]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<CollectBillsDetailGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)

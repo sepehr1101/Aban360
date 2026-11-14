@@ -3,6 +3,7 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
+using Aban360.OldCalcPool.Domain.Constants;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
@@ -24,6 +25,40 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
         public BedBesQueryService(IConfiguration configuration)
             : base(configuration)
         {
+        }
+
+        public async Task<bool> HasConsecutiveSelfClaimBills(int zoneId, int customerNumber, int periodLimit)
+        {
+            if (periodLimit <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(periodLimit));
+            }
+
+            string dbName = GetDbName(zoneId);
+            string query = $@"SELECT CASE
+                    WHEN COUNT(*) = @periodLimit
+                     AND SUM(CASE WHEN Mamor = @selfClaimCode THEN 1 ELSE 0 END) = @periodLimit
+                    THEN 1
+                    ELSE 0
+                END
+                FROM
+                (
+                    SELECT TOP (@periodLimit) Mamor
+                    FROM [{dbName}].dbo.bed_bes
+                    WHERE town = @zoneId
+                      AND radif = @customerNumber
+                      AND del = 0
+                      AND cod_vas NOT IN (4, 7, 8)
+                    ORDER BY date_bed DESC, id DESC
+                ) AS LastBills";
+
+            return await _sqlReportConnection.QuerySingleAsync<bool>(query, new
+            {
+                zoneId,
+                customerNumber,
+                periodLimit,
+                selfClaimCode = (int)FreeGenerateBillOperatorCodeEnum.SelfClaimRemote
+            });
         }
 
         public async Task<BedBesSmsDto> GetSmsDto(string billId, int zoneId, int customerNumber)
