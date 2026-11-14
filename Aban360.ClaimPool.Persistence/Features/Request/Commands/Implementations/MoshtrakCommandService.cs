@@ -95,7 +95,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrakInstallment);
             }
         }
-		public async Task Update(SubscriptionAssignmentByTrackNumberUpdateDto input, string dbName)
+        public async Task Update(SubscriptionAssignmentByTrackNumberUpdateDto input, string dbName)
         {
             string command = GetTrackingAssignmentUpdateCommand(dbName);
             int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
@@ -104,7 +104,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidUpdateMoshtrak);
             }
         }
-		public async Task Update(MoshtrakCommonSiphonUpdateDto input, string dbName)
+        public async Task Update(MoshtrakCommonSiphonUpdateDto input, string dbName)
         {
             string command = GetCommonSiphonUpdateCommand(dbName);
             int recordCount = await _sqlConnection.ExecuteAsync(command, input, _transaction);
@@ -263,19 +263,19 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 							aian=@ImprovementOverall ,
 							aian_mas=@ImprovementDomestic,
 							aian_tej=@ImprovementCommercial ,
-							tedad_mas=@CommercialUnit,
-							tedad_tej=@DomesticUnit	,
+							tedad_mas=@DomesticUnit,
+							tedad_tej=@CommercialUnit,
 							tedad_vahd=@OtherUnit,
 							noe_va=@BranchTypeId,
 							mojavz=@IsNonPermanent,
-							enshab=@UsageId,
+							cod_enshab=@UsageId,
 							master_sif=@MainSiphon,
 							sif_1=@Siphon100,
 							sif_2=@Siphon125,
 							sif_3=@Siphon150,
 							sif_4=@Siphon200,
 							sif_mosh_1=@CommonSiphon,
-							cod_enshab=@MeterDiameterId,
+							enshab=@MeterDiameterId,
 							address=@Address ,
 							cod_takh=@DiscountTypeId,
 							ted_takh=@DiscountCount ,
@@ -443,7 +443,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 						tedad_gest = @InstallmentCount 
 					  Where TrackingNumber=@TrackNumber";
         }
-		private string GetTrackingAssignmentUpdateCommand(string dbName)
+        private string GetTrackingAssignmentUpdateCommand(string dbName)
         {
             return $@"Update [{dbName}].dbo.moshtrak
 				      Set 
@@ -452,7 +452,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
 						post_cod = @PostalCode
 					  Where TrackingNumber=@TrackNumber";
         }
-		private string GetCommonSiphonUpdateCommand(string dbName)
+        private string GetCommonSiphonUpdateCommand(string dbName)
         {
             return $@"Update [{dbName}].dbo.moshtrak
 				      Set sif_mosh_1 = @HasCommonSiphon

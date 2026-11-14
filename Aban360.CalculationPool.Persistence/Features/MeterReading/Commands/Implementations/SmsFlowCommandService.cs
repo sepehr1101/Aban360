@@ -48,6 +48,15 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
                 throw new ReadingException(ExceptionLiterals.InvalidUpdate);
             };
         }
+        public async Task Update(int id, int count)
+        {
+            string command = GetCountUpdateCommand();
+            int rowEffected = await _connection.ExecuteAsync(command, new { id, count }, _transaction);
+            if (rowEffected <= 0)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidUpdate);
+            };
+        }
         private string GetInsertCommand()
         {
             return @"INSERT INTO [Atlas].dbo.SmsFlow
@@ -68,6 +77,12 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Imp
         {
             return @"Update [Atlas].dbo.SmsFlow
                     Set SendDateTime = @SendDateTime
+                    Where Id = @Id";
+        }
+        private string GetCountUpdateCommand()
+        {
+            return @"Update [Atlas].dbo.SmsFlow
+                    Set SmsCount = @count
                     Where Id = @Id";
         }
     }
