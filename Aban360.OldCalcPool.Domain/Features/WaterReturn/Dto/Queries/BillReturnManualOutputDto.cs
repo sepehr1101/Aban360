@@ -2,6 +2,7 @@
 {
     public record BillReturnManualOutputDto
     {
+        public int? MinutesNumber { get; set; }
         public string BillId { get; set; }
         public string ReportDateJalali { get; set; }
         public string Title { get; set; }
