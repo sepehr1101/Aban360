@@ -29,6 +29,7 @@ namespace Aban360.ClaimPool.Persistence.DbSeeder.Implementations
 
             ICollection<SiphonDiameter> siphonDiameters = new List<SiphonDiameter>()
             {
+                new SiphonDiameter(){Id=0,Title="ندارد"},
                 new SiphonDiameter(){Id=1,Title="قطر 100"},
                 new SiphonDiameter(){Id=2,Title="قطر 125"},
                 new SiphonDiameter(){Id=3,Title="قطر 150"},

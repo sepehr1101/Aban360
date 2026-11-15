@@ -130,6 +130,8 @@ namespace Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations
                         d.CompanyTitle ,
                         d.TypeId , 
                         d.TypeTitle ,
+						d.PersonnelId ,
+						d.PersonnelName,
                         d.Description ,
                         d.RemovedDateTime ,
                         d.RemovedBy ,
