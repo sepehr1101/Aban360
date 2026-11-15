@@ -53,7 +53,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly IT41QueryService _t41QueryService;
         private readonly IIdempotentOperationService _idempotentOperationService;
         static int[] _invalidCounterStateCode = { (int)CounterStateCodeEnum.Close, (int)CounterStateCodeEnum.Block, (int)CounterStateCodeEnum.NonRead };
-        const int _paymentDeadline = 7;
+        const int _paymentDeadline = 5;
         const int _maxPayIdLen = 13;
         const int _type = 1;
         const string _typeTitle = "قبض";

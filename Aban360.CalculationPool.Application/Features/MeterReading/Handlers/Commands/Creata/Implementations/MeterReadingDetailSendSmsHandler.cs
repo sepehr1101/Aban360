@@ -31,6 +31,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         private readonly ICalculationConfirmationHandler _calcConfirmationHandler;
         private readonly ISmsDraftQueryService _smsDraftQueryService;
         private const long _minWaterDebt = 30_000;
+        private int _defaultSmsFlowSmsCount = -1;
         private int _smsGroupId = CommonLiterals.SmsStateGroupCollectBills_LastSms;
         public MeterReadingDetailSendSmsHandler(
             IBackgroundJobClient jobClient,
@@ -70,7 +71,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
 
 
 
-            string BillToDateTable = @"آبفا {ZoneTitle}{newLine}{BillTypeLiteral}{newLine}{FullName}{newLine}از: {PreviousDateJalali}{newLine}تا: {CurrentDateJalali}{newLine}از شماره: {PreviousNumber}{newLine}تا شماره: {CurrentNumber}{newLine}{TarefeSaxtValue}دوره: {ThisPeriodAmountValue} ریال{newLine}{PreBedBesLiteral}{PreBedBesValue} ریال{newLine}مبلغ: {Payable} ریال{newLine}ش ق: {BillId}{newLine}{PayText}{LinkValue}";
+            string BillToDateTable = @"آبفا {ZoneTitle}{newLine}{BillTypeLiteral}{newLine}{FullName}{newLine}از: {PreviousDateJalali}{newLine}تا: {CurrentDateJalali}{newLine}از شماره: {PreviousNumber}{newLine}تا شماره: {CurrentNumber}{newLine}{TarefeSaxtValue}دوره: {ThisPeriodAmountValue} ریال{newLine}{PreBedBesLiteral}{PreBedBesValue} ریال{newLine}مبلغ: {Payable} ریال{newLine}ش ق: {BillId}{newLine}{PayText}{newLine}{DeadlineText}{newLine}{LinkValue}";
             string Bill = @"{ZoneTitle}{newLine}" +
                 @"{BillTypeLiteral}{newLine}" +
                 @"{FullName}{newLine}" +
@@ -83,7 +84,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 @"{PreBedBesLiteral}{PreBedBesValue} ریال{newLine}" +
                 @"مبلغ: {Payable} ریال{newLine}" +
                 @"ش ق: {BillId}{newLine}" +
-                @"{PayText}" +
+                @"{PayText}{newLine}" +
+                @"{DeadlineText}{newLine}" +
                 @"{LinkValue}";
 
             string dueBill = @"آبفا {ZoneTitle}{newLine}مهلت صورتحساب آب‌بها {FullName} به پایان رسیده است. جهت استمرار خدمات مبلغ {Payable} ریال پرداخت گردد.{newLine}ش ق: {BillId}{newLine}ش پ: {PaymentId}{newLine}لطفاً جهت پرداخت مبلغ در ساعات اداری از طریق لینک زیر و در ساعات غیر‌اداری از طریق شناسه قبض و پرداخت اقدام نمائید.{newLine}{LinkValue}";
@@ -101,42 +103,44 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         [AutomaticRetry(Attempts = 2)]
         public async Task CreateJob(int firstFlowId, Guid userId)
         {
-            MeterFlowGetDto meterFlowInfo = await _meterFlowQueryService.Get(firstFlowId);
-            IEnumerable<MeterReadingDetailToSendMessageDto> customerInfoToSendSms = await _meterReadingDetailQueryService.GetToSend(firstFlowId, meterFlowInfo.ZoneId, _minWaterDebt, ReportLiterals.RayabOperator);
-
-            var (nextTemplate, newMeterSmsFlowInfo) = await GetCurrentTemplateAndFlow(customerInfoToSendSms, firstFlowId, userId);
-            int newSmsFlowId = await ExecSql(customerInfoToSendSms, nextTemplate, newMeterSmsFlowInfo, firstFlowId, userId);
+            var (nextTemplate, newMeterSmsFlowInfo) = await GetCurrentTemplateAndFlow(firstFlowId, userId);
+            int newSmsFlowId = await ExecSql(nextTemplate, newMeterSmsFlowInfo);
             SmsFlowGetDto? newSmsFlowInfo = await _meterSmsFlowQueryService.Get(newSmsFlowId, false);
             if (newSmsFlowInfo is null || newSmsFlowInfo.Id == 0 || newSmsFlowInfo.SendDateTime.HasValue)
             {
                 return;
             }
-            string jobId = _jobClient.Schedule(() => SendSms(firstFlowId, newSmsFlowId, userId), new DateTimeOffset(newSmsFlowInfo.DueDateTime));//ToDo: changeDateTimeType
+            string jobId = _jobClient.Schedule(() => SendSms(newSmsFlowId, userId), new DateTimeOffset(newSmsFlowInfo.DueDateTime));//ToDo: changeDateTimeType
 
             return;
         }
         [AutomaticRetry(Attempts = 2)]
-        public async Task SendSms(int firstFlowId, int newSmsFlowId, Guid userId)
+        public async Task SendSms(int newSmsFlowId, Guid userId)
         {
             SmsFlowGetDto? newSmsFlowInfo = await _meterSmsFlowQueryService.Get(newSmsFlowId, false);
             if (newSmsFlowInfo is null || newSmsFlowInfo.Id == 0 || newSmsFlowInfo.SendDateTime.HasValue)
             {
                 return;
             }
-            IEnumerable<SmsDraftGetDto> smsDraftToSend = await _smsDraftQueryService.Get(firstFlowId.ToString(), newSmsFlowId, false, false);
+            SmsStateTemplateGetDto currentSmsTemplateToSendInfo = await _meterSmsStateTemplateQueryService.Get(newSmsFlowInfo.SmsTemplateId);
+            MeterFlowGetDto meterFlowInfo = await _meterFlowQueryService.Get(newSmsFlowInfo.FirstFlowId);
+            IEnumerable<MeterReadingDetailToSendMessageDto> customerInfoToSendSms = await _meterReadingDetailQueryService.GetToSend(newSmsFlowInfo.FirstFlowId, meterFlowInfo.ZoneId, _minWaterDebt, ReportLiterals.RayabOperator);
+            await ExecSql(customerInfoToSendSms, currentSmsTemplateToSendInfo, newSmsFlowInfo.Id, userId);
+
+            IEnumerable<SmsDraftGetDto> smsDraftToSend = await _smsDraftQueryService.Get(newSmsFlowInfo.FirstFlowId.ToString(), newSmsFlowId, false, false);
             IEnumerable<Guid> smsDraftIds = smsDraftToSend?.Select(s => s.Id)?.ToList() ?? new List<Guid>();
 
-            SmsFlowUpdateDto smsFlowUpdateDto = new(newSmsFlowId);
-            SmsDraftUpdateDto smsDraftUpdateDto = new(smsDraftIds, firstFlowId.ToString(), newSmsFlowId);
+            SmsDraftUpdateDto smsDraftUpdateDto = new(smsDraftIds, newSmsFlowInfo.FirstFlowId.ToString(), newSmsFlowId);
             await ExecSql(smsDraftUpdateDto, true);
 
             IEnumerable<SendSmsDataDto> smsData = GetSmsDto(smsDraftToSend);
             if ((smsData?.Count() ?? 0) > 0)
             {
                 await _smsOldHandler.Send(smsData);
+                SmsFlowUpdateDto smsFlowUpdateDto = new(newSmsFlowId);
                 await ExecSql(smsFlowUpdateDto, smsDraftUpdateDto, false);
             }
-            await CreateJob(firstFlowId, userId);
+            await CreateJob(newSmsFlowInfo.FirstFlowId, userId);
 
         }
         public ICollection<SmsDraftInsertDto> GetNewSmsDraftList(SmsStateTemplateGetDto? nextTemplate, IEnumerable<MeterReadingDetailToSendMessageDto> customerInfoToSendSms, int smsFlowId)
@@ -146,15 +150,15 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             {
                 foreach (var customerInfo in customerInfoToSendSms)
                 {
-                    string billTypeLiteral = customerInfo.CounterSatetCode == (int)CounterStateCodeEnum.Close ? "صورتحساب آب بها" : "نحوه محاسبه: براوردی";
+                    string billTypeLiteral = customerInfo.CounterSatetCode == (int)CounterStateCodeEnum.Close ? "نحوه محاسبه: براوردی" : "صورتحساب آب بها";
                     long preBedBes = customerInfo.Sum + customerInfo.DiscountAmount - customerInfo.Baha;
                     long preBedBesValue = Math.Abs(preBedBes);
                     string preBedBesLiteral = preBedBes < 0 ? "بستانکاری: " : "بدهی: ";
                     string tarefeSaxtValue = customerInfo.BranchTypeId == (int)BranchTypeEnum.SakhtOSaz ? @"تعرفه: ساخت و ساز{newLine}" : "";
                     var thisPeriodAmountValue = customerInfo.Baha + customerInfo.DiscountAmount;
                     var hasBillPayDead = customerInfo.Payable > 0 ? true : false;
-                    var deadlineValue = customerInfo.Sum - customerInfo.Baha > 10000 ? "فوری" : "{DueDateJalali}";
-                    string payText = hasBillPayDead ? @"ش پ: {PaymentId}{newLine}مهلت: {DueDateJalali}{newLine}" : string.Empty;
+                    var deadlineText = customerInfo.Sum - customerInfo.Baha > 30000 ? "فوری" : "مهلت: {DueDateJalali}";
+                    string payText = hasBillPayDead ? @"ش پ: {PaymentId}" : string.Empty;
                     string linkValue = @"https://crm.abfaesfahan.ir/" + customerInfo.BillId.Trim() + "/sms/bill";
 
                     string message = nextTemplate.SmsText
@@ -171,6 +175,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                                             .Replace("{PayText}", payText)
                                             .Replace("{BillId}", customerInfo.BillId)
                                             .Replace("{PaymentId}", customerInfo.PaymentId)
+                                            .Replace("{DeadlineText}", deadlineText)
                                             .Replace("{DueDateJalali}", customerInfo.DueDateJalali)
                                             .Replace("{PreviousNumber}", customerInfo.PreviousNumber.ToString())
                                             .Replace("{CurrentNumber}", customerInfo.CurrentNumber.ToString())
@@ -187,7 +192,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             }
             return smsDraftList;
         }
-        public async Task<int> ExecSql(IEnumerable<MeterReadingDetailToSendMessageDto> customerInfoToSendSms, SmsStateTemplateGetDto? nextTemplate, SmsFlowInsertDto? newSmsFlowInfo, int firstFlowId, Guid userId)
+        public async Task<int> ExecSql(SmsStateTemplateGetDto? nextTemplate, SmsFlowInsertDto? newSmsFlowInfo)
         {
             int newSmsFlowId = 0;
             if (nextTemplate is not null)
@@ -201,18 +206,34 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                     using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                     {
                         SmsFlowCommandService smsFlowCommandService = new(connection, transaction);
-                        SmsDraftCommandService smsDraftCommandService = new(connection, transaction);
-
                         newSmsFlowId = await smsFlowCommandService.Insert(newSmsFlowInfo);
-                        ICollection<SmsDraftInsertDto> smsDraftList = GetNewSmsDraftList(nextTemplate, customerInfoToSendSms, newSmsFlowId);
-                        await smsDraftCommandService.Insert(smsDraftList);
-
                         transaction.Commit();
                     }
                 }
                 return newSmsFlowId;
             }
             return newSmsFlowId;
+        }
+        public async Task ExecSql(IEnumerable<MeterReadingDetailToSendMessageDto> customerInfoToSendSms, SmsStateTemplateGetDto? nextTemplate, int newSmsflowId, Guid userId)
+        {
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    SmsFlowCommandService smsFlowCommandService = new(connection, transaction);
+                    SmsDraftCommandService smsDraftCommandService = new(connection, transaction);
+
+                    await smsFlowCommandService.Update(newSmsflowId, customerInfoToSendSms?.Count() ?? 0);
+                    ICollection<SmsDraftInsertDto> smsDraftList = GetNewSmsDraftList(nextTemplate, customerInfoToSendSms, newSmsflowId);
+                    await smsDraftCommandService.Insert(smsDraftList);
+
+                    transaction.Commit();
+                }
+            }
         }
         public async Task ExecSql(SmsDraftUpdateDto updateDto, bool isFetch)
         {
@@ -264,12 +285,12 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
                 DueDateTime = currentDate.AddDays(currentTemplate.DueDay)
             };
         }
-        public async Task<(SmsStateTemplateGetDto?, SmsFlowInsertDto?)> GetCurrentTemplateAndFlow(IEnumerable<MeterReadingDetailToSendMessageDto> customerInfoToSendSms, int firstFlowId, Guid userId)
+        public async Task<(SmsStateTemplateGetDto?, SmsFlowInsertDto?)> GetCurrentTemplateAndFlow(int firstFlowId, Guid userId)
         {
             SmsStateTemplateGetDto? nextTemplateInfo = await _meterSmsStateTemplateQueryService.GetNextTemplate(firstFlowId, _smsGroupId);
             if (nextTemplateInfo is not null)
             {
-                SmsFlowInsertDto newMeterSmsFlowInfo = GetMeterSmsFlowInsertDto(nextTemplateInfo, firstFlowId, customerInfoToSendSms?.Count() ?? 0, userId);
+                SmsFlowInsertDto newMeterSmsFlowInfo = GetMeterSmsFlowInsertDto(nextTemplateInfo, firstFlowId, _defaultSmsFlowSmsCount, userId);
                 return (nextTemplateInfo, newMeterSmsFlowInfo);
             }
             return (null, null);
