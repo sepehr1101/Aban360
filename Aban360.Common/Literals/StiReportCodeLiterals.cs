@@ -21,6 +21,6 @@
 
         MeterReadingExcluded = 2580,
 
-        MeterChangeVerification=2590
+        MeterChangeVerification = 2590
     }
 }
