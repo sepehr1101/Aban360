@@ -45,7 +45,7 @@
         public static string ContractualCapacity { get { return "ظرفیت قراردادی"; } }
         public static string DiscountType { get { return "نوع تخفیف"; } }
         public static string DiscountCount { get { return "تعداد تخفیف"; } }
-        public static string MeterDiameter { get { return "قطر کنتور"; } }
+        public static string MeterDiameter { get { return "قطر انشعاب"; } }
 
 
         public static string WaterBillMinDate { get { return "1401/01/01"; } }
@@ -385,6 +385,7 @@
         public static string InvalidBankDateBefor60DaysAgo => "تاریخ بانک نباید کمتر از 60 روز گذشته باشد.";
 
         public static string InvalidConnectDisconnectByCustomerInfo(string deletionStateTitle) => $"وضعیت انشعاب مشترک درحالت:{deletionStateTitle} قرار دارد. امکان درخواست وجود ندارد.";
+        public static string NotFoundConnectData => "هزینه‌ای ثبت نشده.";
         public static string InvalidConnectDisconnectDuplicateRequest => " تکراری (درخواست قبلی حذف/ثبت نتیجه نشده).";
         public static string InvalidConnectDisconnectDuplicateResult => "امکان ذخیره نتیجه مجدد برای درخواست قطع/وصل وجود ندارد.";
         public static string InvalidConnectDisconnectRemovedResult => "درخواست حذف شده است.";

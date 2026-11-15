@@ -103,14 +103,26 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
         [AutomaticRetry(Attempts = 2)]
         public async Task CreateJob(int firstFlowId, Guid userId)
         {
-            var (nextTemplate, newMeterSmsFlowInfo) = await GetCurrentTemplateAndFlow(firstFlowId, userId);
-            int newSmsFlowId = await ExecSql(nextTemplate, newMeterSmsFlowInfo);
-            SmsFlowGetDto? newSmsFlowInfo = await _meterSmsFlowQueryService.Get(newSmsFlowId, false);
+            SmsFlowGetDto? latestSmsFlowInfo = await _meterSmsFlowQueryService.GetLastByFirstFlowId(firstFlowId, false);
+            SmsFlowGetDto? newSmsFlowInfo = null;
+
+            if (latestSmsFlowInfo is not null && latestSmsFlowInfo.SmsCount == _defaultSmsFlowSmsCount)
+            {
+                newSmsFlowInfo = latestSmsFlowInfo;
+            }
+            else
+            {
+                var (nextTemplate, newMeterSmsFlowInfo) = await GetCurrentTemplateAndFlow(firstFlowId, userId);
+                int newSmsFlowId = await ExecSql(nextTemplate, newMeterSmsFlowInfo);
+                newSmsFlowInfo = await _meterSmsFlowQueryService.Get(newSmsFlowId, false);
+            }
+           
             if (newSmsFlowInfo is null || newSmsFlowInfo.Id == 0 || newSmsFlowInfo.SendDateTime.HasValue)
             {
                 return;
             }
-            string jobId = _jobClient.Schedule(() => SendSms(newSmsFlowId, userId), new DateTimeOffset(newSmsFlowInfo.DueDateTime));//ToDo: changeDateTimeType
+
+            string jobId = _jobClient.Schedule(() => SendSms(newSmsFlowInfo.Id, userId), new DateTimeOffset(newSmsFlowInfo.DueDateTime));//ToDo: changeDateTimeType
 
             return;
         }

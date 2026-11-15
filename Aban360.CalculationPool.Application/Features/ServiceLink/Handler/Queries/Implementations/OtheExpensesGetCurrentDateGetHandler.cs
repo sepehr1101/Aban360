@@ -7,6 +7,7 @@ using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Domain.Base;
@@ -47,6 +48,10 @@ namespace Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queri
             await _commonZoneService.IsUserInZone(appUser, zoneIdAndCustomerNumber.ZoneId);
 
             IEnumerable<KartGetDto> kartsInfo = await _kartQueryService.Get(zoneIdAndCustomerNumber.CustomerNumber, zoneIdAndCustomerNumber.ZoneId, connectDisconnectInfo.CommandDateJalali);
+            if (kartsInfo?.Count() <= 0)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.NotFoundConnectData); 
+            }
             return GetResult(memberInfo, kartsInfo);
         }
         private ReportOutput<OtherExpensesHeaderOutputDto, OtherExpensesDataOutputDto> GetResult(MemberInfoGetDto memberInfo, IEnumerable<KartGetDto> kartsInfo)

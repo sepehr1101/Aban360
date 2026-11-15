@@ -872,14 +872,14 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
                     Where 
                     	b.pri_no = md.PreviousNumber AND
                     	b.today_no = md.CurrentNumber AND
-                    	b.pri_date Collate Persian_100_CI_AI = md.PreviousDateJalali  Collate Persian_100_CI_AI AND
-                    	b.today_date Collate Persian_100_CI_AI = md.CurrentDateJalali Collate Persian_100_CI_AI AND
+                    	b.pri_date = md.PreviousDateJalali  Collate Persian_100_CI_AI AND
+                    	b.today_date = md.CurrentDateJalali Collate Persian_100_CI_AI AND
                     	b.ab_baha = md.ab_baha AND
                     	b.operator = @abanOperator AND
                     	b.baha = md.baha AND
                         b.cod_vas NOT IN (4,7) AND
                     	b.rate = md.MonthlyConsumption AND
-                    	b.date_bed Collate Persian_100_CI_AI >= md.date_bed Collate Persian_100_CI_AI AND
+                    	b.date_bed >= md.date_bed Collate Persian_100_CI_AI AND
                         md.FlowImportedId = @flowImportedId AND
                     	m.bed_bes > @minAmount";
         }

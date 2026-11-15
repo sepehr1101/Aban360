@@ -5,7 +5,7 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Cont
     public interface ISmsFlowQueryService
     {
         Task<SmsFlowGetDto?> Get(int id, bool hasException);
-        Task<SmsFlowGetDto> GetLastByFirstFlowId(int id);
+        Task<SmsFlowGetDto?> GetLastByFirstFlowId(int id, bool hasException = true);
         Task<IEnumerable<SmsFlowGetDto>> Get();
     }
 }
