@@ -1,0 +1,44 @@
+using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Extensions;
+using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
+using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
+using FluentValidation;
+
+namespace Aban360.ReturnBill.ComparisonTests.Baseline
+{
+    internal sealed class ReturnBillFullHandler : IReturnBillFullHandler
+    {
+        private readonly IReturnBillBaseHandler _returnBillBaseHandler;
+        public ReturnBillFullHandler(IReturnBillBaseHandler returnBillBaseHandler)
+        {
+            _returnBillBaseHandler = returnBillBaseHandler;
+            _returnBillBaseHandler.NotNull(nameof(returnBillBaseHandler));
+        }
+
+        public async Task<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>> Handle(ReturnBillFullInputDto input, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            CustomerInfoOutputDto customerInfo = await Validate(input, appUser, cancellationToken);
+
+            const int jalaseNumber = 0;
+            IEnumerable<BedBesCreateDto> bedBesInfo = await _returnBillBaseHandler.GetBedBesList(customerInfo, input.FromDateJalali, input.ToDateJalali);
+            BedBesCreateDto bedBesResult = _returnBillBaseHandler.GetBedbes(bedBesInfo, customerInfo);
+
+            AutoBackCreateDto bedBes = _returnBillBaseHandler.GetBedBes(bedBesResult, bedBesInfo.Count(), jalaseNumber, input.ReturnCauseId, input.Description);
+            AutoBackCreateDto newCalculation = _returnBillBaseHandler.GetFullNewCalculation(bedBesResult, input.ReturnCauseId, bedBesInfo.Count(), jalaseNumber, input.Description);
+
+            return await _returnBillBaseHandler.GetReturn(bedBes, newCalculation, bedBes, customerInfo, bedBesInfo.Count(), input.IsConfirm, false, appUser, input.FromDateJalali, input.ToDateJalali);
+
+        }
+        private async Task<CustomerInfoOutputDto> Validate(ReturnBillFullInputDto input, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await _returnBillBaseHandler.FullValidate(input, cancellationToken);
+            await _returnBillBaseHandler.ReturnCauseValidate(isPartial: false, input.ReturnCauseId);
+            CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.RealDateValidate(appUser, input.BillId, input.FromDateJalali, input.ToDateJalali);
+            return customerInfo;
+        }
+    }
+}

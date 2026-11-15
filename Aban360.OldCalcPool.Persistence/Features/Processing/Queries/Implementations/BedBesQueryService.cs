@@ -232,14 +232,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             int count = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, @params);
             return count;
         }
-        public async Task<int?> GetLatestJalaseNumber()
-        {
-            //string dbName = GetDbName(input.ZoneId);
-            string dbName = "Atlas";
-            string query = GetLatestJalaseNumberQuery(dbName);
-            int? jalaseNumber = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query);
-            return jalaseNumber;
-        }
         public async Task<BedBesWithConsumptionOutputDto> GetPrevious(ZoneIdAndCustomerNumberOutputDto input, string dateJalali)
         {
             string dbName = GetDbName(input.ZoneId);
@@ -746,12 +738,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 	                        ((@isPreviousDate=1 AND pri_date=@date) OR
 	                        (@isPreviousDate<>1 AND today_date=@date)) AND
                             del=0";
-        }
-        private string GetLatestJalaseNumberQuery(string dbName)
-        {
-            return $@"Select top 1 jalase_no
-                    From atlas.dbo.autoback
-                    Order By id desc, date_bed desc";
         }
         private string GetLatest(string dbName)
         {

@@ -258,7 +258,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             };
 
             bool hasReturned = await HasReturned(customerInfo.ZoneId, customerInfo.Radif);
-            ReturnBillHeaderOutputDto header = new(previousValues.RegisterDateJalali, description, customerInfo.ZoneTitle, null, previousValues.MinutesNumber.ToString(), hasReturned, bedBes.Description ?? string.Empty);
+            ReturnBillHeaderOutputDto header = new(previousValues.RegisterDateJalali, description, customerInfo.ZoneTitle, null, null, hasReturned, bedBes.Description ?? string.Empty);
             ReturnBillOutputDto data = new(previousValues, currentValues, returnValues);
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = new(_title, header, data);
 
@@ -268,12 +268,6 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 return result;
             }
             await DuplicateReturnValidate(previousValues);
-            decimal confirmNumber = await _variabService.GetAndRenewParvand(customerInfo.ZoneId, true);
-            header.ConfirmNumber = (int)confirmNumber;
-            bedBes.JalaseNo = confirmNumber;
-            newCalculation.JalaseNo = confirmNumber;
-            different.JalaseNo = confirmNumber;
-
             decimal barge = await _variabService.GetAndRenew(customerInfo.ZoneId);
             bedBes.Barge = barge;
             newCalculation.Barge = barge;
@@ -281,9 +275,13 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
 
             string returnMode = isPartial ? "محاسبه مجدد" : "کامل";
-            string logText = string.Format(OpLogLiterals.BillReturnOpLog, returnMode, customerInfo.BillId, billCount, fromDateJalali, toDateJalali, different.Baha, confirmNumber);
-
-            await ExecSql(bedBes, newCalculation, different, appUser, logText);
+            int confirmNumber = await ExecSql(bedBes, newCalculation, different, appUser,
+                returnMode, customerInfo.BillId, billCount, fromDateJalali, toDateJalali);
+            header.ConfirmNumber = confirmNumber;
+            header.InputMinutesNumber = confirmNumber.ToString();
+            previousValues.MinutesNumber = confirmNumber;
+            currentValues.MinutesNumber = confirmNumber;
+            returnValues.MinutesNumber = confirmNumber;
             return result;
         }
         public AutoBackCreateDto GetFullNewCalculation(BedBesCreateDto bedBes, int returnCauseId, int bedbesCount, int jalaseNumber, string? description)
@@ -700,33 +698,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
 
             return r;
         }
-        public async Task<int> GetMinutesNumber(int? minutesNumber, int zoneId, int customerNumber)//Todo
+        public Task<int> GetMinutesNumber(IDbConnection connection, IDbTransaction transaction, CancellationToken cancellationToken = default)
         {
-            if (minutesNumber.HasValue && minutesNumber.Value != 0)
-            {
-                return minutesNumber.Value;
-            }
-
-            int myMinutesNumber = 0;
-            using (var transaction = TransactionBuilder.Create(0, 0, System.Transactions.IsolationLevel.Serializable))
-            {
-                int? currentDaypreviousMinutes = await _bedBesQueryService.GetLatestJalaseNumber();
-                if (!currentDaypreviousMinutes.HasValue || currentDaypreviousMinutes <= 0)
-                {
-                    var currentDateJalali = DateTime.Now.ToShortPersianDateString();
-                    string jalaseNumber = currentDateJalali.Substring(3, 1) + currentDateJalali.Substring(5, 2) + currentDateJalali.Substring(8, 2) + 0;
-                    myMinutesNumber = int.Parse(jalaseNumber);
-                }
-                else
-                {
-                    Random rand = new Random();
-                    int random = rand.Next(0, 9);
-                    myMinutesNumber = currentDaypreviousMinutes.Value + random;
-                }
-
-                transaction.Complete();
-                return myMinutesNumber;
-            }
+            var counterService = new ReturnBillMinutesCounterCommandService(connection, transaction);
+            return counterService.GetNext(cancellationToken);
         }
         public async Task FullValidate(ReturnBillFullInputDto input, CancellationToken cancellationToken)
         {
@@ -794,10 +769,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 _ => userInput.Value
             };
         }
-        private async Task ExecSql(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, IAppUser appUser, string logText)
+        private async Task<int> ExecSql(AutoBackCreateDto bedBes, AutoBackCreateDto newCalculation, AutoBackCreateDto different, IAppUser appUser,
+            string returnMode, string billId, int billCount, string fromDateJalali, string toDateJalali)
         {
             ICollection<AutoBackCreateDto> datas = new List<AutoBackCreateDto>() { bedBes, newCalculation, different };
-            RepairCreateDto repairCreateDto = GetRepairCreateDto(different);
 
             string dbName = ReportLiterals.Atlas;
 
@@ -809,6 +784,13 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
+                    int minutesNumber = await GetMinutesNumber(connection, transaction);
+                    bedBes.JalaseNo = minutesNumber;
+                    newCalculation.JalaseNo = minutesNumber;
+                    different.JalaseNo = minutesNumber;
+                    RepairCreateDto repairCreateDto = GetRepairCreateDto(different);
+                    string logText = string.Format(OpLogLiterals.BillReturnOpLog, returnMode, billId,
+                        billCount, fromDateJalali, toDateJalali, different.Baha, minutesNumber);
                     AutoBackCommandService autoBackCommandService = new(connection, transaction);
                     RepairCommandService repairCommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
@@ -818,6 +800,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                     await opLogCommandService.Insert(logText, appUser);
 
                     transaction.Commit();
+                    return minutesNumber;
                 }
             }
         }

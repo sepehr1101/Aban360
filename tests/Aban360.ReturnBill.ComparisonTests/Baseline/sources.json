@@ -1,0 +1,22 @@
+[
+  {
+    "Source": "Aban360.OldCalcPool.Application\\Features\\WaterReturn\\Handlers\\Commands\\Implementations\\ReturnBillBaseHandler.cs",
+    "SHA256": "8E78AF3DD268C228EA2C80FFEB5EF7A783545539017DDFD5B038332AA5BC4E54"
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Application\\Features\\WaterReturn\\Handlers\\Commands\\Implementations\\ReturnBillFullHandler.cs",
+    "SHA256": "31A71ED1BBE5A3BE4AEC42F8CA9FD1BE43202B72A046EB1E0CDA7D94A7FB7379"
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Application\\Features\\WaterReturn\\Handlers\\Commands\\Implementations\\ReturnBillPartialHandler.cs",
+    "SHA256": "B7669FF6431C1AA06DD71E6835D7E8BE5F809C9B7DEF67FB9DCBC61014284F7D"
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Application\\Features\\WaterReturn\\Handlers\\Commands\\Implementations\\ReturnBillManualHandler.cs",
+    "SHA256": "5BC36884C620834FCE5E8C17D9A4DC74FE6DCF3AA516EBE9326B9597B6D55E76"
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Processing\\ItemCalculators\\TaxCalculator.cs",
+    "SHA256": "4A026F271BF374B7BA324D5878147C6A9CCD005BBAF5908D4FED6A4696A3EBA8"
+  }
+]

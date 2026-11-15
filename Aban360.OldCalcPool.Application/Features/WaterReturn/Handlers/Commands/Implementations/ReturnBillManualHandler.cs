@@ -97,7 +97,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.RealDateValidate(appUser, inputDto.BillId, inputDto.FromDateJalali, inputDto.ToDateJalali);
             CustomerLastInfoGetDto memberInfo = await _memberQueryService.GetMembersBedBesTavizFlatInfo(customerInfo.ZoneId, customerInfo.Radif, true);
 
-            int minutesNumber = await _returnBillBaseHandler.GetMinutesNumber(null, customerInfo.ZoneId, customerInfo.Radif);
+            const int minutesNumber = 0;
             string dbName = GetDbName(customerInfo.ZoneId);
 
             var (bedBesResult, bedBesUpdateDelDto) = await ValidateAndGetBedBesInfo(inputDto, customerInfo);
@@ -115,13 +115,12 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 return GetResult(repairCreateDto, customerInfo, returnCauseTitle);
             }
 
-            string opLogText = string.Format(OpLogLiterals.BillReturnedManualInsertOpLog, customerInfo.BillId, repairCreateDto.TedGhabs, repairCreateDto.PriDate, repairCreateDto.TodayDate, repairCreateDto.Baha, repairCreateDto.JalaseNo);
             long amount = inputDto.ReturnType == ReturnBillManualTypeEnum.Returned ? -1 * (long)repairCreateDto.Baha : (long)repairCreateDto.Baha;
-            await ExecSql(autoBackCreateDto, bedBesUpdateDelDto, billsIdToReturn, repairCreateDto, customerInfo, appUser, opLogText, dbName, amount);
+            await ExecSql(autoBackCreateDto, bedBesUpdateDelDto, billsIdToReturn, repairCreateDto, customerInfo, appUser, dbName, amount);
 
             return GetResult(repairCreateDto, customerInfo, returnCauseTitle);
         }
-        private async Task ExecSql(ICollection<AutoBackCreateDto> autoBackCreateDto, IEnumerable<BedBesUpdateDelDto> bedBesUpdateDelDto, IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn, RepairCreateDto repairCreateDto, CustomerInfoOutputDto customerInfo, IAppUser appUser, string logText, string dbName, long amount)
+        private async Task ExecSql(ICollection<AutoBackCreateDto> autoBackCreateDto, IEnumerable<BedBesUpdateDelDto> bedBesUpdateDelDto, IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn, RepairCreateDto repairCreateDto, CustomerInfoOutputDto customerInfo, IAppUser appUser, string dbName, long amount)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -131,6 +130,15 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 }
                 using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
                 {
+                    int minutesNumber = await _returnBillBaseHandler.GetMinutesNumber(connection, transaction);
+                    repairCreateDto.JalaseNo = minutesNumber;
+                    foreach (AutoBackCreateDto autoBack in autoBackCreateDto)
+                    {
+                        autoBack.JalaseNo = minutesNumber;
+                    }
+                    string logText = string.Format(OpLogLiterals.BillReturnedManualInsertOpLog,
+                        customerInfo.BillId, repairCreateDto.TedGhabs, repairCreateDto.PriDate,
+                        repairCreateDto.TodayDate, repairCreateDto.Baha, minutesNumber);
                     AutoBackCommandService autoBackCommandService = new(connection, transaction);
                     RepairCommandService repairCommandService = new(connection, transaction);
                     WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
@@ -350,6 +358,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 ReturnCauseTitle = returnCauseTitle,
                 FullName = customerInfo.FullName,
                 ZoneTitle = customerInfo.ZoneTitle,
+                MinutesNumber = repairDto.JalaseNo > 0 ? (int)repairDto.JalaseNo : null,
             };
         }
         private async Task<string> ValidateAndGetReturnCause(ReturnBillManualInputDto inputDto, CancellationToken cancellationToken)
