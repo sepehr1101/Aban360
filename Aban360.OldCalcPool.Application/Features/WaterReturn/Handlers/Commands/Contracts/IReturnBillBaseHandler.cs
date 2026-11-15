@@ -5,6 +5,7 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
+using System.Data;
 
 namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts
 {
@@ -17,7 +18,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         Task<IEnumerable<BedBesCreateDto>> GetBedBesList(CustomerInfoOutputDto customerInfo, string fromDateJalali, string toDateJalali);
         BedBesCreateDto GetBedbes(IEnumerable<BedBesCreateDto> input, CustomerInfoOutputDto customerInfo);
         AutoBackCreateDto GetBedBes(BedBesCreateDto bedBes, int bedBesCount, int jalaseNumber, int returnCauseId, string? description);
-        Task<int> GetMinutesNumber(int? minutesNumber, int zoneId, int customerNumber);
+        Task<int> GetMinutesNumber(IDbConnection connection, IDbTransaction transaction, CancellationToken cancellationToken = default);
         Task FullValidate(ReturnBillFullInputDto input, CancellationToken cancellationToken);
         Task PartialValidate(ReturnBillPartialInputDto input, CancellationToken cancellationToken);
         void AmountValidate(decimal repairSumItems, decimal previousSumItems);

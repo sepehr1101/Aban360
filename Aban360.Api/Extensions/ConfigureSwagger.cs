@@ -7,6 +7,7 @@ namespace Aban360.Api.Extensions
         {
             services.AddSwaggerGen(c =>
             {
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "Aban360.Api.xml"));
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Aban360", Version = "0.0.1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
