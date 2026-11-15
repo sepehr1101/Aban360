@@ -52,13 +52,24 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
             return Ok(reportId);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("sti/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSti(int id, CancellationToken cancellationToken)
         {
             int reportCode = 2540;
             ReportOutput<OtherExpensesHeaderOutputDto, OtherExpensesDataOutputDto> result = await _otherExpensesGetCurrentDateGetHandler.Handle(id, CurrentUser, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
+            return Ok(reportId);
+        }
+
+        [HttpPost]
+        [Route("sti")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSti([FromBody] SearchNumericInput input, CancellationToken cancellationToken)
+        {
+            int reportCode = 2540;
+            ReportOutput<OtherExpensesHeaderOutputDto, OtherExpensesDataOutputDto> result = await _otherExpensesGetCurrentDateGetHandler.Handle(input.Input, CurrentUser, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }
