@@ -5,5 +5,6 @@ namespace Aban360.CommunicationPool.Persistence.Features.Sms.Queries.Contracts
     public interface ISmsDraftQueryService
     {
         Task<IEnumerable<SmsDraftGetDto>> Get(string groupId, int smsFlowId, bool hasFetchDate, bool hasSendDate);
+        Task<int> GetCount(string groupId, int smsFlowId, bool hasFetchDate, bool hasSendDate);
     }
 }

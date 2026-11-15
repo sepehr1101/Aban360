@@ -26,6 +26,8 @@
         public string? CompanyTitle { get; set; }
         public int TypeId { get; set; }
         public string TypeTitle { get; set; }
+        public Guid PersonnelId { get; set; }
+        public string PersonnelName { get; set; }
         public string? Description { get; set; }
         public DateTime? RemovedDateTime { get; set; }
         public Guid? RemovedBy { get; set; }

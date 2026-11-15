@@ -25,7 +25,6 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Validations
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
             RuleFor(g => g.ChangeCauseId)
-                .NotEmpty().WithMessage(ExceptionLiterals.EmptyString)
                 .NotNull().WithMessage(ExceptionLiterals.NotNull);
 
         }

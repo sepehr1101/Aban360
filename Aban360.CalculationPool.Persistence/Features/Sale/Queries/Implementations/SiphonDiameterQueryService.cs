@@ -25,7 +25,8 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
             return @"Select 
                     	Id,
                     	Title
-                    From [Aban360].ClaimPool.SiphonDiameter";
+                    From [Aban360].ClaimPool.SiphonDiameter
+                    Order by Id";
         }
     }
 }
