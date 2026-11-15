@@ -25,11 +25,11 @@ namespace Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Impl
             }
             return meterSmsFlow;
         }
-        public async Task<SmsFlowGetDto> GetLastByFirstFlowId(int id)
+        public async Task<SmsFlowGetDto?> GetLastByFirstFlowId(int id, bool hasException = true)
         {
             string query = GetByFirstFlowIdQuery();
             SmsFlowGetDto? meterSmsFlow = await _sqlReportConnection.QueryFirstOrDefaultAsync<SmsFlowGetDto>(query, new { id });
-            if (meterSmsFlow is null)
+            if (meterSmsFlow is null && hasException)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidSmsFlowId);
             }

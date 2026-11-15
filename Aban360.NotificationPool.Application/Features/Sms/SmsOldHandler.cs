@@ -32,7 +32,7 @@ namespace Aban360.NotificationPool.Application.Features.Sms
             _options.NotNull(nameof(_options));
         }
         public async Task SendNew(string mobile, string text, Guid trackingId)
-        {           
+        {
             await Send(mobile, text, trackingId, SmsMessageType.Notification);
         }
 
