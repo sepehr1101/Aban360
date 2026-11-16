@@ -50,13 +50,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
         public async Task Handle(MotherChildRequestInputDto inputDto, int userName, CancellationToken cancellationToken)
         {
-            await InputValidation(inputDto, cancellationToken);
+            await InputValidate(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber motherCustomerNumberInfo = await _commonMemberQueryService.Get(inputDto.MotherBillId, true);
+            MemberInfoGetDto motherInfo = await _commonMemberQueryService.Get(motherCustomerNumberInfo);
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
-            if (trackingInfo.ZoneId != motherCustomerNumberInfo.ZoneId)
-            {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidMotherZoneId);
-            }
+            MotherChildValidate(motherInfo, trackingInfo, inputDto);
 
             MoshtrakOutputDto moshtrackInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
             MotherInsertDto motherInsertDto = GetMotherInsertDto(inputDto, moshtrackInfo, motherCustomerNumberInfo.CustomerNumber);
@@ -78,7 +76,43 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
                 }
             }
         }
-        private async Task InputValidation(MotherChildRequestInputDto inputDto, CancellationToken cancellationToken)
+        private void MotherChildValidate(MemberInfoGetDto motherInfo, TrackingOutputDto trackingInfo, MotherChildRequestInputDto inputDto)
+        {
+            if (motherInfo.ZoneId != trackingInfo.ZoneId)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidMotherZoneId);
+            }
+
+            if (inputDto.CommercialUnit > motherInfo.CommercialUnit)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidCommercialUnitChild);
+            }
+            if (inputDto.DomesticUnit > motherInfo.DomesticUnit)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidDomesticUnitChild);
+            }
+            if (inputDto.OtherUnit > motherInfo.OtherUnit)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidOtherUnitChild);
+            }
+            if (inputDto.ImprovementCommercial > motherInfo.CommercialImprovement)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidCommercialImprovementChild);
+            }
+            if (inputDto.ImprovementDomestic > motherInfo.DomesticImprovement)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidDomesticImprovementChild);
+            }
+            if (inputDto.ImprovementOverall >= motherInfo.OverallImprovement)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidOverallImprovementChild);
+            }
+            if (inputDto.Premises > motherInfo.Premises)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidPremisesChild);
+            }
+        }
+        private async Task InputValidate(MotherChildRequestInputDto inputDto, CancellationToken cancellationToken)
         {
             var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
             if (!validationResult.IsValid)

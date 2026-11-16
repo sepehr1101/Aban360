@@ -293,8 +293,8 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
       ""placeholder"": ""موبایل را وارد کنید"",
       ""isRequired"": true,
       ""regex"": ""^09\\d{9}$"",
-      ""maxLen"": 10,
-      ""minLen"": 10,
+      ""maxLen"": 11,
+      ""minLen"": 11,
       ""selecteOptions"": [],
       ""name"": ""mobileNumber""
     },

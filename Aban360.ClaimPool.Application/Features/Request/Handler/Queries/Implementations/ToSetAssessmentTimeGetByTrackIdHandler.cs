@@ -7,7 +7,10 @@ using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
+using Aban360.ReportPool.Domain.Base;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
+using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations
 {
@@ -21,11 +24,14 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
         private readonly IMoshtrakQueryService _moshtrackQueryService;
         private readonly ITrackingQueryService _trackingQueryService;
         private readonly IAssessmentGetByZoneIdHandler _assessmentGetByZoneIdHandler;
+        private readonly IUserRoleQueryService _userRoleQueryService;
         private readonly IMoshtrakService _moshtrakService;
+        private static int _readerRoleId = ReportLiterals.AssessmentRoleId;
         public ToSetAssessmentTimeGetByTrackIdHandler(
             ICommonZoneService zoneService,
             IMoshtrakQueryService moshtrackQueryService,
             ITrackingQueryService trackingQueryService,
+            IUserRoleQueryService userRoleQueryService,
             IAssessmentGetByZoneIdHandler assessmentGetByZoneIdHandler,
             IMoshtrakService moshtrakService)
         {
@@ -37,6 +43,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
 
             _trackingQueryService = trackingQueryService;
             _trackingQueryService.NotNull(nameof(trackingQueryService));
+
+            _userRoleQueryService = userRoleQueryService;
+            _userRoleQueryService.NotNull(nameof(userRoleQueryService));
 
             _assessmentGetByZoneIdHandler = assessmentGetByZoneIdHandler;
             _assessmentGetByZoneIdHandler.NotNull(nameof(assessmentGetByZoneIdHandler));
@@ -50,7 +59,9 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Impleme
             TrackingOutputDto trackingInfo = await _trackingQueryService.Get(trackId);
             await _zoneService.IsUserInZone(appUser, trackingInfo.ZoneId);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrackQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber, true)).FirstOrDefault();
-            IEnumerable<StringDictionary> assessmentsList = await _assessmentGetByZoneIdHandler.Handle(moshtrakInfo.ZoneId, cancellationToken);
+            //IEnumerable<StringDictionary> assessmentsList = await _assessmentGetByZoneIdHandler.Handle(moshtrakInfo.ZoneId, cancellationToken);
+            ICollection<UserQueryDto> readerInfoList = await _userRoleQueryService.GetByZone(_readerRoleId, moshtrakInfo.ZoneId);
+            IEnumerable<StringDictionary> assessmentsList = readerInfoList.Select(x => new StringDictionary(x.Username, x.DisplayName)).ToList();
 
             MoshtrakServiceDto moshtrakServiceDto = GetMoshtrakService(moshtrakInfo);
             IEnumerable<NumericDictionary> serviceSelected = await _moshtrakService.GetServicesSelectedDto(moshtrakServiceDto, trackingInfo.ServiceGroupId);
