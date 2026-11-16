@@ -68,8 +68,7 @@ internal sealed class WaterReceivablesHandler : IWaterReceivablesHandler
             RecordCount = data.Count,
             OpeningBalance=data.Sum(data => data.OpeningBalance),
             PeriodCollections=data.Sum(data=>data.PeriodCollections),
-            PeriodSales = data.Sum(data => data.PeriodSales),
-            RecordCount = data.Count
+            PeriodSales = data.Sum(data => data.PeriodSales)
         };
         return new ReportOutput<WaterReceivablesHeaderOutputDto, WaterReceivablesDataOutputDto>(title, header, data);
     }
