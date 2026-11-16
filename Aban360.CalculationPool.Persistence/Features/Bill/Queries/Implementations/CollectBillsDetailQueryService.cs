@@ -79,7 +79,9 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
                     	lastStep.id LastId,
                     	firstStep.GroupingId,
                     	firstStep.StepId FirstStepId,
+						firstStepInfo.Title FirstStepTitle,
                     	lastStep.stepId LastStepId,
+						lastStepInfo.Title LastStepTitle,
 						lastStep.FileName FileName,
                     	firstStep.InsertDateTime FirstStepInsertDateTime,
                     	lastStep.InsertDateTime LastStepInserteDateTime,
@@ -93,6 +95,10 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
                     	Where lastStep.GroupingId=firstStep.GroupingId 
                     	Order By InsertDateTime Desc
                     )as lastStep
+					Join Atlas.dbo.CollectBillsStep firstStepInfo
+						On firstStep.StepId=firstStepInfo.Id
+					Join Atlas.dbo.CollectBillsStep lastStepInfo
+						On lastStep.stepId=lastStepInfo.Id
                     Where 
                         Rn=1 AND
 	                    Format(firstStep.InsertDateTime , 'yyyy/MM/dd' , 'fa') BETWEEN @FromDateJalali AND @ToDateJalali

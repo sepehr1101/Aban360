@@ -16,7 +16,7 @@ namespace Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementa
 
         public async Task<IEnumerable<UserQueryDto>> Handle(int roleId, int zoneId, CancellationToken cancellationToken)
         {
-            return await _userRoleQueryService.GetByDefaultZone(roleId, zoneId);
+            return await _userRoleQueryService.GetByZone(roleId, zoneId);
         }
     }
 }

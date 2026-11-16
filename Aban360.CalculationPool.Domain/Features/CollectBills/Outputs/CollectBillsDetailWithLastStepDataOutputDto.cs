@@ -9,7 +9,9 @@ namespace Aban360.CalculationPool.Domain.Features.CollectBills.Outputs
         public int LastId { get; set; }
         public Guid GroupingId { get; set; }
         public CollectBillStepEnum FirstStepId { get; set; }
+        public string FirstStepTitle{ get; set; }
         public CollectBillStepEnum LastStepId { get; set; }
+        public string LastStepTitle { get; set; }
         public string? FileName { get; set; }
         public DateTime FirstStepInsertDateTime { get; set; }
         public string FirsrStepInsertDateTimeJalali { get { return FirstStepInsertDateTime.ToShortPersianDateTimeString(); } }

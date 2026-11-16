@@ -52,13 +52,11 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         {
             await InputValidation(inputDto, cancellationToken);
             ZoneIdAndCustomerNumber motherCustomerNumberInfo = await _commonMemberQueryService.Get(inputDto.MotherBillId, true);
-
+            MemberInfoGetDto motherInfo = await _commonMemberQueryService.Get(motherCustomerNumberInfo);
             TrackingOutputDto trackingInfo = await _trackingQueryService.GetLatest(inputDto.TrackNumber);
-            if (trackingInfo.ZoneId != motherCustomerNumberInfo.ZoneId)
-            {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidMotherZoneId);
-            }
-            MoshtrakOutputDto moshtrackInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
+            CommonSiphonValidate(motherInfo, trackingInfo, inputDto);
+
+              MoshtrakOutputDto moshtrackInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
 
             string dbName = GetDbName(trackingInfo.ZoneId);
             MotherInsertDto motherInsertDto = GetMotherInsertDto(inputDto, moshtrackInfo, motherCustomerNumberInfo.CustomerNumber);
@@ -85,6 +83,30 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
 
                     transaction.Commit();
                 }
+            }
+        }
+        private void CommonSiphonValidate(MemberInfoGetDto motherInfo, TrackingOutputDto trackingInfo, CommonSiphonRequestInputDto inputDto)
+        {
+            if (trackingInfo.ZoneId != motherInfo.ZoneId)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidMotherZoneId);
+            }
+
+            if (inputDto.Siphon100 > motherInfo.Siphon100)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidSiphon100);
+            }
+            if (inputDto.Siphon125> motherInfo.Siphon125)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidSiphon125);
+            }
+            if (inputDto.Siphon150 > motherInfo.Siphon150)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidSiphon150);
+            }
+            if (inputDto.Siphon200 > motherInfo.Siphon200)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidSiphon200);
             }
         }
         private async Task InputValidation(CommonSiphonRequestInputDto inputDto, CancellationToken cancellationToken)
