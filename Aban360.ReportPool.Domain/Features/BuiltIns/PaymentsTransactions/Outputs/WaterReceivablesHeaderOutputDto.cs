@@ -8,4 +8,9 @@ public record WaterReceivablesHeaderOutputDto
     public string ToDateJalali { get; set; } = string.Empty;
     public string ReportDateJalali { get; set; } = string.Empty;
     public int RecordCount { get; set; }
+    //
+    public long OpeningBalance { get; set; }
+    public long PeriodSales { get; set; }
+    public long PeriodCollections { get; set; }
+    public long ClosingBalance => OpeningBalance + PeriodSales - PeriodCollections;
 }

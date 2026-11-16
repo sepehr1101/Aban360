@@ -5,4 +5,5 @@ public record WaterReceivablesInputDto
     public WaterReceivablesGroupingEnum GroupBy { get; set; }
     public string FromDateJalali { get; set; } = string.Empty;
     public string ToDateJalali { get; set; } = string.Empty;
+    public ICollection<int>? ZoneIds { get; set; }
 }

@@ -64,6 +64,11 @@ internal sealed class WaterReceivablesHandler : IWaterReceivablesHandler
             FromDateJalali = input.FromDateJalali,
             ToDateJalali = input.ToDateJalali,
             ReportDateJalali = DateTime.Now.ToShortPersianDateString(),
+
+            RecordCount = data.Count,
+            OpeningBalance=data.Sum(data => data.OpeningBalance),
+            PeriodCollections=data.Sum(data=>data.PeriodCollections),
+            PeriodSales = data.Sum(data => data.PeriodSales),
             RecordCount = data.Count
         };
         return new ReportOutput<WaterReceivablesHeaderOutputDto, WaterReceivablesDataOutputDto>(title, header, data);
