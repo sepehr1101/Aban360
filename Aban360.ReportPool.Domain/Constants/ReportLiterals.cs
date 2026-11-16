@@ -18,6 +18,7 @@
         public static string Kart { get { return "kart"; } }
 
         public static int ReaderRoleId { get { return 40; } }
+        public static int AssessmentRoleId { get { return 12; } }
 
         public static int SaleRequestTypeId { get { return 1; } }
         public static int AfterSaleRequestTypeId { get { return 2; } }

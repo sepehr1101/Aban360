@@ -20,5 +20,6 @@
         public int? AttemptCount { get; set; }
         public bool? IsLocked { get; set; }
         public int? HighLowStateId { get; set; }
+        public string? Traverese { get; set; }
     }
 }
