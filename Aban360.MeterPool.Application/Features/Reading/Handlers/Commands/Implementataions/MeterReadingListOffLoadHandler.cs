@@ -81,7 +81,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
 
                     await trackingCommandService.UpdateSeen(trackingUpdateSeenDto);
                     await trackingCommandService.InsertDuplicate(trackingDuplicateDto);
-                    await detailCommandService.Update(detailUpdateList);
+                    //await detailCommandService.Update(detailUpdateList);
 
                     transaction.Commit();
                 }

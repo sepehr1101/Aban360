@@ -346,6 +346,17 @@
         public static string InvalidInstallmentCount => $"تعداد اقساط نامعتبر است.";
         public static string InvalidBlockForThisZone => $" ناحیه انتخابی نیازی به بلوک ندارد.";
         public static string CantSetBillIdDuplicate => $"امکان انتساب مجدد شناسه قبض وجود ندارد.";
+        public static string InvalidCommercialUnitChild => $"آحاد تجاری فرزند نامعتبر است";
+        public static string InvalidDomesticUnitChild => $"آحاد مسکونی فرزند نامعتبر است";
+        public static string InvalidOtherUnitChild => $"آحاد سایر فرزند نامعتبر است";
+        public static string InvalidCommercialImprovementChild => $"اعیان تجاری فرزند نامعتبر است";
+        public static string InvalidDomesticImprovementChild => $"اعیان مسکونی فرزند نامعتبر است";
+        public static string InvalidOverallImprovementChild => $"اعیان کل فرزند نامعتبر است";
+        public static string InvalidPremisesChild => $"عرصه فرزند نامعتبر است";
+        public static string InvalidSiphon100 => $"سیفون 100 فرزند نامعتبر است";
+        public static string InvalidSiphon125 => $"سیفون 125 فرزند نامعتبر است";
+        public static string InvalidSiphon150 => $"سیفون 150 فرزند نامعتبر است";
+        public static string InvalidSiphon200 => $"سیفون 200 فرزند نامعتبر است";
 
         public static string NotFountOpenRequest => "درخواستی با وضعیت نیمه‌تمام یافت نشد.";
         public static string CantSetTime => "امکان انتساب زمانبندی ارزیابی وجود ندارد";

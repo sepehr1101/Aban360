@@ -22,7 +22,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementati
         }
         private string GetQuery()
         {
-            return @$"Select 
+            return @$"Select
 						CONCAT(
 							 c.ZoneTitle, ';', --ZoneTitle,
 							 '', ';',--ZoneAddress,

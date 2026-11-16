@@ -117,7 +117,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
 
             if (result.Code == (int)CollectBillsResponseStatusEnum.Success)
             {
-                _backgroundJobClient.Enqueue(() => Confirm(groupingId, fileId, zipFileName));
+                _backgroundJobClient.Schedule(() => Confirm(groupingId, fileId, zipFileName), TimeSpan.FromMinutes(30));
             }
         }
         public async Task Confirm(Guid groupingId, string fileId, string zipFileName)
