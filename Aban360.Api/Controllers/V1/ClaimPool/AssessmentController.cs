@@ -98,7 +98,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<UsageGroup1InsertDto>), StatusCodes.Status200OK)]
         public FileResult GetLatestApk(CancellationToken cancellationToken)
         {
-            var(fileStream, fileName) = _c0_latestDownloadHandler.Handle(cancellationToken);
+            var (fileStream, fileName) = _c0_latestDownloadHandler.Handle(cancellationToken);
             return File(fileStream, _c0_apkContentType, fileName, enableRangeProcessing: true);
         }
 
@@ -196,6 +196,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
 
         private SetAssessmentTimeOutputDto GetAssessmentTimeOutputDto(bool hasCustomerSms, bool hasAssessmentSms, SetAssessmentTimeDataOutputDto result)
         {
+            if (result.AssessmentCode == 0)
+            {
+                return new SetAssessmentTimeOutputDto(result.TrackNumber, false, false, null, null);
+            }
             string customerText = string.Format(SmsTemplates.RequestTimeSet, result.AssessmentName, result.AssessmentMobileNumber, result.AssessmentDateJalai, result.TrackNumber);
             string assessmentText = result.ServiceGroupId == 1 ? string.Format(SmsTemplates.NewRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.NeighbourBillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber, result.NeighbourBillId) : string.Format(SmsTemplates.AfterSaleRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.BillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber);
             if (hasAssessmentSms)

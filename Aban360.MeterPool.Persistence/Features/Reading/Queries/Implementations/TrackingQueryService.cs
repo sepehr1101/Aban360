@@ -243,7 +243,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
 					From [Atlas].reading.Tracking t
 					Join [Atlas].reading.FlowStep s
 						ON t.FlowStepId=s.Id
-					Where t.TrackNumber = @TrackNumbers
+					Where t.TrackNumber In @TrackNumbers
 					Order By t.InsertDateTime Desc;";
         }
         private string GetByUserIdAndStepFlowIdQuery()

@@ -159,7 +159,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private async Task<(int, string?)> GetAssessmentTaskInfo(TrackingOutputDto latestTrackingInfo, MoshtrakOutputDto moshtrakInfo)
         {
             int assessmentCode = 0;
-            string? assessmentDateJalali;
+            string? assessmentDateJalali = string.Empty;
             if (latestTrackingInfo.ServiceGroupId == _afterSaleRequestType)
             {
                 MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(new ZoneIdAndCustomerNumber(latestTrackingInfo.ZoneId, moshtrakInfo.CustomerNumber));
@@ -167,11 +167,13 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
             }
             else
             {
-                ZoneIdAndCustomerNumber neighbourCustomerNumber = await _commonMemberQueryService.Get(moshtrakInfo.NeighbourBillId);
-                MemberInfoGetDto neighbourMemberInfo = await _commonMemberQueryService.Get(neighbourCustomerNumber);
-                (assessmentCode, assessmentDateJalali) = await GetAssessmentDateTime(neighbourMemberInfo);
+                if (!string.IsNullOrWhiteSpace(moshtrakInfo.NeighbourBillId))
+                {
+                    ZoneIdAndCustomerNumber neighbourCustomerNumber = await _commonMemberQueryService.Get(moshtrakInfo.NeighbourBillId);
+                    MemberInfoGetDto neighbourMemberInfo = await _commonMemberQueryService.Get(neighbourCustomerNumber);
+                    (assessmentCode, assessmentDateJalali) = await GetAssessmentDateTime(neighbourMemberInfo);
+                }
             }
-
             return (assessmentCode, assessmentDateJalali);
         }
         private async Task<MoshtrakUpdateCustomerInfoDto> GetSaleMoshtrakUpdateDto(MoshtrakOutputDto moshtrakInfo)
