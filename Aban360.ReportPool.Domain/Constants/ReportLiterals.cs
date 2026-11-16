@@ -2,6 +2,7 @@
 {
     public static class ReportLiterals
     {
+        public static string WaterReceivables { get { return "گزارش مانده مطالبات آب‌بها"; } }
         public static int RayabOperator { get { return 666; } }
         public static string HandleFlat { get { return "HandleFlat"; } }
         public static string Handle { get { return "Handle"; } }
