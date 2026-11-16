@@ -13,7 +13,7 @@ internal sealed class WaterReceivablesQueryService : AbstractBaseConnection, IWa
     {
         var (field, join) = GetGrouping(groupBy, "b");
         string query = $@"SELECT {field} AS GroupTitle,
-                   SUM(CAST(b.Item1 AS bigint)
+                   /*SUM(CAST(b.Item1 AS bigint)
                        + CAST(b.Item2 AS bigint)
                        + CAST(b.Item3 AS bigint)
                        + CAST(b.Item4 AS bigint)
@@ -30,11 +30,13 @@ internal sealed class WaterReceivablesQueryService : AbstractBaseConnection, IWa
                        + CAST(b.Item15 AS bigint)
                        + CAST(b.Item16 AS bigint)
                        + CAST(b.Item17 AS bigint)
-                       + CAST(b.Item18 AS bigint)) AS Amount
+                       + CAST(b.Item18 AS bigint)) AS Amount*/
+            SUM(CAST(b.SumItems AS bigint)) Amount   
             FROM [CustomerWarehouse].dbo.Bills b
             {join}
             WHERE b.RegisterDay BETWEEN @fromDate AND @toDate
-              AND b.TypeCode IN (1, 3, 4, 5)
+              AND b.TypeCode IN (1, 3, 4, 5, 9) 
+              AND b.ZoneId<140000
             GROUP BY {field}";
         return GetAmounts(query, fromDate, toDate, cancellationToken);
     }
@@ -46,7 +48,7 @@ internal sealed class WaterReceivablesQueryService : AbstractBaseConnection, IWa
                    SUM(CAST(p.Amount AS bigint)) AS Amount
             FROM [CustomerWarehouse].dbo.Payments p
             {join}
-            WHERE p.RegisterDay BETWEEN @fromDate AND @toDate
+            WHERE p.RegisterDay BETWEEN @fromDate AND @toDate AND p.zoneId<140000
             GROUP BY {field}";
         return GetAmounts(query, fromDate, toDate, cancellationToken);
     }
