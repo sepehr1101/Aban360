@@ -4,6 +4,7 @@ using Aban360.ReportPool.Persistence.Base;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using Dapper;
 using Microsoft.Extensions.Configuration;
+
 namespace Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Implementations;
 internal sealed class WaterReceivablesQueryService : AbstractBaseConnection, IWaterReceivablesQueryService
 {
@@ -36,7 +37,6 @@ internal sealed class WaterReceivablesQueryService : AbstractBaseConnection, IWa
             {join}
             WHERE b.RegisterDay BETWEEN @fromDate AND @toDate
               AND b.TypeCode IN (1, 3, 4, 5, 9) 
-              AND b.ZoneId<140000
             GROUP BY {field}";
         return GetAmounts(query, fromDate, toDate, cancellationToken);
     }
@@ -48,7 +48,7 @@ internal sealed class WaterReceivablesQueryService : AbstractBaseConnection, IWa
                    SUM(CAST(p.Amount AS bigint)) AS Amount
             FROM [CustomerWarehouse].dbo.Payments p
             {join}
-            WHERE p.RegisterDay BETWEEN @fromDate AND @toDate AND p.zoneId<140000
+            WHERE p.RegisterDay BETWEEN @fromDate AND @toDate
             GROUP BY {field}";
         return GetAmounts(query, fromDate, toDate, cancellationToken);
     }
