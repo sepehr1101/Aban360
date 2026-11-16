@@ -35,6 +35,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IMoshtrakService _moshtrakService;
         private readonly IValidator<AssessmentSetTimeInputDto> _validator;
         static int _saleRequestTypeId = ReportLiterals.SaleRequestTypeId;
+        static int _requestRegisteredStatusId = (int)TrackingStatusEnum.RequestRegistered;
         static int _setAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentTime;
         static int _setReAssessmentRequired = (int)TrackingStatusEnum.ReAssessment;
         static int _requestOrigin = 12;
@@ -125,7 +126,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         }
         private async Task<TrackingOutputDto> StatusValidation(int trackNumber)
         {
-            int[] allowedSetTime = { _saleRequestTypeId, _setReAssessmentRequired };
+            int[] allowedSetTime = { _requestRegisteredStatusId, _setAssessmentTimeStatusId, _setReAssessmentRequired };
             TrackingOutputDto latestTrackingInfo = await _trackingQueryService.GetLatest(trackNumber);
             if (!allowedSetTime.Contains(latestTrackingInfo.StatusId))
             {
