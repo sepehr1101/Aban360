@@ -1,7 +1,9 @@
 ﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
@@ -72,7 +74,17 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
         }
         private MoshtrakUpdateInfoDto GetUpdateDto(MoshtrakUpdateInputDto inputDto)
         {
+            string blockId = string.Empty;
             MoshtrakServiceDto serviceSelected = _moshtrakService.GetServicesSelected(inputDto.SelectedServices);
+
+            if (string.IsNullOrWhiteSpace(inputDto.BlockId) || inputDto.BlockId == "ندارد")
+            {
+                blockId = string.Empty;
+            }
+            else
+            {
+                blockId = inputDto.BlockId;
+            }
 
             return new MoshtrakUpdateInfoDto()
             {
@@ -113,7 +125,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update
                 Description = inputDto.Description,
                 IsSpecial = inputDto.IsSpecial,
                 ReadingNumber = inputDto.ReadingNumber,
-                BlockId = inputDto.BlockId ?? string.Empty,
+                BlockId = blockId,
                 BrokerId = inputDto.HasBroker ? 1 : 0,
                 KitId = inputDto.KitId ?? 0,
 

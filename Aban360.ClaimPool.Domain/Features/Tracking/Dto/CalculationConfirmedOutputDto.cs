@@ -14,6 +14,7 @@ namespace Aban360.ClaimPool.Domain.Features.Tracking.Dto
         public int Siphon125 { get; set; }
         public int Siphon150 { get; set; }
         public int Siphon200 { get; set; }
+        public int MainSiphon { get; set; }
         public int Premises { get; set; }
         public int ImprovementOverall { get; set; }
         public int ImprovementDomestic { get; set; }

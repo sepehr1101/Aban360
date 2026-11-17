@@ -82,6 +82,7 @@ namespace Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implem
                 Siphon125 = moshtrakInfo.Siphon125,
                 Siphon150 = moshtrakInfo.Siphon150,
                 Siphon200 = moshtrakInfo.Siphon200,
+                MainSiphon=moshtrakInfo.MainSiphon,
                 Premises = moshtrakInfo.Premises,
                 ImprovementOverall = moshtrakInfo.ImprovementOverall,
                 ImprovementDomestic = moshtrakInfo.ImprovementDomestic,
