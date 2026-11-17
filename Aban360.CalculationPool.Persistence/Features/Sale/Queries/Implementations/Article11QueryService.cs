@@ -3,6 +3,7 @@ using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Persistence.Features.Sale.Queries.Contracts;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Exceptions;
+using Aban360.Common.Exceptions;
 using Aban360.Common.Literals;
 using Dapper;
 using Microsoft.Extensions.Configuration;
@@ -16,11 +17,14 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
         {
         }
 
-        public async Task<Article11OutputDto> Get(Article11GetDto input)
+        public async Task<Article11OutputDto> Get(Article11GetDto input, bool hasException = true)
         {
             string query = GetQuery();
-            Article11OutputDto article11 = await _sqlConnection.QueryFirstOrDefaultAsync<Article11OutputDto>(query, input);
-
+            Article11OutputDto? article11 = await _sqlConnection.QueryFirstOrDefaultAsync<Article11OutputDto>(query, input);
+            if (article11 is null && hasException)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.NotFoundArticle11);
+            }
             return article11;
         }
 
@@ -61,7 +65,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
             return @"Select *
                     From [Aban360].CalculationPool.Article11 
                     Where
-                    	ToDateJalali>@CurrentDateJalali AND
+                    	 @CurrentDateJalali BETWEEN FromDateJalali AND ToDateJalali AND
                     	RemoveDateTime IS NULL AND
                     	(
                     		@BlockCode IS NULL OR

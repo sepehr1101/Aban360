@@ -158,7 +158,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
             }
 
             bool isDomestic = SaleRuleChecker.IsDomesticOrResidence(inputDto.UsageId);
-            int usageMultiplier = GetUsageMultiplierForArticle11(inputDto);
+            int usageMultiplier = GetUsageMultiplierForArticle11(inputDto, isDomestic);
             Article11OutputDto article11Data = await GetArticle11Data(inputDto);
 
             SaleDataOutputDto waterArticle11 = await GetSaleData(OfferingEnum.WaterArticle11, inputDto.HasWaterArticle11 ? GetAmount(true) : 0, null);
@@ -352,12 +352,12 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Imp
 
         private async Task<Article11OutputDto> GetArticle11Data(SaleInputDto inputDto)
         {
-            var article11Dto = new Article11GetDto(inputDto.ZoneId, inputDto.Block, DateTime.Now.ToShortPersianDateString());
-            return await _article11QueryService.Get(article11Dto);
+            var article11Dto = new Article11GetDto(inputDto.ZoneId, string.IsNullOrWhiteSpace(inputDto.Block) ? null : inputDto.Block, DateTime.Now.ToShortPersianDateString());
+            return await _article11QueryService.Get(article11Dto, true);
         }
-        private int GetUsageMultiplierForArticle11(SaleInputDto inputDto)
+        private int GetUsageMultiplierForArticle11(SaleInputDto inputDto, bool isDomestic)
         {
-            return SaleRuleChecker.IsDomesticCommercial(inputDto.UsageId) ? inputDto.DomesticUnit : inputDto.ContractualCapacity;
+            return isDomestic ? inputDto.DomesticUnit : inputDto.ContractualCapacity;
         }
         private bool HasSiphon(SaleInputDto input) => input.SiphonDiameterId != null && input.SiphonDiameterId > 0 ? true : false;
         private bool IsVillage(int zoneId) => zoneId > 140000;
