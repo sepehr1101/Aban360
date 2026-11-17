@@ -4,7 +4,6 @@ using Aban360.Common.Literals;
 using System.Net.Http.Json;
 using System.Runtime.InteropServices;
 using Aban360.NotificationPool.Domain.Features.Sms;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Aban360.NotificationPool.Application.Features.Sms
 {
@@ -32,8 +31,7 @@ namespace Aban360.NotificationPool.Application.Features.Sms
             _options.NotNull(nameof(_options));
         }
         public async Task SendNew(string mobile, string text, Guid trackingId)
-        {
-            return;
+        {            
             await Send(mobile, text, trackingId, SmsMessageType.Notification);
         }
 
@@ -63,6 +61,7 @@ namespace Aban360.NotificationPool.Application.Features.Sms
         }
         public async Task Send(IEnumerable<SendSmsDataDto> data, SmsMessageType messageType = SmsMessageType.Notification)
         {
+            return;//TODO: check 
             using HttpRequestMessage request = new(HttpMethod.Post, "messages");
             request.Headers.Add("X-Api-Key", _options.ApiKey);
             request.Content = JsonContent.Create(new

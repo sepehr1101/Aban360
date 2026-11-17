@@ -1,6 +1,7 @@
-﻿using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
+using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Contracts;
 using Aban360.BlobPool.Domain.Providers.Dto;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
@@ -42,27 +43,47 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Implemen
             {
                 throw new BaseException("شناسه قبض مقدار خالی وارد شده است");
             }
+            TrackingOutputDto tracking = await _trackingQueryService.GetLatest(input);
+            if (!string.IsNullOrWhiteSpace(trackNumber))
+            {
+                if (!int.TryParse(trackNumber, out int parsedTrackNumber) ||
+                    parsedTrackNumber <= 0 ||
+                    tracking.TrackNumber != parsedTrackNumber)
+                {
+                    throw new InvalidTrackNumberException("شماره پیگیری با شناسه قبض مطابقت ندارد.");
+                }
+            }
             bool doesFolderExist = await _openKmQueryService.CheckFolderExists(input);
             if (!doesFolderExist)
             {
-                if (string.IsNullOrWhiteSpace(trackNumber) || input == "null")
+                ZoneIdAndCustomerNumber? member = await _commonMemberQueryService.Get(input, hasException: false);
+                if (member is { ZoneId: > 0 } && string.IsNullOrWhiteSpace(trackNumber))
                 {
-                    throw new BaseException("در صورتی که انشعاب به‌تازگی ثبت شده است، از بخش پیگیری درخواست استفاده نمایید");
+                    string uuid = await _openKmQueryService.CreateFolder(input);
+                    await _openKmQueryService.MarkNodeAsMetadatable(uuid, false);
+                    return new FileListResponse { Documents = [] };
                 }
-                if (!int.TryParse(trackNumber, out int parsedTrackNumber) || parsedTrackNumber <= 0)
+                else
                 {
-                    throw new InvalidTrackNumberException(ExceptionLiterals.InvalidTrackNumber);
-                }
-                await _trackingQueryService.GetLatest(parsedTrackNumber);
-                bool trackNumberFolderExists = await _openKmQueryService.CheckFolderExists($"r_{trackNumber}");
-                if (!trackNumberFolderExists)
-                {
-                    throw new BaseException("شناسه قبض و شماره پیگیری هردو بطور همزمان مقدار ناصحیح دارند");
-                }
+                    if (string.IsNullOrWhiteSpace(trackNumber) || input == "null")
+                    {
+                        throw new BaseException("در صورتی که انشعاب به‌تازگی ثبت شده است، از بخش پیگیری درخواست استفاده نمایید");
+                    }
+                    if (!int.TryParse(trackNumber, out int parsedTrackNumber) || parsedTrackNumber <= 0)
+                    {
+                        throw new InvalidTrackNumberException(ExceptionLiterals.InvalidTrackNumber);
+                    }
+                    await _trackingQueryService.GetLatest(parsedTrackNumber);
+                    bool trackNumberFolderExists = await _openKmQueryService.CheckFolderExists($"r_{trackNumber}");
+                    if (!trackNumberFolderExists)
+                    {
+                        throw new BaseException("شناسه قبض و شماره پیگیری هردو بطور همزمان مقدار ناصحیح دارند");
+                    }
 
-                //billId folder not exists, tracknumber folder exists
-                string uuid = await _openKmQueryService.GetFolderUuid($"r_{trackNumber}");
-                await _openKmQueryService.RenameFolder(uuid, input);
+                    //billId folder not exists, tracknumber folder exists
+                    string uuid = await _openKmQueryService.GetFolderUuid($"r_{trackNumber}");
+                    await _openKmQueryService.RenameFolder(uuid, input);
+                }
             }
             //مشکل اینجاست که فولدر در بایگانی کاج وجود دارد اما مشترک هنوز از دید رایاب ثبت قطعی نشده یا اینکه 
             //هنوز در دیتابیس customerWarehouse وجود ندارد

@@ -6,6 +6,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts
     {
         Task<TrackingOutputDto?> GetFirstStep(int trackNumber, bool hasException = true);
         Task<TrackingOutputDto> Get(Guid trackId);
+        Task<TrackingOutputDto> GetLatest(string billId);
         Task<TrackingOutputDto> GetLatest(int trackNumber, bool hasException = true);
         Task<TrackingOutputDto?> GetLatest(int trackNumber, int statusId, bool hasException = true);
         Task<TrackingOutputDto> GetSecondToLatest(int trackNumber);

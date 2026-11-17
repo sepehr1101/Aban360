@@ -6,6 +6,7 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
 using DNTPersianUtils.Core;
 using FluentValidation;
+
 namespace Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Implementations;
 internal sealed class WaterReceivablesHandler : IWaterReceivablesHandler
 {
@@ -45,14 +46,14 @@ internal sealed class WaterReceivablesHandler : IWaterReceivablesHandler
         // No opening transactions when the selected period starts at the history boundary.
         if (string.CompareOrdinal(input.FromDateJalali, historyStart) > 0)
         {
-            Add(await _queries.GetSales(input.GroupBy, historyStart, openingEnd, cancellationToken),
+            Add(await _queries.GetSales(input.GroupBy, historyStart, openingEnd, input.ZoneIds, cancellationToken),
                 (row, amount) => row.OpeningBalance += amount);
-            Add(await _queries.GetCollections(input.GroupBy, historyStart, openingEnd, cancellationToken),
+            Add(await _queries.GetCollections(input.GroupBy, historyStart, openingEnd, input.ZoneIds, cancellationToken),
                 (row, amount) => row.OpeningBalance -= amount);
         }
-        Add(await _queries.GetSales(input.GroupBy, input.FromDateJalali, input.ToDateJalali, cancellationToken),
+        Add(await _queries.GetSales(input.GroupBy, input.FromDateJalali, input.ToDateJalali, input.ZoneIds, cancellationToken),
             (row, amount) => row.PeriodSales += amount);
-        Add(await _queries.GetCollections(input.GroupBy, input.FromDateJalali, input.ToDateJalali, cancellationToken),
+        Add(await _queries.GetCollections(input.GroupBy, input.FromDateJalali, input.ToDateJalali, input.ZoneIds, cancellationToken),
             (row, amount) => row.PeriodCollections += amount);
 
         const string title = "گزارش مانده مطالبات آب‌بها";

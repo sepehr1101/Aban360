@@ -24,6 +24,7 @@ var input = new WaterReceivablesInputDto
 };
 var result = await handler.Handle(input, CancellationToken.None);
 Check(queries.Calls.Count == 4, "Four independent sales/collection queries");
+Check(queries.Calls.All(c => c.ZoneIds is null), "Omitted zoneIds is accepted and passed as null");
 Check(queries.Calls.Take(2).All(c => c.From == "1330/01/01" && c.To == "1404/12/29"),
     "Opening period ends on previous Persian calendar day");
 Check(queries.Calls.Skip(2).All(c => c.From == input.FromDateJalali && c.To == input.ToDateJalali),
@@ -37,6 +38,14 @@ Check(result.ReportData.Single(r => r.GroupTitle == "history-only").ClosingBalan
     "Historical-only groups survive merge");
 Check(result.ReportData.Single(r => r.GroupTitle == "sales-only").ClosingBalance == 10,
     "Sales-only groups survive merge");
+
+foreach (ICollection<int>? zoneIds in new ICollection<int>?[] { null, Array.Empty<int>(), new[] { 101, 102 } })
+{
+    queries.Calls.Clear();
+    await handler.Handle(input with { ZoneIds = zoneIds }, CancellationToken.None);
+    Check(queries.Calls.Count == 4 && queries.Calls.All(c => ReferenceEquals(c.ZoneIds, zoneIds)),
+        "Optional zoneIds reaches all opening and period queries");
+}
 
 queries.Calls.Clear();
 await handler.Handle(input with { FromDateJalali = "1404/01/01" }, CancellationToken.None);
@@ -57,14 +66,14 @@ foreach (var invalid in new[]
 
 sealed class FakeQueries : IWaterReceivablesQueryService
 {
-    public List<(string From, string To)> Calls { get; } = new();
-    public Task<IEnumerable<WaterReceivablesAmountOutputDto>> GetSales(WaterReceivablesGroupingEnum groupBy, string fromDate, string toDate, CancellationToken cancellationToken)
-        => Get(fromDate, toDate, true);
-    public Task<IEnumerable<WaterReceivablesAmountOutputDto>> GetCollections(WaterReceivablesGroupingEnum groupBy, string fromDate, string toDate, CancellationToken cancellationToken)
-        => Get(fromDate, toDate, false);
-    private Task<IEnumerable<WaterReceivablesAmountOutputDto>> Get(string from, string to, bool sales)
+    public List<(string From, string To, ICollection<int>? ZoneIds)> Calls { get; } = new();
+    public Task<IEnumerable<WaterReceivablesAmountOutputDto>> GetSales(WaterReceivablesGroupingEnum groupBy, string fromDate, string toDate, ICollection<int>? zoneIds, CancellationToken cancellationToken)
+        => Get(fromDate, toDate, zoneIds, true);
+    public Task<IEnumerable<WaterReceivablesAmountOutputDto>> GetCollections(WaterReceivablesGroupingEnum groupBy, string fromDate, string toDate, ICollection<int>? zoneIds, CancellationToken cancellationToken)
+        => Get(fromDate, toDate, zoneIds, false);
+    private Task<IEnumerable<WaterReceivablesAmountOutputDto>> Get(string from, string to, ICollection<int>? zoneIds, bool sales)
     {
-        Calls.Add((from, to));
+        Calls.Add((from, to, zoneIds));
         bool opening = from == "1330/01/01" && to != "1405/03/31";
         var data = opening
             ? sales ? new[] { Row("home", 100), Row("history-only", 40) } : new[] { Row("home", 30) }

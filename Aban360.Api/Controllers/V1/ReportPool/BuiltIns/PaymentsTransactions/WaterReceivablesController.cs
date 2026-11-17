@@ -8,7 +8,9 @@ using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions;
+
 [Route("v1/water-receivables")]
 public class WaterReceivablesController : BaseController
 {

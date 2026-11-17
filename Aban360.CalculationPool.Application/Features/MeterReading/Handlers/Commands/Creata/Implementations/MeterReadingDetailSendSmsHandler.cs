@@ -69,8 +69,6 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Com
             _smsDraftQueryService = smsDraftQueryService;
             _smsDraftQueryService.NotNull(nameof(smsDraftQueryService));
 
-
-
             string BillToDateTable = @"آبفا {ZoneTitle}{newLine}{BillTypeLiteral}{newLine}{FullName}{newLine}از: {PreviousDateJalali}{newLine}تا: {CurrentDateJalali}{newLine}از شماره: {PreviousNumber}{newLine}تا شماره: {CurrentNumber}{newLine}{TarefeSaxtValue}دوره: {ThisPeriodAmountValue} ریال{newLine}{PreBedBesLiteral}{PreBedBesValue} ریال{newLine}مبلغ: {Payable} ریال{newLine}ش ق: {BillId}{newLine}{PayText}{newLine}{DeadlineText}{newLine}{LinkValue}";
             string Bill = @"{ZoneTitle}{newLine}" +
                 @"{BillTypeLiteral}{newLine}" +
