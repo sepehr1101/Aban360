@@ -1,0 +1,56 @@
+# راهنمای فرانت گزارش مانده مطالبات آب‌بها
+
+## مسیرها
+
+| روش | مسیر | کاربرد |
+|---|---|---|
+| POST | `/v1/water-receivables/raw` | دریافت داده گزارش |
+| POST | `/v1/water-receivables/excel/{connectionId}` | تولید Excel با روال فعلی SignalR |
+| POST | `/v1/water-receivables/sti` | دریافت شناسه JSON گزارش چاپی؛ `reportCode = 2900` |
+
+## ورودی مشترک هر سه مسیر
+
+```json
+{
+  "groupBy": 1,
+  "fromDateJalali": "1405/01/01",
+  "toDateJalali": "1405/03/31"
+}
+```
+
+| فیلد | شرح |
+|---|---|
+| `groupBy` | نوع گروه‌بندی از enum با نام `WaterReceivablesGroupingEnum`؛ مقدار عددی ارسال شود |
+| `fromDateJalali` | از تاریخ؛ شمسی با قالب `yyyy/MM/dd` |
+| `toDateJalali` | تا تاریخ؛ شمسی با قالب `yyyy/MM/dd` |
+
+| مقدار `groupBy` | نام enum | عنوان فارسی |
+|---|---|---|
+| 1 | `Usage` | کاربری |
+| 2 | `Zone` | ناحیه |
+| 3 | `Region` | منطقه |
+
+## ستون‌های `reportData`
+
+| فیلد | عنوان فارسی |
+|---|---|
+| `groupTitle` | کاربری / ناحیه / منطقه، متناسب با گروه‌بندی انتخاب‌شده |
+| `openingBalance` | مانده ابتدا |
+| `periodSales` | فروش طی دوره |
+| `periodCollections` | وصول طی دوره |
+| `closingBalance` | مانده انتها |
+
+مانده انتها = مانده ابتدا + فروش طی دوره − وصول طی دوره.
+
+## اطلاعات `reportHeader`
+
+| فیلد | عنوان فارسی |
+|---|---|
+| `title` | عنوان گزارش |
+| `groupBy` | نوع گروه‌بندی |
+| `fromDateJalali` | از تاریخ |
+| `toDateJalali` | تا تاریخ |
+| `reportDateJalali` | تاریخ تهیه گزارش |
+| `recordCount` | تعداد ردیف‌ها |
+
+ساختار پاسخ همان Envelope و گزارش‌های فعلی است. مسیر Excel ورودی را تأیید و نتیجه تولید فایل را با روال فعلی SignalR اعلام می‌کند. مسیر STI شناسه JSON و کد گزارش را برمی‌گرداند؛ قالب چاپی با کد **2900** تعریف شود.

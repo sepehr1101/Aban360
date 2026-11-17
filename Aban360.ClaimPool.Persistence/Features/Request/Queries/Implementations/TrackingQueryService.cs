@@ -243,7 +243,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
 					Join Db70.dbo.T46 t46
 						ON t51.C1=t46.C0
                     Where 
-                        t.TrackNumber=@TrackNumber AND
+                        t.TrackNumber = @TrackNumber AND
                         t.Status = @statusId
 					Order By t.DateAndTime Desc";
         }
