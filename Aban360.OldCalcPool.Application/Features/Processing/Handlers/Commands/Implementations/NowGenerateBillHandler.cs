@@ -69,6 +69,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.
 
             _validator = validator;
             _validator.NotNull(nameof(validator));
+
             _requestService = requestService;
             _requestService.NotNull(nameof(requestService));
         }
