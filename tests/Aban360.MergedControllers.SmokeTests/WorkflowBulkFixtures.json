@@ -1,0 +1,14 @@
+[
+  {
+    "Source": "Aban360.MeterPool.Persistence/Features/Reading/Commands/BlockCommandService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportWorkflow10/Bulk/BlockCommandService.cs"
+  },
+  {
+    "Source": "Aban360.MeterPool.Persistence/Features/Reading/Commands/TrackingCommandService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportWorkflow10/Bulk/TrackingCommandService.cs"
+  },
+  {
+    "Source": "Aban360.MeterPool.Persistence/Features/Reading/Commands/DetailCommandService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportWorkflow10/Bulk/DetailCommandService.cs"
+  }
+]

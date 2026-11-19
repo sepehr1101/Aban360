@@ -1,8 +1,4 @@
 using Aban360.ClaimPool.Application.Features.People.Services;
-using Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Contracts;
-
-using Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Contracts;
-using Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.People.Dto.Commands;
 using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;

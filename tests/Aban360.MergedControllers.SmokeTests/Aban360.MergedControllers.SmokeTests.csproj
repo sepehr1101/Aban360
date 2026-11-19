@@ -35,4 +35,27 @@
     <None Update="ServiceConsolidationWave20.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="ServiceConsumersWave20.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationCritical10/Contracts/**/*.cs" Link="LegacyCritical10/%(Filename)%(Extension)" />
+    <None Update="ServiceConsolidationCritical10.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="ServiceConsumersCritical10.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationAuxiliary10/Contracts/**/*.cs" Link="LegacyAuxiliary10/%(Filename)%(Extension)" />
+    <None Update="ServiceConsolidationAuxiliary10.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="ServiceConsumersAuxiliary10.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationManagement20/Contracts/**/*.cs" Link="LegacyManagement20/%(Filename)%(Extension)" />
+    <None Update="ServiceConsolidationManagement20.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationWorkflow10/Contracts/**/*.cs" Link="LegacyWorkflow10/%(Filename)%(Extension)" />
+    <None Update="ServiceConsolidationWorkflow10.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationOperations19/Contracts/**/*.cs" Link="LegacyOperations19/%(Filename)%(Extension)" />
+    <None Update="ServiceConsolidationOperations19.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup><Compile Remove="OriginalConsumersOperations19/**/*.cs" /></ItemGroup>
 </Project>

@@ -1,0 +1,152 @@
+[
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/UsageGroup1InsertHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/UsageGroup1InsertHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/UsageGroup1DuplicateInsertHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/UsageGroup1DuplicateInsertHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/UsageGroup1UpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/UsageGroup1UpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/UsageGroup1RemoveHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/UsageGroup1RemoveHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/UsageGroup2InsertHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/UsageGroup2InsertHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/UsageGroup2UpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/UsageGroup2UpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/UsageGroup2RemoveHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/UsageGroup2RemoveHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/UsageGroup3InsertHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/UsageGroup3InsertHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/UsageGroup3UpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/UsageGroup3UpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/UsageGroup3RemoveHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/UsageGroup3RemoveHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/ConCompanyInsertHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/ConCompanyInsertHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/ConCompanyUpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/ConCompanyUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/ConCompanyRemoveHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/ConCompanyRemoveHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/ConCompanyPersonnelInsertHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/ConCompanyPersonnelInsertHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/ConCompanyPersonnelUpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/ConCompanyPersonnelUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/ConCompanyPersonnelRemoveHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/ConCompanyPersonnelRemoveHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/SubscriptionAssignmentUpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/SubscriptionAssignmentUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/SubscriptionAssignmentByTrackNumberUpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/SubscriptionAssignmentByTrackNumberUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/BillReturnCauseCreateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/BillReturnCauseCreateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/BillReturnCauseUpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/BillReturnCauseUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/BillReturnCauseDeleteHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/BillReturnCauseDeleteHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersManagement20/MeterChangeCreateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/Before/MeterChangeCreateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup1Service.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/After/UsageGroup1Service.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup2Service.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/After/UsageGroup2Service.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup3Service.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/After/UsageGroup3Service.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/After/ConCompanyService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyPersonnelService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/After/ConCompanyPersonnelService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Services/SubscriptionAssignmentService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/After/SubscriptionAssignmentService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Application/Features/Db70/Services/BillReturnCauseService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/After/BillReturnCauseService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Application/Features/Processing/Services/MeterChangeService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesManagement20/After/MeterChangeService.cs",
+    "Before": false
+  }
+]

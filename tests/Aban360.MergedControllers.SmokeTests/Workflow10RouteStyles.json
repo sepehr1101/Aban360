@@ -1,0 +1,5 @@
+{
+  "Aban360.Api.Controllers.V1.ClaimPool.Tracking.TrackingController": "v1/tracking",
+  "Aban360.Api.Controllers.V1.MeterPool.Reading.MeterReadingController": "v1/meter-reading",
+  "Aban360.Api.Controllers.V1.UserPool.Auth.KartableAccessController": "v1/kartable-access"
+}

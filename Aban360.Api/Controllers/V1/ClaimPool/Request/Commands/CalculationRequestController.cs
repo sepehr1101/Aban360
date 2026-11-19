@@ -1,7 +1,6 @@
-﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
+using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
@@ -11,6 +10,7 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.ClaimPool.Application.Features.Request.Services;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 {
@@ -19,37 +19,22 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     {
         private readonly ICalculationRequestHandler _calculationRequestHandler;
         private readonly IReCalculationRequestHandler _reCalculationRequestHandler;
-        private readonly ICalculationRequestInsertManualHandler _calculationRequestInsertManualHandler;
-        private readonly ICalculationRequestRemoveManualHandler _calculationRequestRemoveManualHandler;
+        private readonly IManualCalculationRequestService _manualCalculationRequestService;
         private readonly ICalculationRequestDisplayHandler _calculationRequestDisplayHandler;
         private readonly ICalculationRequestConfirmHandler _calculationRequestConfirmHandler;
-        public CalculationRequestController(
-            ICalculationRequestHandler calculationRequestHandler,
-            IReCalculationRequestHandler reCalculationRequestHandler,
-            ICalculationRequestInsertManualHandler calculationRequestInsertManualHandler,
-            ICalculationRequestRemoveManualHandler calculationRequestRemoveManualHandler,
-            ICalculationRequestDisplayHandler calculationRequestDisplayHandler,
-            ICalculationRequestConfirmHandler calculationRequestConfirmHandler)
+        public CalculationRequestController(ICalculationRequestHandler calculationRequestHandler, IReCalculationRequestHandler reCalculationRequestHandler, IManualCalculationRequestService manualCalculationRequestService, ICalculationRequestDisplayHandler calculationRequestDisplayHandler, ICalculationRequestConfirmHandler calculationRequestConfirmHandler)
         {
             _calculationRequestHandler = calculationRequestHandler;
             _calculationRequestHandler.NotNull(nameof(calculationRequestHandler));
-
             _reCalculationRequestHandler = reCalculationRequestHandler;
             _reCalculationRequestHandler.NotNull(nameof(reCalculationRequestHandler));
-
-            _calculationRequestInsertManualHandler = calculationRequestInsertManualHandler;
-            _calculationRequestInsertManualHandler.NotNull(nameof(calculationRequestInsertManualHandler));
-
-            _calculationRequestRemoveManualHandler = calculationRequestRemoveManualHandler;
-            _calculationRequestRemoveManualHandler.NotNull(nameof(calculationRequestRemoveManualHandler));
-
+            _manualCalculationRequestService = manualCalculationRequestService;
+            _manualCalculationRequestService.NotNull(nameof(manualCalculationRequestService));
             _calculationRequestDisplayHandler = calculationRequestDisplayHandler;
             _calculationRequestDisplayHandler.NotNull(nameof(calculationRequestDisplayHandler));
-
             _calculationRequestConfirmHandler = calculationRequestConfirmHandler;
             _calculationRequestConfirmHandler.NotNull(nameof(calculationRequestConfirmHandler));
         }
-
 
         [HttpPost]
         [Route("calculation")]
@@ -60,7 +45,6 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto> result = await _calculationRequestHandler.Handle(inputDto.TrackNumber, userCode, cancellationToken);
             return Ok(result);
         }
-
 
         [HttpGet]
         [Route("calculation/{trackNumber}")]
@@ -87,7 +71,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<SaleAndAfterSaleDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> InsertManualCalculation([FromBody] KartInsertManualInputDto inputDto, CancellationToken cancellationToken)
         {
-            SaleAndAfterSaleDataOutputDto result = await _calculationRequestInsertManualHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            SaleAndAfterSaleDataOutputDto result = await _manualCalculationRequestService.InsertAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -96,7 +80,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<KartRemoveManualInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> RemoveManualCalculation([FromBody] KartRemoveManualInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _calculationRequestRemoveManualHandler.Handle(inputDto, cancellationToken);
+            await _manualCalculationRequestService.RemoveAsync(inputDto, cancellationToken);
             return Ok(inputDto);
         }
 

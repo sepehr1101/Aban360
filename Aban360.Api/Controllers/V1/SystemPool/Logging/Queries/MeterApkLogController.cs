@@ -1,36 +1,25 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.SystemPool.Application.Features.Logging.Handlers.Commands.Contracts;
 using Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Conracts;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Input;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Output;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.SystemPool.Application.Features.Logging.Services;
 
 namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
 {
     [Route("v1/meter-apk-log")]
     public class MeterApkLogController : BaseController
     {
-        private readonly IMeterApkLogSaveHandler _MeterApkLogSaveHandler;
-        private readonly IMeterApkLogGetAllHandler _MeterApkGetAllHandler;
-        private readonly IMeterApkLogGetByFileNameHandler _MeterApkLogGetByFileNameHandler;
+        private readonly IMeterApkLogService _meterApkLogService;
         private string _folderPath = DirectoryLiterals.MeterApkLogsPath;
-        public MeterApkLogController(
-            IMeterApkLogSaveHandler MeterApkLogSaveHandler,
-            IMeterApkLogGetAllHandler MeterApkGetAllHandler,
-            IMeterApkLogGetByFileNameHandler MeterApkLogGetByFileNameHandler)
+        public MeterApkLogController(IMeterApkLogService meterApkLogService)
         {
-            _MeterApkLogSaveHandler = MeterApkLogSaveHandler;
-            _MeterApkLogSaveHandler.NotNull(nameof(MeterApkLogSaveHandler));
-
-            _MeterApkGetAllHandler = MeterApkGetAllHandler;
-            _MeterApkGetAllHandler.NotNull(nameof(MeterApkGetAllHandler));
-
-            _MeterApkLogGetByFileNameHandler = MeterApkLogGetByFileNameHandler;
-            _MeterApkLogGetByFileNameHandler.NotNull(nameof(MeterApkLogGetByFileNameHandler));
+            _meterApkLogService = meterApkLogService;
+            _meterApkLogService.NotNull(nameof(meterApkLogService));
         }
 
         [Route("upload")]
@@ -38,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<MeterApkLogInsertDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UploadFile(MeterApkLogInsertDto inputDto, CancellationToken cancellation)
         {
-            await _MeterApkLogSaveHandler.Handle(inputDto, cancellation);
+            await _meterApkLogService.SaveAsync(inputDto, cancellation);
             return Ok(inputDto);
         }
 
@@ -47,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MeterApkLogGetDto>>), StatusCodes.Status200OK)]
         public IActionResult GetAll(CancellationToken cancellation)
         {
-            IEnumerable<MeterApkLogGetDto> result = _MeterApkGetAllHandler.Handle(cancellation);
+            IEnumerable<MeterApkLogGetDto> result = _meterApkLogService.GetAll(cancellation);
             return Ok(result);
         }
 
@@ -61,6 +50,7 @@ namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
             {
                 throw new InvalidTrackingException(ExceptionLiterals.NotFoundFile);
             }
+
             FileStream fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             return File(fileStream, "text/plain", fileName, enableRangeProcessing: true);
         }

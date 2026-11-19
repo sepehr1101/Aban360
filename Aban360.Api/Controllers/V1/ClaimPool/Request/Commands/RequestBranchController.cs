@@ -1,5 +1,4 @@
-﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
@@ -10,63 +9,24 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.ClaimPool.Application.Features.Request.Services;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 {
     [Route("v1/request")]
     public class RequestBranchController : BaseController
     {
-        private readonly IKartableRequestGetAllHandler _requestKartableGetAllHandler;
-        private readonly IDisplayRequestHandler _displayRequestHandler;
-        private readonly IRequestBasicInfoGetHandler _requestBasicInfoGetHandler;
-        private readonly IMoshtrakRequestUpdateHandler _moshtrakRequestUpdateHandler;
-        private readonly ICloseRequestHandler _closeRequestHandle;
-        private readonly IPreviousStatusRequestHandler _previousStatusRequestHandler;
-        private readonly IReferredToIndividualRequestHandler _referredToIndividualRequestHandler;
+        private readonly IRequestDisplayService _requestDisplayService;
+        private readonly IRequestLifecycleService _requestLifecycleService;
         private readonly IGeneralInformationHandler _generalInformationRequestHandler;
-        private readonly IPreviousRequestGetByBillIdHandler _previousRequestGetByBillIdHandler;
-        private readonly ISwapRequestTypeHandler _swapRequestTypeHandler;
-        public RequestBranchController(
-            IKartableRequestGetAllHandler requestKartableGetAllHandler,
-            IDisplayRequestHandler displayRequestHandler,
-            IRequestBasicInfoGetHandler requestBasicInfoGetHandler,
-            IMoshtrakRequestUpdateHandler moshtrakRequestUpdateHandler,
-            ICloseRequestHandler closeRequestHandle,
-            IPreviousStatusRequestHandler previousStatusRequestHandler,
-            IReferredToIndividualRequestHandler referredToIndividualRequestHandler,
-            IGeneralInformationHandler generalInformationRequestHandler,
-            IPreviousRequestGetByBillIdHandler previousRequestGetByBillIdHandler,
-            ISwapRequestTypeHandler swapRequestTypeHandler)
+        public RequestBranchController(IRequestDisplayService requestDisplayService, IRequestLifecycleService requestLifecycleService, IGeneralInformationHandler generalInformationRequestHandler)
         {
-            _requestKartableGetAllHandler = requestKartableGetAllHandler;
-            _requestKartableGetAllHandler.NotNull(nameof(requestKartableGetAllHandler));
-
-            _displayRequestHandler = displayRequestHandler;
-            _displayRequestHandler.NotNull(nameof(displayRequestHandler));
-
-            _requestBasicInfoGetHandler = requestBasicInfoGetHandler;
-            _requestBasicInfoGetHandler.NotNull(nameof(requestBasicInfoGetHandler));
-
-            _moshtrakRequestUpdateHandler = moshtrakRequestUpdateHandler;
-            _moshtrakRequestUpdateHandler.NotNull(nameof(moshtrakRequestUpdateHandler));
-
-            _closeRequestHandle = closeRequestHandle;
-            _closeRequestHandle.NotNull(nameof(closeRequestHandle));
-
-            _previousStatusRequestHandler = previousStatusRequestHandler;
-            _previousStatusRequestHandler.NotNull(nameof(previousStatusRequestHandler));
-
-            _referredToIndividualRequestHandler = referredToIndividualRequestHandler;
-            _referredToIndividualRequestHandler.NotNull(nameof(referredToIndividualRequestHandler));
-
+            _requestDisplayService = requestDisplayService;
+            _requestDisplayService.NotNull(nameof(requestDisplayService));
+            _requestLifecycleService = requestLifecycleService;
+            _requestLifecycleService.NotNull(nameof(requestLifecycleService));
             _generalInformationRequestHandler = generalInformationRequestHandler;
             _generalInformationRequestHandler.NotNull(nameof(generalInformationRequestHandler));
-
-            _previousRequestGetByBillIdHandler = previousRequestGetByBillIdHandler;
-            _previousRequestGetByBillIdHandler.NotNull(nameof(previousRequestGetByBillIdHandler));
-
-            _swapRequestTypeHandler = swapRequestTypeHandler;
-            _swapRequestTypeHandler.NotNull(nameof(swapRequestTypeHandler));
         }
 
         [HttpPost]
@@ -74,7 +34,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> EditRequest([FromBody] MoshtrakUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _moshtrakRequestUpdateHandler.Handle(inputDto, cancellationToken);
+            await _requestLifecycleService.MoshtrakRequestUpdateAsync(inputDto, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -84,7 +44,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> CloseRequest([FromBody] CloseRequestInputDto inputDto, CancellationToken cancellationToken)
         {
             int userName = UserService.GetUserCode(CurrentUser.Username);
-            RequestCloseOuputDto result = await _closeRequestHandle.Handle(inputDto, userName, cancellationToken);
+            RequestCloseOuputDto result = await _requestLifecycleService.CloseRequestAsync(inputDto, userName, cancellationToken);
             return Ok(result);
         }
 
@@ -94,7 +54,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> ToReferRequest([FromBody] TrackNumberWithDescriptionInputDto inputDto, CancellationToken cancellationToken)
         {
             int userName = UserService.GetUserCode(CurrentUser.Username);
-            await _referredToIndividualRequestHandler.Handle(inputDto, userName, cancellationToken);
+            await _requestLifecycleService.ReferredToIndividualRequestAsync(inputDto, userName, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -104,7 +64,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> SetPreviousStatus([FromBody] TrackNumberWithDescriptionInputDto inputDto, CancellationToken cancellationToken)
         {
             int userName = UserService.GetUserCode(CurrentUser.Username);
-            await _previousStatusRequestHandler.Handle(inputDto, userName, cancellationToken);
+            await _requestLifecycleService.PreviousStatusRequestAsync(inputDto, userName, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -122,7 +82,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<PreviousRequestDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetPreviousRequests(string billId, CancellationToken cancellationToken)
         {
-            IEnumerable<PreviousRequestDataOutputDto> result = await _previousRequestGetByBillIdHandler.Handle(billId, cancellationToken);
+            IEnumerable<PreviousRequestDataOutputDto> result = await _requestDisplayService.PreviousRequestGetByBillIdAsync(billId, cancellationToken);
             return Ok(result);
         }
 
@@ -131,7 +91,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<SwapRequestTypeOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SwapRequestType([FromBody] SwapRequestTypeInputDto inputDto, CancellationToken cancellationToken)
         {
-            SwapRequestTypeOutputDto resutl = await _swapRequestTypeHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            SwapRequestTypeOutputDto resutl = await _requestLifecycleService.SwapRequestTypeAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(resutl);
         }
     }

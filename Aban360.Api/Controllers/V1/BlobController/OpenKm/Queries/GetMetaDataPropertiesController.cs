@@ -1,20 +1,21 @@
-﻿using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Contracts;
+using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Contracts;
 using Aban360.BlobPool.Domain.Features.DmsServices.Dto.Queries;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.BlobPool.Application.Features.OpenKm.Services;
 
 namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
 {
     [Route("v1/open-km")]
     public class GetMetaDataPropertiesController : BaseController
     {
-        private readonly IGetMetaDataPropertiesHandler _getMetaDataPropertiesHandler;
-        public GetMetaDataPropertiesController(IGetMetaDataPropertiesHandler getMetaDataPropertiesHandler)
+        private readonly IOpenKmFoldersMetadataService _openKmFoldersMetadataService;
+        public GetMetaDataPropertiesController(IOpenKmFoldersMetadataService openKmFoldersMetadataService)
         {
-            _getMetaDataPropertiesHandler = getMetaDataPropertiesHandler;
-            _getMetaDataPropertiesHandler.NotNull(nameof(getMetaDataPropertiesHandler));
+            _openKmFoldersMetadataService = openKmFoldersMetadataService;
+            _openKmFoldersMetadataService.NotNull(nameof(openKmFoldersMetadataService));
         }
 
         [HttpGet, HttpPost]
@@ -23,7 +24,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
         [AllowAnonymous]
         public async Task<IActionResult> GetDirectoryTree(string input, CancellationToken cancellation)
         {
-            ICollection<MetaDataOutput> result = await _getMetaDataPropertiesHandler.Handle(input, false, cancellation);
+            ICollection<MetaDataOutput> result = await _openKmFoldersMetadataService.GetMetaDataPropertiesAsync(input, false, cancellation);
             return Ok(result);
         }
 
@@ -33,7 +34,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
         [AllowAnonymous]
         public async Task<IActionResult> GetFileTitle(string input, CancellationToken cancellation)
         {
-            ICollection<MetaDataOutput> result = await _getMetaDataPropertiesHandler.Handle(input, true, cancellation);
+            ICollection<MetaDataOutput> result = await _openKmFoldersMetadataService.GetMetaDataPropertiesAsync(input, true, cancellation);
             return Ok(result.First().ValueTitle);
         }
     }

@@ -1,8 +1,7 @@
-﻿using Aban360.Common.Exceptions;
+using Aban360.Common.Exceptions;
 using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Aban360.UserPool.Persistence.Constants.Enums;
-using static Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations.UserCreateHandler;
-using static Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations.UserUpdateHandler;
+using static Aban360.UserPool.Application.Features.Auth.Services.UserManagementService;
 
 namespace Aban360.UserPool.Application.Common.Base
 {

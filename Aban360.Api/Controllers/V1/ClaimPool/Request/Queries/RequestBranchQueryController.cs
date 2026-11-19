@@ -1,4 +1,4 @@
-﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations;
 using Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
@@ -8,67 +8,26 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.ClaimPool.Application.Features.Request.Services;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
 {
     [Route("v1/request")]
     public class RequestBranchQueryController : BaseController
     {
-        private readonly IKartableRequestGetAllHandler _requestKartableGetAllHandler;
-        private readonly IDisplayRequestHandler _displayRequestHandler;
-        private readonly IDisplayRequestByTrackIdHandler _displayRequestByTrackIdHandler;
-        private readonly IRequestBasicInfoGetHandler _requestBasicInfoGetHandler;
-        private readonly IToSetAssessmentTimeGetByTrackIdHandler _toSetAssessmentTimeGetHandler;
-        private readonly IToSetReAssessmentTimeGetByTrackIdHandler _toSetReAssessmentTimeGetHandler;
-        private readonly IToCalulationConfirmHandler _toSetCalulationHandler;
-        private readonly IReadingBlockListGetHandler _readingBlockListGetHandler;
-        private readonly IKitCodeDictionaryGetHandler _kitCodeDictionaryGetHandler;
-        public RequestBranchQueryController(
-            IKartableRequestGetAllHandler requestKartableGetAllHandler,
-            IDisplayRequestHandler displayRequestHandler,
-            IDisplayRequestByTrackIdHandler displayRequestByTrackIdHandler,
-            IRequestBasicInfoGetHandler requestBasicInfoGetHandler,
-            IToSetAssessmentTimeGetByTrackIdHandler toSetAssessmentTimeGetHandler,
-            IToSetReAssessmentTimeGetByTrackIdHandler toSetReAssessmentTimeGetHandler,
-            IToCalulationConfirmHandler toSetCalulationHandler,
-            IReadingBlockListGetHandler readingBlockListGetHandler,
-            IKitCodeDictionaryGetHandler kitCodeDictionaryGetHandler)
+        private readonly IRequestDisplayService _requestDisplayService;
+        public RequestBranchQueryController(IRequestDisplayService requestDisplayService)
         {
-            _requestKartableGetAllHandler = requestKartableGetAllHandler;
-            _requestKartableGetAllHandler.NotNull(nameof(requestKartableGetAllHandler));
-
-            _displayRequestByTrackIdHandler = displayRequestByTrackIdHandler;
-            _displayRequestByTrackIdHandler.NotNull(nameof(displayRequestByTrackIdHandler));
-
-            _displayRequestHandler = displayRequestHandler;
-            _displayRequestHandler.NotNull(nameof(displayRequestHandler));
-
-            _requestBasicInfoGetHandler = requestBasicInfoGetHandler;
-            _requestBasicInfoGetHandler.NotNull(nameof(requestBasicInfoGetHandler));
-
-            _toSetAssessmentTimeGetHandler = toSetAssessmentTimeGetHandler;
-            _toSetAssessmentTimeGetHandler.NotNull(nameof(toSetAssessmentTimeGetHandler));
-
-            _toSetReAssessmentTimeGetHandler = toSetReAssessmentTimeGetHandler;
-            _toSetReAssessmentTimeGetHandler.NotNull(nameof(toSetReAssessmentTimeGetHandler));
-
-            _toSetCalulationHandler = toSetCalulationHandler;
-            _toSetCalulationHandler.NotNull(nameof(toSetCalulationHandler));
-
-            _readingBlockListGetHandler = readingBlockListGetHandler;
-            _readingBlockListGetHandler.NotNull(nameof(readingBlockListGetHandler));
-
-            _kitCodeDictionaryGetHandler = kitCodeDictionaryGetHandler;
-            _kitCodeDictionaryGetHandler.NotNull(nameof(kitCodeDictionaryGetHandler));
+            _requestDisplayService = requestDisplayService;
+            _requestDisplayService.NotNull(nameof(requestDisplayService));
         }
-
 
         [HttpGet]
         [Route("kartable")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<TrackingKartableHeaderOutputDto, TrackingKartableDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> RequestKartable(CancellationToken cancellationToken)
         {
-            ReportOutput<TrackingKartableHeaderOutputDto, TrackingKartableDataOutputDto> result = await _requestKartableGetAllHandler.Handle(CurrentUser, cancellationToken);
+            ReportOutput<TrackingKartableHeaderOutputDto, TrackingKartableDataOutputDto> result = await _requestDisplayService.KartableRequestGetAllAsync(CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -77,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DisplayRequest([FromBody] ZoneIdAndTrackNumber inputDto, CancellationToken cancellationToken)
         {
-            MoshtrakDataOutputDto result = await _displayRequestHandler.Handle(inputDto.TrackNumber, cancellationToken);
+            MoshtrakDataOutputDto result = await _requestDisplayService.DisplayRequestAsync(inputDto.TrackNumber, cancellationToken);
             return Ok(result);
         }
 
@@ -86,7 +45,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DisplayRequest(int trackNumber, CancellationToken cancellationToken)
         {
-            MoshtrakDataOutputDto result = await _displayRequestHandler.Handle(trackNumber, cancellationToken);
+            MoshtrakDataOutputDto result = await _requestDisplayService.DisplayRequestAsync(trackNumber, cancellationToken);
             return Ok(result);
         }
 
@@ -95,7 +54,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<MoshtrakDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DisplayRequestByTrackId(Guid trackId, CancellationToken cancellationToken)
         {
-            MoshtrakDataOutputDto result = await _displayRequestByTrackIdHandler.Handle(trackId, CurrentUser, cancellationToken);
+            MoshtrakDataOutputDto result = await _requestDisplayService.DisplayRequestByTrackIdAsync(trackId, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -104,7 +63,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<RequestBasicInfoDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetBasicInfo(int trackNumber, CancellationToken cancellationToken)
         {
-            RequestBasicInfoDataOutputDto result = await _requestBasicInfoGetHandler.Handle(trackNumber, CurrentUser, cancellationToken);
+            RequestBasicInfoDataOutputDto result = await _requestDisplayService.RequestBasicInfoGetAsync(trackNumber, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -113,7 +72,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ToSetAssessmentTimeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAssessmentTimeInfo(Guid trackId, CancellationToken cancellationToken)
         {
-            ToSetAssessmentTimeGetDto result = await _toSetAssessmentTimeGetHandler.Handle(trackId, CurrentUser, cancellationToken);
+            ToSetAssessmentTimeGetDto result = await _requestDisplayService.ToSetAssessmentTimeGetByTrackIdAsync(trackId, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -122,7 +81,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ToSetReAssessmentTimeGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetReAssessmentTimeInfo(Guid trackId, CancellationToken cancellationToken)
         {
-            ToSetReAssessmentTimeGetDto result = await _toSetReAssessmentTimeGetHandler.Handle(trackId, CurrentUser, cancellationToken);
+            ToSetReAssessmentTimeGetDto result = await _requestDisplayService.ToSetReAssessmentTimeGetByTrackIdAsync(trackId, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -131,7 +90,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ToCalculationConfirmGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSetCalculationInfo(Guid trackId, CancellationToken cancellationToken)
         {
-            ToCalculationConfirmGetDto result = await _toSetCalulationHandler.Handle(trackId, CurrentUser, cancellationToken);
+            ToCalculationConfirmGetDto result = await _requestDisplayService.ToCalulationConfirmAsync(trackId, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -140,16 +99,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<StringDictionary>>), StatusCodes.Status200OK)]
         public IActionResult GetBlocksDictionary(CancellationToken cancellationToken)
         {
-            IEnumerable<StringDictionary> result = _readingBlockListGetHandler.Handle(cancellationToken);
+            IEnumerable<StringDictionary> result = _requestDisplayService.ReadingBlockListGetAsync(cancellationToken);
             return Ok(result);
         }
-        
+
         [HttpGet]
         [Route("kit-dictionary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
         public IActionResult GetKitsDictionary(CancellationToken cancellationToken)
         {
-            IEnumerable<NumericDictionary> result = _kitCodeDictionaryGetHandler.Handle(cancellationToken);
+            IEnumerable<NumericDictionary> result = _requestDisplayService.KitCodeDictionaryGetAsync(cancellationToken);
             return Ok(result);
         }
     }

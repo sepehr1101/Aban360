@@ -1,6 +1,3 @@
-using Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Delete.Contracts;
-using Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Queries;
@@ -8,6 +5,7 @@ using Aban360.ClaimPool.Persistence.Contexts.Contracts;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.ClaimPool.Application.Features.Metering.Services;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
 {
@@ -15,37 +13,13 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
     public class WaterMeterController : BaseController
     {
         private readonly IUnitOfWork _uow;
-        private readonly IWaterMeterCreateHandler _waterMeterCreateHandler;
-        private readonly IWaterMeterUpdateHandler _waterMeterUpdateHandler;
-        private readonly IWaterMeterDeleteHandler _waterMeterDeleteHandler;
-        private readonly IWaterMeterGetSingleHandler _waterMeterGetSingleHandler;
-        private readonly IWaterMeterGetAllHandler _waterMeterGetAllHandler;
-
-        public WaterMeterController(
-            IUnitOfWork uow,
-            IWaterMeterCreateHandler waterMeterCreateHandler,
-            IWaterMeterUpdateHandler waterMeterUpdateHandler,
-            IWaterMeterDeleteHandler waterMeterDeleteHandler,
-            IWaterMeterGetSingleHandler waterMeterGetSingleHandler,
-            IWaterMeterGetAllHandler waterMeterGetAllHandler)
+        private readonly IWaterMeterService _waterMeterService;
+        public WaterMeterController(IUnitOfWork uow, IWaterMeterService waterMeterService)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
-
-            _waterMeterCreateHandler = waterMeterCreateHandler;
-            _waterMeterCreateHandler.NotNull(nameof(waterMeterCreateHandler));
-
-            _waterMeterUpdateHandler = waterMeterUpdateHandler;
-            _waterMeterUpdateHandler.NotNull(nameof(waterMeterUpdateHandler));
-
-            _waterMeterDeleteHandler = waterMeterDeleteHandler;
-            _waterMeterDeleteHandler.NotNull(nameof(waterMeterDeleteHandler));
-
-            _waterMeterGetSingleHandler = waterMeterGetSingleHandler;
-            _waterMeterGetSingleHandler.NotNull(nameof(waterMeterGetSingleHandler));
-
-            _waterMeterGetAllHandler = waterMeterGetAllHandler;
-            _waterMeterGetAllHandler.NotNull(nameof(waterMeterGetAllHandler));
+            _waterMeterService = waterMeterService;
+            _waterMeterService.NotNull(nameof(waterMeterService));
         }
 
         [HttpPost]
@@ -53,9 +27,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] WaterMeterCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _waterMeterCreateHandler.Handle(createDto, cancellationToken);
+            await _waterMeterService.CreateAsync(createDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
-
             return Ok(createDto);
         }
 
@@ -64,9 +37,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] WaterMeterUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _waterMeterUpdateHandler.Handle(updateDto, cancellationToken);
+            await _waterMeterService.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
-
             return Ok(updateDto);
         }
 
@@ -75,18 +47,17 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] WaterMeterDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _waterMeterDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _waterMeterService.DeleteAsync(deleteDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
-
             return Ok(deleteDto);
         }
 
-        [HttpGet,HttpPost]
+        [HttpGet, HttpPost]
         [Route("single/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<WaterMeterGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
-            WaterMeterGetDto waterMeter = await _waterMeterGetSingleHandler.Handle(id,cancellationToken);
+            WaterMeterGetDto waterMeter = await _waterMeterService.GetSingleAsync(id, cancellationToken);
             return Ok(waterMeter);
         }
 
@@ -95,7 +66,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Metering
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<WaterMeterGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<WaterMeterGetDto> waterMeter = await _waterMeterGetAllHandler.Handle(cancellationToken);
+            ICollection<WaterMeterGetDto> waterMeter = await _waterMeterService.GetAllAsync(cancellationToken);
             return Ok(waterMeter);
         }
     }

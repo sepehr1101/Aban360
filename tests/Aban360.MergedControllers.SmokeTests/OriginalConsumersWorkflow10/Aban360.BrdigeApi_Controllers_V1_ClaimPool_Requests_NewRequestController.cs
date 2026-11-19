@@ -1,0 +1,94 @@
+using global::Aban360.BrdigeApi.Controllers.V1.ClaimPool.Requests;
+using Microsoft.Extensions.Logging;
+using global::Aban360.BrdigeApi.Controllers.V1;
+using global::Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using global::Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+using global::Aban360.ClaimPool.Domain.Constants;
+using global::Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using global::Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using global::Aban360.Common.Categories.ApiResponse;
+using global::Aban360.Common.Db.Services;
+using global::Aban360.Common.Extensions;
+using global::Aban360.Common.Literals;
+using global::Aban360.NotificationPool.Application.Features.Sms;
+using Hangfire;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BeforeConsumersWorkflow10.Aban360.BrdigeApi.Controllers.V1.ClaimPool.Requests{
+    [Route("v1/request")]
+    public class NewRequestController : BaseController
+    {
+        private readonly IRequestNewBranchHandler _requestNewBranchHandler;
+        private readonly IRequestDuplicateValidationHandler _requestDuplicateValidation;
+        private readonly ISmsOldHandler _smsOldHandler;
+        private readonly IBackgroundJobClient _backgroundJobClient;
+        public NewRequestController(
+            IRequestNewBranchHandler requestNewBranchHandler,
+            IRequestDuplicateValidationHandler requestDuplicateValidation,
+            ISmsOldHandler smsOldHandler,
+            IBackgroundJobClient backgroundJobClient)
+        {
+            _requestNewBranchHandler = requestNewBranchHandler;
+            _requestNewBranchHandler.NotNull(nameof(requestNewBranchHandler));
+
+            _requestDuplicateValidation = requestDuplicateValidation;
+            _requestDuplicateValidation.NotNull(nameof(requestDuplicateValidation));
+
+            _smsOldHandler = smsOldHandler;
+            _smsOldHandler.NotNull(nameof(smsOldHandler));
+
+            _backgroundJobClient = backgroundJobClient;
+            _backgroundJobClient.NotNull(nameof(backgroundJobClient));
+        }
+
+        [HttpPost]
+        [Route("new")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<NewRequestOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> NewRequest([FromBody] RequestNewBranchInputDto inputDto, CancellationToken cancellationToken)
+        {
+            int userCode = UserService.GetUserCode(CurrentUser.Username);
+            var (moshtrakInfo, assessmentSetTimeOutputDto, trackId) = await _requestNewBranchHandler.Handle(inputDto, userCode, cancellationToken);
+            string text = string.Format(SmsTemplates.RequestRegister, moshtrakInfo.TrackNumber, Environment.NewLine);
+            if (inputDto.HasSms)
+            {
+                _backgroundJobClient.Enqueue(() => _smsOldHandler.SendNew(moshtrakInfo.NotificationMobile, text, trackId));
+            }
+            NewRequestOutputDto outputDto;
+            if (assessmentSetTimeOutputDto is not null)
+            {
+                SetAssessmentTimeOutputDto assessmentTimeSmsOutputDto = GetAssessmentTimeOutputDto(moshtrakInfo.TrackNumber, hasCustomerSms: true, hasAssessmentSms: true, assessmentSetTimeOutputDto);
+                outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null, assessmentTimeSmsOutputDto.HasCustomerSms, assessmentTimeSmsOutputDto.CustomerMessage, assessmentTimeSmsOutputDto.HasAssessmentSms, assessmentTimeSmsOutputDto.AssessmentMessage, assessmentDateJalali: assessmentSetTimeOutputDto.AssessmentDateJalai, assessmentName: assessmentSetTimeOutputDto.AssessmentName);
+                return Ok(outputDto);
+            }
+            outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null, false, null, false, null, null, null);
+            return Ok(outputDto);
+        }
+
+        [HttpPost]
+        [Route("is-duplicate/new")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<TrackingDuplicateValidationOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> IsDuplicateNewRequest([FromBody] NewTrackingDuplicateValidationInputDto inputDto, CancellationToken cancellationToken)
+        {
+            TrackingDuplicateValidationInputDto totalValidation = new(null, inputDto.NeighbourBillId, inputDto.NationalCode, TrackingDuplicateValidationTypeEnum.ByNationalCode);
+            TrackingDuplicateValidationOutputDto result = await _requestDuplicateValidation.Handle(totalValidation, cancellationToken);
+            return Ok(result);
+        }
+
+        private SetAssessmentTimeOutputDto GetAssessmentTimeOutputDto(int trackNumber, bool hasCustomerSms, bool hasAssessmentSms, SetAssessmentTimeDataOutputDto result)
+        {
+            string customerText = string.Format(SmsTemplates.RequestTimeSet, result.AssessmentName, result.AssessmentMobileNumber, result.AssessmentDateJalai, result.TrackNumber);
+            string assessmentText = result.ServiceGroupId == 1 ?
+                string.Format(SmsTemplates.NewRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.NeighbourBillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber, result.NeighbourBillId) :
+                string.Format(SmsTemplates.AfterSaleRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.BillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber);
+            if (hasAssessmentSms)
+            {
+                _backgroundJobClient.Enqueue(() => _smsOldHandler.SendNew(result.AssessmentMobileNumber, assessmentText, result.TrackId));
+            }
+            if (hasCustomerSms)
+            {
+                _backgroundJobClient.Enqueue(() => _smsOldHandler.SendNew(result.MobileNumber, customerText, result.TrackId));
+            }
+            return new SetAssessmentTimeOutputDto(trackNumber, hasAssessmentSms, hasCustomerSms, hasAssessmentSms ? assessmentText : null, hasCustomerSms ? customerText : null);
+        }
+    }
+}

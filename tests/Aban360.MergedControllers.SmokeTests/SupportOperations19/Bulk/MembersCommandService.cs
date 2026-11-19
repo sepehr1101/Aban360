@@ -1,0 +1,481 @@
+using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using CommonLiteral = Aban360.Common.Literals;
+using ClaimLiteral = Aban360.ClaimPool.Persistence.Constants.Literals;
+using Dapper;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using Aban360.ReportPool.Domain.Base;
+
+namespace SqlCommandsOperations19.Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations
+{
+    public sealed class MembersCommandService
+    {
+        private const int BulkUpdateCommandTimeoutSeconds = 300;
+        private readonly IDbConnection _sqlConnection;
+        private readonly IDbTransaction _dbTransaction;
+        public MembersCommandService(IDbConnection sqlConnection, IDbTransaction transaction)
+        {
+            _sqlConnection = sqlConnection;
+            _sqlConnection.NotNull(nameof(sqlConnection));
+            _dbTransaction = transaction;
+            _dbTransaction.NotNull(nameof(_dbTransaction));
+        }
+
+        public async Task Insert(CustomerInsertDto insertDto, string dbName)
+        {
+            string command = GetInsertCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, insertDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+
+        public async Task Update(CustomerUpdateDto updateDto, string dbName)
+        {
+            string command = GetUpdateCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+
+        public async Task Update(CustomerTechnicalUpdateDto updateDto, string dbName)
+        {
+            string command = GetTechnicalUpdateCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+
+        public async Task Update(CustomerEstateUpdateDto updateDto, string dbName)
+        {
+            string command = GetCustomerEstateUpdateCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+
+        public async Task Update(CustomerMobileUpdateDto updateDto, string dbName)
+        {
+            string command = GetUpdateMobileCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+
+        public async Task Update(CustomerBranchTypeUpdateDto updateDto, string dbName)
+        {
+            string command = GetUpdateBranchTypeCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+
+        public async Task Update(CustomerDeletionStateUpdateDto updateDto, string dbName)
+        {
+            string command = GetUpdateDeletionStateCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+
+        public async Task Update(CustomerHouseholdUpdateDto updateDto, string dbName)
+        {
+            string command = GetUpdateHouseholdCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+
+        public async Task Update(SubscriptionAssignmentUpdateDto updateDto, string dbName)
+        {
+            string command = GetUpdateSubscriptionAssignementCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+
+        public async Task Update(MeterInstallationUpdateDto updateDto, string dbName)
+        {
+            string command = GetUpdateMeterInstallationDateCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+
+        public async Task Update(CustomerEmptyUnitUpdateDto updateDto, string dbName)
+        {
+            string command = GetUpdateEmptyUnitCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, updateDto, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateMoshtrakin);
+            }
+        }
+
+        public async Task UpdateBedbes(ZoneIdAndCustomerNumber inputDto, long amount, string dbName)
+        {
+            string command = GetUpdateBedBesCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, new { inputDto.CustomerNumber, inputDto.ZoneId, amount }, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateBillAmount);
+            }
+        }
+
+        public async Task UpdateBedbes(ZoneIdAndCustomerNumber inputDto, long amount, string currentDateJalali, string dbName)
+        {
+            string command = GetUpdateBedBesAndNfasCommand(dbName);
+            int recordCount = await _sqlConnection.ExecuteAsync(command, new { inputDto.CustomerNumber, inputDto.ZoneId, amount, currentDateJalali }, _dbTransaction);
+            if (recordCount <= 0)
+            {
+                throw new InvalidCustomerCommandException(ClaimLiteral.ExceptionLiterals.InvalidUpdateBillAmount);
+            }
+        }
+
+        public async Task UpdateBedbes(IEnumerable<MembersFazelabCountAndDebtAmountUpdateDto> input, string dbName)
+        {
+            DataTable table = UpdateDebtAmountDataTable(input);
+            string tempTableCommand = GetUpdateDebtAmountCreateTmpTableCommand();
+            await _sqlConnection.ExecuteAsync(tempTableCommand, null, _dbTransaction);
+            using var bulk = new global::WorkflowRecordingBulkCopy((IDbConnection)_sqlConnection, SqlBulkCopyOptions.Default, (IDbTransaction)_dbTransaction)
+            {
+                DestinationTableName = $"#DebtAmountUpdateTemp",
+                BatchSize = 5000,
+                BulkCopyTimeout = 0
+            };
+            foreach (DataColumn col in table.Columns)
+                bulk.ColumnMappings.Add(col.ColumnName, col.ColumnName);
+            await bulk.WriteToServerAsync(table);
+            int expectedCount = input?.DistinctBy(m => m.CustomerNumber)?.Count() ?? 0;
+            string updateCommand = GetUpdateDebtAmountCommand(dbName);
+            int recordEffected = await _sqlConnection.ExecuteAsync(updateCommand, param: null, transaction: _dbTransaction, commandTimeout: BulkUpdateCommandTimeoutSeconds);
+            if (recordEffected != expectedCount)
+            {
+                throw new ReadingException(CommonLiteral.ExceptionLiterals.InvalidUpdateMembersDebtAmount);
+            }
+        }
+
+        private DataTable UpdateDebtAmountDataTable(IEnumerable<MembersFazelabCountAndDebtAmountUpdateDto> input)
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("ZoneId", typeof(int));
+            table.Columns.Add("CustomerNumber", typeof(int));
+            table.Columns.Add("BillId", typeof(string));
+            table.Columns.Add("Amount", typeof(long));
+            table.Columns.Add("ToDateJalali", typeof(string));
+            foreach (var item in input)
+            {
+                table.Rows.Add(item.ZoneId, item.CustomerNumber, item.BillId, item.Amount, item.ToDateJalali);
+            }
+
+            return table;
+        }
+
+        private string GetUpdateDebtAmountCreateTmpTableCommand()
+        {
+            return $@"Create Table #DebtAmountUpdateTemp
+                    (
+                    	ZoneId int Not Null,
+                    	CustomerNumber  int Not Null,
+                    	BillId  nvarchar(20) Not Null,
+                    	Amount bigint Not Null,
+                        ToDateJalali nvarchar(10) Not Null
+                    )";
+        }
+
+        private string GetUpdateDebtAmountCommand(string dbName)
+        {
+            return $@"Update m
+                    Set 
+                        m.bed_bes = m.bed_bes + t.Amount ,
+                        m.n_ab = IIF(m.n_ab = 0, 1, m.n_ab),
+	                    m.n_faz = IIF(t.ToDateJalali COLLATE Persian_100_CI_AI>= m.G_inst_fas COLLATE Persian_100_CI_AI AND m.G_inst_fas>'1330/01/01' , 2 ,m.n_faz )
+                    From [{dbName}].dbo.members m
+                    Join #DebtAmountUpdateTemp t
+                    	On m.Town=t.ZoneId  AND m.radif=t.CustomerNumber";
+        }
+
+        private string GetInsertCommand(string dbName)
+        {
+            return @$"INSERT INTO [{dbName}].dbo.members 
+                        (
+                            bill_id, town, radif, eshtrak, name,
+                            family, father_nam, enshab, cod_enshab, tedad_vahd,
+                            tedad_mas, ted_khane, tedad_tej, arse, aian,
+                            aian_mas, aian_tej, ask_ab, inst_ab, ask_fas,
+                            inst_fas, address, pelak, edareh_k, noe_va,
+                            master_sif, sif_1, sif_2, sif_3, sif_4,
+                            sif_5, sif_6, sif_7, sif_8, fix_mas,
+                            group1, operator, POST_COD, PHONE_NO, MOBILE,
+                            MELI_COD, Khali_s, date_KHANE, X, Y,
+                            date_sabt, hasf, serial_co, sif_mosh_1, G_inst_ab,
+                            G_inst_fas, Senf
+                        )
+                        VALUES (
+                            @billId, @zoneId, @customerNumber, @ReadingNumber, @FirstName,
+                            @SurName, @FatherName, @MeterDiamterId, @UsageSellId, @OtherUnit,
+                            @DomesticUnit, @HouseholdNumber, @CommertialUnit, @Premises, @ImprovementOverall,
+                            @ImprovementDomestic, @ImprovementCommertial, @MeterRequestDateJalali, @MeterInstallationDateJalali, @SewageRequestDateJalali,
+                            @SewageInstallationDateJalali, @Address, @Plaque, @IsSpecial, @BranchTypeId,
+                            @MainSiphon, @Siphon100, @Siphon125, @Siphon150, @Siphon200,
+                            @Siphon5, @Siphon6, @Siphon7, @Siphon8, @ContractualCapacity,
+                            @UsageConsumptionId, @Operator, @PostalCode, @PhoneNumber, @MobileNumber,
+                            @NationalCode, @EmptyUnit, @HouseholdDateJalali, @x, @y,
+                            @ToDayDateJalali, @DeletionStateId, @BodySerial, @CommonSiphon, @MeterRegisterDateJalali,
+                            @SewageRegisterDateJalali, @GuildId
+                        );";
+        }
+
+        private string GetUpdateCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+                        eshtrak=@ReadingNumber,
+	                    name=@FirstName,
+	                    family=@SurName,
+	                    father_nam=@FatherName,
+	                    enshab=@MeterDiameterId,
+	                    cod_enshab=@UsageSellId,
+	                    tedad_vahd=@OtherUnit,
+	                    tedad_mas=@DomesticUnit,
+	                    ted_khane=@HouseholdNumber,
+	                    tedad_tej=@CommertialUnit,
+	                    arse=@Premises,
+	                    aian=@ImprovementOverall,
+	                    aian_mas=@ImprovementDomestic,
+	                    aian_tej=@ImprovementCommertial,
+	                    ask_ab=@MeterRequestDateJalali,
+	                    inst_ab=@MeterInstallationDateJalali,
+	                    ask_fas=@SewageRequestDateJalali,
+	                    inst_fas=@SewageInstallationDateJalali,
+	                    address=@Address,
+	                    pelak=@Plaque,
+	                    edareh_k=@IsSpecial,
+	                    noe_va=@BranchTypeId,
+	                    master_sif=@MainSiphon,
+	                    sif_1=@Siphon100,
+	                    sif_2=@Siphon125,
+	                    sif_3=@Siphon150,
+	                    sif_4=@Siphon200,
+	                    sif_5=@Siphon5,
+	                    sif_6=@Siphon6,
+	                    sif_7=@Siphon7,
+	                    sif_8=@Siphon8,	
+	                    fix_mas=@ContractualCapacity,
+	                    group1=@UsageConsumptionId,
+	                    operator=@Operator,
+	                    POST_COD=@PostalCode,
+	                    PHONE_NO=@PhoneNumber,
+	                    MOBILE=@MobileNumber,
+	                    MELI_COD=@NationalCode,
+	                    Khali_s=@EmptyUnit,
+	                    date_KHANE=@HouseholdDateJalali,
+	                    X=@x,
+	                    Y=@y,
+	                    date_sabt=@ToDayDateJalali,
+						hasf=@DeletionStateId,
+						serial_co=@BodySerial,
+						sif_mosh_1=@CommonSiphon,
+						G_inst_ab=@MeterRegisterDateJalali,
+						G_inst_fas=@SewageRegisterDateJalali,
+						Senf=@GuildId
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+
+        private string GetTechnicalUpdateCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+	                    enshab=@MeterDiameterId,
+	                    master_sif=@MainSiphon,
+	                    sif_1=@Siphon100,
+	                    sif_2=@Siphon125,
+	                    sif_3=@Siphon150,
+	                    sif_4=@Siphon200,
+	                    sif_5=@Siphon5,
+	                    sif_6=@Siphon6,
+	                    sif_7=@Siphon7,
+	                    sif_8=@Siphon8,	
+	                    operator={ReportLiterals.RayabOperator},
+						serial_co=@BodySerial,
+						sif_mosh_1=@CommonSiphon,
+                        date_sabt=@ToDayDateJalali
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+
+        private string GetCustomerEstateUpdateCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+	                    cod_enshab=@UsageSellId,
+	                    tedad_vahd=@OtherUnit,
+	                    tedad_mas=@DomesticUnit,
+	                    tedad_tej=@CommertialUnit,
+	                    arse=@Premises,
+	                    aian=@ImprovementOverall,
+	                    aian_mas=@ImprovementDomestic,
+	                    aian_tej=@ImprovementCommertial,
+	                    fix_mas=@ContractualCapacity,
+	                    group1=@UsageConsumptionId,
+	                    operator={ReportLiterals.RayabOperator},
+	                    Khali_s=@EmptyUnit,
+						Senf=@GuildId,
+                        date_sabt=@ToDayDateJalali
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+
+        private string GetUpdateMobileCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+	                    MOBILE=@MobileNumber,
+	                    operator=@Operator,
+	                    date_sabt=@ToDayDateJalali
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+
+        private string GetUpdateBranchTypeCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+	                    noe_va=@BranchTypeId,
+	                    date_sabt=@ToDayDateJalali,	
+	                    operator={ReportLiterals.RayabOperator}
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+
+        private string GetUpdateDeletionStateCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+	                    hasf=@deletionStateId,
+	                    date_sabt=@ToDayDateJalali,	
+	                    operator={ReportLiterals.RayabOperator}
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+
+        private string GetUpdateHouseholdCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+	                    ted_khane=@HouseholdNumber,
+	                    date_KHANE=@HouseholdDateJalali,
+	                    date_sabt=@ToDayDateJalali,	
+	                    operator={ReportLiterals.RayabOperator}
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+
+        private string GetUpdateSubscriptionAssignementCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+                        eshtrak=@ReadingNumber,
+                        address=@Address,
+                        POST_COD=@PostalCode,
+	                    date_sabt=@ToDayDateJalali,	
+	                    operator={ReportLiterals.RayabOperator}
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+
+        private string GetUpdateMeterInstallationDateCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET 
+                        G_inst_ab=@MeterInstallationDateJalali,
+                        G_inst_fas =@SiphonInstallationDateJalali,
+	                    date_sabt=@ToDayDateJalali,	
+	                    operator={ReportLiterals.RayabOperator}
+                     WHERE 
+                        id=@id AND
+						TRIM(bill_id)=@billId AND
+						town=@zoneId AND
+						radif=@customerNumber ";
+        }
+
+        private string GetUpdateBedBesCommand(string dbName)
+        {
+            return $@" Update [{dbName}].dbo.members
+					Set bed_bes=bed_bes + @amount
+					Where 
+						radif=@customerNumber AND
+						town=@zoneId";
+        }
+
+        private string GetUpdateBedBesAndNfasCommand(string dbName)
+        {
+            return $@" Update [{dbName}].dbo.members
+					Set
+                        bed_bes = bed_bes + @amount ,
+                        n_ab = IIF( n_ab = 0, 1, n_ab ),
+	                    n_faz = IIF( @currentDateJalali >= G_inst_fas AND G_inst_fas>'1330/01/01' , 2 ,n_faz )
+					Where 
+						radif = @customerNumber AND
+						town = @zoneId";
+        }
+
+        private string GetUpdateEmptyUnitCommand(string dbName)
+        {
+            return @$"UPDATE [{dbName}].dbo.members
+                     SET Khali_s = @EmptyUnit
+                     WHERE 
+                        id = @id AND
+						TRIM(bill_id) = @billId AND
+						town = @zoneId AND
+						radif = @customerNumber ";
+        }
+    }
+}

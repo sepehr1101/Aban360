@@ -1,0 +1,6 @@
+{
+  "Aban360.Api/Controllers/V1/ClaimPool/Draft/RequestSubscriptionController.cs": "v1/request-subscription",
+  "Aban360.Api/Controllers/V1/ClaimPool/People/Commands/CustomerInfoController.cs": "v1/customer-info",
+  "Aban360.Api/Controllers/V1/MeterPool/Management/CounterStateController.cs": "v1/counter-state",
+  "Aban360.BrdigeApi/Controllers/V1/ServiceLinkController.cs": "v1/service-link"
+}

@@ -1,39 +1,22 @@
-﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
-using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts;
-using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Contracts;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.UserPool.Application.Features.Auth.Services;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 {
     [Route("v1/assessment-off")]
     public class AssessmentOffController : BaseController
     {
-        private readonly IAssessmentOffInsertHandler _insertHandler;
-        private readonly IAssessmentOffRemoveHandler _removeHandler;
-        private readonly IAssessmentOffByAssessmentCodeGetHandler _byAssessmentCodeGetHandler;
-        private readonly IAssessmentOffGetAllHandler _getAllHandler;
-        public AssessmentOffController(
-            IAssessmentOffInsertHandler insertHandler,
-            IAssessmentOffRemoveHandler removeHandler,
-            IAssessmentOffByAssessmentCodeGetHandler byAssessmentCodeGetHandler,
-            IAssessmentOffGetAllHandler getAllHandler)
+        private readonly IAssessmentOffService _assessmentOffService;
+        public AssessmentOffController(IAssessmentOffService assessmentOffService)
         {
-            _insertHandler = insertHandler;
-            _insertHandler.NotNull(nameof(insertHandler));
-
-            _removeHandler = removeHandler;
-            _removeHandler.NotNull(nameof(removeHandler));
-
-            _byAssessmentCodeGetHandler = byAssessmentCodeGetHandler;
-            _byAssessmentCodeGetHandler.NotNull(nameof(byAssessmentCodeGetHandler));
-
-            _getAllHandler = getAllHandler;
-            _getAllHandler.NotNull(nameof(getAllHandler));
+            _assessmentOffService = assessmentOffService;
+            _assessmentOffService.NotNull(nameof(assessmentOffService));
         }
 
         [HttpPost]
@@ -42,7 +25,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> AddAssessmentOff([FromBody] AssessmentOffInsertInputDto inputDto, CancellationToken cancellationToken)
         {
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
-            await _insertHandler.Handle(inputDto, examinerCode, cancellationToken);
+            await _assessmentOffService.CreateAsync(inputDto, examinerCode, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -52,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> RemoveAssessmentOff(GuidInput inputDto, CancellationToken cancellationToken)
         {
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
-            await _removeHandler.Handle(inputDto.Input, examinerCode, cancellationToken);
+            await _assessmentOffService.DeleteAsync(inputDto.Input, examinerCode, cancellationToken);
             return Ok(inputDto.Input);
         }
 
@@ -62,7 +45,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> GetByAssessmentCode(int assessmentCode, CancellationToken cancellationToken)
         {
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
-            IEnumerable<AssessmentOffGetDto> result = await _byAssessmentCodeGetHandler.Handle(assessmentCode, cancellationToken);
+            IEnumerable<AssessmentOffGetDto> result = await _assessmentOffService.GetByAssessmentCodeAsync(assessmentCode, cancellationToken);
             return Ok(result);
         }
 
@@ -72,7 +55,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {
             int examinerCode = UserService.GetUserCode(CurrentUser.Username);
-            IEnumerable<AssessmentOffGetDto> result = await _getAllHandler.Handle(cancellationToken);
+            IEnumerable<AssessmentOffGetDto> result = await _assessmentOffService.GetAllAsync(cancellationToken);
             return Ok(result);
         }
     }

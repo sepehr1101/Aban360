@@ -1,30 +1,20 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.UserPool.Application.Features.Auth.Services;
 
 namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
 {
     [Route("v1/user")]
     public class UserSearchController : BaseController
     {
-        private readonly IUserSearchHandler _userSearch;
-        private readonly IUserSearchByRoleIdHandler _userSearchByRoleIdHandler;
-        private readonly IUserSearchByRoleIdAndZoneIdHandler _userSearchByRoleIdAndZoneIdHandler;
-        public UserSearchController(
-            IUserSearchHandler userSearch,
-            IUserSearchByRoleIdHandler userSearchByRoleIdHandler,
-            IUserSearchByRoleIdAndZoneIdHandler userSearchByRoleIdAndZoneIdHandler)
+        private readonly IUserSearchService _userSearchService;
+        public UserSearchController(IUserSearchService userSearchService)
         {
-            _userSearch = userSearch;
-            _userSearch.NotNull(nameof(userSearch));
-
-            _userSearchByRoleIdHandler = userSearchByRoleIdHandler;
-            _userSearchByRoleIdHandler.NotNull(nameof(userSearchByRoleIdHandler));
-
-            _userSearchByRoleIdAndZoneIdHandler = userSearchByRoleIdAndZoneIdHandler;
-            _userSearchByRoleIdAndZoneIdHandler.NotNull(nameof(userSearchByRoleIdAndZoneIdHandler));
+            _userSearchService = userSearchService;
+            _userSearchService.NotNull(nameof(userSearchService));
         }
 
         [HttpPost]
@@ -32,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UserQueryDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Search(SearchUserDto inputDto, CancellationToken cancellationToken)
         {
-            IEnumerable<UserQueryDto> userParamsOfCreateDto = await _userSearch.Handle(inputDto, cancellationToken);
+            IEnumerable<UserQueryDto> userParamsOfCreateDto = await _userSearchService.SearchAsync(inputDto, cancellationToken);
             return Ok(userParamsOfCreateDto);
         }
 
@@ -41,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UserQueryDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SearchByRoleId(int roleId, CancellationToken cancellationToken)
         {
-            IEnumerable<UserQueryDto> users = await _userSearchByRoleIdHandler.Handle(roleId, cancellationToken);
+            IEnumerable<UserQueryDto> users = await _userSearchService.SearchByRoleAsync(roleId, cancellationToken);
             return Ok(users);
         }
 
@@ -50,7 +40,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UserQueryDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SearchByRoleIdAndZoneId(int roleId, int zoneId, CancellationToken cancellationToken)
         {
-            IEnumerable<UserQueryDto> users = await _userSearchByRoleIdAndZoneIdHandler.Handle(roleId, zoneId, cancellationToken);
+            IEnumerable<UserQueryDto> users = await _userSearchService.SearchByRoleAndZoneAsync(roleId, zoneId, cancellationToken);
             return Ok(users);
         }
     }

@@ -1,0 +1,277 @@
+using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
+using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System.Data;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations;
+
+namespace BeforeConsumersOperations19.Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations
+{
+    internal sealed class SetAssessmentResultHandler : AbstractBaseConnection, ISetAssessmentResultHandler
+    {
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IMoshtrakQueryService _moshtrakQueryService;
+        private readonly IExaminationQueryService _assessmentQueryService;
+        private readonly IT64QueryService _t64QueryService;
+        private readonly IMoshtrakService _moshtrakService;
+        private readonly IReadingBlockListGetHandler _readingBlockListGetHandler;
+        private readonly IValidator<AssessmentResultInputDto> _validator;
+        static int[] _zoneIdsMustBlock =
+        {
+            131301,
+            131302,
+            131303,
+            131304,
+            131305,
+            131811
+        };
+        private static int _setAssessmentResultStatus = (int)TrackingStatusEnum.SetAssessmentResult;
+        private static int _seenByAssessmentStatus = (int)TrackingStatusEnum.SeenByAssessment;
+        private static int _setAssessmentTimeStatus = (int)TrackingStatusEnum.SetAssessmentTime;
+        static int _requestOrigin = 12;
+        public SetAssessmentResultHandler(IHttpContextAccessor contextAccessor, IMoshtrakQueryService moshtrakQueryService, IExaminationQueryService assessmentQueryService, IT64QueryService t64QueryService, IMoshtrakService moshtrakService, IReadingBlockListGetHandler readingBlockListGetHandler, IValidator<AssessmentResultInputDto> validator, IConfiguration configuration) : base(configuration)
+        {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+            _moshtrakQueryService = moshtrakQueryService;
+            _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
+            _assessmentQueryService = assessmentQueryService;
+            _assessmentQueryService.NotNull(nameof(assessmentQueryService));
+            _t64QueryService = t64QueryService;
+            _t64QueryService.NotNull(nameof(t64QueryService));
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
+            _readingBlockListGetHandler = readingBlockListGetHandler;
+            _readingBlockListGetHandler.NotNull(nameof(readingBlockListGetHandler));
+            _validator = validator;
+            _validator.NotNull(nameof(validator));
+        }
+
+        public async Task<AssessmentResultInputDto> Handle(int assessmentCode, CancellationToken cancellationToken)
+        {
+            string? requestBody = await new StreamReader(_contextAccessor.HttpContext.Request.Body).ReadToEndAsync();
+            AssessmentResultInputDto inputDto = JsonOperation.Unmarshal<AssessmentResultInputDto>(requestBody);
+            await InputValidate(inputDto, cancellationToken);
+            bool isSuccessResult = await GetIsSucces(inputDto.ResultId);
+            MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(inputDto.ZoneId, null, null, inputDto.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber)).FirstOrDefault();
+            TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto = new(inputDto.TrackNumber, _seenByAssessmentStatus, inputDto.Description, assessmentCode, _requestOrigin, true, true);
+            TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto = new(inputDto.TrackNumber, _setAssessmentResultStatus, inputDto.Description, assessmentCode, _requestOrigin, isSuccessResult, false, 1);
+            AssessmentUpdateDto assessmentUpdateDto = await GetAssessmentUpdateDto(inputDto, assessmentCode, trackingInsertSetAssessmentResultDto.TrackId, requestBody);
+            MoshtrkUpdateDto moshtrakUpdateDto = GetMoshtrackUpdateDto(inputDto);
+            await Validate(moshtrakInfo, inputDto.TrackingId);
+            await ExecSql(inputDto, moshtrakUpdateDto, assessmentUpdateDto, trackingInsertSetAssessmentResultDto, trackingInsertSeenAssessmentDto);
+            return inputDto;
+        }
+
+        private async Task ExecSql(AssessmentResultInputDto inputDto, MoshtrkUpdateDto moshtrakUpdateDto, AssessmentUpdateDto assessmentUpdateDto, TrackingInsertDuplicateDto trackingInsertSetAssessmentResultDto, TrackingInsertDuplicateDto trackingInsertSeenAssessmentDto)
+        {
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    MoshtrakCommandService _moshtrackCommandService = new(connection, transaction);
+                    TrackingCommandService _trackingCommandService = new(connection, transaction);
+                    ExaminationCommandService _assessmentCommandService = new(connection, transaction);
+                    string dbName = GetDbName(inputDto.ZoneId);
+                    await _trackingCommandService.UpdateIsConsiderdLatest(inputDto.TrackNumber, true);
+                    await _trackingCommandService.InsertDuplicate(trackingInsertSeenAssessmentDto);
+                    await _trackingCommandService.InsertDuplicate(trackingInsertSetAssessmentResultDto);
+                    await _moshtrackCommandService.Update(moshtrakUpdateDto, dbName); //todo: uncommited
+                    await _assessmentCommandService.Update(assessmentUpdateDto);
+                    transaction.Commit();
+                }
+            }
+        }
+
+        private MoshtrkUpdateDto GetMoshtrackUpdateDto(AssessmentResultInputDto inputDto)
+        {
+            MoshtrakServiceDto serviceSelected = _moshtrakService.GetServicesSelected(inputDto.SelectedServices);
+            return new MoshtrkUpdateDto()
+            {
+                TrackingId = inputDto.TrackingId,
+                TrackNumber = inputDto.TrackNumber,
+                ServiceGroupId = inputDto.ServiceGroupId,
+                StringTrackNumber = inputDto.TrackNumber.ToString().PadLeft(11, '0'), //inputDto.StringTrackNumber,
+                BillId = inputDto.BillId,
+                CustomerNumber = inputDto.CustomerNumber,
+                NeighbourBillId = inputDto.NeighbourBillId,
+                ZoneId = inputDto.ZoneId,
+                NotificationMobile = inputDto.NotificationMobile,
+                UsageId = inputDto.UsageId,
+                MeterDiameterId = inputDto.MeterDiameterId,
+                BranchTypeId = inputDto.BranchTypeId,
+                DiscountCount = inputDto.DiscountCount,
+                TrackingResultId = inputDto.TrackingResultId,
+                PhoneNumber = inputDto.PhoneNumber ?? string.Empty,
+                MobileNumber = inputDto.MobileNumber,
+                FirstName = inputDto.FirstName,
+                Surname = inputDto.Surname,
+                Premises = inputDto.Premises,
+                ImprovementCommertial = inputDto.ImprovementCommertial,
+                ImprovementDomestic = inputDto.ImprovementDomestic,
+                ImprovementOverall = inputDto.ImprovementOverall,
+                Siphon100 = inputDto.Siphon100,
+                Siphon125 = inputDto.Siphon125,
+                Siphon150 = inputDto.Siphon150,
+                Siphon200 = inputDto.Siphon200,
+                ContractualCapacity = inputDto.ContractualCapacity,
+                HouseValue = inputDto.HouseValue,
+                CommertialUnit = inputDto.CommertialUnit,
+                DomesticUnit = inputDto.DomesticUnit,
+                OtherUnit = inputDto.OtherUnit,
+                DiscountTypeId = inputDto.DiscountTypeId,
+                NationalCode = inputDto.NationalCode,
+                FatherName = inputDto.FatherName ?? string.Empty,
+                PostalCode = inputDto.PostalCode,
+                IsNonPermanent = inputDto.IsNonPermanent,
+                Address = inputDto.Address,
+                PreViewId = inputDto.PreViewId,
+                CounterType = inputDto.CounterType,
+                InstallAgentState = inputDto.InstallAgentState,
+                BlockId = inputDto.BlockId,
+                MainSiphon = inputDto.MainSiphon,
+                CommonSiphon = inputDto.CommonSiphon,
+                s0 = serviceSelected.s0,
+                s1 = serviceSelected.s1,
+                s2 = serviceSelected.s2,
+                s3 = serviceSelected.s3,
+                s4 = serviceSelected.s4,
+                s5 = serviceSelected.s5,
+                s8 = serviceSelected.s8,
+                s9 = serviceSelected.s9,
+                s10 = serviceSelected.s10,
+                s11 = serviceSelected.s11,
+                s12 = serviceSelected.s12,
+                s13 = serviceSelected.s13,
+                s14 = serviceSelected.s14,
+                s15 = serviceSelected.s15,
+                s16 = serviceSelected.s16,
+                s17 = serviceSelected.s17,
+                s18 = serviceSelected.s18,
+                s19 = serviceSelected.s19,
+                s20 = serviceSelected.s20,
+                s21 = serviceSelected.s21,
+                s22 = serviceSelected.s22,
+                s23 = serviceSelected.s23,
+                s24 = serviceSelected.s24,
+                s25 = serviceSelected.s25,
+                s26 = serviceSelected.s26,
+                s27 = serviceSelected.s27,
+                s28 = serviceSelected.s28,
+                s29 = serviceSelected.s29,
+                s30 = serviceSelected.s30,
+                s31 = serviceSelected.s31,
+                s32 = serviceSelected.s32,
+                s33 = serviceSelected.s33,
+                s34 = serviceSelected.s34,
+                s35 = serviceSelected.s35,
+                s36 = serviceSelected.s36,
+                s37 = serviceSelected.s37,
+                s38 = serviceSelected.s38,
+                s39 = serviceSelected.s39,
+                s40 = serviceSelected.s40,
+                s41 = serviceSelected.s41,
+                s42 = serviceSelected.s42,
+                s43 = serviceSelected.s43,
+                s44 = serviceSelected.s44,
+                s45 = serviceSelected.s45,
+                s46 = serviceSelected.s46,
+                s47 = serviceSelected.s47,
+                s48 = serviceSelected.s48,
+            };
+        }
+
+        private async Task<AssessmentUpdateDto> GetAssessmentUpdateDto(AssessmentResultInputDto inputDto, int assessmentCode, Guid trackIdResult, string requestBody)
+        {
+            AssessmentGetDto assessmentData = await _assessmentQueryService.Get(assessmentCode);
+            return new AssessmentUpdateDto()
+            {
+                ResultId = inputDto.ResultId,
+                Description = inputDto.Description,
+                TrackId = inputDto.TrackingId,
+                TrackIdResult = trackIdResult,
+                SetResultDateTime = DateTime.Now,
+                X1 = inputDto.X1,
+                Y1 = inputDto.Y1,
+                X2 = inputDto.X2,
+                Y2 = inputDto.Y2,
+                TrenchLenS = inputDto.TrenchLenS,
+                TrenchLenW = inputDto.TrenchLenW,
+                AsphaltLenW = inputDto.AsphaltLenW,
+                AsphaltLenS = inputDto.AsphaltLenS,
+                RockyLenS = inputDto.RockyLenS,
+                RockyLenW = inputDto.RockyLenW,
+                OtherLenS = inputDto.OtherLenS,
+                OtherLenW = inputDto.OtherLenW,
+                BasementDepth = inputDto.BasementDepth,
+                HasMap = inputDto.HasMap,
+                ReadingNumber = inputDto.ReadingNumber,
+                Premises = inputDto.Premises,
+                HouseValue = inputDto.HouseValue,
+                UsageId = inputDto.UsageId,
+                Accuracy = inputDto.Accuracy,
+                AllInJson = requestBody
+            };
+        }
+
+        private async Task Validate(MoshtrakOutputDto moshtrakInfo, Guid trackId)
+        {
+            //if (previousStatusId != _setAssessmentTimeStatus)
+            //{
+            //    throw new InvalidTrackingException(ExceptionLiterals.InvalidStatusId);
+            //}
+            bool hasResult = await _assessmentQueryService.HasResultByTrackId(trackId);
+            if (hasResult)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidSetResultDuplicate);
+            }
+
+            if (moshtrakInfo.IsRegistered)
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.TrackingRegistered);
+            }
+        }
+
+        private async Task InputValidate(AssessmentResultInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomValidationException(message);
+            }
+
+            if (inputDto.BlockId == "-" || inputDto.BlockId == "ندارد")
+            {
+                inputDto.BlockId = string.Empty;
+            }
+
+            if (!_zoneIdsMustBlock.Contains(inputDto.ZoneId) && !string.IsNullOrWhiteSpace(inputDto.BlockId))
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidBlockForThisZone);
+            }
+        }
+
+        private async Task<bool> GetIsSucces(int statusId)
+        {
+            IEnumerable<AssessmentResultOutputDto> results = await _t64QueryService.GetAll();
+            return results.Where(s => s.Id == statusId).Select(s => s.IsSuccess).FirstOrDefault();
+        }
+    }
+}

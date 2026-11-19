@@ -24,7 +24,7 @@ static class ServiceConsolidationChecks
         void Check(bool condition, string message) { if (!condition) throw new InvalidOperationException(message); checks++; }
         var operations = ApplicationServiceBaseline.Operations;
         Check(operations.Length == 494 && operations.Select(o => o.Feature).Distinct().Count() == 104, "Incomplete service baseline");
-        var assemblies = operations.Select(o => o.Assembly).Distinct().Select(Assembly.Load).ToArray();
+        var assemblies = operations.Concat(ApplicationServiceBaseline.CriticalOperations).Select(o => o.Assembly).Distinct().Select(Assembly.Load).ToArray();
         var registrations = new ServiceCollection(); registrations.AddLogging();
         foreach (var assembly in assemblies)
         {
@@ -39,6 +39,8 @@ static class ServiceConsolidationChecks
         }
         using var mappingProvider = registrations.BuildServiceProvider();
         var mapper = mappingProvider.GetRequiredService<IMapper>();
+        checks += await Critical10Checks.Run(mapper, registrations);
+        checks += await Critical10TransactionChecks.Run(mapper);
         checks += await AccessTreeZoneChecks.Run(mapper);
         checks += await MainTagTransactionChecks.Run();
         checks += await MappingCorrectionChecks.Run(mapper);
@@ -271,35 +273,40 @@ static class ServiceConsolidationChecks
         }
     }
 
-    static async Task<Outcome> Execute(Type type, MethodInfo method, ServiceProbe state)
+    internal static async Task<Outcome> Execute(Type type, MethodInfo method, ServiceProbe state)
     {
         object? result = null; string? error = null;
         try
         {
-            var constructor = type.GetConstructors().Single();
+            var constructor = type.GetConstructors().SingleOrDefault()
+                ?? type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).Single();
             state.SeedConnection = method.Name == "OnDisconnectedAsync";
             var instance = constructor.Invoke(constructor.GetParameters().Select(p => state.Proxy(p.ParameterType)).ToArray());
             if (instance is ControllerBase controller)
                 controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(new ClaimsIdentity(new[]
                 { new Claim(ClaimTypes.UserData, "22222222-2222-2222-2222-222222222222"), new Claim(ClaimTypes.Name, "service-reviewer") }, "regression")) } };
             if (instance is Hub hub) hub.Context = new ServiceHubCaller(state.Token);
-            var arguments = method.GetParameters().Select(p => p.ParameterType == typeof(CancellationToken) ? state.Token :
+            var arguments = method.GetParameters().Select(p => p.ParameterType == typeof(CancellationToken) ? state.Token : state.ArgumentFactory is not null ? state.ArgumentFactory(p) :
                 p.ParameterType == typeof(bool) && state.Mode == "false-flag" ? false : Sample(p.ParameterType, 0, p.Name ?? "input")).ToArray();
             foreach (var argument in arguments.Where(a => a is not null))
             {
                 var icon = argument!.GetType().GetProperty("Icon");
                 if (icon?.PropertyType == typeof(IFormFile)) icon.SetValue(argument, new ServiceProbeFile(state));
             }
-            var task = (Task)method.Invoke(instance, arguments)!;
-            await task;
-            if (method.ReturnType.IsGenericType) result = task.GetType().GetProperty("Result")!.GetValue(task);
+            var returned = method.Invoke(instance, arguments);
+            if (returned is Task task)
+            {
+                await task;
+                if (method.ReturnType.IsGenericType) result = task.GetType().GetProperty("Result")!.GetValue(task);
+            }
+            else result = returned;
         }
         catch (Exception ex)
         {
             while (ex is TargetInvocationException { InnerException: not null }) ex = ex.InnerException;
             error = ex.GetType().FullName + ":" + ex.Message;
         }
-        return new Outcome(Snapshot(result), error, state.Calls.ToArray(), state.AsyncSteps.ToArray(), Snapshot(state.Tracked));
+        return new Outcome(Snapshot(state.ResultSnapshotTransform is null?result:state.ResultSnapshotTransform(result)), error, state.Calls.ToArray(), state.AsyncSteps.ToArray(), Snapshot(state.Tracked));
     }
 
     public static object? Sample(Type type, int depth = 0, string tag = "sample", bool empty = false)
@@ -310,7 +317,7 @@ static class ServiceConsolidationChecks
         if (type == typeof(IFormFile)) return new FormFile(new MemoryStream(new byte[] { 1, 2, 3, 4 }), 0, 4, "Icon", "icon.png")
             { Headers = new HeaderDictionary(), ContentType = "image/png" };
         if (type == typeof(IAppUser)) return new AppUser(new ClaimsPrincipal(new ClaimsIdentity(new[]
-            { new Claim(ClaimTypes.UserData, "22222222-2222-2222-2222-222222222222"), new Claim(ClaimTypes.Name, "service-reviewer") }, "regression")));
+            { new Claim(ClaimTypes.UserData, "22222222-2222-2222-2222-222222222222"), new Claim(ClaimTypes.Name, "service-reviewer"), new Claim(ClaimTypes.GivenName, "Service reviewer") }, "regression")));
         if (type == typeof(Guid)) return Guid.Parse("22222222-2222-2222-2222-222222222222");
         if (type == typeof(DateTime)) return new DateTime(2020, 2, 3, 4, 5, 6, DateTimeKind.Utc);
         if (type == typeof(DateTimeOffset)) return new DateTimeOffset(2020, 2, 3, 4, 5, 6, TimeSpan.Zero);
@@ -392,6 +399,9 @@ static class ServiceConsolidationChecks
             .OrderBy(p => p.Name).ToDictionary(p => p.Name, p =>
             {
                 var field = p.GetValue(value);
+                if (type.FullName == "Aban360.SystemPool.Domain.Features.UserGuide.Entities.Faq" && p.Name == "CreateDateTime"
+                    && field is DateTime faqTimestamp && Math.Abs((faqTimestamp - DateTime.Now).TotalSeconds) < 60)
+                    return "current-faq-time";
                 // These original operations set ValidFrom from the wall clock on both sides.
                 if ((type.FullName == "Aban360.WorkflowPool.Domain.Features.Design.Entities.State"
                     || type.FullName == "Aban360.WorkflowPool.Domain.Features.Design.Entities.Workflow"
@@ -417,7 +427,7 @@ static class ServiceConsolidationChecks
     }
 
     record Consumer(string Assembly, string Original, string Current);
-    record Outcome(string Result, string? Error, string[] Calls, int[] AsyncSteps, string Mutations);
+    internal record Outcome(string Result, string? Error, string[] Calls, int[] AsyncSteps, string Mutations);
 
     static string[] Attributes(IEnumerable<CustomAttributeData> attributes) => attributes
         .Where(a => a.AttributeType.Namespace != "System.Runtime.CompilerServices")
@@ -431,13 +441,28 @@ public sealed class ServiceProbe(IMapper? mapper, CancellationToken token)
     public string Mode = "success";
     public int FailAt, CancelAt, GateAt;
     public bool SeedConnection;
+    public bool CriticalContext;
+    public Func<ParameterInfo, object?>? ArgumentFactory;
+    public Func<Type, MethodInfo, object?[], object?, object?>? ResultTransform;
+    public Func<Type, MethodInfo, object?[], object?, object?>? SynchronousResultTransform;
+    public Func<object?,object?>? ResultSnapshotTransform;
+    public Action<Type, MethodInfo, object?[]>? CallObserver;
     public Type? RealService;
+    public Func<Type,object?>? DependencyFactory;
     public readonly List<string> Calls = [];
     public readonly List<int> AsyncSteps = [];
     public readonly List<object?> Tracked = [];
     public readonly TaskCompletionSource<bool> Gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
     public object Proxy(Type type)
     {
+        var custom=DependencyFactory?.Invoke(type);if(custom is not null)return custom;
+        if (CriticalContext && type == typeof(IHttpContextAccessor))
+        {
+            var context = new DefaultHttpContext();
+            context.Connection.RemoteIpAddress = System.Net.IPAddress.Loopback;
+            context.Request.Headers.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64)";
+            return new HttpContextAccessor { HttpContext = context };
+        }
         if (type == typeof(IConfiguration)) return new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>
             { ["FileManagement:ExcelExpireDay"] = "7" }).Build();
         if (type == typeof(IMapper) && mapper is not null) return mapper;
@@ -454,6 +479,7 @@ public sealed class ServiceProbe(IMapper? mapper, CancellationToken token)
     }
     public object? Invoke(Type contract, MethodInfo method, object?[] args)
     {
+        CallObserver?.Invoke(contract, method, args);
         Calls.Add(ApplicationServiceBaseline.CallName(contract, method) + "(" + string.Join("|", args.Select(a => a is CancellationToken c ? c == Token ? "caller" : "wrong-token" : ServiceConsolidationChecks.Snapshot(a))) + ")");
         int step = Calls.Count;
         if (method.ReturnType == typeof(Task)) { AsyncSteps.Add(step); return CompleteVoid(step); }
@@ -485,11 +511,32 @@ public sealed class ServiceProbe(IMapper? mapper, CancellationToken token)
                     }
                 }
             }
+            if (CriticalContext && result is Aban360.UserPool.Domain.Features.Auth.Entities.User criticalUser) criticalUser.Username = "17";
+            if (CriticalContext && result is Aban360.UserPool.Domain.Features.Auth.Entities.Role criticalRole)
+            {
+                criticalRole.DefaultClaims = "[17]";
+                criticalRole.IsRemovable = Mode == "protected-role";
+            }
+            if (CriticalContext && result is ICollection<Aban360.UserPool.Domain.Features.AceessTree.Entites.Endpoint> criticalEndpoints)
+                foreach (var endpoint in criticalEndpoints)
+                {
+                    endpoint.SubModule = new Aban360.UserPool.Domain.Features.AceessTree.Entites.SubModule
+                    {
+                        Id = 17, Title = "Submodule", Style = "submodule",
+                        Module = new Aban360.UserPool.Domain.Features.AceessTree.Entites.Module
+                        {
+                            Id = 17, Title = "Module", Style = "module",
+                            App = new Aban360.UserPool.Domain.Features.AceessTree.Entites.App { Id = 17, Title = "App", Style = "app" }
+                        }
+                    };
+                }
+            if (ResultTransform is not null) result = ResultTransform(contract, method, args, result);
             Tracked.Add(result);
             return typeof(ServiceProbe).GetMethod(nameof(Complete), BindingFlags.Instance | BindingFlags.NonPublic)!.MakeGenericMethod(type).Invoke(this, new[] { (object)step, result });
         }
         ThrowIfNeeded(step);
-        return method.ReturnType == typeof(void) ? null : ServiceConsolidationChecks.Sample(method.ReturnType);
+        var synchronousResult=method.ReturnType == typeof(void) ? null : ServiceConsolidationChecks.Sample(method.ReturnType);
+        return SynchronousResultTransform is null?synchronousResult:SynchronousResultTransform(contract,method,args,synchronousResult);
     }
     async Task CompleteVoid(int step) { if (GateAt == step) await Gate.Task; ThrowIfNeeded(step); }
     public async Task CopyFileAsync(Stream target, CancellationToken cancellationToken)

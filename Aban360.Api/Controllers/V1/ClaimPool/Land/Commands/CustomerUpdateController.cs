@@ -1,25 +1,20 @@
-﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
+using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.ClaimPool.Application.Features.Land.Services;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 {
     [Route("v1/customer")]
     public class CustomerUpdateController : BaseController
     {
-        private readonly ICustomerUpdateHandler _customerUpdateHandler;
-        private readonly ICustomerBranchTypeToNormalUpdateHandler _branchTypeToNormalUpdateHandler;
-        public CustomerUpdateController(
-            ICustomerUpdateHandler customerUpdateHandler,
-            ICustomerBranchTypeToNormalUpdateHandler branchTypeToNormalUpdateHandler)
+        private readonly ICustomerMaintenanceService _customerMaintenanceService;
+        public CustomerUpdateController(ICustomerMaintenanceService customerMaintenanceService)
         {
-            _customerUpdateHandler = customerUpdateHandler;
-            _customerUpdateHandler.NotNull(nameof(customerUpdateHandler));
-
-            _branchTypeToNormalUpdateHandler = branchTypeToNormalUpdateHandler;
-            _branchTypeToNormalUpdateHandler.NotNull(nameof(branchTypeToNormalUpdateHandler));
+            _customerMaintenanceService = customerMaintenanceService;
+            _customerMaintenanceService.NotNull(nameof(customerMaintenanceService));
         }
 
         [HttpGet, HttpPost]
@@ -27,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateFull([FromBody] CustomerUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _customerMaintenanceService.UpdateAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -36,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerEstateUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> EstateUpdate([FromBody] CustomerEstateUpdateDto inputDto, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _customerMaintenanceService.UpdateAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -45,7 +40,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerTechnicalUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> TechnicalUpdate([FromBody] CustomerTechnicalUpdateDto inputDto, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _customerMaintenanceService.UpdateAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -54,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerMobileUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateMobile([FromBody] CustomerMobileUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _customerMaintenanceService.UpdateAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -63,7 +58,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerNecessaryInfoToUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetConstructionType([FromBody] CustomerNecessaryInfoToUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _customerMaintenanceService.UpdateAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -72,7 +67,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<BranchTypeToNormalUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetNormalBranchType([FromBody] BranchTypeToNormalUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _branchTypeToNormalUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _customerMaintenanceService.SetNormalBranchTypeAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -81,7 +76,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerDeletionStateUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateDeletionState([FromBody] CustomerDeletionStateUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _customerMaintenanceService.UpdateAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -90,7 +85,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerDeletionStateUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateHousehold([FromBody] CustomerHouseholdUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _customerMaintenanceService.UpdateAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -99,25 +94,25 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<MeterInstallationUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateInstallationDate([FromBody] MeterInstallationUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _customerMaintenanceService.UpdateAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
-        
+
         [HttpGet, HttpPost]
         [Route("update-discount-type")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerBranchTypeUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateDiscountType([FromBody] CustomerBranchTypeUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _customerMaintenanceService.UpdateAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
-        
+
         [HttpGet, HttpPost]
         [Route("update-empty-unit")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CustomerEmptyUnitUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateEmptyUnit([FromBody] CustomerEmptyUnitUpdateInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _customerUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _customerMaintenanceService.UpdateAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
     }

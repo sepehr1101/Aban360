@@ -1,0 +1,137 @@
+using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
+using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
+using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Querys.Contracts;
+using Aban360.BlobPool.Domain.Features.DmsServices.Dto.Commands;
+using Aban360.BlobPool.Domain.Providers.Dto;
+using Aban360.BlobPool.Persistence.Features.DmsServices.Queries.Contracts;
+using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Constants.Literals;
+using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using System.IO;
+using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Implementations;
+
+namespace BeforeServiceOperations19.Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Implementations
+{
+    internal sealed class AddFileHandler : IAddFileHandler
+    {
+        private readonly OpenKmOptions _options;
+        private readonly IOpenKmQueryService _openKmQueryService;
+        private readonly IAddOrUpdateMetaDataHandler _addMetaHandler;
+        private readonly IOpenKmMetaDataQueryServices _matadataService;
+        private readonly ICreateFolderHandler _createFolderHandler;
+        private readonly IOpLogCommandService _opLogCommandService;
+        public AddFileHandler(IOptions<OpenKmOptions> options, IOpenKmQueryService openKmQueryService, IAddOrUpdateMetaDataHandler addMetaHandler, IOpenKmMetaDataQueryServices metadataService, ICreateFolderHandler createFolderHandler, IOpLogCommandService opLogCommandService)
+        {
+            _options = options.Value;
+            _options.NotNull(nameof(_options));
+            _openKmQueryService = openKmQueryService;
+            _openKmQueryService.NotNull(nameof(openKmQueryService));
+            _addMetaHandler = addMetaHandler;
+            _addMetaHandler.NotNull(nameof(addMetaHandler));
+            _matadataService = metadataService;
+            _matadataService.NotNull(nameof(_addMetaHandler));
+            _createFolderHandler = createFolderHandler;
+            _createFolderHandler.NotNull(nameof(_createFolderHandler));
+            _opLogCommandService = opLogCommandService;
+            _opLogCommandService.NotNull(nameof(_opLogCommandService));
+        }
+
+        public async Task<AddFileDto> Handle(AddFormFileInput input, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            StreamContent content = await GetStreamContent(input.File);
+            return await Handle(input.BillId, input.TrackNumber, input.DocumentTypeId, content, input.File.FileName, appUser, cancellationToken);
+        }
+
+        public async Task<AddFileDto> Handle(AddBase64FileInput input, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            StreamContent content = GetStreamContent(input.File);
+            return await Handle(input.BillId, input.TrackNumber, input.DocumentTypeId, content, input.FileName, appUser, cancellationToken);
+        }
+
+        public async Task<AddFileDto> Handle(AddDiscountFileInput input, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            StreamContent content = await GetStreamContent(input.File);
+            int documentTypeValue = await _matadataService.GetFileValue(input.DocumentTypeId);
+            var(folderName, filePath) = GetFoldernameAndPath(input);
+            string folderUuid = await _createFolderHandler.Handle(folderName, cancellationToken);
+            AddFileDto addFileDto = await _openKmQueryService.AddFileDiscount(filePath, content, input.File.FileName);
+            await _openKmQueryService.MarkNodeAsMetadatable(addFileDto.Uuid, true);
+            AddOrUpdateMetaDataDto addMetaDto = new()
+            {
+                title = documentTypeValue
+            };
+            await _addMetaHandler.Handle(addMetaDto, addFileDto.Uuid, cancellationToken);
+            string opLogText = string.Format(OpLogLiterals.OpenKmAddFileOpLog, addFileDto.Uuid, addMetaDto.title);
+            await _opLogCommandService.Insert(opLogText, appUser);
+            return addFileDto;
+        }
+
+        private async Task<AddFileDto> Handle(string billId, long? trackNumber, int documentTypeId, StreamContent content, string name, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(billId) && !trackNumber.HasValue)
+            {
+                throw new BaseException("خطای پارامتر، شماره پیگیری و شناسه قبض هر دو بدون مقدار هستند");
+            }
+
+            int dotIndex = name.LastIndexOf('.');
+            name = dotIndex > 0 ? name + name.Insert(dotIndex, DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss")) : name;
+            int documentTypeValue = await _matadataService.GetFileValue(documentTypeId);
+            var(folderName, filePath) = GetFoldernameAndPath(billId, trackNumber, name);
+            string folderUuid = await _createFolderHandler.Handle(folderName, cancellationToken);
+            AddFileDto addFileDto = await _openKmQueryService.AddFile(filePath, content, name);
+            await _openKmQueryService.MarkNodeAsMetadatable(addFileDto.Uuid, true);
+            AddOrUpdateMetaDataDto addMetaDto = new()
+            {
+                title = documentTypeValue
+            };
+            await _addMetaHandler.Handle(addMetaDto, addFileDto.Uuid, cancellationToken);
+            string opLogText = string.Format(OpLogLiterals.OpenKmAddFileOpLog, addFileDto.Uuid, addMetaDto.title);
+            await _opLogCommandService.Insert(opLogText, appUser);
+            return addFileDto;
+        }
+
+        private (string, string) GetFoldernameAndPath(string billId, long? trackNumber, string fileName)
+        {
+            string path = trackNumber.HasValue ? $"r_{trackNumber.Value}" : billId;
+            return (path, $@"{path}/{fileName}");
+        }
+
+        private (string, string) GetFoldernameAndPath(AddDiscountFileInput input)
+        {
+            string path = $"{_options.BaseDiscountPath}";
+            return (path, $@"{path}/{input.Id}");
+        }
+
+        private StreamContent GetStreamContent(string base64File)
+        {
+            if (string.IsNullOrWhiteSpace(base64File))
+                throw new BaseException("Base64 image content cannot be null or empty." + nameof(base64File));
+            byte[] fileBytes;
+            try
+            {
+                fileBytes = Convert.FromBase64String(base64File);
+            }
+            catch (FormatException ex)
+            {
+                throw new BaseException("Invalid Base64 string provided." + nameof(base64File) + ex.Message);
+            }
+
+            MemoryStream stream = new(fileBytes);
+            StreamContent content = new(stream);
+            return content;
+        }
+
+        private async Task<StreamContent> GetStreamContent(IFormFile file)
+        {
+            var stream = new MemoryStream();
+            await file.CopyToAsync(stream);
+            stream.Position = 0;
+            StreamContent content = new(stream);
+            return content;
+        }
+    }
+}

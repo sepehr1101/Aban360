@@ -1,0 +1,206 @@
+[
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_ClaimPool_Land_SubscriptionAssignmentController.cs",
+    "Sha256": "6C6D92B6F99407BD92A06159CF003BE8CFF4E80067F3D76A889EA0DEC507CB55"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_ClaimPool_Tracking_TrackingController.cs",
+    "Sha256": "42495922A468FC03107B3B353A44E97A5C04340A4CF26663BD4643484AA4B84F"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_MeterPool_Reading_MeterReadingController.cs",
+    "Sha256": "7DE8036BC7D99C47B059203F749D96F6758C538D5E759F0A5540EEC38439F12F"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_UserPool_Auth_KartableAccessController.cs",
+    "Sha256": "5A16970141BEA72D068DB09A9B24EA38DEB373A983827763E132FE347E27A782"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_UserPool_Auth_RoleController.cs",
+    "Sha256": "9CF820EA1C8BC80D5A5420ED304A081F27E714249F4C40F05C0FFE2037D0CFDC"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_UserPool_UiElement_TopbarDisplayerController.cs",
+    "Sha256": "DDC89A1D01879DC32CA3648EE209414EBF5A2F4FE1EFC7EFFB52392167B837DD"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_ClaimPool_Land_Commands_CustomerUpdateController.cs",
+    "Sha256": "D2422018044F0E59297E19E885FFF02E1272CD22EB24E1B30998D37FC3B70A37"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_ClaimPool_Land_Commands_EmptyUnitRegisterUpdateController.cs",
+    "Sha256": "832CF8C5FC3BA4D456862FB6E029630F54EB56E8259C4610A2AE2F03FD061C05"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_ClaimPool_Land_Commands_HouseholdRegisterUpdateController.cs",
+    "Sha256": "2D3BEFFF37158E061D5BA0662DD1B9A0795377C9B68205F44BF71A49A5F81132"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_ClaimPool_Request_Commands_AfterSaleRequestController.cs",
+    "Sha256": "94281053AA3CE5896CC60852D209C504910D1D8973AED1CA7277B05726915238"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_ClaimPool_Request_Commands_CalculationRequestController.cs",
+    "Sha256": "1238897312BB25C1C34201EEA8447FBFE288500CF6B623A67F866D7C96735A73"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_ClaimPool_Request_Commands_MotherChildRequestController.cs",
+    "Sha256": "05C7BAB46451F53961CC54512ADC4CCD02B54BEB61547955E33706DB0400F4B9"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_ClaimPool_Request_Commands_NewRequestController.cs",
+    "Sha256": "81CEC88724AF0E5DB5E10C16D166BA3FA0F950A8D2954386ECA0BD6D2B408D78"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_ClaimPool_Request_Queries_ParentChildDisplayController.cs",
+    "Sha256": "23C4BA0323235C3A592FAB94CA666ACF58CEDC6637C534D2B7B2489FE6B4A27D"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_PaymentPool_NegotiableInstrument_Commands_CreditByDocumentCreateController.cs",
+    "Sha256": "0DB8931F087B745CEE36A6C58FCC83999BEE648E18EDC745451074B83791F8F4"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_PaymentPool_NegotiableInstrument_Commands_CreditWithoutDocumentCreateController.cs",
+    "Sha256": "D619CDE7C39DD588F6950212E5D0E94A6E632254A6E609E204C7AAB5F412AFF1"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.Api_Controllers_V1_UserPool_Auth_Commands_LoginController.cs",
+    "Sha256": "09233AE2223FB3372ED08E430120FF348773462207916DA3321FC0542D813E06"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.BrdigeApi_Controllers_V1_Security_LoginController.cs",
+    "Sha256": "4955DC51E65EF300EC4BC3BC31DC857A3D066DF42FAE6E4915FFB07DADA651CA"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.BrdigeApi_Controllers_V1_ClaimPool_Requests_NewRequestController.cs",
+    "Sha256": "F022B9AA5BE1347EAD29CE00BC2FB68F8F6C9DA532FD146AA1BFAA412A2A1CDF"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersWorkflow10/Aban360.ClaimPool.Application_Features_Request_Handler_Queries_Implementations_ToCalulationConfirmHandler.cs",
+    "Sha256": "446AF02669295B403572FD42864359740166D3006AD0378A9518B05404725448"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/UserLoginFindHandler.cs",
+    "Sha256": "094968c5cf91313631086059a07b6e5aef892ffdb91fca51dcf1547fceb734e3"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/UserLoginAddHandler.cs",
+    "Sha256": "cf19d87e3f736ce2f00e186b2bdf1c2920cb0fec398fc58949f4712c9f511c1d"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/UserLogoutHandler.cs",
+    "Sha256": "b3b13df88f30bd969766b2f8e03e5a0c8fbab47c4ef922de1790d6c4ee61192d"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/UserFindByUsernameQueryHandler.cs",
+    "Sha256": "9bdfc14b350e93138bf9f6e3d32b23039739707c99ecb3720f95b0f3aee41acb"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/UserFindByUsernamePasswordHandler.cs",
+    "Sha256": "0eb0c7c13d23e4673806a5dde9691312fce6178bf7505685861c2372898c6032"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/AccessTreeValueKeyQueryHandler.cs",
+    "Sha256": "b4731fce04ee181966d571c325b3032092d74994205134e84d39e462eb6fba58"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/TopbarQueryHandler.cs",
+    "Sha256": "9d6552d23802cdab8897cdaa801b55ddb85b4e59c66831d17845929f0f2664dd"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/KartableAccessUpdateHandler.cs",
+    "Sha256": "2cbbd90aa1831bf9f7b76aff5a18aec12c8ca51b1ec29b79e498e6c890699282"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/RequestKartableGetListByUserIdHandler.cs",
+    "Sha256": "481516fc8e0a9b83d77af757ca269e5edd515f96f9c9415553d341503a6bda5a"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/SmsByTrackIdGetHandler.cs",
+    "Sha256": "cf2f955aff0de9a11e3c8b8b9be23fbf32265c85588a0cb4fb3f98bca31b7053"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/SmsByQueueIdGetHandler.cs",
+    "Sha256": "cddae26ced7712597785aea1e6390076283164c18419dcfa592dcd76ad0441e6"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/MotherUpdateHandler.cs",
+    "Sha256": "0007c041930d449c65a2ad61a1da2defd133a0e1163a85994efefe35c36e8eb0"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/MotherDeleteHandler.cs",
+    "Sha256": "c217a0b041c1e3a9d04d68a726b054c81e684087f285f7424a7e50c034b0aa25"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/SetMotherChildRequestHandler.cs",
+    "Sha256": "7a1c60c1d7ac5a73a48e139ebe3a89a26886bc4c73f17370f82233c73c42cb13"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/MotherChildGetByTrackNumberHandler.cs",
+    "Sha256": "3e9ccb3fb6131d57b5b0999264d804b9c6ab5ea8dea49f1ff9c0f7acb39ee673"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/SetCommonSiphonRequestHandler.cs",
+    "Sha256": "55a6f57896a3479c862d4427e7798898566e7bdfa998778b2d0e65df86787d9a"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/CalculationRequestInsertManualHandler.cs",
+    "Sha256": "50e8b18b0956d157ee3c05805e7f260184c35034f6efbcec825fe2d58e6c5bd8"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/CalculationRequestRemoveManualHandler.cs",
+    "Sha256": "b961147dbf302091c25974a0c93a97344800895bec5fa38d875f4c154d596eb9"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/ReaderCartableGetHandler.cs",
+    "Sha256": "e083e30e0b3981f76c322918cc3db40a40a4ef06b61a128a0ff27cb35382b64f"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/MeterReadingListOffLoadHandler.cs",
+    "Sha256": "615f7e006f25967744ae18c1f240533bb819d0d916ebe73fe234a6862123cba0"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/MeterReadingListFinishHandler.cs",
+    "Sha256": "739134270e1b0498a59136135a305aef2099c058e12a8d23fc3a35367d481810"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/GenerateReadingListCreateHandler.cs",
+    "Sha256": "2df8d03b0716fafe527cab1f6df05009729a838c84b45c7b52a33bb6794a1289"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/CreditWithoutDocumentCreateHandler.cs",
+    "Sha256": "f12128dde2c603251cd96764190bea757acb5ffc89485975209e58f888ae8fd0"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/CreditByDocumentCreateHandler.cs",
+    "Sha256": "78a4d52bd8b707d37a61231ad2f7198b80aa961e819148681db4ca56c00453af"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/CustomerUpdateHandler.cs",
+    "Sha256": "655844f2b8a1ede8877fa41e84d1acc835a44fa9f3a40c6d73a57f9fcd3aea2c"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/HouseholdRegisterUpdateHandler.cs",
+    "Sha256": "78c984dc46b7c0ee8466fe520f4a8f7dbd6de761e21b4277e771a50904d968c2"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/EmptyUnitRegisterUpdateHandler.cs",
+    "Sha256": "c27f9e1cedd9f419dda088586c66182b24f63356a2644b691121818b6fe17b10"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/CustomerBranchTypeToNormalUpdateHandler.cs",
+    "Sha256": "93e88b4d56a7597a912fffeee8aa423751c6acbf84f523760c05a7ab2575bf26"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/RequestNewBranchHandler.cs",
+    "Sha256": "563c653922e658dee3fea6bc62fdda316a37a167af0a08c2a7baf237e24132ac"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/RequestAfterSaleHandler.cs",
+    "Sha256": "4ac543433321d4d2152e092c502bf2406e7a27c1ccec9d4f130587f95b27ace7"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/RequestDuplicateValidationHandler.cs",
+    "Sha256": "50e08ba01d43c7e8533fde86e10eddd3ce592612e4bf24e8b7afbfbad05aae93"
+  }
+]

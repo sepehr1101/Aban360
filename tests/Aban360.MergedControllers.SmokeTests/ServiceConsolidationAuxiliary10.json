@@ -1,0 +1,638 @@
+[
+  {
+    "Feature": "MeterApkLog",
+    "Assembly": "Aban360.SystemPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.SystemPool.Application.Features.Logging.Handlers.Commands.Implementations.MeterApkLogSaveHandler",
+    "OldContract": "Aban360.SystemPool.Application.Features.Logging.Handlers.Commands.Contracts.IMeterApkLogSaveHandler",
+    "Service": "Aban360.SystemPool.Application.Features.Logging.Services.IMeterApkLogService",
+    "Method": "SaveAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.SystemPool.Application/Features/Logging/Handlers/Commands/Implementations/MeterApkLogSaveHandler.cs",
+    "ContractSource": "Aban360.SystemPool.Application/Features/Logging/Handlers/Commands/Contracts/IMeterApkLogSaveHandler.cs",
+    "Output": "Aban360.SystemPool.Application/Features/Logging/Services/MeterApkLogService.cs",
+    "Names": {
+      "_path": "_path",
+      "Handle": "SaveAsync"
+    }
+  },
+  {
+    "Feature": "MeterApkLog",
+    "Assembly": "Aban360.SystemPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Implementations.MeterApkLogGetAllHandler",
+    "OldContract": "Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Conracts.IMeterApkLogGetAllHandler",
+    "Service": "Aban360.SystemPool.Application.Features.Logging.Services.IMeterApkLogService",
+    "Method": "GetAll",
+    "OldMethod": "Handle",
+    "Source": "Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Implementations/MeterApkLogGetAllHandler.cs",
+    "ContractSource": "Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Conracts/IMeterApkLogGetAllHandler.cs",
+    "Output": "Aban360.SystemPool.Application/Features/Logging/Services/MeterApkLogService.cs",
+    "Names": {
+      "_folderPath": "_folderPath",
+      "_mimeType": "_mimeType",
+      "Handle": "GetAll"
+    }
+  },
+  {
+    "Feature": "MeterApkLog",
+    "Assembly": "Aban360.SystemPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Implementations.MeterApkLogGetByFileNameHandler",
+    "OldContract": "Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Conracts.IMeterApkLogGetByFileNameHandler",
+    "Service": "Aban360.SystemPool.Application.Features.Logging.Services.IMeterApkLogService",
+    "Method": "GetByFileName",
+    "OldMethod": "Handle",
+    "Source": "Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Implementations/MeterApkLogGetByFileNameHandler.cs",
+    "ContractSource": "Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Conracts/IMeterApkLogGetByFileNameHandler.cs",
+    "Output": "Aban360.SystemPool.Application/Features/Logging/Services/MeterApkLogService.cs",
+    "Names": {
+      "_folderPath": "_folderPath",
+      "Handle": "GetByFileName"
+    }
+  },
+  {
+    "Feature": "AssessmentLog",
+    "Assembly": "Aban360.SystemPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.SystemPool.Application.Features.Logging.Handlers.Commands.Implementations.AssessmentLogSaveHandler",
+    "OldContract": "Aban360.SystemPool.Application.Features.Logging.Handlers.Commands.Contracts.IAssessmentLogSaveHandler",
+    "Service": "Aban360.SystemPool.Application.Features.Logging.Services.IAssessmentLogService",
+    "Method": "SaveAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.SystemPool.Application/Features/Logging/Handlers/Commands/Implementations/AssessmentLogSaveHandler.cs",
+    "ContractSource": "Aban360.SystemPool.Application/Features/Logging/Handlers/Commands/Contracts/IAssessmentLogSaveHandler.cs",
+    "Output": "Aban360.SystemPool.Application/Features/Logging/Services/AssessmentLogService.cs",
+    "Names": {
+      "_path": "_path",
+      "Handle": "SaveAsync"
+    }
+  },
+  {
+    "Feature": "AssessmentLog",
+    "Assembly": "Aban360.SystemPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Implementations.AssessmentLogGetAllHandler",
+    "OldContract": "Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Conracts.IAssessmentLogGetAllHandler",
+    "Service": "Aban360.SystemPool.Application.Features.Logging.Services.IAssessmentLogService",
+    "Method": "GetAll",
+    "OldMethod": "Handle",
+    "Source": "Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Implementations/AssessmentLogGetAllHandler.cs",
+    "ContractSource": "Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Conracts/IAssessmentLogGetAllHandler.cs",
+    "Output": "Aban360.SystemPool.Application/Features/Logging/Services/AssessmentLogService.cs",
+    "Names": {
+      "_folderPath": "_folderPath",
+      "_mimeType": "_mimeType",
+      "Handle": "GetAll"
+    }
+  },
+  {
+    "Feature": "AssessmentLog",
+    "Assembly": "Aban360.SystemPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Implementations.AssessmentLogGetByFileNameHandler",
+    "OldContract": "Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Conracts.IAssessmentLogGetByFileNameHandler",
+    "Service": "Aban360.SystemPool.Application.Features.Logging.Services.IAssessmentLogService",
+    "Method": "GetByFileName",
+    "OldMethod": "Handle",
+    "Source": "Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Implementations/AssessmentLogGetByFileNameHandler.cs",
+    "ContractSource": "Aban360.SystemPool.Application/Features/Logging/Handlers/Queries/Conracts/IAssessmentLogGetByFileNameHandler.cs",
+    "Output": "Aban360.SystemPool.Application/Features/Logging/Services/AssessmentLogService.cs",
+    "Names": {
+      "_folderPath": "_folderPath",
+      "Handle": "GetByFileName"
+    }
+  },
+  {
+    "Feature": "ServerInfo",
+    "Assembly": "Aban360.SystemPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.SystemPool.Application.Features.ServerInfo.Handlers.Implementations.OsInfoHandler",
+    "OldContract": "Aban360.SystemPool.Application.Features.ServerInfo.Handlers.Contracts.IOsInfoHandler",
+    "Service": "Aban360.SystemPool.Application.Features.ServerInfo.Services.IServerInfoService",
+    "Method": "GetOsInfo",
+    "OldMethod": "Handle",
+    "Source": "Aban360.SystemPool.Application/Features/ServerInfo/Handlers/Implementations/OsInfoHandler.cs",
+    "ContractSource": "Aban360.SystemPool.Application/Features/ServerInfo/Handlers/Contracts/IOsInfoHandler.cs",
+    "Output": "Aban360.SystemPool.Application/Features/ServerInfo/Services/ServerInfoService.cs",
+    "Names": {
+      "Handle": "GetOsInfo"
+    }
+  },
+  {
+    "Feature": "ServerInfo",
+    "Assembly": "Aban360.SystemPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.SystemPool.Application.Features.ServerInfo.Handlers.Implementations.DiskInfoHandler",
+    "OldContract": "Aban360.SystemPool.Application.Features.ServerInfo.Handlers.Contracts.IDiskInfoHandler",
+    "Service": "Aban360.SystemPool.Application.Features.ServerInfo.Services.IServerInfoService",
+    "Method": "GetDiskInfo",
+    "OldMethod": "Handle",
+    "Source": "Aban360.SystemPool.Application/Features/ServerInfo/Handlers/Implementations/DiskInfoHandler.cs",
+    "ContractSource": "Aban360.SystemPool.Application/Features/ServerInfo/Handlers/Contracts/IDiskInfoHandler.cs",
+    "Output": "Aban360.SystemPool.Application/Features/ServerInfo/Services/ServerInfoService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "Handle": "GetDiskInfo"
+    }
+  },
+  {
+    "Feature": "UserSearch",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.UserSearchHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IUserSearchHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserSearchService",
+    "Method": "SearchAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Implementations/UserSearchHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Contracts/IUserSearchHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserSearchService.cs",
+    "Names": {
+      "_userQueryService": "_userQueryService",
+      "Handle": "SearchAsync"
+    }
+  },
+  {
+    "Feature": "UserSearch",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.UserSearchByRoleIdHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IUserSearchByRoleIdHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserSearchService",
+    "Method": "SearchByRoleAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Implementations/UserSearchByRoleIdHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Contracts/IUserSearchByRoleIdHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserSearchService.cs",
+    "Names": {
+      "_userRoleQueryService": "_userRoleQueryService",
+      "Handle": "SearchByRoleAsync"
+    }
+  },
+  {
+    "Feature": "UserSearch",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.UserSearchByRoleIdAndZoneIdHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IUserSearchByRoleIdAndZoneIdHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserSearchService",
+    "Method": "SearchByRoleAndZoneAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Implementations/UserSearchByRoleIdAndZoneIdHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Contracts/IUserSearchByRoleIdAndZoneIdHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserSearchService.cs",
+    "Names": {
+      "_userRoleQueryService": "_userRoleQueryService",
+      "Handle": "SearchByRoleAndZoneAsync"
+    }
+  },
+  {
+    "Feature": "Document",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Create.Implementations.DocumentCreateHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Create.Contracts.IDocumentCreateHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IDocumentService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Commands/Create/Implementations/DocumentCreateHandler.cs",
+    "ContractSource": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Commands/Create/Contracts/IDocumentCreateHandler.cs",
+    "Output": "Aban360.BlobPool.Application/Features/Taxonomy/Services/DocumentService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_documentCommandService": "_documentCommandService",
+      "_validator": "_createValidator",
+      "Handle": "CreateAsync"
+    }
+  },
+  {
+    "Feature": "Document",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Update.Implementations.DocumentUpdateHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Update.Contracts.IDocumentUpdateHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IDocumentService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Commands/Update/Implementations/DocumentUpdateHandler.cs",
+    "ContractSource": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Commands/Update/Contracts/IDocumentUpdateHandler.cs",
+    "Output": "Aban360.BlobPool.Application/Features/Taxonomy/Services/DocumentService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_documentQueryService": "_documentQueryService",
+      "_validator": "_updateValidator",
+      "Handle": "UpdateAsync"
+    }
+  },
+  {
+    "Feature": "Document",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Delete.Implementations.DocumentDeleteHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Delete.Contracts.IDocumentDeleteHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IDocumentService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Commands/Delete/Implementations/DocumentDeleteHandler.cs",
+    "ContractSource": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Commands/Delete/Contracts/IDocumentDeleteHandler.cs",
+    "Output": "Aban360.BlobPool.Application/Features/Taxonomy/Services/DocumentService.cs",
+    "Names": {
+      "_documentCommandService": "_documentCommandService",
+      "_documentQueryService": "_documentQueryService",
+      "Handle": "DeleteAsync"
+    }
+  },
+  {
+    "Feature": "Document",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Implementations.DocumentGetAllHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Contracts.IDocumentGetAllHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IDocumentService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Queries/Implementations/DocumentGetAllHandler.cs",
+    "ContractSource": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Queries/Contracts/IDocumentGetAllHandler.cs",
+    "Output": "Aban360.BlobPool.Application/Features/Taxonomy/Services/DocumentService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_documentQueryService": "_documentQueryService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "Document",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Implementations.DocumentGetSingleHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Contracts.IDocumentGetSingleHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IDocumentService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Queries/Implementations/DocumentGetSingleHandler.cs",
+    "ContractSource": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Queries/Contracts/IDocumentGetSingleHandler.cs",
+    "Output": "Aban360.BlobPool.Application/Features/Taxonomy/Services/DocumentService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_documentQueryService": "_documentQueryService",
+      "Handle": "GetSingleAsync"
+    }
+  },
+  {
+    "Feature": "Document",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Implementations.DocumentGetListByIdHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Contracts.IDocumentGetListByIdHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IDocumentService",
+    "Method": "GetByIdsAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Queries/Implementations/DocumentGetListByIdHandler.cs",
+    "ContractSource": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Queries/Contracts/IDocumentGetListByIdHandler.cs",
+    "Output": "Aban360.BlobPool.Application/Features/Taxonomy/Services/DocumentService.cs",
+    "Names": {
+      "_documentQueryService": "_documentQueryService",
+      "Handle": "GetByIdsAsync"
+    }
+  },
+  {
+    "Feature": "Document",
+    "Assembly": "Aban360.BlobPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Implementations.DocumentGetByBillIdCategoryIdHandler",
+    "OldContract": "Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Contracts.IDocumentGetByBillIdCategoryIdHandler",
+    "Service": "Aban360.BlobPool.Application.Features.Taxonomy.Services.IDocumentService",
+    "Method": "GetByBillAndCategoryAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Queries/Implementations/DocumentGetByBillIdCategoryIdHandler.cs",
+    "ContractSource": "Aban360.BlobPool.Application/Features/Taxonomy/Handlers/Queries/Contracts/IDocumentGetByBillIdCategoryIdHandler.cs",
+    "Output": "Aban360.BlobPool.Application/Features/Taxonomy/Services/DocumentService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_documentEntityQueryService": "_documentEntityQueryService",
+      "_documentQueryService": "_documentQueryService",
+      "Handle": "GetByBillAndCategoryAsync"
+    }
+  },
+  {
+    "Feature": "MeterApkFile",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Create.Implementations.MeterApkFileInsertHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Create.Contracts.IMeterApkFileInsertHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Apk.Services.IMeterApkFileService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.MeterPool.Application/Features/Apk/Handlers/Command/Create/Implementations/MeterApkFileInsertHandler.cs",
+    "ContractSource": "Aban360.MeterPool.Application/Features/Apk/Handlers/Command/Create/Contracts/IMeterApkFileInsertHandler.cs",
+    "Output": "Aban360.MeterPool.Application/Features/Apk/Services/MeterApkFileService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_meterApkFileQueryService": "_meterApkFileQueryService",
+      "Handle": "CreateAsync",
+      "ExecSql": "CreateExecSql",
+      "GetInsertDto": "CreateGetInsertDto",
+      "Validate": "CreateValidate"
+    }
+  },
+  {
+    "Feature": "MeterApkFile",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Delete.Implementations.MeterApkFileRemoveHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Delete.Contracts.IMeterApkFileRemoveHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Apk.Services.IMeterApkFileService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.MeterPool.Application/Features/Apk/Handlers/Command/Delete/Implementations/MeterApkFileRemoveHandler.cs",
+    "ContractSource": "Aban360.MeterPool.Application/Features/Apk/Handlers/Command/Delete/Contracts/IMeterApkFileRemoveHandler.cs",
+    "Output": "Aban360.MeterPool.Application/Features/Apk/Services/MeterApkFileService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_meterApkFileQueryService": "_meterApkFileQueryService",
+      "Handle": "DeleteAsync",
+      "ExecSql": "DeleteExecSql"
+    }
+  },
+  {
+    "Feature": "MeterApkFile",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Update.Implementations.MeterApkFileSetIsActiveHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Update.Contracts.IMeterApkFileSetIsActiveHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Apk.Services.IMeterApkFileService",
+    "Method": "SetActiveAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.MeterPool.Application/Features/Apk/Handlers/Command/Update/Implementations/MeterApkFileSetIsActiveHandler.cs",
+    "ContractSource": "Aban360.MeterPool.Application/Features/Apk/Handlers/Command/Update/Contracts/IMeterApkFileSetIsActiveHandler.cs",
+    "Output": "Aban360.MeterPool.Application/Features/Apk/Services/MeterApkFileService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_meterApkFileQueryService": "_meterApkFileQueryService",
+      "Handle": "SetActiveAsync",
+      "ExecSql": "SetActiveExecSql"
+    }
+  },
+  {
+    "Feature": "MeterApkFile",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Implemenrations.MeterApkInfoGetAllHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Contracts.IMeterApkInfoGetAllHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Apk.Services.IMeterApkFileService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.MeterPool.Application/Features/Apk/Handlers/Queries/Implemenrations/MeterApkInfoGetAllHandler.cs",
+    "ContractSource": "Aban360.MeterPool.Application/Features/Apk/Handlers/Queries/Contracts/IMeterApkInfoGetAllHandler.cs",
+    "Output": "Aban360.MeterPool.Application/Features/Apk/Services/MeterApkFileService.cs",
+    "Names": {
+      "_meterApkInfoQueryService": "_meterApkFileQueryService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "MeterApkFile",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Implemenrations.MeterApkInfoGetByIdHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Contracts.IMeterApkInfoGetByIdHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Apk.Services.IMeterApkFileService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.MeterPool.Application/Features/Apk/Handlers/Queries/Implemenrations/MeterApkInfoGetByIdHandler.cs",
+    "ContractSource": "Aban360.MeterPool.Application/Features/Apk/Handlers/Queries/Contracts/IMeterApkInfoGetByIdHandler.cs",
+    "Output": "Aban360.MeterPool.Application/Features/Apk/Services/MeterApkFileService.cs",
+    "Names": {
+      "_meterApkInfoQueryService": "_meterApkFileQueryService",
+      "Handle": "GetSingleAsync"
+    }
+  },
+  {
+    "Feature": "MeterApkFile",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Implemenrations.MeterApkInfoGetLatestHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Contracts.IMeterApkInfoGetLatestHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Apk.Services.IMeterApkFileService",
+    "Method": "GetLatestAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.MeterPool.Application/Features/Apk/Handlers/Queries/Implemenrations/MeterApkInfoGetLatestHandler.cs",
+    "ContractSource": "Aban360.MeterPool.Application/Features/Apk/Handlers/Queries/Contracts/IMeterApkInfoGetLatestHandler.cs",
+    "Output": "Aban360.MeterPool.Application/Features/Apk/Services/MeterApkFileService.cs",
+    "Names": {
+      "_meterApkInfoQueryService": "_meterApkFileQueryService",
+      "Handle": "GetLatestAsync"
+    }
+  },
+  {
+    "Feature": "MeterApkFile",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Implemenrations.MeterApkInfoValidationHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Contracts.IMeterApkInfoValidationHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Apk.Services.IMeterApkFileService",
+    "Method": "ValidateVersionAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.MeterPool.Application/Features/Apk/Handlers/Queries/Implemenrations/MeterApkInfoValidationHandler.cs",
+    "ContractSource": "Aban360.MeterPool.Application/Features/Apk/Handlers/Queries/Contracts/IMeterApkInfoValidationHandler.cs",
+    "Output": "Aban360.MeterPool.Application/Features/Apk/Services/MeterApkFileService.cs",
+    "Names": {
+      "_meterApkInfoQueryService": "_meterApkFileQueryService",
+      "Handle": "ValidateVersionAsync"
+    }
+  },
+  {
+    "Feature": "MeterApkFile",
+    "Assembly": "Aban360.MeterPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Implemenrations.MeterApkDownloadGetByIdHandler",
+    "OldContract": "Aban360.MeterPool.Application.Features.Apk.Handlers.Queries.Contracts.IMeterApkDownloadGetByIdHandler",
+    "Service": "Aban360.MeterPool.Application.Features.Apk.Services.IMeterApkFileService",
+    "Method": "DownloadAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.MeterPool.Application/Features/Apk/Handlers/Queries/Implemenrations/MeterApkDownloadGetByIdHandler.cs",
+    "ContractSource": "Aban360.MeterPool.Application/Features/Apk/Handlers/Queries/Contracts/IMeterApkDownloadGetByIdHandler.cs",
+    "Output": "Aban360.MeterPool.Application/Features/Apk/Services/MeterApkFileService.cs",
+    "Names": {
+      "_meterApkInfoQueryService": "_meterApkFileQueryService",
+      "Handle": "DownloadAsync"
+    }
+  },
+  {
+    "Feature": "SmsStateTemplate",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations.SmsStateTemplateCreateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts.ISmsStateTemplateCreateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.ISmsStateTemplateService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Implementations/SmsStateTemplateCreateHandler.cs",
+    "ContractSource": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Contracts/ISmsStateTemplateCreateHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsStateTemplateService.cs",
+    "Names": {
+      "_validator": "_createValidator",
+      "Handle": "CreateAsync",
+      "ExecSql": "CreateExecSql",
+      "InputValidate": "CreateInputValidate",
+      "GetInsertDto": "CreateGetInsertDto"
+    }
+  },
+  {
+    "Feature": "SmsStateTemplate",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Delete.Implementations.SmsStateTemplateRemoveHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Delete.Contracts.ISmsStateTemplateRemoveHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.ISmsStateTemplateService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Delete/Implementations/SmsStateTemplateRemoveHandler.cs",
+    "ContractSource": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Delete/Contracts/ISmsStateTemplateRemoveHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsStateTemplateService.cs",
+    "Names": {
+      "Handle": "DeleteAsync",
+      "ExecSql": "DeleteExecSql"
+    }
+  },
+  {
+    "Feature": "SmsStateTemplate",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations.SmsStateTemplateGetHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts.ISmsStateTemplateGetHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.ISmsStateTemplateService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/SmsStateTemplateGetHandler.cs",
+    "ContractSource": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Contracts/ISmsStateTemplateGetHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsStateTemplateService.cs",
+    "Names": {
+      "_meterSmsStateService": "_meterSmsStateService",
+      "Handle": "GetSingleAsync"
+    }
+  },
+  {
+    "Feature": "SmsStateTemplate",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations.SmsStateTemplateGetAllHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts.ISmsStateTemplateGetAllHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.ISmsStateTemplateService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/SmsStateTemplateGetAllHandler.cs",
+    "ContractSource": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Contracts/ISmsStateTemplateGetAllHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsStateTemplateService.cs",
+    "Names": {
+      "_meterSmsStateService": "_meterSmsStateService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "SmsFlow",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations.SmsFlowCreateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts.ISmsFlowCreateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.ISmsFlowService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Implementations/SmsFlowCreateHandler.cs",
+    "ContractSource": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Contracts/ISmsFlowCreateHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsFlowService.cs",
+    "Names": {
+      "_validator": "_createValidator",
+      "Handle": "CreateAsync",
+      "ExecSql": "CreateExecSql",
+      "InputValidate": "CreateInputValidate",
+      "GetInsertDto": "CreateGetInsertDto"
+    }
+  },
+  {
+    "Feature": "SmsFlow",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Update.Implementations.SmsFlowUpdateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Update.Contracts.ISmsFlowUpdateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.ISmsFlowService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Update/Implementations/SmsFlowUpdateHandler.cs",
+    "ContractSource": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Update/Contracts/ISmsFlowUpdateHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsFlowService.cs",
+    "Names": {
+      "_validator": "_updateValidator",
+      "Handle": "UpdateAsync",
+      "ExecSql": "UpdateExecSql",
+      "InputValidate": "UpdateInputValidate"
+    }
+  },
+  {
+    "Feature": "SmsFlow",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations.SmsFlowGetHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts.ISmsFlowGetHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.ISmsFlowService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/SmsFlowGetHandler.cs",
+    "ContractSource": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Contracts/ISmsFlowGetHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsFlowService.cs",
+    "Names": {
+      "_meterSmsFlowService": "_meterSmsFlowService",
+      "Handle": "GetSingleAsync"
+    }
+  },
+  {
+    "Feature": "SmsFlow",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations.SmsFlowGetAllHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts.ISmsFlowGetAllHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.ISmsFlowService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/SmsFlowGetAllHandler.cs",
+    "ContractSource": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Contracts/ISmsFlowGetAllHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsFlowService.cs",
+    "Names": {
+      "_meterSmsFlowService": "_meterSmsFlowService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "SmsType",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations.SmsTypeInsertHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts.ISmsTypeInsertHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.ISmsTypeApplicationService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Implementations/SmsTypeInsertHandler.cs",
+    "ContractSource": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Contracts/ISmsTypeInsertHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsTypeApplicationService.cs",
+    "Names": {
+      "_smsTypeService": "_smsTypeService",
+      "Handle": "CreateAsync",
+      "ExecSql": "CreateExecSql"
+    }
+  },
+  {
+    "Feature": "SmsType",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations.SmsTypeGetAllHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts.ISmsTypeGetAllHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.ISmsTypeApplicationService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/SmsTypeGetAllHandler.cs",
+    "ContractSource": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Contracts/ISmsTypeGetAllHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsTypeApplicationService.cs",
+    "Names": {
+      "_smsTypeService": "_smsTypeService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "SmsStateGroup",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations.SmsStateGroupInsertHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts.ISmsStateGroupInsertHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.ISmsStateGroupApplicationService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Implementations/SmsStateGroupInsertHandler.cs",
+    "ContractSource": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Contracts/ISmsStateGroupInsertHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsStateGroupApplicationService.cs",
+    "Names": {
+      "_SmsStateGroupService": "_SmsStateGroupService",
+      "Handle": "CreateAsync",
+      "ExecSql": "CreateExecSql"
+    }
+  },
+  {
+    "Feature": "SmsStateGroup",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceAuxiliary10.Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations.SmsStateGroupGetAllHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts.ISmsStateGroupGetAllHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.ISmsStateGroupApplicationService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/SmsStateGroupGetAllHandler.cs",
+    "ContractSource": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Contracts/ISmsStateGroupGetAllHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsStateGroupApplicationService.cs",
+    "Names": {
+      "_smsStateGroupService": "_SmsStateGroupService",
+      "Handle": "GetAllAsync"
+    }
+  }
+]

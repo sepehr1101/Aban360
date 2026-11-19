@@ -1,0 +1,726 @@
+using global::Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
+using global::Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts;
+using global::Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
+using global::Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
+using global::Aban360.Common.Db.Dapper;
+using global::Aban360.Common.Exceptions;
+using global::Aban360.Common.Extensions;
+using Microsoft.Extensions.Configuration;
+using System.Data;
+using global::Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
+using global::Aban360.Common.Literals;
+using DNTPersianUtils.Core;
+using global::Aban360.Common.BaseEntities;
+using FluentValidation;
+using global::Aban360.OldCalcPools.Persistence.Features.WaterReturn.Queries.Contracts;
+using global::Aban360.Common.Db.Services;
+using global::Aban360.Common.ApplicationUser;
+using global::Aban360.Common.Db.Constants.Literals;
+using Microsoft.AspNetCore.Http;
+using global::Aban360.ClaimPool.Domain.Constants;
+using global::Aban360.ReportPool.Domain.Base;
+using System.Runtime.InteropServices;
+using global::Aban360.ReportPool.Application.Features.BuiltsIns.CustomersTransactions.Validations;
+using Microsoft.AspNetCore.Components.Forms;
+
+namespace SqlBeforeWorkflow10.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementationsu{
+    internal sealed class CustomerUpdateHandler : global::WorkflowRecordingConnectionBase, ICustomerUpdateHandler
+    {
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ISubscriptionQueryService _customerQueryService;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly IMembersQueryService _membersQueryService;
+        private readonly ICommonZoneService _commonZoneService;
+        private readonly IValidator<CustomerUpdateInputDto> _allDataValidator;
+        private readonly IValidator<CustomerEstateUpdateDto> _estateValidator;
+        private readonly IValidator<CustomerTechnicalUpdateDto> _technicalUpdateValidator;
+        private readonly IValidator<CustomerMobileUpdateInputDto> _mobilevalidator;
+        private readonly IValidator<CustomerNecessaryInfoToUpdateInputDto> _customerNecessaryInfoUpdateValidator;
+        private readonly IValidator<CustomerHouseholdUpdateInputDto> _householdUpdateValidator;
+        private readonly IValidator<SubscriptionAssignmentInputUpdateDto> _subscriptionAssignmentUpdateValidator;
+        private readonly IValidator<MeterInstallationUpdateInputDto> _meterInstallationUpdateValidator;
+        private readonly IValidator<CustomerBranchTypeUpdateInputDto> _customerBranchTypeUpdateValidator;
+        private readonly IValidator<CustomerEmptyUnitUpdateInputDto> _customerEmptyUnitUpdateValidator;
+        static int[] _allowedToSetConstructionType = { 0, 1 };
+        static int[] _domesticUsages = { (int)UsageEnum.Domestic, (int)UsageEnum.DomesticCommercial };
+        static int[] _discountTypeIds = { (int)BranchTypeEnum.KomiteEmdad, (int)BranchTypeEnum.Behzisti };
+        private string _currentDateJalali = DateTime.Now.ToShortPersianDateString();
+        private int _constructionId = 4;
+        public CustomerUpdateHandler(
+            IHttpContextAccessor contextAccessor,
+            ISubscriptionQueryService customerQueryService,
+            ICommonMemberQueryService commonMemberQueryService,
+            IMembersQueryService membersQueryService,
+            ICommonZoneService commonZoneService,
+            IValidator<CustomerMobileUpdateInputDto> mobileUpdatevalidator,
+            IValidator<CustomerUpdateInputDto> allDataValidator,
+            IValidator<CustomerEstateUpdateDto> estateValidator,
+            IValidator<CustomerTechnicalUpdateDto> technicalUpdateValidator,
+            IValidator<CustomerNecessaryInfoToUpdateInputDto> customerNecessaryInfoUpdateValidator,
+            IValidator<CustomerHouseholdUpdateInputDto> householdUpdateValidator,
+            IValidator<SubscriptionAssignmentInputUpdateDto> subscriptionAssignmentUpdateValidator,
+            IValidator<MeterInstallationUpdateInputDto> meterInstallationUpdateValidator,
+            IValidator<CustomerBranchTypeUpdateInputDto> customerBranchTypeUpdateValidator,
+            IValidator<CustomerEmptyUnitUpdateInputDto> customerEmptyUnitUpdateValidator,
+            IConfiguration configuration)
+            : base(configuration)
+        {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
+            _customerQueryService = customerQueryService;
+            _customerQueryService.NotNull(nameof(customerQueryService));
+
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+
+            _commonZoneService = commonZoneService;
+            _commonZoneService.NotNull(nameof(commonZoneService));
+
+            _membersQueryService = membersQueryService;
+            _membersQueryService.NotNull(nameof(membersQueryService));
+
+            _membersQueryService = membersQueryService;
+            _membersQueryService.NotNull(nameof(membersQueryService));
+
+            _allDataValidator = allDataValidator;
+            _allDataValidator.NotNull(nameof(allDataValidator));
+
+            _estateValidator = estateValidator;
+            _estateValidator.NotNull(nameof(estateValidator));
+
+            _technicalUpdateValidator = technicalUpdateValidator;
+            _technicalUpdateValidator.NotNull(nameof(technicalUpdateValidator));
+
+            _mobilevalidator = mobileUpdatevalidator;
+            _mobilevalidator.NotNull(nameof(mobileUpdatevalidator));
+
+            _customerNecessaryInfoUpdateValidator = customerNecessaryInfoUpdateValidator;
+            _customerNecessaryInfoUpdateValidator.NotNull(nameof(customerNecessaryInfoUpdateValidator));
+
+            _householdUpdateValidator = householdUpdateValidator;
+            _householdUpdateValidator.NotNull(nameof(householdUpdateValidator));
+
+            _subscriptionAssignmentUpdateValidator = subscriptionAssignmentUpdateValidator;
+            _subscriptionAssignmentUpdateValidator.NotNull(nameof(subscriptionAssignmentUpdateValidator));
+
+            _meterInstallationUpdateValidator = meterInstallationUpdateValidator;
+            _meterInstallationUpdateValidator.NotNull(nameof(meterInstallationUpdateValidator));
+
+            _customerBranchTypeUpdateValidator = customerBranchTypeUpdateValidator;
+            _customerBranchTypeUpdateValidator.NotNull(nameof(customerBranchTypeUpdateValidator));
+
+            _customerEmptyUnitUpdateValidator = customerEmptyUnitUpdateValidator;
+            _customerEmptyUnitUpdateValidator.NotNull(nameof(customerEmptyUnitUpdateValidator));
+        }
+
+        public async Task Handle(CustomerUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id, inputDto.ReadingNumber);
+            EmptyUnitValidate(inputDto.UsageSellId, inputDto.EmptyUnit);
+            if (_discountTypeIds.Contains(inputDto.BranchTypeId))
+            {
+                DiscountValidate(inputDto.DomesticUnit, inputDto.CommertialUnit, inputDto.OtherUnit, inputDto.UsageSellId);
+            }
+            CustomerUpdateDto customerUpdate = GetCustomerUpdate(inputDto, memberInfo);
+            string opLogText = string.Format(OpLogLiterals.CustomerFullUpdateOpLog, inputDto.BillId);
+
+            await ExecSql(customerUpdate, appUser, opLogText);
+        }
+        public async Task Handle(CustomerEstateUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            EmptyUnitValidate(inputDto.UsageSellId, inputDto.EmptyUnit);
+            string opLogText = string.Format(OpLogLiterals.CustomerEstateUpdateOpLog, inputDto.BillId);
+
+            await ExecSql(inputDto, appUser, opLogText);
+        }
+        public async Task Handle(CustomerTechnicalUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            string opLogText = string.Format(OpLogLiterals.CustomerTechnicalUpdateOpLog, inputDto.BillId);
+
+            await ExecSql(inputDto, appUser, opLogText);
+        }
+        public async Task Handle(CustomerMobileUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            CustomerMobileUpdateDto updateDto = new(inputDto.Id, inputDto.ZoneId, inputDto.CustomerNumber, inputDto.BillId, inputDto.MobileNumber, ReportLiterals.RayabOperator);
+            string opLogText = string.Format(OpLogLiterals.CustomerMobileNumberUpdateOpLog, inputDto.BillId);
+
+            await ExecSql(updateDto, appUser, opLogText);
+        }
+        public async Task Handle(CustomerNecessaryInfoToUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            if (memberInfo.UseStateId == (int)BranchTypeEnum.SakhtOSaz)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidRepeatConstructionBranchType);
+            }
+            if (_allowedToSetConstructionType.Contains(memberInfo.UseStateId))
+            {
+                CustomerBranchTypeUpdateDto updateDto = new(inputDto.Id, inputDto.ZoneId, inputDto.CustomerNumber, inputDto.BillId, _constructionId);
+                string opLogText = string.Format(OpLogLiterals.CustomerBranchTypeUpdateOpLog, inputDto.BillId);
+                await ExecSql(updateDto, appUser, opLogText);
+            }
+            else
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidBranchTypeId);
+            }
+        }
+        public async Task Handle(CustomerHouseholdUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            CustomerHouseholdUpdateDto updateDto = new(inputDto.Id, inputDto.ZoneId, inputDto.CustomerNumber, inputDto.BillId, inputDto.HouseholdNumber, inputDto.HouseholdDateJalali);
+            string opLogText = string.Format(OpLogLiterals.CustomerHouseholdUpdateOpLog, inputDto.BillId);
+            await ExecSql(updateDto, appUser, opLogText);
+        }
+        public async Task Handle(SubscriptionAssignmentInputUpdateDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id, inputDto.ReadingNumber);
+            SubscriptionAssignmentUpdateDto updateDto = new(inputDto.Id, inputDto.ZoneId, inputDto.CustomerNumber, inputDto.BillId, inputDto.ReadingNumber ?? string.Empty, inputDto.Address ?? string.Empty, inputDto.PostalCode ?? string.Empty);
+            string opLogText = string.Format(OpLogLiterals.SubscriptionAssignmentUpdate, inputDto.BillId);
+            await ExecSql(updateDto, appUser, opLogText);
+        }
+        public async Task Handle(CustomerDeletionStateUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            if (memberInfo.DeletionStateId == (int)inputDto.DeletionStateType)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateDeletionState);
+            }
+            CustomerDeletionStateUpdateDto deletionStateUpdateDto = new(inputDto.Id, memberInfo.ZoneId, memberInfo.CustomerNumber, memberInfo.BillId, (int)inputDto.DeletionStateType);
+            string opLogtText = string.Format(OpLogLiterals.CustomerBranchTypeUpdateOpLog, memberInfo.BillId);
+
+            await ExecSql(deletionStateUpdateDto, appUser, opLogtText);
+        }
+        public async Task Handle(MeterInstallationUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            MeterInstallationUpdateDto updateDto = new(inputDto.Id, inputDto.ZoneId, inputDto.CustomerNumber, inputDto.BillId, inputDto.MeterInstallationDateJalali, inputDto.SiphonInstallationDateJalali);
+            string opLogText = string.Format(OpLogLiterals.MeterInstallationUpdateOpLog, inputDto.BillId);
+            await ExecSql(updateDto, appUser, opLogText);
+        }
+        public async Task Handle(CustomerBranchTypeUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            if (memberInfo.UseStateId == inputDto.BranchTypId)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateBranchType);
+            }
+            DiscountValidate(memberInfo.DomesticUnit, memberInfo.CommercialUnit, memberInfo.OtherUnit, memberInfo.UsageId);
+            CustomerBranchTypeUpdateDto updateDto = new(inputDto.Id, inputDto.ZoneId, inputDto.CustomerNumber, inputDto.BillId, inputDto.BranchTypId);
+            string opLogText = string.Format(OpLogLiterals.CustomerBranchTypeUpdateOpLog, inputDto.BillId);
+            await ExecSql(updateDto, appUser, opLogText);
+        }
+        public async Task Handle(CustomerEmptyUnitUpdateInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            await InputValidate(inputDto, cancellationToken);
+
+            MemberInfoGetDto memberInfo = await ValidateAndGetMemberInfo(appUser, inputDto.BillId, inputDto.Id);
+            EmptyUnitValidate(memberInfo.UsageId, inputDto.EmptyUnit);
+            CustomerEmptyUnitUpdateDto updateDto = new(inputDto.Id, inputDto.ZoneId, inputDto.CustomerNumber, inputDto.BillId, inputDto.EmptyUnit);
+            string opLogText = string.Format(OpLogLiterals.CustomerEmptyUnitUpdateOpLog, inputDto.BillId);
+            await ExecSql(updateDto, appUser, opLogText);
+        }
+
+        private async Task ExecSql(CustomerUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    string dbName = GetDbName(updateDto.ZoneId);
+                    //string insertToDbName = "Atlas";
+
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
+        }
+        private async Task ExecSql(CustomerEstateUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    string dbName = GetDbName(updateDto.ZoneId);
+
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
+        }
+        private async Task ExecSql(CustomerTechnicalUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    string dbName = GetDbName(updateDto.ZoneId);
+
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
+        }
+        private async Task ExecSql(CustomerMobileUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    string dbName = GetDbName(updateDto.ZoneId);
+
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
+        }
+        private async Task ExecSql(CustomerBranchTypeUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    string dbName = GetDbName(updateDto.ZoneId);
+
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
+        }
+        private async Task ExecSql(CustomerHouseholdUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    string dbName = GetDbName(updateDto.ZoneId);
+
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
+        }
+        private async Task ExecSql(SubscriptionAssignmentUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ClientsCommandService clientCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    string dbName = GetDbName(updateDto.ZoneId);
+
+                    int rowId = await archMemCommandService.Insert(updateDto, dbName);
+                    await membersCommandService.Update(updateDto, dbName);
+                    await clientCommandService.UpdateToDayJalali(zoneIdAndCustomer, _currentDateJalali);
+                    await clientCommandService.InsertByArchMemId(rowId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
+        }
+        private async Task ExecSql(CustomerDeletionStateUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            string dbName = GetDbName(updateDto.ZoneId);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    ClientsCommandService clientsCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+
+                    await membersCommandService.Update(updateDto, dbName);
+                    int archMemId = await archMemCommandService.Insert(updateDto, dbName, dbName);
+                    await clientsCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
+                    await clientsCommandService.InsertByArchMemId(archMemId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
+        }
+        private async Task ExecSql(MeterInstallationUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            string dbName = GetDbName(updateDto.ZoneId);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    ClientsCommandService clientsCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+
+                    await membersCommandService.Update(updateDto, dbName);
+                    int archMemId = await archMemCommandService.Insert(updateDto, dbName);
+                    await clientsCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
+                    await clientsCommandService.InsertByArchMemId(archMemId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    //transaction.Commit();
+                }
+            }
+        }
+        private async Task ExecSql(CustomerEmptyUnitUpdateDto updateDto, IAppUser appUser, string opLogText)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomer = new(updateDto.ZoneId, updateDto.CustomerNumber);
+            string dbName = GetDbName(updateDto.ZoneId);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    MembersCommandService membersCommandService = new(connection, transaction);
+                    ArchMemCommandService archMemCommandService = new(connection, transaction);
+                    ClientsCommandService clientsCommandService = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+
+                    await membersCommandService.Update(updateDto, dbName);
+                    int archMemId = await archMemCommandService.Insert(updateDto, dbName);
+                    await clientsCommandService.UpdateToDayJalali(zoneIdAndCustomer, updateDto.ToDayDateJalali);
+                    await clientsCommandService.InsertByArchMemId(archMemId, dbName);
+                    await opLogCommandService.Insert(opLogText, appUser);
+
+                    transaction.Commit();
+                }
+            }
+        }
+
+
+        private CustomerUpdateDto GetCustomerUpdate(CustomerUpdateInputDto inputDto, MemberInfoGetDto previousSubscription)
+        {
+            return new CustomerUpdateDto()
+            {
+                Id = inputDto.Id,
+                CustomerNumber = previousSubscription.CustomerNumber,
+                ZoneId = previousSubscription.ZoneId,
+                BillId = previousSubscription.BillId,
+                X = inputDto.X,
+                Y = inputDto.Y,
+                ReadingNumber = inputDto.ReadingNumber,
+                FirstName = inputDto.FirstName,
+                Surname = inputDto.Surname,
+                Address = inputDto.Address,
+                PostalCode = inputDto.PostalCode ?? string.Empty,
+                Plaque = inputDto.Plaque,
+                NationalCode = inputDto.NationalCode ?? string.Empty,
+                PhoneNumber = inputDto.PhoneNumber,
+                MobileNumber = inputDto.MobileNumber ?? string.Empty,
+                FatherName = inputDto.FatherName,
+                BranchTypeId = inputDto.BranchTypeId,
+                UsageSellId = inputDto.UsageSellId,
+                UsageConsumptionId = inputDto.UsageConsumptionId,
+                EmptyUnit = inputDto.EmptyUnit,
+                CommertialUnit = inputDto.CommertialUnit,
+                DomesticUnit = inputDto.DomesticUnit,
+                OtherUnit = inputDto.OtherUnit,
+                HouseholdDateJalali = DateValidation(previousSubscription.HouseholdDateJalali, false),
+                HouseholdNumber = previousSubscription.HouseholdNumber,
+                MeterDiameterId = inputDto.MeterDiameterId,
+                IsSpecial = inputDto.IsSpecial,
+                ContractualCapacity = inputDto.ContractualCapacity,
+                ImprovementCommertial = inputDto.ImprovementCommertial,
+                ImprovementDomestic = inputDto.ImprovementDomestic,
+                ImprovementOverall = inputDto.ImprovementOverall,
+                Premises = inputDto.Premises,
+                Operator = ReportLiterals.RayabOperator,
+                SewageInstallationDateJalali = previousSubscription.SiphonInstallationDateJalali,// DateValidation(inputDto.SewageInstallationDateJalali, false),
+                SewageRequestDateJalali = previousSubscription.SiphonRequestDateJalali,// DateValidation(inputDto.SewageRequestDateJalali, false),
+                MeterInstallationDateJalali = previousSubscription.MeterInstallationDateJalali,//DateValidation(inputDto.MeterInstallationDateJalali, false),
+                MeterRequestDateJalali = previousSubscription.MeterRequestDateJalali,//DateValidation(inputDto.MeterRequestDateJalali, false),
+                Siphon100 = inputDto.Siphon100,
+                Siphon125 = inputDto.Siphon125,
+                Siphon150 = inputDto.Siphon150,
+                Siphon200 = inputDto.Siphon200,
+                Siphon5 = inputDto.Siphon5,
+                Siphon6 = inputDto.Siphon6,
+                Siphon7 = inputDto.Siphon7,
+                Siphon8 = inputDto.Siphon8,
+                MainSiphon = inputDto.MainSiphon,
+                DeletionStateId = inputDto.DeletionStateId,
+                BodySerial = inputDto.BodySerial ?? string.Empty,
+                CommonSiphon = inputDto.CommonSiphon,
+                MeterRegisterDateJalali = previousSubscription.MeterInstalltionRegisterDateJalali,//DateValidation(inputDto.MeterRegisterDateJalali, false),
+                SewageRegisterDateJalali = previousSubscription.SiphonInstalltionRegisterDateJalali,//DateValidation(inputDto.SewageRegisterDateJalali, false),
+                GuildId = inputDto.GuildId
+            };
+        }
+        private async Task<MemberInfoGetDto> ValidateAndGetMemberInfo(IAppUser appUser, string billId, int id, [Optional] string? readingNumber)
+        {
+            ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _commonMemberQueryService.Get(billId);
+            MemberInfoGetDto memberInfo = await _commonMemberQueryService.Get(zoneIdAndCustomerNumber);
+            await _commonZoneService.IsUserInZone(appUser, memberInfo.ZoneId);
+
+            if (memberInfo.Id != id)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidId);
+            }
+            if (!string.IsNullOrWhiteSpace(readingNumber))
+            {
+                await DuplicateReadingNumberValidate(memberInfo.ZoneId, readingNumber, billId);
+            }
+
+            return memberInfo;
+        }
+        private async Task DuplicateReadingNumberValidate(int zoneId, string readingNumber, string billId)
+        {
+            IEnumerable<ZoneIdAndCustomerNumberAndBillId> readingNumbersInfo = await _commonMemberQueryService.GetFromClient(new ZoneIdsAndReadingNumber(new List<int> { zoneId }, readingNumber), false);
+            if ((readingNumbersInfo?.Count() ?? 0) > 1)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateReadingNumber);
+            }
+            ZoneIdAndCustomerNumberAndBillId? firstCustomerInfo = readingNumbersInfo?.FirstOrDefault();
+            if ((readingNumbersInfo?.Count() ?? 0) == 1 && (firstCustomerInfo?.BillId ?? string.Empty) != billId)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDuplicateReadingNumber);
+            }
+        }
+        private string DateValidation(string? inputDate, bool hasException)
+        {
+            if (hasException)
+            {
+                return string.IsNullOrWhiteSpace(inputDate) || inputDate.Trim().Length != 10 ?
+                    throw new InvalidDateException(ExceptionLiterals.InvalidDate) :
+                    inputDate.Trim();
+            }
+            return string.IsNullOrWhiteSpace(inputDate) ? string.Empty : inputDate.Trim();
+        }
+        private void EmptyUnitValidate(int usageId, int emptyUnit)
+        {
+            if (!_domesticUsages.Contains(usageId) && emptyUnit > 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidEmptyUnitForNonDomesticUnit);
+            }
+        }
+        private void DiscountValidate(int domesticUnit, int commercialUnit, int otherUnit, int usageId)
+        {
+            if (domesticUnit != 1 || commercialUnit != 0 || otherUnit != 0)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidDiscountUnits);
+            }
+            if (!_domesticUsages.Contains(usageId))
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUsageInfo);
+            }
+        }
+        private async Task InputValidate(CustomerMobileUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _mobilevalidator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
+            }
+        }
+        private async Task InputValidate(CustomerUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _allDataValidator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
+            }
+        }
+        private async Task InputValidate(CustomerNecessaryInfoToUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _customerNecessaryInfoUpdateValidator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
+            }
+        }
+        private async Task InputValidate(CustomerEstateUpdateDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _estateValidator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
+            }
+        }
+        private async Task InputValidate(CustomerTechnicalUpdateDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _technicalUpdateValidator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
+            }
+        }
+        private async Task InputValidate(CustomerHouseholdUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _householdUpdateValidator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
+            }
+        }
+        private async Task InputValidate(SubscriptionAssignmentInputUpdateDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _subscriptionAssignmentUpdateValidator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
+            }
+        }
+        private async Task InputValidate(MeterInstallationUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _meterInstallationUpdateValidator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
+            }
+        }
+        private async Task InputValidate(CustomerBranchTypeUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _customerBranchTypeUpdateValidator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
+            }
+
+            if (inputDto.BranchTypId != (int)BranchTypeEnum.Behzisti && inputDto.BranchTypId != (int)BranchTypeEnum.KomiteEmdad)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidBranchTypeId);
+            }
+        }
+        private async Task InputValidate(CustomerEmptyUnitUpdateInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _customerEmptyUnitUpdateValidator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(",", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new BaseException(message);
+            }
+        }
+    }
+}

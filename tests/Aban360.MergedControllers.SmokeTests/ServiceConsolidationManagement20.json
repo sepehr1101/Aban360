@@ -1,0 +1,1521 @@
+[
+  {
+    "Feature": "Estate",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Implementations/EstateCreateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Contracts/IEstateCreateHandler.cs",
+    "Method": "CreateAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.EstateCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IEstateCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IEstateService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/EstateService.cs",
+    "Names": {
+      "Handle": "CreateAsync",
+      "_mapper": "_mapper",
+      "_commandService": "_commandService",
+      "_estateValidator": "_estateValidator"
+    }
+  },
+  {
+    "Feature": "Estate",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Implementations/EstateUpdateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Contracts/IEstateUpdateHandler.cs",
+    "Method": "UpdateAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.EstateUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.IEstateUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IEstateService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/EstateService.cs",
+    "Names": {
+      "Handle": "UpdateAsync",
+      "_mapper": "_mapper",
+      "_queryService": "_queryService",
+      "_estateValidator": "_updateValidator"
+    }
+  },
+  {
+    "Feature": "Estate",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Delete/Implementations/EstateDeleteHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Delete/Contracts/IEstateDeleteHandler.cs",
+    "Method": "DeleteAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations.EstateDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts.IEstateDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IEstateService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/EstateService.cs",
+    "Names": {
+      "Handle": "DeleteAsync",
+      "_queryService": "_queryService",
+      "_commandService": "_commandService"
+    }
+  },
+  {
+    "Feature": "Estate",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/EstateGetAllHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IEstateGetAllHandler.cs",
+    "Method": "GetAllAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.EstateGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IEstateGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IEstateService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/EstateService.cs",
+    "Names": {
+      "Handle": "GetAllAsync",
+      "_mapper": "_mapper",
+      "_queryService": "_queryService"
+    }
+  },
+  {
+    "Feature": "Estate",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/EstateGetSingleHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IEstateGetSingleHandler.cs",
+    "Method": "GetSingleAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.EstateGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IEstateGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IEstateService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/EstateService.cs",
+    "Names": {
+      "Handle": "GetSingleAsync",
+      "_mapper": "_mapper",
+      "_queryService": "_queryService"
+    }
+  },
+  {
+    "Feature": "UsageGroup1",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Implementations/UsageGroup1InsertHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Contracts/IUsageGroup1InsertHandler.cs",
+    "Method": "InsertAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.UsageGroup1InsertHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IUsageGroup1InsertHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup1Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup1Service.cs",
+    "Names": {
+      "Handle": "InsertAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_usageGroup1QueryService": "_usageGroup1QueryService",
+      "_validator": "_validator",
+      "ExecSql": "InsertExecSql",
+      "Validate": "InsertValidate"
+    }
+  },
+  {
+    "Feature": "UsageGroup1",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Implementations/UsageGroup1DuplicateInsertHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Contracts/IUsageGroup1DuplicateInsertHandler.cs",
+    "Method": "DuplicateInsertAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.UsageGroup1DuplicateInsertHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IUsageGroup1DuplicateInsertHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup1Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup1Service.cs",
+    "Names": {
+      "Handle": "DuplicateInsertAsync",
+      "_UsageGroup1QueryService": "_usageGroup1QueryService",
+      "_UsageGroup2QueryService": "_UsageGroup2QueryService",
+      "_UsageGroup3QueryService": "_UsageGroup3QueryService",
+      "ExecSql": "DuplicateInsertExecSql"
+    }
+  },
+  {
+    "Feature": "UsageGroup1",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Implementations/UsageGroup1UpdateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Contracts/IUsageGroup1UpdateHandler.cs",
+    "Method": "UpdateAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.UsageGroup1UpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.IUsageGroup1UpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup1Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup1Service.cs",
+    "Names": {
+      "Handle": "UpdateAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_usageGroup1QueryService": "_usageGroup1QueryService",
+      "_validator": "_updateValidator",
+      "ExecSql": "UpdateExecSql",
+      "Validate": "UpdateValidate"
+    }
+  },
+  {
+    "Feature": "UsageGroup1",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Delete/Implementations/UsageGroup1RemoveHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Delete/Contracts/IUsageGroup1RemoveHandler.cs",
+    "Method": "RemoveAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations.UsageGroup1RemoveHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts.IUsageGroup1RemoveHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup1Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup1Service.cs",
+    "Names": {
+      "Handle": "RemoveAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_usageGroup1QueryService": "_usageGroup1QueryService",
+      "_usageGroup2QueryService": "_UsageGroup2QueryService",
+      "_usageGroup3QueryService": "_UsageGroup3QueryService",
+      "ExecSql": "RemoveExecSql"
+    }
+  },
+  {
+    "Feature": "UsageGroup1",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/UsageGroup1GetAllHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IUsageGroup1GetAllHandler.cs",
+    "Method": "GetAllAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageGroup1GetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageGroup1GetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup1Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup1Service.cs",
+    "Names": {
+      "Handle": "GetAllAsync",
+      "_usageGroup1QueryService": "_usageGroup1QueryService"
+    }
+  },
+  {
+    "Feature": "UsageGroup1",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/UsageGroup1GetByIdHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IUsageGroup1GetByIdHandler.cs",
+    "Method": "GetByIdAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageGroup1GetByIdHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageGroup1GetByIdHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup1Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup1Service.cs",
+    "Names": {
+      "Handle": "GetByIdAsync",
+      "_usageGroup1QueryService": "_usageGroup1QueryService"
+    }
+  },
+  {
+    "Feature": "UsageGroup2",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Implementations/UsageGroup2InsertHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Contracts/IUsageGroup2InsertHandler.cs",
+    "Method": "InsertAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.UsageGroup2InsertHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IUsageGroup2InsertHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup2Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup2Service.cs",
+    "Names": {
+      "Handle": "InsertAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_usageGroup2QueryService": "_usageGroup2QueryService",
+      "_validator": "_validator",
+      "ExecSql": "InsertExecSql",
+      "Validate": "InsertValidate"
+    }
+  },
+  {
+    "Feature": "UsageGroup2",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Implementations/UsageGroup2UpdateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Contracts/IUsageGroup2UpdateHandler.cs",
+    "Method": "UpdateAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.UsageGroup2UpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.IUsageGroup2UpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup2Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup2Service.cs",
+    "Names": {
+      "Handle": "UpdateAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_usageGroup2QueryService": "_usageGroup2QueryService",
+      "_validator": "_updateValidator",
+      "ExecSql": "UpdateExecSql",
+      "Validate": "UpdateValidate"
+    }
+  },
+  {
+    "Feature": "UsageGroup2",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Delete/Implementations/UsageGroup2RemoveHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Delete/Contracts/IUsageGroup2RemoveHandler.cs",
+    "Method": "RemoveAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations.UsageGroup2RemoveHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts.IUsageGroup2RemoveHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup2Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup2Service.cs",
+    "Names": {
+      "Handle": "RemoveAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_usageGroup2QueryService": "_usageGroup2QueryService",
+      "_usageGroup3QueryService": "_usageGroup3QueryService",
+      "ExecSql": "RemoveExecSql"
+    }
+  },
+  {
+    "Feature": "UsageGroup2",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/UsageGroup2GetAllHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IUsageGroup2GetAllHandler.cs",
+    "Method": "GetAllAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageGroup2GetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageGroup2GetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup2Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup2Service.cs",
+    "Names": {
+      "Handle": "GetAllAsync",
+      "_usageGroup2QueryService": "_usageGroup2QueryService"
+    }
+  },
+  {
+    "Feature": "UsageGroup2",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/UsageGroup2GetByIdHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IUsageGroup2GetByIdHandler.cs",
+    "Method": "GetByIdAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageGroup2GetByIdHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageGroup2GetByIdHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup2Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup2Service.cs",
+    "Names": {
+      "Handle": "GetByIdAsync",
+      "_usageGroup2QueryService": "_usageGroup2QueryService"
+    }
+  },
+  {
+    "Feature": "UsageGroup2",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/UsageGroup2GetByGroup1IdHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IUsageGroup2GetByGroup1IdHandler.cs",
+    "Method": "GetByGroup1IdAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageGroup2GetByGroup1IdHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageGroup2GetByGroup1IdHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup2Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup2Service.cs",
+    "Names": {
+      "Handle": "GetByGroup1IdAsync",
+      "_usageGroup2QueryService": "_usageGroup2QueryService"
+    }
+  },
+  {
+    "Feature": "UsageGroup3",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Implementations/UsageGroup3InsertHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Contracts/IUsageGroup3InsertHandler.cs",
+    "Method": "InsertAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.UsageGroup3InsertHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IUsageGroup3InsertHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup3Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup3Service.cs",
+    "Names": {
+      "Handle": "InsertAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_validator": "_validator",
+      "ExecSql": "InsertExecSql",
+      "Validate": "InsertValidate"
+    }
+  },
+  {
+    "Feature": "UsageGroup3",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Implementations/UsageGroup3UpdateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Contracts/IUsageGroup3UpdateHandler.cs",
+    "Method": "UpdateAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.UsageGroup3UpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.IUsageGroup3UpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup3Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup3Service.cs",
+    "Names": {
+      "Handle": "UpdateAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_usageGroup3QueryService": "_usageGroup3QueryService",
+      "_validator": "_updateValidator",
+      "ExecSql": "UpdateExecSql",
+      "Validate": "UpdateValidate"
+    }
+  },
+  {
+    "Feature": "UsageGroup3",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Delete/Implementations/UsageGroup3RemoveHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Delete/Contracts/IUsageGroup3RemoveHandler.cs",
+    "Method": "RemoveAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations.UsageGroup3RemoveHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts.IUsageGroup3RemoveHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup3Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup3Service.cs",
+    "Names": {
+      "Handle": "RemoveAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_UsageGroup3QueryService": "_usageGroup3QueryService",
+      "ExecSql": "RemoveExecSql"
+    }
+  },
+  {
+    "Feature": "UsageGroup3",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/UsageGroup3GetAllHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IUsageGroup3GetAllHandler.cs",
+    "Method": "GetAllAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageGroup3GetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageGroup3GetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup3Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup3Service.cs",
+    "Names": {
+      "Handle": "GetAllAsync",
+      "_usageGroup3QueryService": "_usageGroup3QueryService"
+    }
+  },
+  {
+    "Feature": "UsageGroup3",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/UsageGroup3GetByIdHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IUsageGroup3GetByIdHandler.cs",
+    "Method": "GetByIdAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.UsageGroup3GetByIdHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IUsageGroup3GetByIdHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IUsageGroup3Service",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/UsageGroup3Service.cs",
+    "Names": {
+      "Handle": "GetByIdAsync",
+      "_usageGroup3QueryService": "_usageGroup3QueryService"
+    }
+  },
+  {
+    "Feature": "WaterMeter",
+    "Source": "Aban360.ClaimPool.Application/Features/Metering/Handlers/Commands/Create/Implementations/WaterMeterCreateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Metering/Handlers/Commands/Create/Contracts/IWaterMeterCreateHandler.cs",
+    "Method": "CreateAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Metering",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Create.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Create.Implementations.WaterMeterCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Create.Contracts.IWaterMeterCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Metering.Services.IWaterMeterService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Metering/Services/WaterMeterService.cs",
+    "Names": {
+      "Handle": "CreateAsync",
+      "_mapper": "_mapper",
+      "_commandService": "_commandService",
+      "_waterMeterValidator": "_waterMeterValidator"
+    }
+  },
+  {
+    "Feature": "WaterMeter",
+    "Source": "Aban360.ClaimPool.Application/Features/Metering/Handlers/Commands/Update/Implementations/WaterMeterUpdateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Metering/Handlers/Commands/Update/Contracts/IWaterMeterUpdateHandler.cs",
+    "Method": "UpdateAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Metering",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Update.Implementations.WaterMeterUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Update.Contracts.IWaterMeterUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Metering.Services.IWaterMeterService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Metering/Services/WaterMeterService.cs",
+    "Names": {
+      "Handle": "UpdateAsync",
+      "_mapper": "_mapper",
+      "_queryService": "_queryService",
+      "_waterMeterValidator": "_updateValidator"
+    }
+  },
+  {
+    "Feature": "WaterMeter",
+    "Source": "Aban360.ClaimPool.Application/Features/Metering/Handlers/Commands/Delete/Implementations/WaterMeterDeleteHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Metering/Handlers/Commands/Delete/Contracts/IWaterMeterDeleteHandler.cs",
+    "Method": "DeleteAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Metering",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Delete.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Delete.Implementations.WaterMeterDeleteHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Delete.Contracts.IWaterMeterDeleteHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Metering.Services.IWaterMeterService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Metering/Services/WaterMeterService.cs",
+    "Names": {
+      "Handle": "DeleteAsync",
+      "_queryService": "_queryService",
+      "_commandService": "_commandService"
+    }
+  },
+  {
+    "Feature": "WaterMeter",
+    "Source": "Aban360.ClaimPool.Application/Features/Metering/Handlers/Queries/Implementations/WaterMeterGetAllHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Metering/Handlers/Queries/Contracts/IWaterMeterGetAllHandler.cs",
+    "Method": "GetAllAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Metering",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Implementations.WaterMeterGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts.IWaterMeterGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Metering.Services.IWaterMeterService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Metering/Services/WaterMeterService.cs",
+    "Names": {
+      "Handle": "GetAllAsync",
+      "_mapper": "_mapper",
+      "_queryService": "_queryService"
+    }
+  },
+  {
+    "Feature": "WaterMeter",
+    "Source": "Aban360.ClaimPool.Application/Features/Metering/Handlers/Queries/Implementations/WaterMeterGetSingleHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Metering/Handlers/Queries/Contracts/IWaterMeterGetSingleHandler.cs",
+    "Method": "GetSingleAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Metering",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Implementations.WaterMeterGetSingleHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts.IWaterMeterGetSingleHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Metering.Services.IWaterMeterService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Metering/Services/WaterMeterService.cs",
+    "Names": {
+      "Handle": "GetSingleAsync",
+      "_mapper": "_mapper",
+      "_queryService": "_queryService"
+    }
+  },
+  {
+    "Feature": "ConCompany",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Implementations/ConCompanyInsertHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Contracts/IConCompanyInsertHandler.cs",
+    "Method": "InsertAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.ConCompanyInsertHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IConCompanyInsertHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IConCompanyService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyService.cs",
+    "Names": {
+      "Handle": "InsertAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_validator": "_validator",
+      "ExecSql": "InsertExecSql",
+      "Validate": "InsertValidate",
+      "GetInsertDto": "InsertGetInsertDto"
+    }
+  },
+  {
+    "Feature": "ConCompany",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Implementations/ConCompanyUpdateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Contracts/IConCompanyUpdateHandler.cs",
+    "Method": "UpdateAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.ConCompanyUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.IConCompanyUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IConCompanyService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyService.cs",
+    "Names": {
+      "Handle": "UpdateAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_conCompanyQueryService": "_conCompanyQueryService",
+      "_validator": "_updateValidator",
+      "ExecSql": "UpdateExecSql",
+      "Validate": "UpdateValidate"
+    }
+  },
+  {
+    "Feature": "ConCompany",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Delete/Implementations/ConCompanyRemoveHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Delete/Contracts/IConCompanyRemoveHandler.cs",
+    "Method": "RemoveAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations.ConCompanyRemoveHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts.IConCompanyRemoveHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IConCompanyService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyService.cs",
+    "Names": {
+      "Handle": "RemoveAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_conCompanyQueryService": "_conCompanyQueryService",
+      "ExecSql": "RemoveExecSql"
+    }
+  },
+  {
+    "Feature": "ConCompany",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/ConCompanyGetHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IConCompanyGetHandler.cs",
+    "Method": "GetAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.ConCompanyGetHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IConCompanyGetHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IConCompanyService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyService.cs",
+    "Names": {
+      "Handle": "GetAsync",
+      "_conCompanyQueryService": "_conCompanyQueryService"
+    }
+  },
+  {
+    "Feature": "ConCompany",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/ConCompanyGetByIdHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IConCompanyGetByIdHandler.cs",
+    "Method": "GetByIdAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.ConCompanyGetByIdHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IConCompanyGetByIdHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IConCompanyService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyService.cs",
+    "Names": {
+      "Handle": "GetByIdAsync",
+      "_conCompanyQueryService": "_conCompanyQueryService"
+    }
+  },
+  {
+    "Feature": "ConCompany",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/ConCompanyGetDictionaryHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IConCompanyGetDictionaryHandler.cs",
+    "Method": "GetDictionaryAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.ConCompanyGetDictionaryHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IConCompanyGetDictionaryHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IConCompanyService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyService.cs",
+    "Names": {
+      "Handle": "GetDictionaryAsync",
+      "_conCompanyQueryService": "_conCompanyQueryService"
+    }
+  },
+  {
+    "Feature": "ConCompany",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/ConCompanyGetByBillIdDictionaryHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IConCompanyGetByBillIdDictionaryHandler.cs",
+    "Method": "GetByBillIdDictionaryAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.ConCompanyGetByBillIdDictionaryHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.IConCompanyGetByBillIdDictionaryHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IConCompanyService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyService.cs",
+    "Names": {
+      "Handle": "GetByBillIdDictionaryAsync",
+      "_memberQueryService": "_memberQueryService",
+      "_conCompanyQueryService": "_conCompanyQueryService"
+    }
+  },
+  {
+    "Feature": "ConCompanyPersonnel",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Implementations/ConCompanyPersonnelInsertHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Contracts/IConCompanyPersonnelInsertHandler.cs",
+    "Method": "InsertAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations.ConCompanyPersonnelInsertHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IConCompanyPersonnelInsertHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IConCompanyPersonnelService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyPersonnelService.cs",
+    "Names": {
+      "Handle": "InsertAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_conCompanyQueryService": "_conCompanyQueryService",
+      "_validator": "_validator",
+      "ExecSql": "InsertExecSql",
+      "Validate": "InsertValidate",
+      "GetPersonnelInsertJson": "InsertGetPersonnelInsertJson"
+    }
+  },
+  {
+    "Feature": "ConCompanyPersonnel",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Implementations/ConCompanyPersonnelUpdateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Contracts/IConCompanyPersonnelUpdateHandler.cs",
+    "Method": "UpdateAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.ConCompanyPersonnelUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.IConCompanyPersonnelUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IConCompanyPersonnelService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyPersonnelService.cs",
+    "Names": {
+      "Handle": "UpdateAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_conCompanyQueryService": "_conCompanyQueryService",
+      "_validator": "_updateValidator",
+      "ExecSql": "UpdateExecSql",
+      "Validate": "UpdateValidate",
+      "GetPersonnelUpdateJson": "UpdateGetPersonnelUpdateJson"
+    }
+  },
+  {
+    "Feature": "ConCompanyPersonnel",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Delete/Implementations/ConCompanyPersonnelRemoveHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Delete/Contracts/IConCompanyPersonnelRemoveHandler.cs",
+    "Method": "RemoveAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Implementations.ConCompanyPersonnelRemoveHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Delete.Contracts.IConCompanyPersonnelRemoveHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IConCompanyPersonnelService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyPersonnelService.cs",
+    "Names": {
+      "Handle": "RemoveAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_conCompanyQueryService": "_conCompanyQueryService",
+      "ExecSql": "RemoveExecSql"
+    }
+  },
+  {
+    "Feature": "ConCompanyPersonnel",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/ConCompanyPersonalGetHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IConCompanyPersonalGetHandler.cs",
+    "Method": "GetAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.ConCompanyPersonalGetHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IConCompanyPersonalGetHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IConCompanyPersonnelService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyPersonnelService.cs",
+    "Names": {
+      "Handle": "GetAsync",
+      "_conCompanyQueryService": "_conCompanyQueryService"
+    }
+  },
+  {
+    "Feature": "ConCompanyPersonnel",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/ConCompanyPersonnelGetDictionaryHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IConCompanyPersonnelGetDictionaryHandler.cs",
+    "Method": "GetDictionaryAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.ConCompanyPersonnelGetDictionaryHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IConCompanyPersonnelGetDictionaryHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IConCompanyPersonnelService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/ConCompanyPersonnelService.cs",
+    "Names": {
+      "Handle": "GetDictionaryAsync",
+      "_conCompanyQueryService": "_conCompanyQueryService"
+    }
+  },
+  {
+    "Feature": "ClientComment",
+    "Source": "Aban360.ClaimPool.Application/Features/People/Handlers/Commands/Create/Implementations/ClientCommentInsertHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/People/Handlers/Commands/Create/Contracts/IClientCommentInsertHandler.cs",
+    "Method": "InsertAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/People",
+    "Namespace": "Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Implementations.ClientCommentInsertHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Create.Contracts.IClientCommentInsertHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IClientCommentService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/People/Services/ClientCommentService.cs",
+    "Names": {
+      "Handle": "InsertAsync",
+      "_commonMemberQueryService": "_commonMemberQueryService",
+      "_clientCommentCommandService": "_clientCommentCommandService",
+      "_validator": "_validator",
+      "Validation": "InsertValidation",
+      "InputDtoValidation": "InsertInputDtoValidation",
+      "BillIdValidation": "InsertBillIdValidation"
+    }
+  },
+  {
+    "Feature": "ClientComment",
+    "Source": "Aban360.ClaimPool.Application/Features/People/Handlers/Queries/Implementations/ClientCommentGetByBillIdHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/People/Handlers/Queries/Contracts/IClientCommentGetByBillIdHandler.cs",
+    "Method": "GetByBillIdAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/People",
+    "Namespace": "Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations.ClientCommentGetByBillIdHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts.IClientCommentGetByBillIdHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.IClientCommentService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/People/Services/ClientCommentService.cs",
+    "Names": {
+      "Handle": "GetByBillIdAsync",
+      "_clientCommentQueryService": "_clientCommentQueryService"
+    }
+  },
+  {
+    "Feature": "CustomerInfo",
+    "Source": "Aban360.ClaimPool.Application/Features/People/Handlers/Commands/Update/Implementations/CustomerInfoUpdateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/People/Handlers/Commands/Update/Contracts/ICustomerInfoUpdateHandler.cs",
+    "Method": "UpdateAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/People",
+    "Namespace": "Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Implementations.CustomerInfoUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Commands.Update.Contracts.ICustomerInfoUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.ICustomerInfoService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/People/Services/CustomerInfoService.cs",
+    "Names": {
+      "Handle": "UpdateAsync",
+      "_mapper": "_mapper",
+      "_customerInfoCommandService": "_customerInfoCommandService"
+    }
+  },
+  {
+    "Feature": "CustomerInfo",
+    "Source": "Aban360.ClaimPool.Application/Features/People/Handlers/Queries/Implementations/CustomerInfoGetByBillIdHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/People/Handlers/Queries/Contracts/ICustomerInfoGetByBillIdHandler.cs",
+    "Method": "GetByBillIdAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/People",
+    "Namespace": "Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Implementations.CustomerInfoGetByBillIdHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.People.Handlers.Queries.Contracts.ICustomerInfoGetByBillIdHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.People.Services.ICustomerInfoService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/People/Services/CustomerInfoService.cs",
+    "Names": {
+      "Handle": "GetByBillIdAsync",
+      "_customerInfoQueryService": "_customerInfoQueryService"
+    }
+  },
+  {
+    "Feature": "SubscriptionAssignment",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Implementations/SubscriptionAssignmentUpdateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Contracts/ISubscriptionAssignmentUpdateHandler.cs",
+    "Method": "UpdateAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.SubscriptionAssignmentUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.ISubscriptionAssignmentUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.ISubscriptionAssignmentService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/SubscriptionAssignmentService.cs",
+    "Names": {
+      "Handle": "UpdateAsync",
+      "_subscriptionAssignmentQueryService": "_subscriptionAssignmentQueryService",
+      "GetCustomerUpdateDto": "UpdateGetCustomerUpdateDto"
+    }
+  },
+  {
+    "Feature": "SubscriptionAssignment",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/SubscriptionAssignmentGetHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/ISubscriptionAssignmentGetHandler.cs",
+    "Method": "GetAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.SubscriptionAssignmentGetHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.ISubscriptionAssignmentGetHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.ISubscriptionAssignmentService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/SubscriptionAssignmentService.cs",
+    "Names": {
+      "Handle": "GetAsync",
+      "_subscriptionAssignmentQueryService": "_subscriptionAssignmentQueryService",
+      "_gisService": "_gisService",
+      "GetLocationInfo": "GetGetLocationInfo"
+    }
+  },
+  {
+    "Feature": "SubscriptionAssignment",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Update/Implementations/SubscriptionAssignmentByTrackNumberUpdateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Update/Contracts/ISubscriptionAssignmentByTrackNumberUpdateHandler.cs",
+    "Method": "UpdateByTrackNumberAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Update/Implementations/SubscriptionAssignmentByTrackNumberUpdateHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Implementations.SubscriptionAssignmentByTrackNumberUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Contracts.ISubscriptionAssignmentByTrackNumberUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.ISubscriptionAssignmentService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/SubscriptionAssignmentService.cs",
+    "Names": {
+      "Handle": "UpdateByTrackNumberAsync",
+      "_contextAccessor": "_contextAccessor",
+      "_trackingQueryService": "_trackingQueryService",
+      "_moshtrakQueryService": "_moshtrakQueryService",
+      "_zoneService": "_zoneService",
+      "_invalidStatus": "_invalidStatus",
+      "ExecSql": "UpdateByTrackNumberExecSql",
+      "Validate": "UpdateByTrackNumberValidate"
+    }
+  },
+  {
+    "Feature": "InstallationDateAssignment",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Implementations/InstallationDateAssignmentUpdateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Update/Contracts/IInstallationDateAssignmentUpdateHandler.cs",
+    "Method": "UpdateAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Implementations.InstallationDateAssignmentUpdateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Update.Contracts.IInstallationDateAssignmentUpdateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IInstallationDateAssignmentService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/InstallationDateAssignmentService.cs",
+    "Names": {
+      "Handle": "UpdateAsync",
+      "_InstallationDateAssignmentQueryService": "_InstallationDateAssignmentQueryService",
+      "_InstallationDateAssignmentCommandService": "_InstallationDateAssignmentCommandService"
+    }
+  },
+  {
+    "Feature": "InstallationDateAssignment",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/InstallationDateAssignmentGetHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IInstallationDateAssignmentGetHandler.cs",
+    "Method": "GetAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Land",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations.InstallationDateAssignmentGetHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IInstallationDateAssignmentGetHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IInstallationDateAssignmentService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/InstallationDateAssignmentService.cs",
+    "Names": {
+      "Handle": "GetAsync",
+      "_InstallationDateAssignmentQueryService": "_InstallationDateAssignmentQueryService"
+    }
+  },
+  {
+    "Feature": "RequestSubscription",
+    "Source": "Aban360.ClaimPool.Application/Features/Draft/Handlers/Commands/Create/Implementations/RequestSubscriptionCreateHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Draft/Handlers/Commands/Create/Contracts/IRequestSubscriptionCreateHandler.cs",
+    "Method": "CreateAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Draft",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Implementations.RequestSubscriptionCreateHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Draft.Handlers.Commands.Create.Contracts.IRequestSubscriptionCreateHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Draft.Services.IRequestSubscriptionService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Draft/Services/RequestSubscriptionService.cs",
+    "Names": {
+      "Handle": "CreateAsync",
+      "_mapper": "_mapper",
+      "_requestUserCommandService": "_requestUserCommandService",
+      "_requestEstateCommandService": "_requestEstateCommandService",
+      "_requestValidator": "_requestValidator",
+      "GetFlats": "CreateGetFlats",
+      "GetWaterMeterTags": "CreateGetWaterMeterTags",
+      "GetEstate": "CreateGetEstate",
+      "GetWaterMeter": "CreateGetWaterMeter",
+      "GetIndividualsAndIndividualEstate": "CreateGetIndividualsAndIndividualEstate",
+      "GetIndividual": "CreateGetIndividual",
+      "GetIndividualTags": "CreateGetIndividualTags",
+      "GetSiphon": "CreateGetSiphon"
+    }
+  },
+  {
+    "Feature": "RequestSubscription",
+    "Source": "Aban360.ClaimPool.Application/Features/Draft/Handlers/Queries/Implementations/RequestSubscriptionGetHandler.cs",
+    "ContractSource": "Aban360.ClaimPool.Application/Features/Draft/Handlers/Queries/Contracts/IRequestSubscriptionGetHandler.cs",
+    "Method": "GetAsync",
+    "Folder": "Aban360.ClaimPool.Application/Features/Draft",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Draft.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.ClaimPool.Application.Features.Draft.Handlers.Queries.Implementations.RequestSubscriptionGetHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Draft.Handlers.Queries.Contracts.IRequestSubscriptionGetHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Draft.Services.IRequestSubscriptionService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.ClaimPool.Application/Features/Draft/Services/RequestSubscriptionService.cs",
+    "Names": {
+      "Handle": "GetAsync",
+      "_waterMeterQueryService": "_waterMeterQueryService",
+      "_estateQueryService": "_estateQueryService",
+      "_flatQueryService": "_flatQueryService",
+      "_waterMeterSiphonQueryService": "_waterMeterSiphonQueryService",
+      "_individualEstateQueryService": "_individualEstateQueryService",
+      "_individualTagQueryService": "_individualTagQueryService",
+      "_individualDiscountTypeQueryService": "_individualDiscountTypeQueryService",
+      "_mapper": "_mapper",
+      "GetIndividualTags": "GetGetIndividualTags",
+      "GetIndividualDiscountTypes": "GetGetIndividualDiscountTypes"
+    }
+  },
+  {
+    "Feature": "BillReturnCause",
+    "Source": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Commands/Create/Implementations/BillReturnCauseCreateHandler.cs",
+    "ContractSource": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Commands/Create/Contracts/IBillReturnCauseCreateHandler.cs",
+    "Method": "CreateAsync",
+    "Folder": "Aban360.OldCalcPool.Application/Features/Db70",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Commands.Create.Implementations",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.OldCalcPool.Application.Features.Db70.Handlers.Commands.Create.Implementations.BillReturnCauseCreateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Commands.Create.Contracts.IBillReturnCauseCreateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Db70.Services.IBillReturnCauseService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.OldCalcPool.Application/Features/Db70/Services/BillReturnCauseService.cs",
+    "Names": {
+      "Handle": "CreateAsync",
+      "_validator": "_validator",
+      "_contextAccessor": "_contextAccessor",
+      "ExecSql": "CreateExecSql",
+      "InputValidate": "CreateInputValidate"
+    }
+  },
+  {
+    "Feature": "BillReturnCause",
+    "Source": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Commands/Update/Implementations/BillReturnCauseUpdateHandler.cs",
+    "ContractSource": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Commands/Update/Contracts/IBillReturnCauseUpdateHandler.cs",
+    "Method": "UpdateAsync",
+    "Folder": "Aban360.OldCalcPool.Application/Features/Db70",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.OldCalcPool.Application.Features.Db70.Handlers.Commands.Update.Implementations.BillReturnCauseUpdateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Commands.Update.Contracts.IBillReturnCauseUpdateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Db70.Services.IBillReturnCauseService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.OldCalcPool.Application/Features/Db70/Services/BillReturnCauseService.cs",
+    "Names": {
+      "Handle": "UpdateAsync",
+      "_billReturnCauseQueryService": "_billReturnCauseQueryService",
+      "_validator": "_updateValidator",
+      "_contextAccessor": "_contextAccessor",
+      "ExecSql": "UpdateExecSql",
+      "InputValidate": "UpdateInputValidate"
+    }
+  },
+  {
+    "Feature": "BillReturnCause",
+    "Source": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Commands/Delete/Implementations/BillReturnCauseDeleteHandler.cs",
+    "ContractSource": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Commands/Delete/Contracts/IBillReturnCauseDeleteHandler.cs",
+    "Method": "DeleteAsync",
+    "Folder": "Aban360.OldCalcPool.Application/Features/Db70",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Commands.Delete.Implementations",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.OldCalcPool.Application.Features.Db70.Handlers.Commands.Delete.Implementations.BillReturnCauseDeleteHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Commands.Delete.Contracts.IBillReturnCauseDeleteHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Db70.Services.IBillReturnCauseService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.OldCalcPool.Application/Features/Db70/Services/BillReturnCauseService.cs",
+    "Names": {
+      "Handle": "DeleteAsync",
+      "_validator": "_deleteValidator",
+      "_contextAccessor": "_contextAccessor",
+      "ExecSql": "DeleteExecSql",
+      "InputValidate": "DeleteInputValidate"
+    }
+  },
+  {
+    "Feature": "BillReturnCause",
+    "Source": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Queries/Implementations/BillReturnCauseGetHandler.cs",
+    "ContractSource": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Queries/Contracts/IBillReturnCauseGetHandler.cs",
+    "Method": "GetAsync",
+    "Folder": "Aban360.OldCalcPool.Application/Features/Db70",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Implementations.BillReturnCauseGetHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Contracts.IBillReturnCauseGetHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Db70.Services.IBillReturnCauseService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.OldCalcPool.Application/Features/Db70/Services/BillReturnCauseService.cs",
+    "Names": {
+      "Handle": "GetAsync",
+      "_virtualCategoryQueryService": "_billReturnCauseQueryService",
+      "_validator": "_getValidator"
+    }
+  },
+  {
+    "Feature": "BillReturnCause",
+    "Source": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Queries/Implementations/BillReturnCauseGetAllHandler.cs",
+    "ContractSource": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Queries/Contracts/IBillReturnCauseGetAllHandler.cs",
+    "Method": "GetAllAsync",
+    "Folder": "Aban360.OldCalcPool.Application/Features/Db70",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Implementations.BillReturnCauseGetAllHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Contracts.IBillReturnCauseGetAllHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Db70.Services.IBillReturnCauseService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.OldCalcPool.Application/Features/Db70/Services/BillReturnCauseService.cs",
+    "Names": {
+      "Handle": "GetAllAsync",
+      "_billReturnCauseQueryService": "_billReturnCauseQueryService",
+      "HandleByDictionary": "GetAllDictionaryAsync",
+      "GetTitleCombineReturnType": "GetAllGetTitleCombineReturnType"
+    }
+  },
+  {
+    "Feature": "CounterStateLookup",
+    "Source": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Queries/Implementations/CounterStateGetHandler.cs",
+    "ContractSource": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Queries/Contracts/ICounterStateGetHandler.cs",
+    "Method": "GetAsync",
+    "Folder": "Aban360.OldCalcPool.Application/Features/Db70",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Implementations.CounterStateGetHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Contracts.ICounterStateGetHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Db70.Services.ICounterStateLookupService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.OldCalcPool.Application/Features/Db70/Services/CounterStateLookupService.cs",
+    "Names": {
+      "Handle": "GetAsync",
+      "_CounterStateQueryService": "_CounterStateQueryService"
+    }
+  },
+  {
+    "Feature": "CounterStateLookup",
+    "Source": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Queries/Implementations/CounterStateGetAllHandler.cs",
+    "ContractSource": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Queries/Contracts/ICounterStateGetAllHandler.cs",
+    "Method": "GetAllAsync",
+    "Folder": "Aban360.OldCalcPool.Application/Features/Db70",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Implementations.CounterStateGetAllHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Contracts.ICounterStateGetAllHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Db70.Services.ICounterStateLookupService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.OldCalcPool.Application/Features/Db70/Services/CounterStateLookupService.cs",
+    "Names": {
+      "Handle": "GetAllAsync",
+      "_CounterStateQueryService": "_CounterStateQueryService"
+    }
+  },
+  {
+    "Feature": "Offering",
+    "Source": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Queries/Implementations/OfferingGetOfferingHandler.cs",
+    "ContractSource": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Queries/Contracts/IOfferingGetOfferingHandler.cs",
+    "Method": "GetOfferingAsync",
+    "Folder": "Aban360.OldCalcPool.Application/Features/Db70",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Implementations.OfferingGetOfferingHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Contracts.IOfferingGetOfferingHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Db70.Services.IOfferingService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.OldCalcPool.Application/Features/Db70/Services/OfferingService.cs",
+    "Names": {
+      "Handle": "GetOfferingAsync",
+      "_offeringQueryService": "_offeringQueryService"
+    }
+  },
+  {
+    "Feature": "Offering",
+    "Source": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Queries/Implementations/OfferingGetAllHandler.cs",
+    "ContractSource": "Aban360.OldCalcPool.Application/Features/Db70/Handlers/Queries/Contracts/IOfferingGetAllHandler.cs",
+    "Method": "GetAllAsync",
+    "Folder": "Aban360.OldCalcPool.Application/Features/Db70",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Implementations.OfferingGetAllHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Contracts.IOfferingGetAllHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Db70.Services.IOfferingService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.OldCalcPool.Application/Features/Db70/Services/OfferingService.cs",
+    "Names": {
+      "Handle": "GetAllAsync",
+      "_offeringQueryService": "_offeringQueryService"
+    }
+  },
+  {
+    "Feature": "MeterChange",
+    "Source": "Aban360.OldCalcPool.Application/Features/Processing/Handlers/Commands/Implementations/MeterChangeCreateHandler.cs",
+    "ContractSource": "Aban360.OldCalcPool.Application/Features/Processing/Handlers/Commands/Contracts/IMeterChangeCreateHandler.cs",
+    "Method": "CreateAsync",
+    "Folder": "Aban360.OldCalcPool.Application/Features/Processing",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations.MeterChangeCreateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts.IMeterChangeCreateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Processing.Services.IMeterChangeService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.OldCalcPool.Application/Features/Processing/Services/MeterChangeService.cs",
+    "Names": {
+      "Handle": "CreateAsync",
+      "_memberQueryService": "_memberQueryService",
+      "_changeMeterCauseQueryService": "_changeMeterCauseQueryService",
+      "_validator": "_validator",
+      "_meterChangeDateLimitMonth": "_meterChangeDateLimitMonth",
+      "_changeCounterState": "_changeCounterState",
+      "ExecSql": "CreateExecSql",
+      "GetCommandDtos": "CreateGetCommandDtos",
+      "GetInfos": "CreateGetInfos",
+      "Validation": "CreateValidation"
+    }
+  },
+  {
+    "Feature": "MeterChange",
+    "Source": "Aban360.OldCalcPool.Application/Features/Processing/Handlers/Queries/Implementations/MeterChangeGetHandler.cs",
+    "ContractSource": "Aban360.OldCalcPool.Application/Features/Processing/Handlers/Queries/Contracts/IMeterChangeGetHandler.cs",
+    "Method": "GetAsync",
+    "Folder": "Aban360.OldCalcPool.Application/Features/Processing",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Implementations.MeterChangeGetHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Contracts.IMeterChangeGetHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Processing.Services.IMeterChangeService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.OldCalcPool.Application/Features/Processing/Services/MeterChangeService.cs",
+    "Names": {
+      "Handle": "GetAsync",
+      "_tavizQueryService": "_tavizQueryService",
+      "_commonMemberQueryService": "_memberQueryService"
+    }
+  },
+  {
+    "Feature": "UserManagement",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Create/Implementations/UserCreateHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Create/Contracts/IUserCreateHandler.cs",
+    "Method": "CreateAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations.UserCreateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts.IUserCreateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserManagementService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserManagementService.cs",
+    "Names": {
+      "Handle": "CreateAsync",
+      "_userQueryService": "_userQueryService",
+      "_userCommandService": "_userCommandService",
+      "_userClaimCommandService": "_userClaimCommandService",
+      "_userRoleCommandService": "_userRoleCommandService",
+      "_mapper": "_mapper",
+      "_contextAccessor": "_contextAccessor",
+      "_zoneCountQueryAddhoc": "_zoneCountQueryAddhoc",
+      "_endpointQueryService": "_endpointQueryService",
+      "_roleQueryService": "_roleQueryService",
+      "_userValidator": "_userValidator",
+      "GetUserEndpoints": "CreateGetUserEndpoints"
+    }
+  },
+  {
+    "Feature": "UserManagement",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Update/Implementations/UserUpdateHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Update/Contracts/IUserUpdateHandler.cs",
+    "Method": "UpdateAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations.UserUpdateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts.IUserUpdateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserManagementService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserManagementService.cs",
+    "Names": {
+      "Handle": "UpdateAsync",
+      "_uow": "_uow",
+      "_mapper": "_mapper",
+      "_userCommandService": "_userCommandService",
+      "_userQueryService": "_userQueryService",
+      "_userClaimsQueryService": "_userClaimsQueryService",
+      "_userRoleQueryService": "_userRoleQueryService",
+      "_userClaimCommandService": "_userClaimCommandService",
+      "_userRoleCommandService": "_userRoleCommandService",
+      "_zoneCountQueryAddhoc": "_zoneCountQueryAddhoc",
+      "_endpointQueryService": "_endpointQueryService",
+      "_contextAccessor": "_contextAccessor",
+      "_roleQueryService": "_roleQueryService",
+      "_userValidator": "_updateValidator",
+      "GetEndpointsValueAdmin": "UpdateGetEndpointsValueAdmin",
+      "GetEndpointsValueNonAdmin": "UpdateGetEndpointsValueNonAdmin"
+    }
+  },
+  {
+    "Feature": "UserManagement",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Delete/Implementations/UserDeleteManagerHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Delete/Contracts/IUserDeleteManagerHandler.cs",
+    "Method": "DeleteManagerAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Implementations.UserDeleteManagerHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Contracts.IUserDeleteManagerHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserManagementService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserManagementService.cs",
+    "Names": {
+      "Handle": "DeleteManagerAsync",
+      "_userQueryService": "_userQueryService"
+    }
+  },
+  {
+    "Feature": "UserManagement",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Implementations/UserAllQueryHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Contracts/IUserAllQueryHandler.cs",
+    "Method": "AllAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.UserAllQueryHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IUserAllQueryHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserManagementService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserManagementService.cs",
+    "Names": {
+      "Handle": "AllAsync",
+      "_userQueryService": "_userQueryService",
+      "_t51QueryService": "_t51QueryService",
+      "_mapper": "_mapper"
+    }
+  },
+  {
+    "Feature": "UserManagement",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Implementations/UserBriefQueryHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Contracts/IUserBriefQueryHandler.cs",
+    "Method": "BriefAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.UserBriefQueryHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IUserBriefQueryHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserManagementService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserManagementService.cs",
+    "Names": {
+      "Handle": "BriefAsync",
+      "_userQueryService": "_userQueryService"
+    }
+  },
+  {
+    "Feature": "UserManagement",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Implementations/UserGridifyQueryHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Contracts/IUserGridifyQueryHandler.cs",
+    "Method": "GridifyAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.UserGridifyQueryHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IUserGridifyQueryHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserManagementService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserManagementService.cs",
+    "Names": {
+      "Handle": "GridifyAsync",
+      "_userQueryService": "_userQueryService",
+      "_mapper": "_mapper"
+    }
+  },
+  {
+    "Feature": "UserManagement",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Implementations/UserGetSingleQueryHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Contracts/IUserGetSingleQueryHandler.cs",
+    "Method": "GetSingleAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.UserGetSingleQueryHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IUserGetSingleQueryHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserManagementService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserManagementService.cs",
+    "Names": {
+      "Handle": "GetSingleAsync",
+      "_userQueryService": "_userQueryService",
+      "_endpointQueryService": "_endpointQueryService",
+      "_locationTreeAdHoc": "_locationTreeAdHoc",
+      "_roleQueryService": "_roleQueryService",
+      "_mapper": "_mapper",
+      "CreateRoleInfo": "GetSingleCreateRoleInfo",
+      "CreateLocationTree": "GetSingleCreateLocationTree",
+      "CreateAccessTree": "GetSingleCreateAccessTree"
+    }
+  },
+  {
+    "Feature": "UserPassword",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Update/Implementations/UserChangePasswordCommandHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Update/Contracts/IUserChangePasswordCommandHandler.cs",
+    "Method": "ChangePasswordAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations.UserChangePasswordCommandHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts.IUserChangePasswordCommandHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserPasswordService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserPasswordService.cs",
+    "Names": {
+      "Handle": "ChangePasswordAsync",
+      "_userQueryService": "_userQueryService",
+      "Validate": "ChangePasswordValidate"
+    }
+  },
+  {
+    "Feature": "UserPassword",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Update/Implementations/UserResetPasswordCommandHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Update/Contracts/IUserResetPasswordCommandHandler.cs",
+    "Method": "ResetPasswordAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations.UserResetPasswordCommandHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts.IUserResetPasswordCommandHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserPasswordService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserPasswordService.cs",
+    "Names": {
+      "Handle": "ResetPasswordAsync",
+      "_userQueryService": "_userQueryService"
+    }
+  },
+  {
+    "Feature": "UserLock",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Update/Implementations/UserLockCommandHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Update/Contracts/IUserLockCommandHandler.cs",
+    "Method": "LockAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations.UserLockCommandHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts.IUserLockCommandHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserLockService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserLockService.cs",
+    "Names": {
+      "Handle": "LockAsync",
+      "_userQueryService": "_userQueryService"
+    }
+  },
+  {
+    "Feature": "UserLock",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Update/Implementations/UserUnLockCommandHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Update/Contracts/IUserUnLockCommandHandler.cs",
+    "Method": "UnLockAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations.UserUnLockCommandHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts.IUserUnLockCommandHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserLockService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserLockService.cs",
+    "Names": {
+      "Handle": "UnLockAsync",
+      "_userQueryService": "_userQueryService"
+    }
+  },
+  {
+    "Feature": "UserToken",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Create/Implementations/UserTokenCreateHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Create/Contracts/IUserTokenCreateHandler.cs",
+    "Method": "CreateAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations.UserTokenCreateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts.IUserTokenCreateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserTokenService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserTokenService.cs",
+    "Names": {
+      "Handle": "CreateAsync",
+      "_tokeStoreService": "_tokeStoreService",
+      "_mapper": "_mapper",
+      "_configuration": "_configuration",
+      "CreateUserToken": "CreateCreateUserToken"
+    }
+  },
+  {
+    "Feature": "UserToken",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Delete/Implementations/UserTokenDeleteHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Delete/Contracts/IUserTokenDeleteHandler.cs",
+    "Method": "DeleteAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Implementations.UserTokenDeleteHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Contracts.IUserTokenDeleteHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserTokenService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserTokenService.cs",
+    "Names": {
+      "Handle": "DeleteAsync",
+      "_tokenStoreCommandService": "_tokeStoreService"
+    }
+  },
+  {
+    "Feature": "UserToken",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Implementations/UserTokenFindByRefreshQueryHandler.cs",
+    "ContractSource": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Contracts/IUserTokenFindByRefreshQueryHandler.cs",
+    "Method": "FindByRefreshAsync",
+    "Folder": "Aban360.UserPool.Application/Features/Auth",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceManagement20.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.UserTokenFindByRefreshQueryHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IUserTokenFindByRefreshQueryHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserTokenService",
+    "OldMethod": "Handle",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserTokenService.cs",
+    "Names": {
+      "Handle": "FindByRefreshAsync",
+      "_tokenStoreService": "_tokenStoreService",
+      "_tokenFactoryService": "_tokenFactoryService"
+    }
+  }
+]

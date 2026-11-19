@@ -1,4 +1,4 @@
-﻿using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Constants;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
@@ -10,6 +10,7 @@ using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.ReportPool.Application.Features.WaterInvoice.Handler.Contracts;
 using Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto;
+using Aban360.CalculationPool.Application.Features.MeterReading.Services;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations
 {
@@ -20,44 +21,32 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
         private readonly IMeterReadingDetailQueryService _meterReadingDetailQueryService;
         private readonly IMeterFlowQueryService _meterFlowQueryService;
         private readonly ICommonZoneService _commonZoneService;
-        private readonly ICheckedListGetHandler _checkedListGetHandler;
-        public MeterReadingDetailLatestInfoByReadingNumberGetHandler(
-            IBillTransactionDetailsGetHandler billTransactionDetailsGetHandler,
-            ICommonMemberQueryService commonMemberQueryService,
-            IMeterFlowQueryService meterFlowQueryService,
-            IMeterReadingDetailQueryService meterReadingDetailQueryService,
-            ICommonZoneService commonZoneService,
-            ICheckedListGetHandler checkedListGetHandler)
+        private readonly IMeterReadingCheckedListService _meterReadingCheckedListService;
+        public MeterReadingDetailLatestInfoByReadingNumberGetHandler(IBillTransactionDetailsGetHandler billTransactionDetailsGetHandler, ICommonMemberQueryService commonMemberQueryService, IMeterFlowQueryService meterFlowQueryService, IMeterReadingDetailQueryService meterReadingDetailQueryService, ICommonZoneService commonZoneService, IMeterReadingCheckedListService meterReadingCheckedListService)
         {
             _billTransactionDetailsGetHandler = billTransactionDetailsGetHandler;
             _billTransactionDetailsGetHandler.NotNull(nameof(billTransactionDetailsGetHandler));
-
             _commonMemberQueryService = commonMemberQueryService;
             _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
-
             _commonZoneService = commonZoneService;
             _commonZoneService.NotNull(nameof(commonZoneService));
-
             _meterFlowQueryService = meterFlowQueryService;
             _meterFlowQueryService.NotNull(nameof(meterFlowQueryService));
-
             _meterReadingDetailQueryService = meterReadingDetailQueryService;
             _meterReadingDetailQueryService.NotNull(nameof(meterReadingDetailQueryService));
-
-            _checkedListGetHandler = checkedListGetHandler;
-            _checkedListGetHandler.NotNull(nameof(checkedListGetHandler));
+            _meterReadingCheckedListService = meterReadingCheckedListService;
+            _meterReadingCheckedListService.NotNull(nameof(meterReadingCheckedListService));
         }
 
         public async Task<ReportOutput<BillTransactionDetailWithLastReadingDataHeaderOutputDto, BillTransactionDetailDataOutputDto>> Handle(string billIdOrReadingNumber, IAppUser appUser, CancellationToken cancellationToken)
         {
             ZoneIdAndCustomerNumberAndBillId customersInfo = await GetCustomerInfo(billIdOrReadingNumber, appUser);
-
             ReportOutput<BillTransactionDetailHeaderOutputDto, BillTransactionDetailDataOutputDto> transactionInfo = await _billTransactionDetailsGetHandler.Handle(customersInfo.BillId, appUser, cancellationToken);
-            var (meterReadingDetail, meterFlowStepEnum) = await GetMeterReadingData(transactionInfo.ReportHeader.BillId);
+            var(meterReadingDetail, meterFlowStepEnum) = await GetMeterReadingData(transactionInfo.ReportHeader.BillId);
             BillTransactionDetailWithLastReadingDataHeaderOutputDto header = GetHeader(transactionInfo.ReportHeader, meterReadingDetail, meterFlowStepEnum);
-
             return new ReportOutput<BillTransactionDetailWithLastReadingDataHeaderOutputDto, BillTransactionDetailDataOutputDto>(transactionInfo.Title, header, transactionInfo.ReportData);
         }
+
         private async Task<ZoneIdAndCustomerNumberAndBillId> GetCustomerInfo(string billIdOrReadingNumber, IAppUser appUser)
         {
             IEnumerable<int> myZoneIds = await _commonZoneService.GetMyZoneIds(appUser);
@@ -66,14 +55,17 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.InvalidMoreThan1ReadingNumber);
             }
+
             if ((customerInfoByReadingNumber?.Count() ?? 0) == 1)
             {
                 return customerInfoByReadingNumber.FirstOrDefault();
             }
+
             ZoneIdAndCustomerNumber customersZoneByBillId = await _commonMemberQueryService.Get(billIdOrReadingNumber);
             ZoneIdAndCustomerNumberAndBillId customerInfoByBillId = new(customersZoneByBillId.ZoneId, customersZoneByBillId.CustomerNumber, billIdOrReadingNumber);
             return customerInfoByBillId;
         }
+
         private async Task<(MeterReadingDetailDataOutputDto, MeterFlowStepEnum)> GetMeterReadingData(string billId)
         {
             MeterReadingDetailDataOutputDto? meterReadingDetail = await _meterReadingDetailQueryService.Get(billId);
@@ -85,14 +77,16 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Que
                 {
                     throw new ReadingException(ExceptionLiterals.InvalidLatestMeterReadingWithExpireMeterFlow);
                 }
+
                 meterFlowStepId = meterFlowInfo.MeterFlowStepId;
             }
 
             return (meterReadingDetail, meterFlowStepId);
         }
+
         private BillTransactionDetailWithLastReadingDataHeaderOutputDto GetHeader(BillTransactionDetailHeaderOutputDto preHeader, MeterReadingDetailDataOutputDto meterReadingDetail, MeterFlowStepEnum flowEnum)
         {
-            MeterReadingDetailCheckedDto meterReadingWithCheck = _checkedListGetHandler.GetReadingControl(meterReadingDetail, flowEnum);
+            MeterReadingDetailCheckedDto meterReadingWithCheck = _meterReadingCheckedListService.CheckedListGetGetReadingControlAsync(meterReadingDetail, flowEnum);
             return new BillTransactionDetailWithLastReadingDataHeaderOutputDto()
             {
                 ZoneId = preHeader.ZoneId,

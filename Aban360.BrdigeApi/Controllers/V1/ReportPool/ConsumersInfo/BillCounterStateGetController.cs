@@ -1,11 +1,10 @@
-﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
-{
+namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo{
     [Route("v1/bill")]
     public class BillCounterStateGetController : BaseController
     {

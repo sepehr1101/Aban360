@@ -1,0 +1,194 @@
+[
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestSubscriptionController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Draft.RequestSubscriptionController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Draft/RequestSubscriptionController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.ClaimPool.Land.EstateController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.EstateController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Land/EstateController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.ClaimPool.Land.InstallationDateAssignmentController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.InstallationDateAssignmentController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Land/InstallationDateAssignmentController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.ClaimPool.Land.SubscriptionAssignmentController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.SubscriptionAssignmentController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Land/SubscriptionAssignmentController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.ClaimPool.Metering.WaterMeterController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Metering.WaterMeterController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Metering/WaterMeterController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.MeterPool.Management.CounterStateController",
+    "Current": "Aban360.Api.Controllers.V1.MeterPool.Management.CounterStateController",
+    "Source": "Aban360.Api/Controllers/V1/MeterPool/Management/CounterStateController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.OldCalcPool.Db70.BillReturnCauseController",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.Db70.BillReturnCauseController",
+    "Source": "Aban360.Api/Controllers/V1/OldCalcPool/Db70/BillReturnCauseController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.OldCalcPool.Processing.MeterChangeController",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.Processing.MeterChangeController",
+    "Source": "Aban360.Api/Controllers/V1/OldCalcPool/Processing/MeterChangeController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.ClaimPool.Land.Commands.ConCompanyController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.Commands.ConCompanyController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Land/Commands/ConCompanyController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.ClaimPool.Land.Commands.UsageGroup1Controller",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.Commands.UsageGroup1Controller",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Land/Commands/UsageGroup1Controller.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V2.ClaimPool.Land.Commands.UsageGroup2Controller",
+    "Current": "Aban360.Api.Controllers.V2.ClaimPool.Land.Commands.UsageGroup2Controller",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Land/Commands/UsageGroup2Controller.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.ClaimPool.Land.Commands.UsageGroup3Controller",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.Commands.UsageGroup3Controller",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Land/Commands/UsageGroup3Controller.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.ClaimPool.People.Commands.CustomerCommentController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.People.Commands.CustomerCommentController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/People/Commands/CustomerCommentController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.ClaimPool.People.Commands.CustomerInfoController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.People.Commands.CustomerInfoController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/People/Commands/CustomerInfoController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.UserPool.Auth.Commands.LoginController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Commands.LoginController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Commands/LoginController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.UserPool.Auth.Commands.LogoutController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Commands.LogoutController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Commands/LogoutController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserChangePasswordManagerController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserChangePasswordManagerController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Commands/UserChangePasswordManagerController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserCreateController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserCreateController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Commands/UserCreateController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserDeleteManagerController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserDeleteManagerController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Commands/UserDeleteManagerController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserLockManagerController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserLockManagerController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Commands/UserLockManagerController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserResetPasswordManagerController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserResetPasswordManagerController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Commands/UserResetPasswordManagerController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserUnLockManagerController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserUnLockManagerController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Commands/UserUnLockManagerController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserUpdateController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Commands.UserUpdateController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Commands/UserUpdateController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.UserPool.Auth.Queries.UserAllQueryController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Queries.UserAllQueryController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Queries/UserAllQueryController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.UserPool.Auth.Queries.UserGetSingleQueryController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Queries.UserGetSingleQueryController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Queries/UserGetSingleQueryController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersManagement20.Aban360.Api.Controllers.V1.UserPool.Auth.Queries.UserGridifyQueryController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Queries.UserGridifyQueryController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Queries/UserGridifyQueryController.cs"
+  },
+  {
+    "Assembly": "Aban360.BrdigeApi",
+    "Original": "BeforeConsumersManagement20.Aban360.BrdigeApi.Controllers.V1.ServiceLinkController",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.ServiceLinkController",
+    "Source": "Aban360.BrdigeApi/Controllers/V1/ServiceLinkController.cs"
+  },
+  {
+    "Assembly": "Aban360.BrdigeApi",
+    "Original": "BeforeConsumersManagement20.Aban360.BrdigeApi.Controllers.V1.CalculationPool.MeterChangeController",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.CalculationPool.MeterChangeController",
+    "Source": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/MeterChangeController.cs"
+  },
+  {
+    "Assembly": "Aban360.BrdigeApi",
+    "Original": "BeforeConsumersManagement20.Aban360.BrdigeApi.Controllers.V1.Security.LoginController",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.Security.LoginController",
+    "Source": "Aban360.BrdigeApi/Controllers/V1/Security/LoginController.cs"
+  },
+  {
+    "Assembly": "Aban360.BrdigeApi",
+    "Original": "BeforeConsumersManagement20.Aban360.BrdigeApi.Controllers.V1.Security.LogoutController",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.Security.LogoutController",
+    "Source": "Aban360.BrdigeApi/Controllers/V1/Security/LogoutController.cs"
+  },
+  {
+    "Assembly": "Aban360.BrdigeApi",
+    "Original": "BeforeConsumersManagement20.Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo.BillCounterStateGetController",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo.BillCounterStateGetController",
+    "Source": "Aban360.BrdigeApi/Controllers/V1/ReportPool/ConsumersInfo/BillCounterStateGetController.cs"
+  },
+  {
+    "Assembly": "Aban360.BrdigeApi",
+    "Original": "BeforeConsumersManagement20.Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo.BillReturnCauseGetAllController",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo.BillReturnCauseGetAllController",
+    "Source": "Aban360.BrdigeApi/Controllers/V1/ReportPool/ConsumersInfo/BillReturnCauseGetAllController.cs"
+  }
+]

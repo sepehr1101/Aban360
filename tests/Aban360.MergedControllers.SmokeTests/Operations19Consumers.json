@@ -1,0 +1,128 @@
+[
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/CollectBills/CollectBillsController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/MeterReadingDetailController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/Sale/Article11Controller.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/Sale/InstallationAndEquipmentController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/Sale/TankerWaterDistanceTariffController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/Sale/TankerWaterTariffController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/ServiceLink/ServiceLinkOtherExpensesItemsController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/ServiceLink/ServiceLinkPaymentController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/OldCalcPool/Processing/GenerateBillController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/PaymentPool/BankReceipt/BankReceiptBankGetAllController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/PaymentPool/BankReceipt/BankReceiptController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/PaymentPool/BankReceipt/BankReceiptDiscrepancyController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Commands/AddFileController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Commands/AddOrUpdateMetaDataController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Commands/CopyTrackImagesToBillController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Commands/CreateFolderController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Commands/RemoveFileController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Queries/GetDirectoryTree2Controller.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Queries/GetDownloadLinkController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Queries/GetFilesListController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Queries/GetMetaDataPropertiesController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Queries/OpenKmBinaryDisplayerController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/MeterFlowAmountConfirmedController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/MeterFlowCalculationConfirmationController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/MeterFlowConsumptionCheckingController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/MeterFlowInitialCalculationController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Queries/CartableGetController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Queries/CheckedListGetController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ArchiveRequestController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/RequestBranchController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ServiceLinkBatchReturnController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ServiceLinkReturnController.cs"
+  },
+  {
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestBranchQueryController.cs"
+  },
+  {
+    "Source": "Aban360.BlobPool.Application/Features/OpenKm/Handlers/Commands/Implementations/ReadingArchiveService.cs"
+  },
+  {
+    "Source": "Aban360.BrdigeApi/Controllers/V1/ServiceLinkController.cs"
+  },
+  {
+    "Source": "Aban360.BrdigeApi/Controllers/V1/WaterController.cs"
+  },
+  {
+    "Source": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/GenerateBillController.cs"
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/MeterReadingDetailLatestInfoByReadingNumberGetHandler.cs"
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Implementations/AmountCheckedHandler.cs"
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Implementations/MeterReadingCreateBaseHandler.cs"
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Implementations/MeterReadingDetailSendSmsHandler.cs"
+  },
+  {
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/SetAssessmentResultHandler.cs"
+  }
+]

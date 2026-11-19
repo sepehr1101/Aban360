@@ -1,36 +1,25 @@
-﻿using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
-using Aban360.SystemPool.Application.Features.Logging.Handlers.Commands.Contracts;
 using Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Conracts;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Input;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Output;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
+using Aban360.SystemPool.Application.Features.Logging.Services;
 
 namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
 {
     [Route("v1/assessment-log")]
     public class AssessmentLogController : BaseController
     {
-        private readonly IAssessmentLogSaveHandler _assessmentLogSaveHandler;
-        private readonly IAssessmentLogGetAllHandler _assessmentGetAllHandler;
-        private readonly IAssessmentLogGetByFileNameHandler _assessmentLogGetByFileNameHandler;
+        private readonly IAssessmentLogService _assessmentLogService;
         private string _folderPath = @"AppData\AssessmentLogs";
-        public AssessmentLogController(
-            IAssessmentLogSaveHandler assessmentLogSaveHandler,
-            IAssessmentLogGetAllHandler assessmentGetAllHandler,
-            IAssessmentLogGetByFileNameHandler assessmentLogGetByFileNameHandler)
+        public AssessmentLogController(IAssessmentLogService assessmentLogService)
         {
-            _assessmentLogSaveHandler = assessmentLogSaveHandler;
-            _assessmentLogSaveHandler.NotNull(nameof(assessmentLogSaveHandler));
-
-            _assessmentGetAllHandler = assessmentGetAllHandler;
-            _assessmentGetAllHandler.NotNull(nameof(assessmentGetAllHandler));
-
-            _assessmentLogGetByFileNameHandler = assessmentLogGetByFileNameHandler;
-            _assessmentLogGetByFileNameHandler.NotNull(nameof(assessmentLogGetByFileNameHandler));
+            _assessmentLogService = assessmentLogService;
+            _assessmentLogService.NotNull(nameof(assessmentLogService));
         }
 
         [Route("upload")]
@@ -38,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentLogInsertDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UploadFile(AssessmentLogInsertDto inputDto, CancellationToken cancellation)
         {
-            await _assessmentLogSaveHandler.Handle(inputDto, cancellation);
+            await _assessmentLogService.SaveAsync(inputDto, cancellation);
             return Ok(inputDto);
         }
 
@@ -47,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<AssessmentLogGetDto>>), StatusCodes.Status200OK)]
         public IActionResult GetAll(CancellationToken cancellation)
         {
-            IEnumerable<AssessmentLogGetDto> result = _assessmentGetAllHandler.Handle(cancellation);
+            IEnumerable<AssessmentLogGetDto> result = _assessmentLogService.GetAll(cancellation);
             return Ok(result);
         }
 
@@ -61,11 +50,11 @@ namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
             {
                 throw new InvalidTrackingException(ExceptionLiterals.NotFoundFile);
             }
+
             FileStream fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             return File(fileStream, "text/plain", fileName, enableRangeProcessing: true);
-
-            //AssessmentLogFileGetDto result = _assessmentLogGetByFileNameHandler.Handle(fileName, cancellation);
-            //return Ok(result);
+        //AssessmentLogFileGetDto result = _assessmentLogGetByFileNameHandler.Handle(fileName, cancellation);
+        //return Ok(result);
         }
     }
 }

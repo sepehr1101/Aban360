@@ -1,5 +1,4 @@
-using Aban360.CalculationPool.Application.Features.CollectBills.Handlers.Commands.Contracts;
-using Aban360.CalculationPool.Application.Features.CollectBills.Handlers.Commands.Implementations;
+using Aban360.CalculationPool.Application.Features.Base;
 using Aban360.CalculationPool.Application.Features.CollectBills.Handlers.Queries.Implementations;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
 using Aban360.CalculationPool.Domain.Features.CollectBills.Inputs;
@@ -12,26 +11,24 @@ using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
 using Microsoft.AspNetCore.Mvc;
-using Aban360.CalculationPool.Application.Features.Base;
+using Aban360.CalculationPool.Application.Features.CollectBills.Services;
+using Aban360.Api.Controllers.V1.CalculationPool.CollectBills;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
 {
     [Route("v1/collect-bills")]
     public class CollectBillsController : BaseController
     {
-        private readonly ICollectBillsFileCreateHandler _collectBillsFileCreateHandler;
+        private readonly ICollectBillsFilesService _collectBillsFilesService;
         private readonly ICollectBillsDetailWithLastStepGetHadler _collectBillsDetailWithLastStepHandler;
-        private readonly ICollectBillsDetailFileDownloadHandler _collectBillsDetailFileDownloadHandler;
         private string _zipContentType = DirectoryLiterals.ZipFileContentType;
         private readonly ICollectBillsDetailJobService _jobService;
-        public CollectBillsController(ICollectBillsFileCreateHandler collectBillsFileCreateHandler, ICollectBillsDetailWithLastStepGetHadler collectBillsDetailWithLastStepHandler, ICollectBillsDetailFileDownloadHandler collectBillsDetailFileDownloadHandler, ICollectBillsDetailJobService jobService)
+        public CollectBillsController(ICollectBillsFilesService collectBillsFilesService, ICollectBillsDetailWithLastStepGetHadler collectBillsDetailWithLastStepHandler, ICollectBillsDetailJobService jobService)
         {
-            _collectBillsFileCreateHandler = collectBillsFileCreateHandler;
-            _collectBillsFileCreateHandler.NotNull(nameof(collectBillsFileCreateHandler));
+            _collectBillsFilesService = collectBillsFilesService;
+            _collectBillsFilesService.NotNull(nameof(collectBillsFilesService));
             _collectBillsDetailWithLastStepHandler = collectBillsDetailWithLastStepHandler;
             _collectBillsDetailWithLastStepHandler.NotNull(nameof(collectBillsDetailWithLastStepHandler));
-            _collectBillsDetailFileDownloadHandler = collectBillsDetailFileDownloadHandler;
-            _collectBillsDetailFileDownloadHandler.NotNull(nameof(collectBillsDetailFileDownloadHandler));
             _jobService = jobService;
             _jobService.NotNull(nameof(jobService));
         }
@@ -43,7 +40,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
         public async Task<FileStreamResult> CreateFile(CollectBillsByDateJalaliInputDto inputDto, CancellationToken cancellationToken)
         {
             ConvertDate.JalaliToDateTime(inputDto.DateJalali, true);
-            CollectBillsGetZipFileInfo zipFileInfo = await _collectBillsFileCreateHandler.Handle(inputDto.DateJalali, CurrentUser, cancellationToken);
+            CollectBillsGetZipFileInfo zipFileInfo = await _collectBillsFilesService.CollectBillsFileCreateAsync(inputDto.DateJalali, CurrentUser, cancellationToken);
             if (!System.IO.File.Exists(zipFileInfo.FilePath))
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.NotFoundFolder);
@@ -80,7 +77,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
         [Route("download/{fileName}")]
         public FileStreamResult DownloadByFileName(string fileName, CancellationToken cancellationToken)
         {
-            CollectBillsGetZipFileInfo zipFileInfo = _collectBillsDetailFileDownloadHandler.Handle(fileName, cancellationToken);
+            CollectBillsGetZipFileInfo zipFileInfo = _collectBillsFilesService.CollectBillsDetailFileDownloadAsync(fileName, cancellationToken);
             if (!System.IO.File.Exists(zipFileInfo.FilePath))
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.NotFoundFolder);

@@ -1,4 +1,5 @@
-﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
+using System.Net;
+using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.Constants.Literals;
@@ -14,52 +15,29 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
+using Aban360.OldCalcPool.Application.Features.Processing.Services;
+using Aban360.Api.Controllers.V1.OldCalcPool.Processing;
 
 namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
 {
     [Route("v1/generate-bill")]
     public class GenerateBillController : BaseController
     {
-        private readonly IGenerateBillHandler _generateBillHandler;
-        private readonly IFreeGenerateBillHandler _freeGenerateBillHandler;
-        private readonly IGenerateBillWithRemainedHandler _generateBillWithRemainedHandler;
-        private readonly INowGenerateBillHandler _nowGenerateBillHandler;
+        private readonly IBillGenerationService _billGenerationService;
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly ILatestBillSendSmsHandler _latestBillSendSmsHandler;
         private readonly IOpLogCommandService _opLogCommandService;
-        public GenerateBillController(
-            IGenerateBillHandler generateBillHandler,
-            IFreeGenerateBillHandler freeGenerateBillHandler,
-            IGenerateBillWithRemainedHandler generateBillWithRemainedHandler,
-            INowGenerateBillHandler nowGenerateBillHandler,
-            ISmsOldHandler smsOldHandler,
-            IBackgroundJobClient backgroundJobClient,
-            ILatestBillSendSmsHandler latestBillSendSmsHandler,
-            IOpLogCommandService opLogCommandService)
+        public GenerateBillController(IBillGenerationService billGenerationService, ISmsOldHandler smsOldHandler, IBackgroundJobClient backgroundJobClient, ILatestBillSendSmsHandler latestBillSendSmsHandler, IOpLogCommandService opLogCommandService)
         {
-            _generateBillHandler = generateBillHandler;
-            _generateBillHandler.NotNull(nameof(generateBillHandler));
-
-            _freeGenerateBillHandler = freeGenerateBillHandler;
-            _freeGenerateBillHandler.NotNull(nameof(freeGenerateBillHandler));
-
-            _generateBillWithRemainedHandler = generateBillWithRemainedHandler;
-            _generateBillWithRemainedHandler.NotNull(nameof(generateBillWithRemainedHandler));
-
-            _nowGenerateBillHandler = nowGenerateBillHandler;
-            _nowGenerateBillHandler.NotNull(nameof(nowGenerateBillHandler));
-
+            _billGenerationService = billGenerationService;
+            _billGenerationService.NotNull(nameof(billGenerationService));
             _smsOldHandler = smsOldHandler;
             _smsOldHandler.NotNull(nameof(smsOldHandler));
-
             _backgroundJobClient = backgroundJobClient;
             _backgroundJobClient.NotNull(nameof(backgroundJobClient));
-
             _latestBillSendSmsHandler = latestBillSendSmsHandler;
             _latestBillSendSmsHandler.NotNull(nameof(latestBillSendSmsHandler));
-
             _opLogCommandService = opLogCommandService;
             _opLogCommandService.NotNull(nameof(opLogCommandService));
         }
@@ -69,7 +47,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [ProducesResponseType(typeof(ApiResponseEnvelope<NewBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Calculation(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
-            NewBillOutputDto result = await _generateBillHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            NewBillOutputDto result = await _billGenerationService.GenerateBillAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -78,7 +56,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [ProducesResponseType(typeof(ApiResponseEnvelope<NewBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> FreeCalculation(FreeGenerateBillInputDto inputDto, CancellationToken cancellationToken)
         {
-            NewBillOutputDto result = await _freeGenerateBillHandler.Handle(inputDto, string.Empty, CurrentUser, cancellationToken);
+            NewBillOutputDto result = await _billGenerationService.FreeGenerateBillAsync(inputDto, string.Empty, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -87,7 +65,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [ProducesResponseType(typeof(ApiResponseEnvelope<BillIssueRemainedOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetIssueRemained(string billId, CancellationToken cancellationToken)
         {
-            BillIssueRemainedOutputDto result = await _generateBillWithRemainedHandler.Handle(billId, CurrentUser, cancellationToken);
+            BillIssueRemainedOutputDto result = await _billGenerationService.GenerateBillWithRemainedAsync(billId, CurrentUser, cancellationToken);
             return Ok(result);
         }
 
@@ -104,7 +82,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             await InsertOpLog(OpLogLiterals.NowGenerateBillRequestOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber, appUser);
             try
             {
-                NowGenerateBillOutputDto handleResult = await _nowGenerateBillHandler.Handle(inputDto, appUser, cancellationToken);
+                NowGenerateBillOutputDto handleResult = await _billGenerationService.NowGenerateBillAsync(inputDto, appUser, cancellationToken);
                 HttpStatusCode statusResult = handleResult.ErrorCode switch
                 {
                     (int)NowGenerateBillErrorCodeEnum.Success => HttpStatusCode.OK,
@@ -131,11 +109,12 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
                     failureSmsHandled = true;
                     await InsertOpLog(OpLogLiterals.NowGenerateBillRequestFailedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber, appUser);
                 }
+
                 if (statusResult == HttpStatusCode.TooManyRequests)
                 {
-                    return StatusCode((int)statusResult,
-                        new ApiResponseEnvelope<NowGenerateBillOutputDto>((int)statusResult, handleResult, handleResult.Message));
+                    return StatusCode((int)statusResult, new ApiResponseEnvelope<NowGenerateBillOutputDto>((int)statusResult, handleResult, handleResult.Message));
                 }
+
                 return CustomeStatus(handleResult, statusResult, handleResult.Message);
             }
             catch
@@ -145,6 +124,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
                 {
                     EnqueueFailureSms(inputDto, result);
                 }
+
                 await InsertOpLog(OpLogLiterals.NowGenerateBillRequestFailedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber, appUser);
                 return CustomeStatus(result, HttpStatusCode.RequestedRangeNotSatisfiable, result.Message);
             }
@@ -153,8 +133,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         private void EnqueueFailureSms(NowGenerateBillInputDto inputDto, NowGenerateBillOutputDto result)
         {
             string? mobileNumber = inputDto.MobileNumber;
-            if (string.IsNullOrEmpty(mobileNumber) || mobileNumber.Length != 11 ||
-                !mobileNumber.StartsWith("09", StringComparison.Ordinal) || !mobileNumber.All(char.IsAsciiDigit))
+            if (string.IsNullOrEmpty(mobileNumber) || mobileNumber.Length != 11 || !mobileNumber.StartsWith("09", StringComparison.Ordinal) || !mobileNumber.All(char.IsAsciiDigit))
             {
                 return;
             }
@@ -170,20 +149,16 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
                 Serilog.Log.Error(exception, "Could not enqueue bill failure SMS for bill {BillId}", inputDto.BillId);
             }
         }
+
         private static string GetFailureSmsReason(NowGenerateBillOutputDto result)
         {
             var category = result.SmsCategory ?? ((NowGenerateBillErrorCodeEnum)result.ErrorCode switch
             {
-                NowGenerateBillErrorCodeEnum.MobileDailyLimitReached or NowGenerateBillErrorCodeEnum.BillDailyLimitReached
-                    => NowGenerateBillSmsCategoryEnum.DailyLimit,
-                NowGenerateBillErrorCodeEnum.BadRequest or NowGenerateBillErrorCodeEnum.InvalidDeletionState
-                    => NowGenerateBillSmsCategoryEnum.Subscription,
-                NowGenerateBillErrorCodeEnum.Low or NowGenerateBillErrorCodeEnum.High or
-                    NowGenerateBillErrorCodeEnum.PreNumberHigherThanTodayNumber or NowGenerateBillErrorCodeEnum.PreNumberEqualTodayNumber
-                    => NowGenerateBillSmsCategoryEnum.ReadingReview,
+                NowGenerateBillErrorCodeEnum.MobileDailyLimitReached or NowGenerateBillErrorCodeEnum.BillDailyLimitReached => NowGenerateBillSmsCategoryEnum.DailyLimit,
+                NowGenerateBillErrorCodeEnum.BadRequest or NowGenerateBillErrorCodeEnum.InvalidDeletionState => NowGenerateBillSmsCategoryEnum.Subscription,
+                NowGenerateBillErrorCodeEnum.Low or NowGenerateBillErrorCodeEnum.High or NowGenerateBillErrorCodeEnum.PreNumberHigherThanTodayNumber or NowGenerateBillErrorCodeEnum.PreNumberEqualTodayNumber => NowGenerateBillSmsCategoryEnum.ReadingReview,
                 _ => NowGenerateBillSmsCategoryEnum.System
             });
-
             return category switch
             {
                 NowGenerateBillSmsCategoryEnum.DailyLimit => SmsTemplates.NowGenerateBillDailyLimitReason,
@@ -193,6 +168,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
                 _ => SmsTemplates.NowGenerateBillSystemReason
             };
         }
+
         private async Task InsertOpLog(string baseText, string billId, int meterNumber, string mobileNumber, IAppUser appUser)
         {
             string requestSeccessOpLogText = string.Format(baseText, billId, meterNumber, mobileNumber);

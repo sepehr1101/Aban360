@@ -19,6 +19,26 @@
     <Compile Include="../Shared/ServiceConsolidationWave20/Contracts/**/*.cs" Link="LegacyContractsWave20/%(Filename)%(Extension)" />
     <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidationWave20.json" Link="ServiceConsolidationWave20.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationCritical10/Contracts/**/*.cs" Link="LegacyCritical10/%(Filename)%(Extension)" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidationCritical10.json" Link="ServiceConsolidationCritical10.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationAuxiliary10/Contracts/**/*.cs" Link="LegacyAuxiliary10/%(Filename)%(Extension)" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidationAuxiliary10.json" Link="ServiceConsolidationAuxiliary10.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationManagement20/Contracts/**/*.cs" Link="LegacyManagement20/%(Filename)%(Extension)" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidationManagement20.json" Link="ServiceConsolidationManagement20.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationWorkflow10/Contracts/**/*.cs" Link="LegacyWorkflow10/%(Filename)%(Extension)" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidationWorkflow10.json" Link="ServiceConsolidationWorkflow10.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationOperations19/Contracts/**/*.cs" Link="LegacyOperations19/%(Filename)%(Extension)" />
+    <None Include="../Aban360.MergedControllers.SmokeTests/ServiceConsolidationOperations19.json" Link="ServiceConsolidationOperations19.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>
 
 

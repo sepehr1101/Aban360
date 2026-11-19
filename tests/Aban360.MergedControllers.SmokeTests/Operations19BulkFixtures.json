@@ -1,0 +1,26 @@
+[
+  {
+    "Source": "Aban360.OldCalcPool.Persistence/Features/Processing/Commands/Implementations/BedBesCommandService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportOperations19/Bulk/BedBesCommandService.cs"
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Persistence/Features/Processing/Commands/Implementations/KasrHaCommandService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportOperations19/Bulk/KasrHaCommandService.cs"
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Persistence/Features/Processing/Commands/Implementations/BillCommandService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportOperations19/Bulk/BillCommandService.cs"
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Persistence/Features/Processing/Commands/Implementations/ContorCommandService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportOperations19/Bulk/ContorCommandService.cs"
+  },
+  {
+    "Source": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/MembersCommandService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportOperations19/Bulk/MembersCommandService.cs"
+  },
+  {
+    "Source": "Aban360.CalculationPool.Persistence/Features/MeterReading/Commands/Implementations/MeterReadingDetailCommandService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportOperations19/Bulk/MeterReadingDetailCommandService.cs"
+  }
+]

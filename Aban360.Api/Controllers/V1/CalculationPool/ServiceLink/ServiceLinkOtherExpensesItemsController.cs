@@ -1,42 +1,23 @@
-﻿using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Contracts;
+using Microsoft.AspNetCore.Mvc;
+using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Contracts;
 using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Implementations;
 using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.ServiceLink;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Microsoft.AspNetCore.Mvc;
+using Aban360.CalculationPool.Application.Features.ServiceLink.Services;
+using Aban360.Api.Controllers.V1.CalculationPool.ServiceLink;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
 {
     [Route("v1/service-link-other-expenses-items")]
     public class ServiceLinkOtherExpensesItemsController : BaseController
     {
-        private readonly IOtherExpensesItemsInsertHandler _otherExpensesItemsInsertHandler;
-        private readonly IOtherExpensesItemsRemoveHandler _otherExpensesItemsRemoveHandler;
-        private readonly IOtherExpensesItemsGetAllHandler _otherExpensesItemsGetAllHandler;
-        private readonly IOtherExpensesItemsGetByIdHandler _otherExpensesItemsGetByIdaHandler;
-        private readonly IOtherExpensesItemsGetByItemIdHandler _otherExpensesItemsGetByItemIdHandler;
-        public ServiceLinkOtherExpensesItemsController(
-            IOtherExpensesItemsInsertHandler otherExpensesItemsInsertHandler,
-            IOtherExpensesItemsRemoveHandler otherExpensesItemsRemoveHandler,
-            IOtherExpensesItemsGetAllHandler otherExpensesItemsGetAllHandler,
-            IOtherExpensesItemsGetByIdHandler otherExpensesItemsGetByIdaHandler,
-            IOtherExpensesItemsGetByItemIdHandler otherExpensesItemsGetByItemIdHandler)
+        private readonly IOtherExpensesItemsService _otherExpensesItemsService;
+        public ServiceLinkOtherExpensesItemsController(IOtherExpensesItemsService otherExpensesItemsService)
         {
-            _otherExpensesItemsInsertHandler = otherExpensesItemsInsertHandler;
-            _otherExpensesItemsInsertHandler.NotNull(nameof(otherExpensesItemsInsertHandler));
-
-            _otherExpensesItemsRemoveHandler = otherExpensesItemsRemoveHandler;
-            _otherExpensesItemsRemoveHandler.NotNull(nameof(otherExpensesItemsRemoveHandler));
-
-            _otherExpensesItemsGetAllHandler = otherExpensesItemsGetAllHandler;
-            _otherExpensesItemsGetAllHandler.NotNull(nameof(otherExpensesItemsGetAllHandler));
-
-            _otherExpensesItemsGetByIdaHandler = otherExpensesItemsGetByIdaHandler;
-            _otherExpensesItemsGetByIdaHandler.NotNull(nameof(otherExpensesItemsGetByIdaHandler));
-
-            _otherExpensesItemsGetByItemIdHandler = otherExpensesItemsGetByItemIdHandler;
-            _otherExpensesItemsGetByItemIdHandler.NotNull(nameof(otherExpensesItemsGetByItemIdHandler));
+            _otherExpensesItemsService = otherExpensesItemsService;
+            _otherExpensesItemsService.NotNull(nameof(otherExpensesItemsService));
         }
 
         [HttpPost]
@@ -44,7 +25,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
         [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsInsertInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Insert([FromBody] OtherExpensesItemsInsertInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _otherExpensesItemsInsertHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _otherExpensesItemsService.OtherExpensesItemsInsertAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -53,7 +34,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
         [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsRemoveInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Remove([FromBody] OtherExpensesItemsRemoveInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _otherExpensesItemsRemoveHandler.Handle(inputDto.Id, CurrentUser, cancellationToken);
+            await _otherExpensesItemsService.OtherExpensesItemsRemoveAsync(inputDto.Id, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -62,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
         [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsDataDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
         {
-            OtherExpensesItemsDataDto data = await _otherExpensesItemsGetByIdaHandler.Handle(id, cancellationToken);
+            OtherExpensesItemsDataDto data = await _otherExpensesItemsService.OtherExpensesItemsGetByIdAsync(id, cancellationToken);
             return Ok(data);
         }
 
@@ -71,7 +52,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
         [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsDataDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetByItemId(string billId, int itemId, CancellationToken cancellationToken)
         {
-            OtherExpensesItemsDataDto data = await _otherExpensesItemsGetByItemIdHandler.Handle(billId, itemId, cancellationToken);
+            OtherExpensesItemsDataDto data = await _otherExpensesItemsService.OtherExpensesItemsGetByItemIdAsync(billId, itemId, cancellationToken);
             return Ok(data);
         }
 
@@ -80,7 +61,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<OtherExpensesItemsDataDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            IEnumerable<OtherExpensesItemsDataDto> data = await _otherExpensesItemsGetAllHandler.Handle(cancellationToken);
+            IEnumerable<OtherExpensesItemsDataDto> data = await _otherExpensesItemsService.OtherExpensesItemsGetAllAsync(cancellationToken);
             return Ok(data);
         }
     }

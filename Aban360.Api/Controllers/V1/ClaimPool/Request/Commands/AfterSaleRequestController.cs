@@ -1,4 +1,4 @@
-﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
@@ -10,31 +10,22 @@ using Aban360.Common.Literals;
 using Aban360.NotificationPool.Application.Features.Sms;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.ClaimPool.Application.Features.Request.Services;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 {
     [Route("v1/request")]
     public class AfterSaleRequestController : BaseController
     {
-        private readonly IRequestAfterSaleHandler _requestAfterSaleHandler;
-        private readonly IRequestDuplicateValidationHandler _requestDuplicateValidation;
+        private readonly IRequestRegistrationService _requestRegistrationService;
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IBackgroundJobClient _backgroundJobClient;
-        public AfterSaleRequestController(
-            IRequestAfterSaleHandler requestAfterSaleHandler,
-            IRequestDuplicateValidationHandler requestDuplicateValidation,
-            ISmsOldHandler smsOldHandler,
-            IBackgroundJobClient backgroundJobClient)
+        public AfterSaleRequestController(IRequestRegistrationService requestRegistrationService, ISmsOldHandler smsOldHandler, IBackgroundJobClient backgroundJobClient)
         {
-            _requestAfterSaleHandler = requestAfterSaleHandler;
-            _requestAfterSaleHandler.NotNull(nameof(requestAfterSaleHandler));
-
-            _requestDuplicateValidation = requestDuplicateValidation;
-            _requestDuplicateValidation.NotNull(nameof(requestDuplicateValidation));
-
+            _requestRegistrationService = requestRegistrationService;
+            _requestRegistrationService.NotNull(nameof(requestRegistrationService));
             _smsOldHandler = smsOldHandler;
             _smsOldHandler.NotNull(nameof(smsOldHandler));
-
             _backgroundJobClient = backgroundJobClient;
             _backgroundJobClient.NotNull(nameof(backgroundJobClient));
         }
@@ -45,12 +36,13 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> AfterSaleRequest([FromBody] RequestAfterSaleInputDto inputDto, CancellationToken cancellationToken)
         {
             int userName = UserService.GetUserCode(CurrentUser.Username);
-            var (moshtrakInfo, assessmentSetTimeDto, trackId) = await _requestAfterSaleHandler.Handle(inputDto, userName, cancellationToken);
+            var(moshtrakInfo, assessmentSetTimeDto, trackId) = await _requestRegistrationService.CreateAfterSaleAsync(inputDto, userName, cancellationToken);
             string text = string.Format(SmsTemplates.RequestRegister, moshtrakInfo.TrackNumber, Environment.NewLine);
             if (inputDto.HasSms)
             {
                 _backgroundJobClient.Enqueue(() => _smsOldHandler.SendNew(moshtrakInfo.NotificationMobile, text, trackId));
             }
+
             NewRequestOutputDto outputDto;
             if (assessmentSetTimeDto is not null)
             {
@@ -58,6 +50,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
                 outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null, assessmentTimeSmsOutputDto.HasCustomerSms, assessmentTimeSmsOutputDto.CustomerMessage, assessmentTimeSmsOutputDto.HasAssessmentSms, assessmentTimeSmsOutputDto.AssessmentMessage, assessmentDateJalali: assessmentSetTimeDto.AssessmentDateJalai, assessmentName: assessmentSetTimeDto.AssessmentName);
                 return Ok(outputDto);
             }
+
             outputDto = new(moshtrakInfo.TrackNumber, inputDto.HasSms, inputDto.HasSms ? text : null, false, null, false, null, null, null);
             return Ok(outputDto);
         }
@@ -68,7 +61,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> IsDuplicateAfterSaleRequest([FromBody] AfterSaleTrackingDuplicateValidationInputDto inputDto, CancellationToken cancellationToken)
         {
             TrackingDuplicateValidationInputDto totalValidation = new(inputDto.BillId, null, null, TrackingDuplicateValidationTypeEnum.ByBillId);
-            TrackingDuplicateValidationOutputDto result = await _requestDuplicateValidation.Handle(totalValidation, cancellationToken);
+            TrackingDuplicateValidationOutputDto result = await _requestRegistrationService.ValidateDuplicateAsync(totalValidation, cancellationToken);
             return Ok(result);
         }
 
@@ -78,25 +71,25 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> IsDuplicateAfterSaleRequestFromQuery(string billId, CancellationToken cancellationToken)
         {
             TrackingDuplicateValidationInputDto totalValidation = new(billId, null, null, TrackingDuplicateValidationTypeEnum.ByBillId);
-            TrackingDuplicateValidationOutputDto result = await _requestDuplicateValidation.Handle(totalValidation, cancellationToken);
+            TrackingDuplicateValidationOutputDto result = await _requestRegistrationService.ValidateDuplicateAsync(totalValidation, cancellationToken);
             return Ok(result);
         }
+
         private SetAssessmentTimeOutputDto GetAssessmentTimeOutputDto(bool hasCustomerSms, bool hasAssessmentSms, SetAssessmentTimeDataOutputDto result)
         {
             string customerText = string.Format(SmsTemplates.RequestTimeSet, result.AssessmentName, result.AssessmentMobileNumber, result.AssessmentDateJalai, result.TrackNumber);
-            string assessmentText = result.ServiceGroupId == 1 ?
-                string.Format(SmsTemplates.NewRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.NeighbourBillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber, result.NeighbourBillId) :
-                string.Format(SmsTemplates.AfterSaleRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.BillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber);
+            string assessmentText = result.ServiceGroupId == 1 ? string.Format(SmsTemplates.NewRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.NeighbourBillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber, result.NeighbourBillId) : string.Format(SmsTemplates.AfterSaleRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.BillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber);
             if (hasAssessmentSms)
             {
                 _backgroundJobClient.Enqueue(() => _smsOldHandler.SendNew(result.AssessmentMobileNumber, assessmentText, result.TrackId));
             }
+
             if (hasCustomerSms)
             {
                 _backgroundJobClient.Enqueue(() => _smsOldHandler.SendNew(result.MobileNumber, customerText, result.TrackId));
             }
-            return new SetAssessmentTimeOutputDto(result.TrackNumber, hasAssessmentSms, hasCustomerSms, hasAssessmentSms ? assessmentText : null, hasCustomerSms ? customerText : null);
 
+            return new SetAssessmentTimeOutputDto(result.TrackNumber, hasAssessmentSms, hasCustomerSms, hasAssessmentSms ? assessmentText : null, hasCustomerSms ? customerText : null);
         }
     }
 }

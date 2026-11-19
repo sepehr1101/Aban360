@@ -1,0 +1,22 @@
+[
+  {
+    "Source": "Aban360.PaymentPool.Application/Features/BankReceipt/Implementations/BankReceiptIssueCatalog.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportOperations19/BankReceiptIssueCatalog.cs"
+  },
+  {
+    "Source": "Aban360.PaymentPool.Application/Features/BankReceipt/Implementations/BankReceiptDateRange.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportOperations19/BankReceiptDateRange.cs"
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/Base/TankerCalculationBaseService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportOperations19/TankerCalculationBaseService.cs"
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/Base/BaseExpressionCalculator.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportOperations19/BaseExpressionCalculator.cs"
+  },
+  {
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SupportOperations19/ClaimPersistenceExceptionLiterals.cs",
+    "Source": "Aban360.ClaimPool.Persistence/Constants/Literals/ExceptionLiterals.cs"
+  }
+]

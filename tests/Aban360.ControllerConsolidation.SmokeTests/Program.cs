@@ -98,14 +98,14 @@ foreach (var controller in actions.Select(a => a.ControllerTypeInfo.AsType()).Di
         Check(!action.MethodInfo.IsDefined(typeof(AllowAnonymousAttribute), inherit: true),
             "Anonymous action must preserve the existing JWT token-validation flow: " + expected.Route);
         int handlerIndex = Array.FindIndex(constructor.GetParameters(),
-            p => p.ParameterType.Name == "IRoleQueryParamsOfCreateHandler");
+            p => p.ParameterType.Name == "IRoleService");
         var proxy = (ConstructorOnlyProxy)dependencies[handlerIndex];
-        var resultType = constructor.GetParameters()[handlerIndex].ParameterType.GetMethod("Handle")!
+        var resultType = constructor.GetParameters()[handlerIndex].ParameterType.GetMethod("GetCreateParamsAsync")!
             .ReturnType.GetGenericArguments().Single();
         var payloadConstructor = resultType.GetConstructors().OrderBy(c => c.GetParameters().Length).First();
         var payload = payloadConstructor.Invoke(payloadConstructor.GetParameters()
             .Select(p => p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType) : null).ToArray());
-        proxy.AllowedMethod = "Handle";
+        proxy.AllowedMethod = "GetCreateParamsAsync";
         proxy.Result = payload;
         var response = await (Task<IActionResult>)action.MethodInfo.Invoke(instance,
             new object[] { CancellationToken.None })!;
@@ -114,8 +114,10 @@ foreach (var controller in actions.Select(a => a.ControllerTypeInfo.AsType()).Di
         Check(proxy.Calls == 1, "Handler invocation changed: " + expected.Route);
 
         var createHandler = (ConstructorOnlyProxy)dependencies[Array.FindIndex(constructor.GetParameters(),
-            p => p.ParameterType.Name == "IRoleCreateHandler")];
-        createHandler.AllowedMethod = "Handle";
+            p => p.ParameterType.Name == "IRoleService")];
+        int createCallsBefore = createHandler.Calls;
+        createHandler.Result = null;
+        createHandler.AllowedMethod = "CreateAsync";
         var unitOfWork = (ConstructorOnlyProxy)dependencies[Array.FindIndex(constructor.GetParameters(),
             p => p.ParameterType.Name == "IUnitOfWork")];
         unitOfWork.AllowedMethod = "SaveChangesAsync";
@@ -130,7 +132,7 @@ foreach (var controller in actions.Select(a => a.ControllerTypeInfo.AsType()).Di
             && ReferenceEquals(envelope.Data, createDto) && envelope.Success
             && envelope.HttpStatusCode == 200 && envelope.SuccessMessage == MessageResources.SuccessfulProccess,
             "Role's normal response envelope changed.");
-        Check(createHandler.Calls == 1 && unitOfWork.Calls == 1, "Role create/save behavior changed.");
+        Check(createHandler.Calls == createCallsBefore + 1 && unitOfWork.Calls == 1, "Role create/save behavior changed.");
     }
 }
 string exportName = "controller-consolidation-smoke.csv";

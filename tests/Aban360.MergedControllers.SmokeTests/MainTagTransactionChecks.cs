@@ -92,8 +92,11 @@ sealed class SqlRecording
     public string Mode = "success";
     public int At, FactoryCalls;
     public bool Committed, ConnectionDisposed, TransactionDisposed;
+    public bool RequireSameConnection;
     public IsolationLevel Isolation;
     public readonly List<string> Events = [];
+    public Action<string>? Observer;
+    public void Record(string value) { Events.Add(value); Observer?.Invoke(value); }
     public readonly List<(string Sql, Dictionary<string, object> Parameters, bool SameTransaction)> Commands = [];
     public readonly TaskCompletionSource Gate = new(TaskCreationOptions.RunContinuationsAsynchronously);
     public RecordingConnection Connection;
@@ -102,7 +105,9 @@ sealed class SqlRecording
     public async Task<int> Execute(RecordingCommand command)
     {
         Commands.Add((command.CommandText, command.Parameters.Cast<DbParameter>().ToDictionary(p => p.ParameterName.TrimStart('@'), p => p.Value!), ReferenceEquals(command.Transaction, Transaction)));
-        int step = Commands.Count; Events.Add("Execute" + step);
+        if(RequireSameConnection&&command.Transaction is not null&&!ReferenceEquals(command.Connection,command.Transaction.Connection))
+            throw new InvalidOperationException("recording-transaction-connection-mismatch");
+        int step = Commands.Count; Record("Execute" + step);
         if (step == At && Mode == "gate") await Gate.Task;
         if (step == At && Mode == "failure") throw new InvalidOperationException("sql-step-failed");
         if (step == At && Mode == "cancel") throw new OperationCanceledException();
@@ -118,26 +123,26 @@ sealed class RecordingConnection(SqlRecording state) : DbConnection
     public override string DataSource => "isolated";
     public override string ServerVersion => "1";
     public override ConnectionState State => open || state.Mode == "open" ? ConnectionState.Open : ConnectionState.Closed;
-    public override void Open() { state.Events.Add("Open"); if (state.Mode == "open-failure") throw new InvalidOperationException("open-failed"); open = true; }
+    public override void Open() { state.Record("Open"); if (state.Mode == "open-failure") throw new InvalidOperationException("open-failed"); open = true; }
     public override void Close() => open = false;
     public override void ChangeDatabase(string databaseName) => throw new NotSupportedException();
     protected override DbTransaction BeginDbTransaction(IsolationLevel isolationLevel)
     {
-        state.Isolation = isolationLevel; state.Events.Add("Begin");
+        state.Isolation = isolationLevel; state.Record("Begin");
         if (state.Mode == "begin-failure") throw new InvalidOperationException("begin-failed");
         return state.Transaction = new RecordingTransaction(state, this);
     }
     protected override DbCommand CreateDbCommand() => new RecordingCommand(state, this);
-    protected override void Dispose(bool disposing) { if (disposing) { state.ConnectionDisposed = true; state.Events.Add("DisposeConnection"); } base.Dispose(disposing); }
+    protected override void Dispose(bool disposing) { if (disposing) { state.ConnectionDisposed = true; state.Record("DisposeConnection"); } base.Dispose(disposing); }
 }
 
 sealed class RecordingTransaction(SqlRecording state, DbConnection connection) : DbTransaction
 {
     public override IsolationLevel IsolationLevel => state.Isolation;
     protected override DbConnection DbConnection => connection;
-    public override void Commit() { if (state.Mode == "commit-failure") throw new InvalidOperationException("commit-failed"); state.Committed = true; state.Events.Add("Commit"); }
-    public override void Rollback() => state.Events.Add("Rollback");
-    protected override void Dispose(bool disposing) { if (disposing) { state.TransactionDisposed = true; state.Events.Add("DisposeTransaction"); } base.Dispose(disposing); }
+    public override void Commit() { if (state.Mode == "commit-failure") throw new InvalidOperationException("commit-failed"); state.Committed = true; state.Record("Commit"); }
+    public override void Rollback() => state.Record("Rollback");
+    protected override void Dispose(bool disposing) { if (disposing) { state.TransactionDisposed = true; state.Record("DisposeTransaction"); } base.Dispose(disposing); }
 }
 
 sealed class RecordingCommand(SqlRecording state, DbConnection connection) : DbCommand
@@ -155,7 +160,16 @@ sealed class RecordingCommand(SqlRecording state, DbConnection connection) : DbC
     public override int ExecuteNonQuery() => throw new Exception("Dapper must execute asynchronously");
     public override Task<int> ExecuteNonQueryAsync(CancellationToken cancellationToken) => state.Execute(this);
     public override object? ExecuteScalar() => throw new NotSupportedException();
+    public override async Task<object?> ExecuteScalarAsync(CancellationToken cancellationToken) => await state.Execute(this);
     protected override DbDataReader ExecuteDbDataReader(CommandBehavior behavior) => throw new NotSupportedException();
+    protected override async Task<DbDataReader> ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+    {
+        await state.Execute(this);
+        var table = new DataTable();
+        table.Columns.Add("Id", typeof(int));
+        table.Rows.Add(17);
+        return table.CreateDataReader();
+    }
     protected override DbParameter CreateDbParameter() => new RecordingParameter();
 }
 
