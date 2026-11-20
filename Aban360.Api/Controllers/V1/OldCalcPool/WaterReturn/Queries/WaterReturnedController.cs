@@ -1,4 +1,4 @@
-﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
@@ -6,21 +6,19 @@ using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Cont
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
+using IBillReturnLookupsService = global::Aban360.OldCalcPool.Application.Features.WaterReturn.Services.IBillReturnLookupsService;
 
 namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries
 {
     [Route("v1/water-return")]
     public class WaterReturnedController : BaseController
     {
-        private readonly IReturedBillAfterDateLockGetHandler _returnedAfterDateLockHandler;
+        private readonly IBillReturnLookupsService _billReturnLookupsService;
         private readonly IReturnedBillRemoveHandler _returnedBillRemoveHandler;
-        public WaterReturnedController(
-            IReturedBillAfterDateLockGetHandler returnedAfterDateLockHandler,
-            IReturnedBillRemoveHandler returnedBillRemoveHandler)
+        public WaterReturnedController(IBillReturnLookupsService billReturnLookupsService, IReturnedBillRemoveHandler returnedBillRemoveHandler)
         {
-            _returnedAfterDateLockHandler = returnedAfterDateLockHandler;
-            _returnedAfterDateLockHandler.NotNull(nameof(returnedAfterDateLockHandler));
-
+            _billReturnLookupsService = billReturnLookupsService;
+            _billReturnLookupsService.NotNull(nameof(billReturnLookupsService));
             _returnedBillRemoveHandler = returnedBillRemoveHandler;
             _returnedBillRemoveHandler.NotNull(nameof(returnedBillRemoveHandler));
         }
@@ -30,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ReturnedBillsOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetConfirmed([FromBody] ZoneIdWrapper zoneIdWrapper, CancellationToken cancellationToken)
         {
-            IEnumerable<ReturnedBillsOutputDto> result = await _returnedAfterDateLockHandler.Handle(zoneIdWrapper.ZoneId, CurrentUser, cancellationToken);
+            IEnumerable<ReturnedBillsOutputDto> result = await _billReturnLookupsService.ReturedBillAfterDateLockGetAsync(zoneIdWrapper.ZoneId, CurrentUser, cancellationToken);
             return Ok(result);
         }
 

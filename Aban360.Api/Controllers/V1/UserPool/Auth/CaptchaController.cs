@@ -3,7 +3,6 @@ using Aban360.Common.Extensions;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Persistence.Contexts.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
-using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
 using Aban360.Common.BaseEntities;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Entities;

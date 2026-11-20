@@ -8,24 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Application.Features.Sale.Services;
 using Aban360.Api.Controllers.V1.CalculationPool.Sale;
+using ITankerWaterDistanceTariffService = global::Aban360.CalculationPool.Application.Features.Sale.Services.ITankerWaterDistanceTariffService;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
 {
     [Route("v1/tanker-water-distance-tariff")]
     public class TankerWaterDistanceTariffController : BaseController
     {
-        private readonly ITankerWaterDistanceTariffCreateHadler _c0_createHadler;
-        private readonly ITankerWaterDistanceTariffDeleteHadler _c1_deleteHadler;
-        private readonly ITankerWaterDistanceTariffUpdateHadler _c2_updateHadler;
         private readonly ITankerWaterDistanceTariffService _tankerWaterDistanceTariffService;
-        public TankerWaterDistanceTariffController(ITankerWaterDistanceTariffCreateHadler c0_createHadler, ITankerWaterDistanceTariffDeleteHadler c1_deleteHadler, ITankerWaterDistanceTariffUpdateHadler c2_updateHadler, ITankerWaterDistanceTariffService tankerWaterDistanceTariffService)
+        public TankerWaterDistanceTariffController(ITankerWaterDistanceTariffService tankerWaterDistanceTariffService)
         {
-            _c0_createHadler = c0_createHadler;
-            _c0_createHadler.NotNull(nameof(c0_createHadler));
-            _c1_deleteHadler = c1_deleteHadler;
-            _c1_deleteHadler.NotNull(nameof(c1_deleteHadler));
-            _c2_updateHadler = c2_updateHadler;
-            _c2_updateHadler.NotNull(nameof(c2_updateHadler));
             _tankerWaterDistanceTariffService = tankerWaterDistanceTariffService;
             _tankerWaterDistanceTariffService.NotNull(nameof(tankerWaterDistanceTariffService));
         }
@@ -36,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
         [EndpointAuthorization("TankerWaterDistanceTariffCreate")]
         public async Task<IActionResult> Create([FromBody] TankerWaterDistanceTariffInputDto createDto, CancellationToken cancellationToken)
         {
-            await _c0_createHadler.Handle(createDto, CurrentUser, cancellationToken);
+            await _tankerWaterDistanceTariffService.TankerWaterDistanceTariffCreateAsync(createDto, CurrentUser, cancellationToken);
             return Ok(createDto);
         }
 
@@ -46,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
         [EndpointAuthorization("TankerWaterDistanceTariffDelete")]
         public async Task<IActionResult> Delete([FromBody] SearchById input, CancellationToken cancellationToken)
         {
-            await _c1_deleteHadler.Handle(input, CurrentUser, cancellationToken);
+            await _tankerWaterDistanceTariffService.TankerWaterDistanceTariffDeleteAsync(input, CurrentUser, cancellationToken);
             return Ok(input);
         }
 
@@ -56,7 +48,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
         [EndpointAuthorization("TankerWaterDistanceTariffUpdate")]
         public async Task<IActionResult> Update([FromBody] TankerWaterDistanceTariffInputDto UpdateDto, CancellationToken cancellationToken)
         {
-            await _c2_updateHadler.Handle(UpdateDto, CurrentUser, cancellationToken);
+            await _tankerWaterDistanceTariffService.TankerWaterDistanceTariffUpdateAsync(UpdateDto, CurrentUser, cancellationToken);
             return Ok(UpdateDto);
         }
 

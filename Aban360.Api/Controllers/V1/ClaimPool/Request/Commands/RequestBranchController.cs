@@ -10,6 +10,7 @@ using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Aban360.ClaimPool.Application.Features.Request.Services;
+using Aban360.ClaimPool.Application.Features.Tracking.Services;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 {
@@ -18,8 +19,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
     {
         private readonly IRequestDisplayService _requestDisplayService;
         private readonly IRequestLifecycleService _requestLifecycleService;
-        private readonly IGeneralInformationHandler _generalInformationRequestHandler;
-        public RequestBranchController(IRequestDisplayService requestDisplayService, IRequestLifecycleService requestLifecycleService, IGeneralInformationHandler generalInformationRequestHandler)
+        private readonly IGeneralRequestInformationService _generalInformationRequestHandler;
+        public RequestBranchController(IRequestDisplayService requestDisplayService, IRequestLifecycleService requestLifecycleService, IGeneralRequestInformationService generalInformationRequestHandler)
         {
             _requestDisplayService = requestDisplayService;
             _requestDisplayService.NotNull(nameof(requestDisplayService));
@@ -73,7 +74,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         [ProducesResponseType(typeof(ApiResponseEnvelope<GeneralRequestDataOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRequestGeneral(Guid trackId, CancellationToken cancellationToken)
         {
-            GeneralRequestDataOutputDto result = await _generalInformationRequestHandler.Handle(trackId, cancellationToken);
+            GeneralRequestDataOutputDto result = await _generalInformationRequestHandler.GeneralInformationAsync(trackId, cancellationToken);
             return Ok(result);
         }
 

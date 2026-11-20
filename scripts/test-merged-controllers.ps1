@@ -28,6 +28,21 @@ try {
         & dotnet @arguments
         if ($LASTEXITCODE -ne 0) { throw "Test build failed: $($project.Name)" }
     }
+    $collectBillsArguments = @('run', '--project', 'tests/Aban360.CollectBillsConsolidation.RegressionTests', '--configuration', $Configuration)
+    if ($NoRestore) { $collectBillsArguments += '--no-restore' }
+    & dotnet @collectBillsArguments
+    if ($LASTEXITCODE -ne 0) { throw 'CollectBills consolidation verification failed' }
+    $sourceArguments = @('run', '--project', 'tests/Aban360.CriticalServiceStructure.RegressionTests', '--configuration', $Configuration)
+    if ($NoRestore) { $sourceArguments += '--no-restore' }
+    $sourceArguments += @('--', '--next28')
+    & dotnet @sourceArguments
+    if ($LASTEXITCODE -ne 0) { throw 'Rows 71-100 source verification failed' }
+    & dotnet run --project tests/Aban360.MergedControllers.SmokeTests --configuration $Configuration --no-build --no-restore -- --sales-reports
+    if ($LASTEXITCODE -ne 0) { throw 'Sales and meter-reading report consolidation verification failed' }
+    & dotnet run --project tests/Aban360.MergedControllers.SmokeTests --configuration $Configuration --no-build --no-restore -- --compact
+    if ($LASTEXITCODE -ne 0) { throw 'Compact service runtime verification failed' }
+    & dotnet run --project tests/Aban360.MergedControllers.SmokeTests --configuration $Configuration --no-build --no-restore -- --next28
+    if ($LASTEXITCODE -ne 0) { throw 'Rows 71-100 runtime verification failed' }
     & (Join-Path $PSScriptRoot 'test.ps1') -Configuration $Configuration -Suite $names -NoRestore -NoBuild
     exit $LASTEXITCODE
 }

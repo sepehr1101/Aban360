@@ -338,19 +338,25 @@ public sealed class ProbeState
     public void Reset() { Calls.Clear(); AsyncSteps.Clear(); TokenValidations = 0; RejectToken = false; }
     // Hangfire may resolve an expression's target to the DispatchProxy runtime type.
     // Compare the implemented handler contract rather than a generated proxy class name.
-    static string JobTypeName(Job job)
+    static Type JobContract(Job job)
     {
-        if (!typeof(DispatchProxy).IsAssignableFrom(job.Type)) return job.Type.FullName!;
+        if (!typeof(DispatchProxy).IsAssignableFrom(job.Type)) return job.Type;
         var parameters = job.Method.GetParameters().Select(p => p.ParameterType).ToArray();
         return job.Type.GetInterfaces().Single(contract => contract.GetMethods().Any(method =>
             method.Name == job.Method.Name && method.ReturnType == job.Method.ReturnType
-            && method.GetParameters().Select(p => p.ParameterType).SequenceEqual(parameters))).FullName!;
+            && method.GetParameters().Select(p => p.ParameterType).SequenceEqual(parameters)));
+    }
+    static string JobCallName(Job job)
+    {
+        string name = Aban360.Tests.ServiceBaselines.ApplicationServiceBaseline.CallName(JobContract(job), job.Method);
+        int separator = name.LastIndexOf('.');
+        return name[..separator] + ":" + name[(separator + 1)..];
     }
     string Argument(object? arg) => arg switch
     {
         CancellationToken c => !c.CanBeCanceled ? "none" : Caller.CanBeCanceled && c == Caller ? "caller" : "request",
         IAppUser user => "user:" + user.UserId + ":" + user.Username + ":" + user.FullName,
-        Job job => "job:" + JobTypeName(job) + ":" + job.Method.Name + ":" + JsonSerializer.Serialize(job.Args.Select(Argument)),
+        Job job => "job:" + JobCallName(job) + ":" + JsonSerializer.Serialize(job.Args.Select(Argument)),
         IState state => state.Name,
         _ => Samples.Json(arg)
     };

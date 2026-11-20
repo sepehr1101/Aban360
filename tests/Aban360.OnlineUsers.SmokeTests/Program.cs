@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
-using Aban360.CommunicationPool.Application.Features.Hubs.Handlers;
 using Aban360.CommunicationPool.Domain.Features.Hubs.Dto.Queries;
 using Aban360.CommunicationPool.Persistence.Features.Hubs.Queries.Contracts;
 
@@ -32,9 +31,9 @@ void Check(bool condition, string message)
 }
 
 var query = new OnlineConnections();
-var type = typeof(IOnlineUserGetHandler).Assembly.GetType(
-    "Aban360.CommunicationPool.Application.Features.Hubs.Mappers.OnlineUserGetHandler", true)!;
-var handler = (IOnlineUserGetHandler)Activator.CreateInstance(type, query)!;
+var type = typeof(IOnlineUsersService).Assembly.GetType(
+    "Aban360.CommunicationPool.Application.Features.Hubs.Services.OnlineUsersService", true)!;
+var handler = (IOnlineUsersService)Activator.CreateInstance(type, query)!;
 var userId = Guid.NewGuid();
 var otherUserId = Guid.NewGuid();
 var now = new DateTime(2026, 11, 5, 12, 0, 0);
@@ -50,7 +49,7 @@ query.Rows = new[]
     Row(4, otherUserId, "other-user", now.AddMinutes(-2))
 };
 
-var users = (await handler.Handle(CancellationToken.None)).ToArray();
+var users = (await handler.OnlineUserGetAsync(CancellationToken.None)).ToArray();
 Check(users.Length == 2, "Multiple tabs produce one row per user ID");
 var firstUser = users.Single(user => user.UserId == userId);
 Check(firstUser.ConnectionCount == 2 && firstUser.ConnectionIds.SequenceEqual(new[] { "tab-2", "tab-1" }),
@@ -61,15 +60,15 @@ Check(users[1].UserId == otherUserId && users[1].ConnectionCount == 1,
     "Different users with the same name remain separate users");
 
 query.Rows = query.Rows.Where(row => row.ConnectionId != "tab-2").ToArray();
-users = (await handler.Handle(CancellationToken.None)).ToArray();
+users = (await handler.OnlineUserGetAsync(CancellationToken.None)).ToArray();
 Check(users.Single(user => user.UserId == userId).ConnectionCount == 1,
     "Closing one tab leaves the user online through their remaining connection");
 query.Rows = query.Rows.Where(row => row.UserId != userId).ToArray();
-Check((await handler.Handle(CancellationToken.None)).All(user => user.UserId != userId),
+Check((await handler.OnlineUserGetAsync(CancellationToken.None)).All(user => user.UserId != userId),
     "User disappears after their final connection is removed");
 
 query.Rows = Array.Empty<OnlineUserGetDto>();
-Check(!(await handler.Handle(CancellationToken.None)).Any(), "Empty connections produce an empty user list");
+Check(!(await handler.OnlineUserGetAsync(CancellationToken.None)).Any(), "Empty connections produce an empty user list");
 
 var registry = new HubConnectionRegistry();
 var events = new HubEvents();

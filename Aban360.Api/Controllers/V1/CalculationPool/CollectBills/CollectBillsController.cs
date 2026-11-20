@@ -1,5 +1,4 @@
 using Aban360.CalculationPool.Application.Features.Base;
-using Aban360.CalculationPool.Application.Features.CollectBills.Handlers.Queries.Implementations;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
 using Aban360.CalculationPool.Domain.Features.CollectBills.Inputs;
 using Aban360.CalculationPool.Domain.Features.CollectBills.Outputs;
@@ -12,25 +11,18 @@ using Aban360.Common.Literals;
 using Aban360.Common.Timing;
 using Microsoft.AspNetCore.Mvc;
 using Aban360.CalculationPool.Application.Features.CollectBills.Services;
-using Aban360.Api.Controllers.V1.CalculationPool.CollectBills;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
 {
     [Route("v1/collect-bills")]
     public class CollectBillsController : BaseController
     {
-        private readonly ICollectBillsFilesService _collectBillsFilesService;
-        private readonly ICollectBillsDetailWithLastStepGetHadler _collectBillsDetailWithLastStepHandler;
+        private readonly ICollectBillsApplicationService _collectBillsService;
         private string _zipContentType = DirectoryLiterals.ZipFileContentType;
-        private readonly ICollectBillsDetailJobService _jobService;
-        public CollectBillsController(ICollectBillsFilesService collectBillsFilesService, ICollectBillsDetailWithLastStepGetHadler collectBillsDetailWithLastStepHandler, ICollectBillsDetailJobService jobService)
+        public CollectBillsController(ICollectBillsApplicationService collectBillsService)
         {
-            _collectBillsFilesService = collectBillsFilesService;
-            _collectBillsFilesService.NotNull(nameof(collectBillsFilesService));
-            _collectBillsDetailWithLastStepHandler = collectBillsDetailWithLastStepHandler;
-            _collectBillsDetailWithLastStepHandler.NotNull(nameof(collectBillsDetailWithLastStepHandler));
-            _jobService = jobService;
-            _jobService.NotNull(nameof(jobService));
+            _collectBillsService = collectBillsService;
+            _collectBillsService.NotNull(nameof(collectBillsService));
         }
 
         /// <summary>ساخت و دانلود فایل ZIP اطلاعات یک روز مشخص</summary>
@@ -40,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
         public async Task<FileStreamResult> CreateFile(CollectBillsByDateJalaliInputDto inputDto, CancellationToken cancellationToken)
         {
             ConvertDate.JalaliToDateTime(inputDto.DateJalali, true);
-            CollectBillsGetZipFileInfo zipFileInfo = await _collectBillsFilesService.CollectBillsFileCreateAsync(inputDto.DateJalali, CurrentUser, cancellationToken);
+            CollectBillsGetZipFileInfo zipFileInfo = await _collectBillsService.CollectBillsFileCreateAsync(inputDto.DateJalali, CurrentUser, cancellationToken);
             if (!System.IO.File.Exists(zipFileInfo.FilePath))
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.NotFoundFolder);
@@ -57,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CollectBillsDetailWithLastStepHeaderOutputDto, CollectBillsDetailWithLastStepDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetFile([FromBody] CollectBillsDetialReportInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<CollectBillsDetailWithLastStepHeaderOutputDto, CollectBillsDetailWithLastStepDataOutputDto> result = await _collectBillsDetailWithLastStepHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<CollectBillsDetailWithLastStepHeaderOutputDto, CollectBillsDetailWithLastStepDataOutputDto> result = await _collectBillsService.GetDetailWithLastStepAsync(inputDto, cancellationToken);
             return Ok(result);
         }
 
@@ -77,7 +69,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
         [Route("download/{fileName}")]
         public FileStreamResult DownloadByFileName(string fileName, CancellationToken cancellationToken)
         {
-            CollectBillsGetZipFileInfo zipFileInfo = _collectBillsFilesService.CollectBillsDetailFileDownloadAsync(fileName, cancellationToken);
+            CollectBillsGetZipFileInfo zipFileInfo = _collectBillsService.CollectBillsDetailFileDownloadAsync(fileName, cancellationToken);
             if (!System.IO.File.Exists(zipFileInfo.FilePath))
             {
                 throw new InvalidBillCommandException(ExceptionLiterals.NotFoundFolder);
@@ -94,7 +86,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> SendFile(CancellationToken cancellationToken)
         {
-            await _jobService.Initialize(DateTime.Now.AddDays(-1), cancellationToken);
+            await _collectBillsService.Initialize(DateTime.Now.AddDays(-1), cancellationToken);
             return Ok();
         }
 
@@ -106,7 +98,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> SendFileByDay(int day, CancellationToken cancellationToken)
         {
-            await _jobService.Initialize(DateTime.Now.AddDays(day), cancellationToken);
+            await _collectBillsService.Initialize(DateTime.Now.AddDays(day), cancellationToken);
             return Ok();
         }
     }

@@ -152,7 +152,7 @@ static class Operations19Checks
         foreach(var fixture in bulkFixtures)Check(Tokens(new Ops19SqlNativeBoundary().Visit(Read(fixture.Source).DescendantNodes().OfType<ClassDeclarationSyntax>().Single())!)==Tokens(Read(fixture.Fixture).DescendantNodes().OfType<ClassDeclarationSyntax>().Single()),"Bulk schema/SQL/mapping changed: "+fixture.Source);
         Console.WriteLine($"PASS: {checks} operations checks; 70 handlers consolidated into 19 services; {methods} complete methods, {transactions} SQL transaction bodies, {consumerMethods} consumer methods; {guards.Count} protected files unchanged; 32 SQL fixtures match production/frozen sources.");
     }
-    static CompilationUnitSyntax Read(string p)=>CSharpSyntaxTree.ParseText(File.ReadAllText(p)).GetCompilationUnitRoot();
+    static CompilationUnitSyntax Read(string p)=>CSharpSyntaxTree.ParseText(File.ReadAllText(Next28Checks.PriorSource(p))).GetCompilationUnitRoot();
     // HEAD predates earlier approved batches too. Apply only their recorded dependency
     // type/field/parameter/call renames before authenticating this batch's frozen source.
     static ClassDeclarationSyntax ApplyPriorConsumerMerges(ClassDeclarationSyntax committed,ClassDeclarationSyntax frozen)

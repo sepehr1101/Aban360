@@ -20,6 +20,21 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+if (args.Contains("--sales-reports"))
+{
+    await SalesReportsChecks.Run();
+    return;
+}
+if (args.Contains("--compact"))
+{
+    await CompactRuntimeChecks.Run();
+    return;
+}
+if (args.Contains("--next28"))
+{
+    await Next28Checks.RunFocused();
+    return;
+}
 if (args.Contains("--operations19"))
 {
     await Operations19Checks.RunFocused();

@@ -1,6 +1,5 @@
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
@@ -21,10 +20,10 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth
     {
         private readonly IUnitOfWork _uow;
         private readonly IRoleService _roleService;
-        private readonly IUpdateUsersInRoleHandler _updateUsersInRoleHandler;
+        private readonly IUserRoleMembershipService _updateUsersInRoleHandler;
         private readonly IBackgroundJobClient _backgroundJobClient;
         private readonly IUserNavigationService _userNavigationService;
-        public RoleController(IUnitOfWork uow, IRoleService roleService, IUpdateUsersInRoleHandler updateUsersInRoleHandler, IBackgroundJobClient backgroundJobClient, IUserNavigationService userNavigationService)
+        public RoleController(IUnitOfWork uow, IRoleService roleService, IUserRoleMembershipService updateUsersInRoleHandler, IBackgroundJobClient backgroundJobClient, IUserNavigationService userNavigationService)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
@@ -58,7 +57,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth
         {
             await _roleService.UpdateAsync(updateDto, cancellationToken);
             await _uow.SaveChangesAsync(cancellationToken);
-            _backgroundJobClient.Enqueue(() => _updateUsersInRoleHandler.Handle(updateDto.Id, CancellationToken.None));
+            _backgroundJobClient.Enqueue(() => _updateUsersInRoleHandler.UpdateUsersInRoleAsync(updateDto.Id, CancellationToken.None));
             //await _updateUsersInRoleHandler.Handle(updateDto.Id, CancellationToken.None);
             return OkEnvelope(updateDto);
         }

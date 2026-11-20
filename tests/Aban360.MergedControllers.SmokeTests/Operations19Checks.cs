@@ -28,6 +28,12 @@ static class Operations19Checks
         Aban360.BlobPool.Application.Extenstions.ConfigureServices.AddBlobPoolApplicationInjections(services);
         using var provider=services.BuildServiceProvider();var mapper=provider.GetRequiredService<IMapper>();
         var operations=JsonSerializer.Deserialize<Operation[]>(File.ReadAllText(Path.Combine(AppContext.BaseDirectory,"ServiceConsolidationOperations19.json")))!;
+        // The two file operations now live inside the unified CollectBills workflow.
+        // Verify that workflow (including real ZIP output and legacy job activation)
+        // directly, rather than replacing its internal CreateZip call with an old service mock.
+        if(operations.Length!=70 || operations.Count(o=>o.Feature=="CollectBillsFiles")!=2) throw new Exception("Historical operation selection changed");
+        await CollectBillsRuntimeChecks.Run();
+        operations=operations.Where(o=>o.Feature!="CollectBillsFiles").ToArray();
         var test=typeof(Operations19Checks).Assembly;var originals=operations.ToDictionary(o=>o.OldContract,o=>test.GetType(o.Original.Replace("BeforeServiceOperations19.","SqlBeforeOperations19."))??test.GetType(o.Original,true)!);
         var current=operations.GroupBy(o=>o.Service).ToDictionary(g=>g.Key,g=>
         {
@@ -36,7 +42,7 @@ static class Operations19Checks
         });
         int checks=0,signatures=0,scenarios=0,successful=0,sqlCases=0;var coverage=new List<string>();
         void Check(bool ok,string message){if(!ok)throw new InvalidOperationException(message);checks++;}
-        Check(operations.Length==70&&current.Count==19,"Approved selection mismatch");
+        Check(operations.Length==68&&current.Count==18,"Approved selection mismatch");
         // Merging entry points can combine previously separate constructor dependencies.
         // Walk production implementations too: mocked DI resolution alone would hide a new cycle.
         var productionTypes=Directory.GetFiles(AppContext.BaseDirectory,"Aban*.dll")
@@ -182,9 +188,11 @@ static class Operations19Checks
             }
         }
         File.WriteAllLines(Path.Combine(AppContext.BaseDirectory,"Operations19Coverage.txt"),coverage);
-        Check(signatures==81,"Missing overload/public method coverage: "+signatures);
-        Check(successful==76,"Successful fixture coverage regressed: "+successful);
-        Console.WriteLine($"PASS: {checks} operations checks; 19 scoped services, {signatures} signatures ({successful} successful seeded paths), {scenarios} before/after scenarios, {sqlCases} SQL fault/await scenarios. All persistence, SMS, jobs and OpenKM boundaries isolated.");
+        // The former two CollectBills entry points are verified by the unified
+        // workflow checks above; all other historical signatures remain covered.
+        Check(signatures==79,"Missing overload/public method coverage: "+signatures);
+        Check(successful==74,"Successful fixture coverage regressed: "+successful);
+        Console.WriteLine($"PASS: {checks} operations checks; 18 historical scoped services plus unified CollectBills, {signatures} historical signatures ({successful} successful seeded paths), {scenarios} before/after scenarios, {sqlCases} SQL fault/await scenarios. All persistence, SMS, jobs and OpenKM boundaries isolated.");
     }
     static ServiceProbe Probe(IMapper mapper,CancellationToken token,Operation op,string method,bool old,string mode)
     {

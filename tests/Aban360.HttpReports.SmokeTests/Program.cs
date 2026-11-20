@@ -2,16 +2,16 @@ using Aban360.Common.Exceptions;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Input;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Output;
 using Aban360.SystemPool.Persistence.Features.Logging.Queries.Contracts;
-using Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Implementations;
+using Aban360.SystemPool.Application.Features.Logging.Services;
 
 var query = new CaptureQuery();
-var handler = new HttpRequestReportHandler(query);
+var handler = (IHttpLogQueriesService)Activator.CreateInstance(typeof(IHttpLogQueriesService).Assembly.GetType("Aban360.SystemPool.Application.Features.Logging.Services.HttpLogQueriesService", true)!, new object?[] { null, query })!;
 HttpRequestReportInput Valid() => new() { FromDate = "1405/01/01", ToDate = "1405/01/02" };
 void Assert(bool value) { if (!value) throw new Exception("Assertion failed"); }
-await handler.Handle(Valid(), HttpRequestReportKind.Summary, default);
+await handler.HttpRequestReportAsync(Valid(), HttpRequestReportKind.Summary, default);
 Assert(query.From == new DateTime(2026, 3, 21) && query.To == new DateTime(2026, 3, 22));
 var persian = Valid(); persian.FromDate = "۱۴۰۵/۰۱/۰۱";
-await handler.Handle(persian, HttpRequestReportKind.Users, default);
+await handler.HttpRequestReportAsync(persian, HttpRequestReportKind.Users, default);
 Assert(query.From == new DateTime(2026, 3, 21));
 foreach (var bad in new[] {
     new HttpRequestReportInput { FromDate = "1405/+1/01", ToDate = "1405/01/02" },
@@ -23,14 +23,14 @@ foreach (var bad in new[] {
     new HttpRequestReportInput { FromDate = "1405/01/01", ToDate = "1405/01/02", PageSize = 201 } })
 {
     var count = query.Calls;
-    try { await handler.Handle(bad, HttpRequestReportKind.Summary, default); throw new Exception("Invalid input accepted"); }
+    try { await handler.HttpRequestReportAsync(bad, HttpRequestReportKind.Summary, default); throw new Exception("Invalid input accepted"); }
     catch (InvalidDateException) { Assert(query.Calls == count); }
 }
 var filtered = Valid(); filtered.UserId = "42"; filtered.RouteTemplate = "/users/{id}"; filtered.Page = 2;
 using var source = new CancellationTokenSource();
-await handler.Handle(filtered, HttpRequestReportKind.Requests, source.Token);
+await handler.HttpRequestReportAsync(filtered, HttpRequestReportKind.Requests, source.Token);
 Assert(query.Input == filtered && query.Kind == HttpRequestReportKind.Requests && query.Token == source.Token);
-await handler.Handle(filtered, HttpRequestReportKind.Summary, default);
+await handler.HttpRequestReportAsync(filtered, HttpRequestReportKind.Summary, default);
 Assert(query.Input!.Page == 1 && query.Input.UserId == "42" && filtered.Page == 2);
 Console.WriteLine("All HTTP report handler checks passed (dates, validation, filters, paging, cancellation).");
 

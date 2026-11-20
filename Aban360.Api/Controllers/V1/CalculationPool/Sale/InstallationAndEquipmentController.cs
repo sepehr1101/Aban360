@@ -8,24 +8,16 @@ using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contrac
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Application.Features.Sale.Services;
 using Aban360.Api.Controllers.V1.CalculationPool.Sale;
+using IInstallationAndEquipmentService = global::Aban360.CalculationPool.Application.Features.Sale.Services.IInstallationAndEquipmentService;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
 {
     [Route("v1/installation-and-equipment")]
     public class InstallationAndEquipmentController : BaseController
     {
-        private readonly IInstallationAndEquipmentCreateHadler _c0_createHadler;
-        private readonly IInstallationAndEquipmentDeleteHadler _c1_deleteHadler;
-        private readonly IInstallationAndEquipmentUpdateHadler _c2_updateHadler;
         private readonly IInstallationAndEquipmentService _installationAndEquipmentService;
-        public InstallationAndEquipmentController(IInstallationAndEquipmentCreateHadler c0_createHadler, IInstallationAndEquipmentDeleteHadler c1_deleteHadler, IInstallationAndEquipmentUpdateHadler c2_updateHadler, IInstallationAndEquipmentService installationAndEquipmentService)
+        public InstallationAndEquipmentController(IInstallationAndEquipmentService installationAndEquipmentService)
         {
-            _c0_createHadler = c0_createHadler;
-            _c0_createHadler.NotNull(nameof(c0_createHadler));
-            _c1_deleteHadler = c1_deleteHadler;
-            _c1_deleteHadler.NotNull(nameof(c1_deleteHadler));
-            _c2_updateHadler = c2_updateHadler;
-            _c2_updateHadler.NotNull(nameof(c2_updateHadler));
             _installationAndEquipmentService = installationAndEquipmentService;
             _installationAndEquipmentService.NotNull(nameof(installationAndEquipmentService));
         }
@@ -35,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
         [ProducesResponseType(typeof(ApiResponseEnvelope<InstallationAndEquipmentCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] InstallationAndEquipmentCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _c0_createHadler.Handle(createDto, CurrentUser, cancellationToken);
+            await _installationAndEquipmentService.InstallationAndEquipmentCreateAsync(createDto, CurrentUser, cancellationToken);
             return Ok(createDto);
         }
 
@@ -44,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
         [ProducesResponseType(typeof(ApiResponseEnvelope<SearchById>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] SearchById input, CancellationToken cancellationToken)
         {
-            await _c1_deleteHadler.Handle(input, CurrentUser, cancellationToken);
+            await _installationAndEquipmentService.InstallationAndEquipmentDeleteAsync(input, CurrentUser, cancellationToken);
             return Ok(input);
         }
 
@@ -53,7 +45,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
         [ProducesResponseType(typeof(ApiResponseEnvelope<InstallationAndEquipmentUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] InstallationAndEquipmentUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _c2_updateHadler.Handle(updateDto, CurrentUser, cancellationToken);
+            await _installationAndEquipmentService.InstallationAndEquipmentUpdateAsync(updateDto, CurrentUser, cancellationToken);
             return Ok(updateDto);
         }
 

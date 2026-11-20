@@ -1,0 +1,1538 @@
+[
+  {
+    "Number": 71,
+    "Feature": "UserRoleMembership",
+    "Name": "UpdateUsersInRoleHandler",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Update/Implementations/UpdateUsersInRoleHandler.cs",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations",
+    "Module": "UserPool",
+    "Contract": "IUpdateUsersInRoleHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/UserPool/Auth/RoleController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/role",
+          "create",
+          "update",
+          "delete",
+          "single/{id}",
+          "all",
+          "params-create"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts"
+    ]
+  },
+  {
+    "Number": 72,
+    "Feature": "AssessmentByZone",
+    "Name": "AssessmentGetByZoneIdHandler",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Implementations/AssessmentGetByZoneIdHandler.cs",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations",
+    "Module": "UserPool",
+    "Contract": "IAssessmentGetByZoneIdHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/UserPool/Auth/Queries/AssessmentGetByZoneIdController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/user",
+          "assessment-by-zoneid",
+          "assessment"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 73,
+    "Feature": "UserPolicy",
+    "Name": "UserPolicyQueryHandler",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Implementations/UserPolicyQueryHandler.cs",
+    "Namespace": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations",
+    "Module": "UserPool",
+    "Contract": "IUserPolicyQueryHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/UserPool/Auth/Commands/LoginController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/login",
+          "first-step",
+          "second-step",
+          "refresh"
+        ]
+      },
+      {
+        "Path": "Aban360.BrdigeApi/Controllers/V1/Security/LoginController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/login",
+          "first-step",
+          "second-step",
+          "refresh"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 74,
+    "Feature": "OnlineUsers",
+    "Name": "OnlineUserGetHandler",
+    "Source": "Aban360.CommunicationPool.Application/Features/Hubs/Mappers/OnlineUserGetHandler.cs",
+    "Namespace": "Aban360.CommunicationPool.Application.Features.Hubs.Mappers",
+    "Module": "CommunicationPool",
+    "Contract": "IOnlineUserGetHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CommunicationPool/Queries/OnlineUsersGetController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/online-user",
+          "get"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CommunicationPool.Application.Features.Hubs.Handlers"
+    ]
+  },
+  {
+    "Number": 75,
+    "Feature": "BroadcastMessages",
+    "Name": "BroadcastTextMessageHandler",
+    "Source": "Aban360.CommunicationPool.Application/Features/Hubs/Handlers/Commands/Implementations/BroadcastTextMessageHandler.cs",
+    "Namespace": "Aban360.CommunicationPool.Application.Features.Hubs.Handlers.Commands.Implementations",
+    "Module": "CommunicationPool",
+    "Contract": "IBroadcastTextMessageHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CommunicationPool/Commands/BroadcastMessageController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/notification",
+          "broadcast"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CommunicationPool.Application.Features.Hubs.Handlers.Commands.Contracts"
+    ]
+  },
+  {
+    "Number": 76,
+    "Feature": "WorkflowStatus",
+    "Name": "WorkflowStatusGetAllHandler",
+    "Source": "Aban360.WorkflowPool.Application/Features/Design/Handlers/Queries/Implementations/WorkflowStatusGetAllHandler.cs",
+    "Namespace": "Aban360.WorkflowStatusPool.Application.Features.Design.Handlers.Queries.Implementations",
+    "Module": "WorkflowPool",
+    "Contract": "IWorkflowStatusGetAllHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/WorkflowPool/Design/Queries/WorkflowStatusGetAllController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/workflow_status",
+          "all"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.WorkflowPool.Application.Features.Assignment.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 77,
+    "Feature": "CustomerLookup",
+    "Name": "CustomerGetByBillIdHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/CustomerGetByBillIdHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Module": "ClaimPool",
+    "Contract": "ICustomerGetByBillIdHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Land/Queries/CustomerGetByBillIdController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/customer",
+          "get-to-update",
+          "get-to-update/{billId}"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 78,
+    "Feature": "JudicalNotice",
+    "Name": "JudicalNoticeCommandHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Implementations/JudicalNoticeCommandHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "IJudicalNoticeCommandHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Land/Commands/JudicalNoticeController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/judical-notice",
+          "command",
+          "set-result",
+          "result"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts"
+    ]
+  },
+  {
+    "Number": 79,
+    "Feature": "VillageLookup",
+    "Name": "VillageGetAllHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/VillageGetAllHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Module": "ClaimPool",
+    "Contract": "IVillageGetAllHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Land/Queries/VillageGetAllController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/village",
+          "all"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 80,
+    "Feature": "ModifyCauseLookup",
+    "Name": "ModifyCauseGetAllHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/ModifyCauseGetAllHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Implemntations",
+    "Module": "ClaimPool",
+    "Contract": "IModifyCauseGetAllHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Metering/Queries/ModifyCauseController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/modify-cause",
+          "all"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 81,
+    "Feature": "BillInstallments",
+    "Name": "BillInstallmentHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Commands/Create/Implementation/BillInstallmentHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation",
+    "Module": "CalculationPool",
+    "Contract": "IBillInstallmentHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/BillInstallmentController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/bill",
+          "installment",
+          "v1/bill-installment",
+          "add",
+          "get"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts"
+    ]
+  },
+  {
+    "Number": 81,
+    "Feature": "BillInstallments",
+    "Name": "ServiceLinkInstallmentHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Commands/Create/Implementation/ServiceLinkInstallmentHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation",
+    "Module": "CalculationPool",
+    "Contract": "IServiceLinkInstallmentHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.BrdigeApi/Controllers/V1/ServiceLinkController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link",
+          "inquiry",
+          "installment",
+          "modify-amount",
+          "register-manual",
+          "transaction-type",
+          "connection-fee",
+          "check-pay",
+          "items",
+          "disconnect",
+          "reconnect"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts"
+    ]
+  },
+  {
+    "Number": 82,
+    "Feature": "PaymentIds",
+    "Name": "PaymentIdBatchUpdateHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Commands/Update/Implementation/PaymentIdBatchUpdateHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Implementation",
+    "Module": "CalculationPool",
+    "Contract": "IPaymentIdBatchUpdateHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Commands/PaymentIdBatchUpdateController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/payment-id",
+          "batch-update"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Contracts"
+    ]
+  },
+  {
+    "Number": 82,
+    "Feature": "PaymentIds",
+    "Name": "GeneratePaymentIdGetHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Implementation/GeneratePaymentIdGetHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation",
+    "Module": "CalculationPool",
+    "Contract": "IGeneratePaymentIdGetHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Queries/GeneratePaymentIdController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/payment",
+          "generate-payment-id"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 82,
+    "Feature": "PaymentIds",
+    "Name": "InvalidPaymentIdGetHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Implementation/InvalidPaymentIdGetHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation",
+    "Module": "CalculationPool",
+    "Contract": "IInvalidPaymentIdGetHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Queries/InvalidPaymentIdController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/bill",
+          "invalid-payment-id"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 83,
+    "Feature": "InvoiceTogether",
+    "Name": "InvoiceTogetherCreateHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Commands/Create/Implementation/InvoiceTogetherCreateHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Implementation",
+    "Module": "CalculationPool",
+    "Contract": "IInvoiceTogetherCreateHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Commands/InvoiceTogetherCreateController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/invoice-together",
+          "create"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts"
+    ]
+  },
+  {
+    "Number": 84,
+    "Feature": "BillLists",
+    "Name": "BillReadingListGetHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Implementation/BillReadingListGetHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation",
+    "Module": "CalculationPool",
+    "Contract": "IBillReadingListGetHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Queries/BillReadingListController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/bill-reading-list",
+          "all"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 84,
+    "Feature": "BillLists",
+    "Name": "CollectBillsDetailGetAllHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Implementation/CollectBillsDetailGetAllHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation",
+    "Module": "CalculationPool",
+    "Contract": "ICollectBillsDetailGetAllHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Queries/CollectBillsDetailController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/collect-bills-detail",
+          "all"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 85,
+    "Feature": "ImpactSign",
+    "Name": "ImpactSignGetAllHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Implementation/ImpactSignGetAllHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation",
+    "Module": "CalculationPool",
+    "Contract": "IImpactSignGetAllHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Queries/ImpactSignGetAllController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/impact-sign",
+          "all"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 86,
+    "Feature": "LatestBillSms",
+    "Name": "LatestBillSendSmsHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Implementation/LatestBillSendSmsHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Implementation",
+    "Module": "CalculationPool",
+    "Contract": "ILatestBillSendSmsHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/NotificationPool/Commands/BillSendLatestSmsController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/bill",
+          "send-sms"
+        ]
+      },
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/Processing/GenerateBillController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/generate-bill",
+          "calc",
+          "free",
+          "issue-remained",
+          "now"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 87,
+    "Feature": "MeterReadingSms",
+    "Name": "MeterReadingDetailSendSmsHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Implementations/MeterReadingDetailSendSmsHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations",
+    "Module": "CalculationPool",
+    "Contract": "IMeterReadingDetailSendSmsHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/SendSmsTestController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/test",
+          "send/flowid"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts"
+    ]
+  },
+  {
+    "Number": 88,
+    "Feature": "NonReadingBills",
+    "Name": "MeterReadingNonReadCreateHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Implementations/MeterReadingNonReadCreateHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations",
+    "Module": "CalculationPool",
+    "Contract": "IMeterReadingNonReadCreateHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/NonReadingBillCreateController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/non-read",
+          "create"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts"
+    ]
+  },
+  {
+    "Number": 89,
+    "Feature": "MeterReadingFileRemoval",
+    "Name": "MeterReadingFileRemoveHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Delete/Implementations/MeterReadingFileRemoveHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Delete.Implementations",
+    "Module": "CalculationPool",
+    "Contract": "IMeterReadingFileRemoveHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/MeterFlowRemoveController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/meter-flow",
+          "remove/{id}"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Delete.Contracts"
+    ]
+  },
+  {
+    "Number": 90,
+    "Feature": "MeterReadingExcludeCause",
+    "Name": "MeterReadingExcludeCauseGetHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/MeterReadingExcludeCauseGetHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Implementations",
+    "Module": "CalculationPool",
+    "Contract": "IMeterReadingExcludeCauseGetHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Queries/MeterReadingExcludeCauseController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/meter-flow",
+          "exclude-cause/{isSelectable}"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 91,
+    "Feature": "TankerTariff",
+    "Name": "TankerTariffGetAllHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Rule/Handlers/Queries/Implementations/TankerTariffGetAllHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Implementations",
+    "Module": "CalculationPool",
+    "Contract": "ITankerTariffGetAllHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Rule/Queries/TankerTariffController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tanker-tariff",
+          "all"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Implementations"
+    ]
+  },
+  {
+    "Number": 92,
+    "Feature": "CalculationRequestPricing",
+    "Name": "CalculationRequestHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Sale/Handlers/Commands/Implementations/CalculationRequestHandler.cs",
+    "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Implementations",
+    "Module": "CalculationPool",
+    "Contract": "ICalculationRequestHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/CalculationRequestController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "calculation",
+          "calculation/{trackNumber}",
+          "reCalculate",
+          "calculation-insert-manual",
+          "calculation-remove-manual",
+          "calculation-display",
+          "calculation-display/{trackNumber}",
+          "calculation-confirm"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts"
+    ]
+  },
+  {
+    "Number": 93,
+    "Feature": "CalculationRequestWorkflow",
+    "Name": "CalculationRequestConfirmHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/CalculationRequestConfirmHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "ICalculationRequestConfirmHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/CalculationRequestController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "calculation",
+          "calculation/{trackNumber}",
+          "reCalculate",
+          "calculation-insert-manual",
+          "calculation-remove-manual",
+          "calculation-display",
+          "calculation-display/{trackNumber}",
+          "calculation-confirm"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts"
+    ]
+  },
+  {
+    "Number": 93,
+    "Feature": "CalculationRequestWorkflow",
+    "Name": "ReCalculationRequestHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/ReCalculationRequestHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "IReCalculationRequestHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/CalculationRequestController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "calculation",
+          "calculation/{trackNumber}",
+          "reCalculate",
+          "calculation-insert-manual",
+          "calculation-remove-manual",
+          "calculation-display",
+          "calculation-display/{trackNumber}",
+          "calculation-confirm"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts"
+    ]
+  },
+  {
+    "Number": 93,
+    "Feature": "CalculationRequestWorkflow",
+    "Name": "CalculationRequestDisplayHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/CalculationRequestDisplayHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "ICalculationRequestDisplayHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/CalculationRequestController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "calculation",
+          "calculation/{trackNumber}",
+          "reCalculate",
+          "calculation-insert-manual",
+          "calculation-remove-manual",
+          "calculation-display",
+          "calculation-display/{trackNumber}",
+          "calculation-confirm"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 94,
+    "Feature": "RequestFinalization",
+    "Name": "RequestCofirmeHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/RequestCofirmeHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "IRequestCofirmeHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ConfirmController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "confirm"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts"
+    ]
+  },
+  {
+    "Number": 94,
+    "Feature": "RequestFinalization",
+    "Name": "AmountRequestConfirmHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/AmountRequestConfirmHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "IAmountRequestConfirmHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/SetAmountConfirmRequestController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "amount-confirm"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts"
+    ]
+  },
+  {
+    "Number": 94,
+    "Feature": "RequestFinalization",
+    "Name": "SetBillIdHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/SetBillIdHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "ISetBillIdHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/SetBillIdController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "set-billId"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts"
+    ]
+  },
+  {
+    "Number": 95,
+    "Feature": "RequestDictionaries",
+    "Name": "ServiceGroupGetAllHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/ServiceGroupGetAllHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "IServiceGroupGetAllHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/AmountItemsDictionaryController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/amount-items",
+          "dictionary"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 95,
+    "Feature": "RequestDictionaries",
+    "Name": "TrackingResultGetAllHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/TrackingResultGetAllHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "ITrackingResultGetAllHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestResultDictionaryController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "result-dictionary"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 96,
+    "Feature": "RequestCartable",
+    "Name": "ReferredRequestGetHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/ReferredRequestGetHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "IReferredRequestGetHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/ReferredRequestController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "referred"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 96,
+    "Feature": "RequestCartable",
+    "Name": "UnAssessmentGetAllHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/UnAssessmentGetAllHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "IUnAssessmentGetAllHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/UnAssessmentRequestController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "unassessment"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 96,
+    "Feature": "RequestCartable",
+    "Name": "UnconfirmedRequestGetByZoneIdHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/UnconfirmedRequestGetByZoneIdHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "IUnconfirmedRequestGetByZoneIdHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/UnconfirmedRequestController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "unconfirmed/{zoneId}"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 97,
+    "Feature": "TrackingDetails",
+    "Name": "TrackingDetailGetByIdHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/TrackingDetailGetByIdHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "ITrackingDetailGetByIdHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Tracking/TrackingController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tracking",
+          "display-sms",
+          "resend-sms",
+          "request-registered/{trackId}",
+          "assessment-time/{trackId}",
+          "assessment-result/{trackId}",
+          "description/{trackId}",
+          "calculatation-confirmed/{trackId}",
+          "specified-customerNumber/{trackId}",
+          "amount-confirmed/{trackId}",
+          "assessment-seen/{trackId}",
+          "display-detail",
+          "display-flow"
+        ]
+      },
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestKartableDetailsController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "kartable-details/{trackId}"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 97,
+    "Feature": "TrackingDetails",
+    "Name": "AmountConfirmedDetailHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Tracking/Handler/Queries/Implementations/AmountConfirmedDetailHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "IAmountConfirmedDetailHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Tracking/TrackingController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tracking",
+          "display-sms",
+          "resend-sms",
+          "request-registered/{trackId}",
+          "assessment-time/{trackId}",
+          "assessment-result/{trackId}",
+          "description/{trackId}",
+          "calculatation-confirmed/{trackId}",
+          "specified-customerNumber/{trackId}",
+          "amount-confirmed/{trackId}",
+          "assessment-seen/{trackId}",
+          "display-detail",
+          "display-flow"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 97,
+    "Feature": "TrackingDetails",
+    "Name": "CalculationConfirmedDetailHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Tracking/Handler/Queries/Implementations/CalculationConfirmedDetailHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "ICalculationConfirmedDetailHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Tracking/TrackingController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tracking",
+          "display-sms",
+          "resend-sms",
+          "request-registered/{trackId}",
+          "assessment-time/{trackId}",
+          "assessment-result/{trackId}",
+          "description/{trackId}",
+          "calculatation-confirmed/{trackId}",
+          "specified-customerNumber/{trackId}",
+          "amount-confirmed/{trackId}",
+          "assessment-seen/{trackId}",
+          "display-detail",
+          "display-flow"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 97,
+    "Feature": "TrackingDetails",
+    "Name": "CustomerNumberSpecifiedDetailHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Tracking/Handler/Queries/Implementations/CustomerNumberSpecifiedDetailHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "ICustomerNumberSpecifiedDetailHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Tracking/TrackingController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tracking",
+          "display-sms",
+          "resend-sms",
+          "request-registered/{trackId}",
+          "assessment-time/{trackId}",
+          "assessment-result/{trackId}",
+          "description/{trackId}",
+          "calculatation-confirmed/{trackId}",
+          "specified-customerNumber/{trackId}",
+          "amount-confirmed/{trackId}",
+          "assessment-seen/{trackId}",
+          "display-detail",
+          "display-flow"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 97,
+    "Feature": "TrackingDetails",
+    "Name": "ExamineTimeSetDetailHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Tracking/Handler/Queries/Implementations/ExamineTimeSetDetailHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "IExamineTimeSetDetailHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Tracking/TrackingController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tracking",
+          "display-sms",
+          "resend-sms",
+          "request-registered/{trackId}",
+          "assessment-time/{trackId}",
+          "assessment-result/{trackId}",
+          "description/{trackId}",
+          "calculatation-confirmed/{trackId}",
+          "specified-customerNumber/{trackId}",
+          "amount-confirmed/{trackId}",
+          "assessment-seen/{trackId}",
+          "display-detail",
+          "display-flow"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 97,
+    "Feature": "TrackingDetails",
+    "Name": "RequestIsRegisteredDetailHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Tracking/Handler/Queries/Implementations/RequestIsRegisteredDetailHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "IRequestIsRegisteredDetailHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Tracking/TrackingController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tracking",
+          "display-sms",
+          "resend-sms",
+          "request-registered/{trackId}",
+          "assessment-time/{trackId}",
+          "assessment-result/{trackId}",
+          "description/{trackId}",
+          "calculatation-confirmed/{trackId}",
+          "specified-customerNumber/{trackId}",
+          "amount-confirmed/{trackId}",
+          "assessment-seen/{trackId}",
+          "display-detail",
+          "display-flow"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 97,
+    "Feature": "TrackingDetails",
+    "Name": "SeenByAssessmentHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Tracking/Handler/Queries/Implementations/SeenByAssessmentHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "ISeenByAssessmentHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Tracking/TrackingController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tracking",
+          "display-sms",
+          "resend-sms",
+          "request-registered/{trackId}",
+          "assessment-time/{trackId}",
+          "assessment-result/{trackId}",
+          "description/{trackId}",
+          "calculatation-confirmed/{trackId}",
+          "specified-customerNumber/{trackId}",
+          "amount-confirmed/{trackId}",
+          "assessment-seen/{trackId}",
+          "display-detail",
+          "display-flow"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 97,
+    "Feature": "TrackingDetails",
+    "Name": "SetExaminationResultDetailHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Tracking/Handler/Queries/Implementations/SetExaminationResultDetailHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "ISetExaminationResultDetailHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Tracking/TrackingController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tracking",
+          "display-sms",
+          "resend-sms",
+          "request-registered/{trackId}",
+          "assessment-time/{trackId}",
+          "assessment-result/{trackId}",
+          "description/{trackId}",
+          "calculatation-confirmed/{trackId}",
+          "specified-customerNumber/{trackId}",
+          "amount-confirmed/{trackId}",
+          "assessment-seen/{trackId}",
+          "display-detail",
+          "display-flow"
+        ]
+      },
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestKartableDetailsController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "kartable-details/{trackId}"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 97,
+    "Feature": "TrackingDetails",
+    "Name": "TrackNumberAndDescriptionDetailHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Tracking/Handler/Queries/Implementations/TrackNumberAndDescriptionDetailHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "ITrackNumberAndDescriptionDetailHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Tracking/TrackingController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tracking",
+          "display-sms",
+          "resend-sms",
+          "request-registered/{trackId}",
+          "assessment-time/{trackId}",
+          "assessment-result/{trackId}",
+          "description/{trackId}",
+          "calculatation-confirmed/{trackId}",
+          "specified-customerNumber/{trackId}",
+          "amount-confirmed/{trackId}",
+          "assessment-seen/{trackId}",
+          "display-detail",
+          "display-flow"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 98,
+    "Feature": "GeneralRequestInformation",
+    "Name": "GeneralInformationHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Tracking/Handler/Queries/Implementations/GeneralInformationHandler.cs",
+    "Namespace": "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Implementations",
+    "Module": "ClaimPool",
+    "Contract": "IGeneralInformationHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/RequestBranchController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "edit",
+          "close",
+          "refer-to",
+          "previous-status",
+          "general/{trackId}",
+          "previous/{billId}",
+          "swap-request-type"
+        ]
+      },
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestKartableDetailsController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "kartable-details/{trackId}"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 99,
+    "Feature": "BillRemoval",
+    "Name": "RemoveBillHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/Processing/Handlers/Commands/Implementations/RemoveBillHandler.cs",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Implementations",
+    "Module": "OldCalcPool",
+    "Contract": "IRemoveBillHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/Processing/RemoveBillController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/bill",
+          "remove"
+        ]
+      },
+      {
+        "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/RemoveBillController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/bill",
+          "remove"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts"
+    ]
+  },
+  {
+    "Number": 99,
+    "Feature": "BillRemoval",
+    "Name": "BillsCanRemovedGetHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/Processing/Handlers/Queries/Implementations/BillsCanRemovedGetHandler.cs",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Implementations",
+    "Module": "OldCalcPool",
+    "Contract": "IBillsCanRemovedGetHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/Processing/BillsRemovableController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/bill",
+          "removable"
+        ]
+      },
+      {
+        "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/BillsRemovableController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/bill",
+          "removable"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 100,
+    "Feature": "BillReturns",
+    "Name": "ReturnBillManualHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/WaterReturn/Handlers/Commands/Implementations/ReturnBillManualHandler.cs",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations",
+    "Module": "OldCalcPool",
+    "Contract": "IReturnBillManualHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Commands/ReturnBillManualController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/water-return-manual",
+          "generate"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts"
+    ]
+  },
+  {
+    "Number": 100,
+    "Feature": "BillReturns",
+    "Name": "ReturnBillSetConfirmHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/WaterReturn/Handlers/Commands/Implementations/ReturnBillSetConfirmHandler.cs",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations",
+    "Module": "OldCalcPool",
+    "Contract": "IReturnBillSetConfirmHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Commands/ReturnBillConfirmController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/water-return",
+          "confirm"
+        ]
+      },
+      {
+        "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/BillReturnController.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/bill-return/confirm",
+          "~/v1/bill-return/partial",
+          "~/v1/bill-return/full"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts"
+    ]
+  },
+  {
+    "Number": 100,
+    "Feature": "BillReturns",
+    "Name": "ReturnBillUncofirmedDeleteHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/WaterReturn/Handlers/Commands/Implementations/ReturnBillUncofirmedDeleteHandler.cs",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations",
+    "Module": "OldCalcPool",
+    "Contract": "IReturnBillUncofirmedDeleteHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Commands/ReturnBillDeleteController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/water-return",
+          "delete/{confirmedNumber}"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts"
+    ]
+  },
+  {
+    "Number": 100,
+    "Feature": "BillReturns",
+    "Name": "ReturnedBillRemoveHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/WaterReturn/Handlers/Commands/Implementations/ReturnedBillRemoveHandler.cs",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations",
+    "Module": "OldCalcPool",
+    "Contract": "IReturnedBillRemoveHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/WaterReturnedController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/water-return",
+          "confirmed",
+          "remove"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts"
+    ]
+  },
+  {
+    "Number": 100,
+    "Feature": "BillReturns",
+    "Name": "BillToReturnListGetHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/WaterReturn/Handlers/Queries/Implementations/BillToReturnListGetHandler.cs",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Implementations",
+    "Module": "OldCalcPool",
+    "Contract": "IBillToReturnListGetHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/BillToReturnedGetController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/water-return",
+          "bills"
+        ]
+      },
+      {
+        "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/BillToReturnedGetController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/bill",
+          "return"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 100,
+    "Feature": "BillReturns",
+    "Name": "RepairGetByBillIdHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/WaterReturn/Handlers/Queries/Implementations/RepairGetByBillIdHandler.cs",
+    "Namespace": "Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Queries.Implementations",
+    "Module": "OldCalcPool",
+    "Contract": "IRepairGetByBillIdHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/WaterReturnGetByBillIdController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/water-return",
+          "get-by-billid"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 100,
+    "Feature": "BillReturns",
+    "Name": "RepairGetHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/WaterReturn/Handlers/Queries/Implementations/RepairGetHandler.cs",
+    "Namespace": "Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Queries.Implementations",
+    "Module": "OldCalcPool",
+    "Contract": "IRepairGetHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/WaterReturnGetController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/water-return",
+          "get"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.OldCalcPools.Application.Features.WaterReturn.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 100,
+    "Feature": "BillReturns",
+    "Name": "ReturedBillAfterDateLockGetHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/WaterReturn/Handlers/Queries/Implementations/ReturedBillAfterDateLockGetHandler.cs",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Implementations",
+    "Module": "OldCalcPool",
+    "Contract": "IReturedBillAfterDateLockGetHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/WaterReturnedController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/water-return",
+          "confirmed",
+          "remove"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 100,
+    "Feature": "BillReturns",
+    "Name": "UnconfirmedBillReturnGetByBillIdHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/WaterReturn/Handlers/Queries/Implementations/UnconfirmedBillReturnGetByBillIdHandler.cs",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Implementations",
+    "Module": "OldCalcPool",
+    "Contract": "IUnconfirmedBillReturnGetByBillIdHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/ReturnBillConfirmController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/water-return",
+          "unconfirmed/{zoneId}",
+          "unconfirmed-billId/{billId}"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Contracts"
+    ]
+  },
+  {
+    "Number": 100,
+    "Feature": "BillReturns",
+    "Name": "UnconfirmedBillReturnGetByZoneHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/WaterReturn/Handlers/Queries/Implementations/UnconfirmedBillReturnGetByZoneHandler.cs",
+    "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Implementations",
+    "Module": "OldCalcPool",
+    "Contract": "IUnconfirmedBillReturnGetByZoneHandler",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/ReturnBillConfirmController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/water-return",
+          "unconfirmed/{zoneId}",
+          "unconfirmed-billId/{billId}"
+        ]
+      }
+    ],
+    "ContractNamespaces": [
+      "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Queries.Contracts"
+    ]
+  }
+]

@@ -1,4 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><Using Include="Microsoft.Extensions.Configuration"/><FrameworkReference Include="Microsoft.AspNetCore.App"/><Using Include="Microsoft.AspNetCore.Http"/><ProjectReference Include="../../Aban360.Api/Aban360.Api.csproj"/><None Update="Groups.json" CopyToOutputDirectory="PreserveNewest"/></ItemGroup></Project>
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup><ItemGroup><Using Include="Microsoft.Extensions.Configuration"/><FrameworkReference Include="Microsoft.AspNetCore.App"/><Using Include="Microsoft.AspNetCore.Http"/><ProjectReference Include="../../Aban360.Api/Aban360.Api.csproj"/><None Update="Groups.json" CopyToOutputDirectory="PreserveNewest"/></ItemGroup>  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidation15/Contracts/**/*.cs" Link="LegacyServiceConsolidation15/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidation19/Contracts/**/*.cs" Link="LegacyServiceConsolidation19/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidation20/Contracts/**/*.cs" Link="LegacyServiceConsolidation20/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidation30/Contracts/**/*.cs" Link="LegacyServiceConsolidation30/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidationAuxiliary10/Contracts/**/*.cs" Link="LegacyServiceConsolidationAuxiliary10/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidationCritical10/Contracts/**/*.cs" Link="LegacyServiceConsolidationCritical10/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidationManagement20/Contracts/**/*.cs" Link="LegacyServiceConsolidationManagement20/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidationNext28/Contracts/**/*.cs" Link="LegacyServiceConsolidationNext28/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidationOperations19/Contracts/**/*.cs" Link="LegacyServiceConsolidationOperations19/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidationTicket/Contracts/**/*.cs" Link="LegacyServiceConsolidationTicket/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidationWave20/Contracts/**/*.cs" Link="LegacyServiceConsolidationWave20/%(Filename)%(Extension)" />
+    <Compile Include="../Shared/ServiceConsolidationWorkflow10/Contracts/**/*.cs" Link="LegacyServiceConsolidationWorkflow10/%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>
 
 
 

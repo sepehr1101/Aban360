@@ -102,7 +102,43 @@ public static class ApplicationServiceBaseline
         [("Aban360.ClaimPool.Application.Features.Request.Services.IRequestDisplayService", "ToSetAssessmentTimeGetByTrackIdAsync") ] = "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations.IToSetAssessmentTimeGetByTrackIdHandler.Handle",
         [("Aban360.ClaimPool.Application.Features.Request.Services.IRequestDisplayService", "ToSetReAssessmentTimeGetByTrackIdAsync") ] = "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations.IToSetReAssessmentTimeGetByTrackIdHandler.Handle",
     };
+    public static readonly ServiceOperation[] Next28Operations = JsonSerializer.Deserialize<ServiceOperation[]>(
+        File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "ServiceConsolidationNext28.json")))!;
+    private static readonly Dictionary<(string, string), string> Next28Names = Next28Operations.ToDictionary(
+        o => (o.Service, o.Method), o => o.OldContract + "." + o.OldMethod);
+    public static readonly ServiceOperation[] CompactOperations = JsonSerializer.Deserialize<ServiceOperation[]>(
+        File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "ServiceConsolidationCompact.json")))!;
+    private static readonly Dictionary<(string, string), string> CompactNames = CompactOperations.ToDictionary(
+        o => (o.Service, o.Method), o => o.OldContract + "." + o.OldMethod);
+    private static readonly Dictionary<(string, string), string> SalesReportsNames = new()
+    {
+        [("Aban360.CalculationPool.Application.Features.Sale.Services.IArticle11Service", "Article11CreateAsync")] = "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.IArticle11CreateHadler.Handle",
+        [("Aban360.CalculationPool.Application.Features.Sale.Services.IArticle11Service", "Article11UpdateAsync")] = "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.IArticle11UpdateHadler.Handle",
+        [("Aban360.CalculationPool.Application.Features.Sale.Services.IArticle11Service", "Article11DeleteAsync")] = "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.IArticle11DeleteHadler.Handle",
+        [("Aban360.CalculationPool.Application.Features.Sale.Services.IInstallationAndEquipmentService", "InstallationAndEquipmentCreateAsync")] = "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.IInstallationAndEquipmentCreateHadler.Handle",
+        [("Aban360.CalculationPool.Application.Features.Sale.Services.IInstallationAndEquipmentService", "InstallationAndEquipmentUpdateAsync")] = "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.IInstallationAndEquipmentUpdateHadler.Handle",
+        [("Aban360.CalculationPool.Application.Features.Sale.Services.IInstallationAndEquipmentService", "InstallationAndEquipmentDeleteAsync")] = "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.IInstallationAndEquipmentDeleteHadler.Handle",
+        [("Aban360.CalculationPool.Application.Features.Sale.Services.ITankerWaterDistanceTariffService", "TankerWaterDistanceTariffCreateAsync")] = "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.ITankerWaterDistanceTariffCreateHadler.Handle",
+        [("Aban360.CalculationPool.Application.Features.Sale.Services.ITankerWaterDistanceTariffService", "TankerWaterDistanceTariffUpdateAsync")] = "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.ITankerWaterDistanceTariffUpdateHadler.Handle",
+        [("Aban360.CalculationPool.Application.Features.Sale.Services.ITankerWaterDistanceTariffService", "TankerWaterDistanceTariffDeleteAsync")] = "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.ITankerWaterDistanceTariffDeleteHadler.Handle",
+        [("Aban360.CalculationPool.Application.Features.MeterReading.Services.IMeterReadingChangeReportsService", "MeterReadingDetailExcludedGetAsync")] = "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts.IMeterReadingDetailExcludedGetHadler.Handle",
+        [("Aban360.CalculationPool.Application.Features.MeterReading.Services.IMeterReadingChangeReportsService", "MeterReadingDetailUpdatedGetAsync")] = "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts.IMeterReadingDetailUpdatedGetHadler.Handle",
+        [("Aban360.CalculationPool.Application.Features.Sale.Services.ITankerWaterQueriesService", "TankerWaterGetAsync")] = "Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts.ITankerWaterGetHandler.Handle",
+        [("Aban360.CalculationPool.Application.Features.Sale.Services.ITankerWaterQueriesService", "TankerWaterDetailByCustomerNumberGetAsync")] = "Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts.ITankerWaterDetailByCustomerNumberGetHandler.Handle",
+    };
     public static string CallName(Type contract, MethodInfo method) =>
+        SalesReportsNames.TryGetValue((contract.FullName!, method.Name), out var salesReports) ? salesReports :
+        contract.FullName == "Aban360.CalculationPool.Application.Features.CollectBills.Services.ICollectBillsApplicationService"
+            ? method.Name switch
+            {
+                "CollectBillsDetailFileDownloadAsync" => "Aban360.CalculationPool.Application.Features.CollectBills.Handlers.Commands.Contracts.ICollectBillsDetailFileDownloadHandler.Handle",
+                "CollectBillsFileCreateAsync" => "Aban360.CalculationPool.Application.Features.CollectBills.Handlers.Commands.Implementations.ICollectBillsFileCreateHandler.Handle",
+                "GetDetailWithLastStepAsync" => "Aban360.CalculationPool.Application.Features.CollectBills.Handlers.Queries.Implementations.ICollectBillsDetailWithLastStepGetHadler.Handle",
+                _ => "Aban360.CalculationPool.Application.Features.Base.ICollectBillsDetailJobService." + method.Name
+            } :
+        contract.FullName == "BeforeCompactSupport.IBaseIntervalTariffEngine" ? "Aban360.CalculationPool.Application.Features.Base.IBaseIntervalTariffEngine." + method.Name :
+        CompactNames.TryGetValue((contract.FullName!, method.Name), out var compact) ? compact :
+        Next28Names.TryGetValue((contract.FullName!, method.Name), out var next28) ? next28 :
         Operations19Names.TryGetValue((contract.FullName!, method.Name), out var operation19) ? operation19 :
         contract.FullName == "Aban360.OldCalcPool.Application.Features.Db70.Services.IBillReturnCauseService" && method.Name == "GetAllDictionaryAsync"
             ? "Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Contracts.IBillReturnCauseGetAllHandler.HandleByDictionary" :

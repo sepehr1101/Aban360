@@ -1,0 +1,80 @@
+[
+  {
+    "Service": "Aban360.CalculationPool.Application.Features.Sale.Services.IArticle11Service",
+    "Method": "Article11CreateAsync",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.IArticle11CreateHadler",
+    "OldMethod": "Handle"
+  },
+  {
+    "Service": "Aban360.CalculationPool.Application.Features.Sale.Services.IArticle11Service",
+    "Method": "Article11UpdateAsync",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.IArticle11UpdateHadler",
+    "OldMethod": "Handle"
+  },
+  {
+    "Service": "Aban360.CalculationPool.Application.Features.Sale.Services.IArticle11Service",
+    "Method": "Article11DeleteAsync",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.IArticle11DeleteHadler",
+    "OldMethod": "Handle"
+  },
+  {
+    "Service": "Aban360.CalculationPool.Application.Features.Sale.Services.IInstallationAndEquipmentService",
+    "Method": "InstallationAndEquipmentCreateAsync",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.IInstallationAndEquipmentCreateHadler",
+    "OldMethod": "Handle"
+  },
+  {
+    "Service": "Aban360.CalculationPool.Application.Features.Sale.Services.IInstallationAndEquipmentService",
+    "Method": "InstallationAndEquipmentUpdateAsync",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.IInstallationAndEquipmentUpdateHadler",
+    "OldMethod": "Handle"
+  },
+  {
+    "Service": "Aban360.CalculationPool.Application.Features.Sale.Services.IInstallationAndEquipmentService",
+    "Method": "InstallationAndEquipmentDeleteAsync",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.IInstallationAndEquipmentDeleteHadler",
+    "OldMethod": "Handle"
+  },
+  {
+    "Service": "Aban360.CalculationPool.Application.Features.Sale.Services.ITankerWaterDistanceTariffService",
+    "Method": "TankerWaterDistanceTariffCreateAsync",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.ITankerWaterDistanceTariffCreateHadler",
+    "OldMethod": "Handle"
+  },
+  {
+    "Service": "Aban360.CalculationPool.Application.Features.Sale.Services.ITankerWaterDistanceTariffService",
+    "Method": "TankerWaterDistanceTariffUpdateAsync",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.ITankerWaterDistanceTariffUpdateHadler",
+    "OldMethod": "Handle"
+  },
+  {
+    "Service": "Aban360.CalculationPool.Application.Features.Sale.Services.ITankerWaterDistanceTariffService",
+    "Method": "TankerWaterDistanceTariffDeleteAsync",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.ITankerWaterDistanceTariffDeleteHadler",
+    "OldMethod": "Handle"
+  },
+  {
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.IMeterReadingChangeReportsService",
+    "Method": "MeterReadingDetailExcludedGetAsync",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts.IMeterReadingDetailExcludedGetHadler",
+    "OldMethod": "Handle"
+  },
+  {
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.IMeterReadingChangeReportsService",
+    "Method": "MeterReadingDetailUpdatedGetAsync",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts.IMeterReadingDetailUpdatedGetHadler",
+    "OldMethod": "Handle"
+  },
+  {
+    "Service": "Aban360.CalculationPool.Application.Features.Sale.Services.ITankerWaterQueriesService",
+    "Method": "TankerWaterGetAsync",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts.ITankerWaterGetHandler",
+    "OldMethod": "Handle"
+  },
+  {
+    "Service": "Aban360.CalculationPool.Application.Features.Sale.Services.ITankerWaterQueriesService",
+    "Method": "TankerWaterDetailByCustomerNumberGetAsync",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts.ITankerWaterDetailByCustomerNumberGetHandler",
+    "OldMethod": "Handle"
+  }
+]

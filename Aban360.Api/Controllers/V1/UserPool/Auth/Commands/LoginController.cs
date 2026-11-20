@@ -32,10 +32,10 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
         private readonly ICaptchaService _captchaService;
         private readonly ITokenFactoryService _tokenFactoryService;
         private readonly IUserTokenService _userTokenService;
-        private readonly IUserPolicyQueryHandler _userPolicyQueryHandler;
+        private readonly IUserPolicyService _userPolicyQueryHandler;
         private readonly IOpLogCommandService _opLog;
         private readonly ILogger<LoginController> _logger;
-        public LoginController(IUnitOfWork uow, IDNTCaptchaApiProvider captchaApiProvider, IDNTCaptchaValidatorService captchaValidatorService, ICaptchaCryptoProvider captchaCryptoProvider, IOptions<DNTCaptchaOptions> captchaOptions, ICaptchaService captchaService, ITokenFactoryService tokenFactoryService, IUserAuthenticationService userAuthenticationService, IUserTokenService userTokenService, IUserPolicyQueryHandler userPolicyQueryHandler, IOpLogCommandService opLog, ILogger<LoginController> logger)
+        public LoginController(IUnitOfWork uow, IDNTCaptchaApiProvider captchaApiProvider, IDNTCaptchaValidatorService captchaValidatorService, ICaptchaCryptoProvider captchaCryptoProvider, IOptions<DNTCaptchaOptions> captchaOptions, ICaptchaService captchaService, ITokenFactoryService tokenFactoryService, IUserAuthenticationService userAuthenticationService, IUserTokenService userTokenService, IUserPolicyService userPolicyQueryHandler, IOpLogCommandService opLog, ILogger<LoginController> logger)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
@@ -85,7 +85,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Commands
             }
 
             //Policy
-            var(userPolicy, resultPolicy) = await _userPolicyQueryHandler.Handle(loginInput, cancellationToken);
+            var(userPolicy, resultPolicy) = await _userPolicyQueryHandler.UserPolicyQueryAsync(loginInput, cancellationToken);
             if (!resultPolicy || !string.IsNullOrEmpty(userPolicy))
             {
                 return ClientError(userPolicy);

@@ -43,7 +43,7 @@ foreach (User? user in new User?[] { null, knownUser })
         && !JsonSerializer.Serialize(log).Contains(input.CaptchaToken),
         "Failure message is useful and OpLog receives no password or captcha token");
     Check(fixture.Calls.All(call => !call.StartsWith("IUserPolicy") && !call.StartsWith("ITokenFactory")
-        && !call.StartsWith("IUserTokenCreate") && !call.StartsWith("IUserLoginAdd")),
+        && call != "IUserTokenService.CreateAsync" && call != "IUserAuthenticationService.AddLoginAsync"),
         "Rejected credentials never proceed to policy, tokens or successful login");
 }
 
@@ -54,7 +54,7 @@ Check(await brokenAudit.Controller.PaceFirstStep(input, default) is BadRequestOb
 
 var badCaptcha = new LoginFixture(null, validCredentials: false) { CaptchaValue = "999" };
 Check(await badCaptcha.Controller.PaceFirstStep(input, default) is BadRequestObjectResult
-    && badCaptcha.Logs.Count == 0 && !badCaptcha.Calls.Any(call => call.StartsWith("IUserFindByUsernamePassword")),
+    && badCaptcha.Logs.Count == 0 && !badCaptcha.Calls.Any(call => call == "IUserAuthenticationService.FindByCredentialsAsync"),
     "Rejected captcha is not falsely classified as an incorrect username or password");
 
 foreach (bool twoStep in new[] { false, true })
@@ -71,7 +71,7 @@ foreach (bool twoStep in new[] { false, true })
     else
         Check(result is OkObjectResult { Value: ApiResponseEnvelope<SecondStepOutput> response }
             && response.Success && response.Data?.AccessToken == "access-token"
-            && successful.Calls.Any(call => call.StartsWith("IUserTokenCreateHandler")),
+            && successful.Calls.Any(call => call == "IUserTokenService.CreateAsync"),
             "Single-step login still creates and returns tokens");
     Check(successful.Calls.Count(call => call == "IUnitOfWork.SaveChangesAsync") == 1,
         "Successful login still saves its existing changes once");
@@ -130,11 +130,11 @@ sealed class LoginFixture
                 return method.Name switch
                 {
                     "Decrypt" => CaptchaValue,
-                    "Handle" when type.Name == "IUserFindByUsernamePasswordHandler" => Task.FromResult((user, validCredentials)),
-                    "Handle" when type.Name == "IUserPolicyQueryHandler" => Task.FromResult((PolicyAllowed ? "" : "Policy denied", PolicyAllowed)),
-                    "Handle" when type.Name == "IUserLoginAddHandler" => Task.FromResult(new FirstStepOutput(Guid.NewGuid(), 1, "temporary-code")),
+                    "FindByCredentialsAsync" when type.Name == "IUserAuthenticationService" => Task.FromResult((user, validCredentials)),
+                    "UserPolicyQueryAsync" when type.Name == "IUserPolicyService" => Task.FromResult((PolicyAllowed ? "" : "Policy denied", PolicyAllowed)),
+                    "AddLoginAsync" when type.Name == "IUserAuthenticationService" => Task.FromResult(new FirstStepOutput(Guid.NewGuid(), 1, "temporary-code")),
                     "CreateJwtTokensAsync" => Task.FromResult(new JwtTokenData { AccessToken = "access-token", RefreshToken = "refresh-token" }),
-                    "Handle" when type.Name == "IUserTokenCreateHandler" => Task.CompletedTask,
+                    "CreateAsync" when type.Name == "IUserTokenService" => Task.CompletedTask,
                     "SaveChangesAsync" => Task.FromResult(1),
                     _ => throw new InvalidOperationException($"Unexpected dependency call: {type.Name}.{method.Name}")
                 };

@@ -282,6 +282,7 @@ static class ServiceConsolidationChecks
                 ?? type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).Single();
             state.SeedConnection = method.Name == "OnDisconnectedAsync";
             var instance = constructor.Invoke(constructor.GetParameters().Select(p => state.Proxy(p.ParameterType)).ToArray());
+            state.InstanceSetup?.Invoke(instance);
             if (instance is ControllerBase controller)
                 controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(new ClaimsIdentity(new[]
                 { new Claim(ClaimTypes.UserData, "22222222-2222-2222-2222-222222222222"), new Claim(ClaimTypes.Name, "service-reviewer") }, "regression")) } };
@@ -399,6 +400,12 @@ static class ServiceConsolidationChecks
             .OrderBy(p => p.Name).ToDictionary(p => p.Name, p =>
             {
                 var field = p.GetValue(value);
+                if (type.FullName == "Aban360.CalculationPool.Domain.Features.Bill.Entities.InvoiceInstallment" && p.Name == "DueDateTime"
+                    && field is DateTime dueTimestamp && Math.Abs((dueTimestamp - DateTime.Now).TotalSeconds) < 60)
+                    return "current-invoice-due-time";
+                if (type.FullName == "Aban360.UserPool.Domain.Features.Auth.Entities.UserLogin" && p.Name == "FirstStepDateTime"
+                    && field is DateTime loginTimestamp && Math.Abs((loginTimestamp - DateTime.Now).TotalSeconds) < 60)
+                    return "current-login-time";
                 if (type.FullName == "Aban360.SystemPool.Domain.Features.UserGuide.Entities.Faq" && p.Name == "CreateDateTime"
                     && field is DateTime faqTimestamp && Math.Abs((faqTimestamp - DateTime.Now).TotalSeconds) < 60)
                     return "current-faq-time";
@@ -437,6 +444,7 @@ static class ServiceConsolidationChecks
 
 public sealed class ServiceProbe(IMapper? mapper, CancellationToken token)
 {
+    public Action<object>? InstanceSetup;
     public readonly CancellationToken Token = token;
     public string Mode = "success";
     public int FailAt, CancelAt, GateAt;

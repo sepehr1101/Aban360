@@ -1,21 +1,22 @@
-﻿using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Microsoft.AspNetCore.Mvc;
+using IMeterReadingChangeReportsService = global::Aban360.CalculationPool.Application.Features.MeterReading.Services.IMeterReadingChangeReportsService;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
 {
     [Route("v1/meter-flow")]
     public class MeterReadingExcludedController : BaseController
     {
-        private readonly IMeterReadingDetailExcludedGetHadler _excludedGetHandler;
-        public MeterReadingExcludedController(IMeterReadingDetailExcludedGetHadler excludedGetHandler)
+        private readonly IMeterReadingChangeReportsService _meterReadingChangeReportsService;
+        public MeterReadingExcludedController(IMeterReadingChangeReportsService meterReadingChangeReportsService)
         {
-            _excludedGetHandler = excludedGetHandler;
-            _excludedGetHandler.NotNull(nameof(excludedGetHandler));
+            _meterReadingChangeReportsService = meterReadingChangeReportsService;
+            _meterReadingChangeReportsService.NotNull(nameof(meterReadingChangeReportsService));
         }
 
         [HttpGet, HttpPost]
@@ -23,10 +24,9 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExcluded([FromBody] MeterReadingDetailExcludedInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutputDto> result = await _excludedGetHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutputDto> result = await _meterReadingChangeReportsService.MeterReadingDetailExcludedGetAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(result);
         }
-
 
         [HttpGet, HttpPost]
         [Route("excluded-sti")]
@@ -34,8 +34,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
         public async Task<IActionResult> GetStiExcluded([FromBody] MeterReadingDetailExcludedInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = (int)StiReportCodeLiterals.MeterReadingExcluded;
-            ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutputDto> result = await _excludedGetHandler.Handle(inputDto, CurrentUser, cancellationToken);
-            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode,true);
+            ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutputDto> result = await _meterReadingChangeReportsService.MeterReadingDetailExcludedGetAsync(inputDto, CurrentUser, cancellationToken);
+            JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode, true);
             return Ok(reportId);
         }
     }

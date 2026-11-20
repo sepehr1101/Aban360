@@ -17,6 +17,8 @@ using Aban360.BrdigeApi.Controllers.V1.ServiceLink;
 using Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo;
 using Aban360.OldCalcPool.Application.Features.Db70.Services;
 using Aban360.CalculationPool.Application.Features.ServiceLink.Services;
+using Aban360.CalculationPool.Application.Features.Bill.Services;
+using IOfferingService = Aban360.OldCalcPool.Application.Features.Db70.Services.IOfferingService;
 
 namespace Aban360.BrdigeApi.Controllers.V1
 {
@@ -24,7 +26,7 @@ namespace Aban360.BrdigeApi.Controllers.V1
     public class ServiceLinkController : BaseController
     {
         private readonly IServiceLinkInquiryDetailHandler _c0_serviceLinkInquiryDetailHandler;
-        private readonly IServiceLinkInstallmentHandler _c1_serviceLinkInstallmentHandler;
+        private readonly IBillInstallmentsService _c1_serviceLinkInstallmentHandler;
         private readonly IServiceLinkPaymentService _serviceLinkPaymentService;
         private readonly IPaymentInquiryHandler _c6_paymentInquiryHandler;
         private readonly IOfferingService _offeringService;
@@ -32,7 +34,7 @@ namespace Aban360.BrdigeApi.Controllers.V1
         string _c8_successfullyDone = "با موفقیت انجام شد";
         int _c8_disconnectState = 5;
         int _c8_connectState = 0;
-        public ServiceLinkController(IServiceLinkInquiryDetailHandler c0_serviceLinkInquiryDetailHandler, IServiceLinkInstallmentHandler c1_serviceLinkInstallmentHandler, IServiceLinkPaymentService serviceLinkPaymentService, IPaymentInquiryHandler c6_paymentInquiryHandler, IOfferingService offeringService, IConnectDisconnectSetResultHandler c8_connectDisconnectSetResultHandler)
+        public ServiceLinkController(IServiceLinkInquiryDetailHandler c0_serviceLinkInquiryDetailHandler, IBillInstallmentsService c1_serviceLinkInstallmentHandler, IServiceLinkPaymentService serviceLinkPaymentService, IPaymentInquiryHandler c6_paymentInquiryHandler, IOfferingService offeringService, IConnectDisconnectSetResultHandler c8_connectDisconnectSetResultHandler)
         {
             _c0_serviceLinkInquiryDetailHandler = c0_serviceLinkInquiryDetailHandler;
             _c0_serviceLinkInquiryDetailHandler.NotNull(nameof(c0_serviceLinkInquiryDetailHandler));
@@ -62,7 +64,7 @@ namespace Aban360.BrdigeApi.Controllers.V1
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Installment([FromBody] ServiceLinkInstallmentInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto> result = await _c1_serviceLinkInstallmentHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<InstallmentHeaderOutputDto, InstallmentDataOutputDto> result = await _c1_serviceLinkInstallmentHandler.ServiceLinkInstallmentAsync(inputDto, cancellationToken);
             return Ok(result);
         }
 

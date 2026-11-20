@@ -1,16 +1,17 @@
-﻿using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Queries;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.CalculationPool.Application.Features.Bill.Services;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Queries
 {
     [Route("v1/impact-sign")]
     public class ImpactSignGetAllController : BaseController
     {
-        private readonly IImpactSignGetAllHandler _impactSignGetAllHandler;
-        public ImpactSignGetAllController(IImpactSignGetAllHandler impactSignGetAllHandler)
+        private readonly IImpactSignService _impactSignGetAllHandler;
+        public ImpactSignGetAllController(IImpactSignService impactSignGetAllHandler)
         {
             _impactSignGetAllHandler = impactSignGetAllHandler;
             _impactSignGetAllHandler.NotNull(nameof(impactSignGetAllHandler));
@@ -21,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<ImpactSignGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<ImpactSignGetDto> impactSigns = await _impactSignGetAllHandler.Handle(cancellationToken);
+            ICollection<ImpactSignGetDto> impactSigns = await _impactSignGetAllHandler.ImpactSignGetAllAsync(cancellationToken);
             return Ok(impactSigns);
         }
     }

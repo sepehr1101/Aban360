@@ -8,24 +8,16 @@ using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contrac
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.CalculationPool.Application.Features.Sale.Services;
 using Aban360.Api.Controllers.V1.CalculationPool.Sale;
+using IArticle11Service = global::Aban360.CalculationPool.Application.Features.Sale.Services.IArticle11Service;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
 {
     [Route("v1/article11")]
     public class Article11Controller : BaseController
     {
-        private readonly IArticle11CreateHadler _c0_createHadler;
-        private readonly IArticle11DeleteHadler _c1_deleteHadler;
-        private readonly IArticle11UpdateHadler _c2_updateHadler;
         private readonly IArticle11Service _article11Service;
-        public Article11Controller(IArticle11CreateHadler c0_createHadler, IArticle11DeleteHadler c1_deleteHadler, IArticle11UpdateHadler c2_updateHadler, IArticle11Service article11Service)
+        public Article11Controller(IArticle11Service article11Service)
         {
-            _c0_createHadler = c0_createHadler;
-            _c0_createHadler.NotNull(nameof(c0_createHadler));
-            _c1_deleteHadler = c1_deleteHadler;
-            _c1_deleteHadler.NotNull(nameof(c1_deleteHadler));
-            _c2_updateHadler = c2_updateHadler;
-            _c2_updateHadler.NotNull(nameof(c2_updateHadler));
             _article11Service = article11Service;
             _article11Service.NotNull(nameof(article11Service));
         }
@@ -35,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
         [ProducesResponseType(typeof(ApiResponseEnvelope<Article11CreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] Article11CreateDto createDto, CancellationToken cancellationToken)
         {
-            await _c0_createHadler.Handle(createDto, CurrentUser, cancellationToken);
+            await _article11Service.Article11CreateAsync(createDto, CurrentUser, cancellationToken);
             return Ok(createDto);
         }
 
@@ -44,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
         [ProducesResponseType(typeof(ApiResponseEnvelope<SearchById>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] SearchById input, CancellationToken cancellationToken)
         {
-            await _c1_deleteHadler.Handle(input, CurrentUser, cancellationToken);
+            await _article11Service.Article11DeleteAsync(input, CurrentUser, cancellationToken);
             return Ok(input);
         }
 
@@ -53,7 +45,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
         [ProducesResponseType(typeof(ApiResponseEnvelope<Article11UpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] Article11UpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _c2_updateHadler.Handle(updateDto, CurrentUser, cancellationToken);
+            await _article11Service.Article11UpdateAsync(updateDto, CurrentUser, cancellationToken);
             return Ok(updateDto);
         }
 

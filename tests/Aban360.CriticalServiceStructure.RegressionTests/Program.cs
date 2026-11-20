@@ -10,6 +10,10 @@ var root=new DirectoryInfo(AppContext.BaseDirectory);
 while(root is not null&&!File.Exists(Path.Combine(root.FullName,"Aban360.sln"))) root=root.Parent;
 if(root is null) throw new Exception("Repository root not found");
 Directory.SetCurrentDirectory(root.FullName);
+if(args.Contains("--sales-reports")){SalesReportsChecks.Run();return;}
+if(args.Contains("--compact")){CompactChecks.Run();return;}
+if(args.Contains("--next28")){Next28Checks.Run();return;}
+Next28Checks.Run();
 if(args.Contains("--operations19")){Operations19Checks.Run(args.Contains("--verify-head"));return;}
 const string fixtures="tests/Aban360.MergedControllers.SmokeTests/";
 bool workflow=args.Contains("--workflow10");
@@ -19,7 +23,7 @@ string batch=workflow?"Workflow10":management?"Management20":auxiliary?"Auxiliar
 var operations=JsonSerializer.Deserialize<Operation[]>(File.ReadAllText(fixtures+"ServiceConsolidation"+batch+".json"))!;
 int checks=0,methods=0,transactions=0,consumerMethods=0;
 void Check(bool condition,string message){if(!condition) throw new Exception(message);checks++;}
-CompilationUnitSyntax Read(string path)=>CSharpSyntaxTree.ParseText(File.ReadAllText(path)).GetCompilationUnitRoot();
+CompilationUnitSyntax Read(string path)=>CSharpSyntaxTree.ParseText(File.ReadAllText(Next28Checks.PriorSource(path))).GetCompilationUnitRoot();
 string Tokens(SyntaxNode node)=>string.Join("|",node.DescendantTokens().Select(t=>t.RawKind+":"+t.Text));
 string GitHead(string path)
 {

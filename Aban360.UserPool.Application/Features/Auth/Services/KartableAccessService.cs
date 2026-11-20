@@ -3,7 +3,6 @@ using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.UseragentLog;
 using Aban360.Common.Extensions;
 using Aban360.UserPool.Application.Common.Base;
-using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
 using Aban360.UserPool.Domain.Features.Auth.Entities;

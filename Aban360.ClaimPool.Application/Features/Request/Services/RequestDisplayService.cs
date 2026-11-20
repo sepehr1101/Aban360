@@ -18,6 +18,7 @@ using Aban360.ClaimPool.Application.Features.Request.Services;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
+using Aban360.UserPool.Application.Features.Auth.Services;
 
 namespace Aban360.ClaimPool.Application.Features.Request.Services
 {
@@ -48,10 +49,10 @@ namespace Aban360.ClaimPool.Application.Features.Request.Services
         private readonly IExaminationQueryService _assessmentQueryService;
         private readonly IMotherChildRequestService _motherChildRequestService;
         private static int _ToCalulationConfirmassessmentResultId = (int)RequestStatusEnum.SetExaminationResult;
-        private readonly IAssessmentGetByZoneIdHandler _assessmentGetByZoneIdHandler;
+        private readonly IAssessmentByZoneService _assessmentGetByZoneIdHandler;
         private readonly IUserRoleQueryService _userRoleQueryService;
         private static int _ToSetAssessmentTimeGetByTrackIdreaderRoleId = ReportLiterals.AssessmentRoleId;
-        public RequestDisplayService(IMoshtrakQueryService moshtrakQueryService, ITrackingQueryService trackingQueryService, IMoshtrakService moshtrakService, IValidator<ZoneIdAndTrackNumber> validator, ICommonZoneService commonZoneService, IUserClaimQueryService userClaimQueryService, ICommonMemberQueryService commonMemberQueryService, IExaminationQueryService assessmentQueryService, IMotherChildRequestService motherChildRequestService, IUserRoleQueryService userRoleQueryService, IAssessmentGetByZoneIdHandler assessmentGetByZoneIdHandler)
+        public RequestDisplayService(IMoshtrakQueryService moshtrakQueryService, ITrackingQueryService trackingQueryService, IMoshtrakService moshtrakService, IValidator<ZoneIdAndTrackNumber> validator, ICommonZoneService commonZoneService, IUserClaimQueryService userClaimQueryService, ICommonMemberQueryService commonMemberQueryService, IExaminationQueryService assessmentQueryService, IMotherChildRequestService motherChildRequestService, IUserRoleQueryService userRoleQueryService, IAssessmentByZoneService assessmentGetByZoneIdHandler)
         {
             _moshtrakQueryService = moshtrakQueryService;
             _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
@@ -734,7 +735,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Services
             TrackingOutputDto trackingInfo = await _trackingQueryService.Get(trackId);
             await _commonZoneService.IsUserInZone(appUser, trackingInfo.ZoneId);
             MoshtrakOutputDto moshtrakInfo = (await _moshtrakQueryService.Get(new MoshtrakGetDto(trackingInfo.ZoneId, null, null, trackingInfo.TrackNumber), MoshtrakSearchTypeEnum.ByTrackNumber, true)).FirstOrDefault();
-            IEnumerable<StringDictionary> assessmentsList = await _assessmentGetByZoneIdHandler.Handle(appUser, cancellationToken);
+            IEnumerable<StringDictionary> assessmentsList = await _assessmentGetByZoneIdHandler.AssessmentGetByZoneIdAsync(appUser, cancellationToken);
             MoshtrakServiceDto moshtrakServiceDto = ToSetReAssessmentTimeGetByTrackIdGetMoshtrakService(moshtrakInfo);
             IEnumerable<NumericDictionary> serviceSelected = await _moshtrakService.GetServicesSelectedDto(moshtrakServiceDto, trackingInfo.ServiceGroupId);
             ToSetReAssessmentTimeGetDto result = new()

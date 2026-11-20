@@ -21,8 +21,8 @@ namespace Aban360.BrdigeApi.Controllers.V1.Security
         private readonly ICaptchaService _captchaService;
         private readonly ITokenFactoryService _tokenFactoryService;
         private readonly IUserTokenService _userTokenService;
-        private readonly IUserPolicyQueryHandler _userPolicyQueryHandler;
-        public LoginController(IUnitOfWork uow, ICaptchaService captchaService, ITokenFactoryService tokenFactoryService, IUserAuthenticationService userAuthenticationService, IUserTokenService userTokenService, IUserPolicyQueryHandler userPolicyQueryHandler)
+        private readonly IUserPolicyService _userPolicyQueryHandler;
+        public LoginController(IUnitOfWork uow, ICaptchaService captchaService, ITokenFactoryService tokenFactoryService, IUserAuthenticationService userAuthenticationService, IUserTokenService userTokenService, IUserPolicyService userPolicyQueryHandler)
         {
             _uow = uow;
             _uow.NotNull(nameof(uow));
@@ -53,7 +53,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.Security
             }
 
             //Policy
-            var(userPolicy, resultPolicy) = await _userPolicyQueryHandler.Handle(loginInput, cancellationToken);
+            var(userPolicy, resultPolicy) = await _userPolicyQueryHandler.UserPolicyQueryAsync(loginInput, cancellationToken);
             if (!resultPolicy || !string.IsNullOrEmpty(userPolicy))
             {
                 return ClientError(userPolicy);

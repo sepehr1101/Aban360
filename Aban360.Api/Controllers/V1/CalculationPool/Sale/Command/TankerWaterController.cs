@@ -1,4 +1,4 @@
-﻿using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
+using Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts;
 using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
@@ -10,6 +10,7 @@ using Aban360.NotificationPool.Application.Features.Sms;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using ITankerWaterQueriesService = global::Aban360.CalculationPool.Application.Features.Sale.Services.ITankerWaterQueriesService;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
 {
@@ -18,28 +19,19 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
     {
         private readonly ITankerInsertHandler _tankerInserHandler;
         private readonly ITankerDeleteHandler _tankerRemoveHandler;
-        private readonly ITankerWaterDetailByCustomerNumberGetHandler _tankerDetailByCustomerNumberHandler;
+        private readonly ITankerWaterQueriesService _tankerWaterQueriesService;
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IBackgroundJobClient _backgroundJobClient;
-        public TankerWaterController(
-            ITankerDeleteHandler tankerRemoveHandler,
-            ITankerInsertHandler tankerInserHandler,
-            ITankerWaterDetailByCustomerNumberGetHandler tankerDetailByCustomerNumberHandler,
-            ISmsOldHandler smsOldHandler,
-            IBackgroundJobClient backgroundJobClient)
+        public TankerWaterController(ITankerDeleteHandler tankerRemoveHandler, ITankerInsertHandler tankerInserHandler, ITankerWaterQueriesService tankerWaterQueriesService, ISmsOldHandler smsOldHandler, IBackgroundJobClient backgroundJobClient)
         {
             _tankerRemoveHandler = tankerRemoveHandler;
             _tankerRemoveHandler.NotNull(nameof(tankerRemoveHandler));
-
             _tankerInserHandler = tankerInserHandler;
             _tankerInserHandler.NotNull(nameof(tankerInserHandler));
-
-            _tankerDetailByCustomerNumberHandler = tankerDetailByCustomerNumberHandler;
-            _tankerDetailByCustomerNumberHandler.NotNull(nameof(tankerDetailByCustomerNumberHandler));
-
+            _tankerWaterQueriesService = tankerWaterQueriesService;
+            _tankerWaterQueriesService.NotNull(nameof(tankerWaterQueriesService));
             _smsOldHandler = smsOldHandler;
             _smsOldHandler.NotNull(nameof(smsOldHandler));
-
             _backgroundJobClient = backgroundJobClient;
             _backgroundJobClient.NotNull(nameof(backgroundJobClient));
         }
@@ -55,9 +47,9 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
             {
                 _backgroundJobClient.Enqueue(() => _smsOldHandler.SendNew(input.MobileNumber, text, Guid.NewGuid()));
             }
+
             return Ok(result);
         }
-
 
         [HttpPost]
         [Route("remove")]
@@ -68,7 +60,6 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
             return Ok(input);
         }
 
-
         [HttpPost]
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
@@ -76,7 +67,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Command
         {
             int reportCode = 2080;
             ZoneIdAndCustomerNumber InputDto = new(input.ZoneId, input.CustomerNumber);
-            ReportOutput<TankerHeaderOutputDto, StringDictionary> result = await _tankerDetailByCustomerNumberHandler.Handle(InputDto, cancellationToken);
+            ReportOutput<TankerHeaderOutputDto, StringDictionary> result = await _tankerWaterQueriesService.TankerWaterDetailByCustomerNumberGetAsync(InputDto, cancellationToken);
             JsonReportId reportId = await JsonOperation.ExportToJson(result, cancellationToken, reportCode);
             return Ok(reportId);
         }

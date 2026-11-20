@@ -24,7 +24,7 @@ static class WorkflowChecks
             var download = Action("v1/collect-bills/download/{fileName}");
             var state = new InvocationState((contract, method, values) =>
             {
-                Check(contract.Name == "ICollectBillsDetailFileDownloadHandler" && method.Name == "Handle", "Unexpected download dependency");
+                Check(contract.Name == "ICollectBillsApplicationService" && method.Name == "CollectBillsDetailFileDownloadAsync", "Unexpected download dependency");
                 Check((string)values[0]! == "archive.zip" && (CancellationToken)values[1]! == token, "Download arguments/token changed");
                 return new CollectBillsGetZipFileInfo(path, "archive.zip");
             });
@@ -47,7 +47,7 @@ static class WorkflowChecks
             var before = DateTime.Now.AddDays(-3);
             state = new InvocationState((contract, method, values) =>
             {
-                Check(contract.Name == "ICollectBillsDetailJobService" && method.Name == "Initialize", "Wrong job dependency");
+                Check(contract.Name == "ICollectBillsApplicationService" && method.Name == "Initialize", "Wrong job dependency");
                 Check((CancellationToken)values[1]! == token, "Job cancellation token was lost");
                 Check((DateTime)values[0]! >= before && (DateTime)values[0]! <= DateTime.Now.AddDays(-3), "Job date offset changed");
                 return release.Task;

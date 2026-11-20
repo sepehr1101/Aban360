@@ -1,0 +1,795 @@
+[
+  {
+    "Feature": "UserRoleMembership",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceNext28.UpdateUsersInRoleHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts.IUpdateUsersInRoleHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserRoleMembershipService",
+    "Method": "UpdateUsersInRoleAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Update/Implementations/UpdateUsersInRoleHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserRoleMembershipService.cs",
+    "Names": {
+      "_unitOfWork": "_unitOfWork",
+      "_userClaimQueryService": "_userClaimQueryService",
+      "_contextAccessor": "_contextAccessor",
+      "_roleQueryService": "_roleQueryService",
+      "_userClaimCommandService": "_userClaimCommandService",
+      "_endpointQueryService": "_endpointQueryService",
+      "Handle": "UpdateUsersInRoleAsync"
+    },
+    "ContractSource": "./Aban360.UserPool.Application/Features/Auth/Handlers/Commands/Update/Contracts/IUpdateUsersInRoleHandler.cs"
+  },
+  {
+    "Feature": "AssessmentByZone",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceNext28.AssessmentGetByZoneIdHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IAssessmentGetByZoneIdHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IAssessmentByZoneService",
+    "Method": "AssessmentGetByZoneIdAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Implementations/AssessmentGetByZoneIdHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/AssessmentByZoneService.cs",
+    "Names": {
+      "_userQueryService": "_userQueryService",
+      "_commonZoneService": "_commonZoneService",
+      "Handle": "AssessmentGetByZoneIdAsync"
+    },
+    "ContractSource": "./Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Contracts/IAssessmentGetByZoneIdHandler.cs"
+  },
+  {
+    "Feature": "UserPolicy",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceNext28.UserPolicyQueryHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IUserPolicyQueryHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IUserPolicyService",
+    "Method": "UserPolicyQueryAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Implementations/UserPolicyQueryHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/UserPolicyService.cs",
+    "Names": {
+      "_userQueryService": "_userQueryService",
+      "_userLoginCommandService": "_userLoginCommandService",
+      "_contextAccessor": "_contextAccessor",
+      "Handle": "UserPolicyQueryAsync",
+      "GetLogInfo": "UserPolicyQueryGetLogInfo",
+      "GetUserLogin": "UserPolicyQueryGetUserLogin"
+    },
+    "ContractSource": "./Aban360.UserPool.Application/Features/Auth/Handlers/Queries/Contracts/IUserPolicyQueryHandler.cs"
+  },
+  {
+    "Feature": "OnlineUsers",
+    "Assembly": "Aban360.CommunicationPool.Application",
+    "Original": "BeforeServiceNext28.OnlineUserGetHandler",
+    "OldContract": "Aban360.CommunicationPool.Application.Features.Hubs.Handlers.IOnlineUserGetHandler",
+    "Service": "Aban360.CommunicationPool.Application.Features.Hubs.Services.IOnlineUsersService",
+    "Method": "OnlineUserGetAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CommunicationPool.Application/Features/Hubs/Mappers/OnlineUserGetHandler.cs",
+    "Output": "Aban360.CommunicationPool.Application/Features/Hubs/Services/OnlineUsersService.cs",
+    "Names": {
+      "_OnlineUserGetService": "_OnlineUserGetService",
+      "Handle": "OnlineUserGetAsync"
+    },
+    "ContractSource": "./Aban360.CommunicationPool.Application/Features/Hubs/Handlers/IOnlineUserGetHandler.cs"
+  },
+  {
+    "Feature": "BroadcastMessages",
+    "Assembly": "Aban360.CommunicationPool.Application",
+    "Original": "BeforeServiceNext28.BroadcastTextMessageHandler",
+    "OldContract": "Aban360.CommunicationPool.Application.Features.Hubs.Handlers.Commands.Contracts.IBroadcastTextMessageHandler",
+    "Service": "Aban360.CommunicationPool.Application.Features.Hubs.Services.IBroadcastMessagesService",
+    "Method": "BroadcastTextMessageAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CommunicationPool.Application/Features/Hubs/Handlers/Commands/Implementations/BroadcastTextMessageHandler.cs",
+    "Output": "Aban360.CommunicationPool.Application/Features/Hubs/Services/BroadcastMessagesService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "Handle": "BroadcastTextMessageAsync"
+    },
+    "ContractSource": "./Aban360.CommunicationPool.Application/Features/Hubs/Handlers/Commands/Contracts/IBroadcastTextMessageHandler.cs"
+  },
+  {
+    "Feature": "WorkflowStatus",
+    "Assembly": "Aban360.WorkflowPool.Application",
+    "Original": "BeforeServiceNext28.WorkflowStatusGetAllHandler",
+    "OldContract": "Aban360.WorkflowPool.Application.Features.Assignment.Handlers.Queries.Contracts.IWorkflowStatusGetAllHandler",
+    "Service": "Aban360.WorkflowPool.Application.Features.Design.Services.IWorkflowStatusService",
+    "Method": "WorkflowStatusGetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.WorkflowPool.Application/Features/Design/Handlers/Queries/Implementations/WorkflowStatusGetAllHandler.cs",
+    "Output": "Aban360.WorkflowPool.Application/Features/Design/Services/WorkflowStatusService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_workflowStatusQueryService": "_workflowStatusQueryService",
+      "Handle": "WorkflowStatusGetAllAsync"
+    },
+    "ContractSource": "./Aban360.WorkflowPool.Application/Features/Design/Handlers/Queries/Contracts/IWorkflowStatusGetAllHandler.cs"
+  },
+  {
+    "Feature": "CustomerLookup",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.CustomerGetByBillIdHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.ICustomerGetByBillIdHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.ICustomerLookupService",
+    "Method": "CustomerGetByBillIdAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/CustomerGetByBillIdHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/CustomerLookupService.cs",
+    "Names": {
+      "_commonZoneService": "_commonZoneService",
+      "_subscriptionAssignmentQueryService": "_subscriptionAssignmentQueryService",
+      "_gisService": "_gisService",
+      "Handle": "CustomerGetByBillIdAsync",
+      "GetLocationInfo": "CustomerGetByBillIdGetLocationInfo"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/ICustomerGetByBillIdHandler.cs"
+  },
+  {
+    "Feature": "JudicalNotice",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.JudicalNoticeCommandHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts.IJudicalNoticeCommandHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IJudicalNoticeService",
+    "Method": "JudicalNoticeCommandAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Implementations/JudicalNoticeCommandHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/JudicalNoticeService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_conCompanyQueryService": "_conCompanyQueryService",
+      "_commonMemberQueryService": "_commonMemberQueryService",
+      "_commonZoneService": "_commonZoneService",
+      "_connectDisconnectQueryService": "_connectDisconnectQueryService",
+      "_validator": "_validator",
+      "_title": "_title",
+      "Handle": "JudicalNoticeCommandAsync",
+      "ExceSql": "JudicalNoticeCommandExceSql",
+      "CheckDuplicateRequest": "JudicalNoticeCommandCheckDuplicateRequest",
+      "GetConnectDisconnectInsertDto": "JudicalNoticeCommandGetConnectDisconnectInsertDto",
+      "InputValidate": "JudicalNoticeCommandInputValidate",
+      "GetData": "JudicalNoticeCommandGetData",
+      "GetResult": "JudicalNoticeCommandGetResult",
+      "GetInstedOfEmpty": "JudicalNoticeCommandGetInstedOfEmpty"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Land/Handlers/Commands/Create/Contracts/IJudicalNoticeCommandHandler.cs"
+  },
+  {
+    "Feature": "VillageLookup",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.VillageGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IVillageGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IVillageLookupService",
+    "Method": "VillageGetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/VillageGetAllHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/VillageLookupService.cs",
+    "Names": {
+      "_villageQueryService": "_villageQueryService",
+      "Handle": "VillageGetAllAsync"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IVillageGetAllHandler.cs"
+  },
+  {
+    "Feature": "ModifyCauseLookup",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.ModifyCauseGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Land.Handlers.Queries.Contracts.IModifyCauseGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Land.Services.IModifyCauseLookupService",
+    "Method": "ModifyCauseGetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Implemntations/ModifyCauseGetAllHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Land/Services/ModifyCauseLookupService.cs",
+    "Names": {
+      "_modifyCauseQueryService": "_modifyCauseQueryService",
+      "Handle": "ModifyCauseGetAllAsync"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Land/Handlers/Queries/Contracts/IModifyCauseGetAllHandler.cs"
+  },
+  {
+    "Feature": "BillInstallments",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.ServiceLinkInstallmentHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts.IServiceLinkInstallmentHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IBillInstallmentsService",
+    "Method": "ServiceLinkInstallmentAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Commands/Create/Implementation/ServiceLinkInstallmentHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/Bill/Services/BillInstallmentsService.cs",
+    "Names": {
+      "_validator": "_validator",
+      "Handle": "ServiceLinkInstallmentAsync",
+      "GetDate": "ServiceLinkInstallmentGetDate"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/Bill/Handlers/Commands/Create/Contracts/IServiceLinkInstallmentHandler.cs"
+  },
+  {
+    "Feature": "PaymentIds",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.PaymentIdBatchUpdateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Update.Contracts.IPaymentIdBatchUpdateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IPaymentIdsService",
+    "Method": "PaymentIdBatchUpdateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Commands/Update/Implementation/PaymentIdBatchUpdateHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/Bill/Services/PaymentIdsService.cs",
+    "Names": {
+      "_commonZoneService": "_commonZoneService",
+      "_validator": "_validator",
+      "Handle": "PaymentIdBatchUpdateAsync",
+      "InputValidate": "PaymentIdBatchUpdateInputValidate"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/Bill/Handlers/Commands/Update/Contracts/IPaymentIdBatchUpdateHandler.cs"
+  },
+  {
+    "Feature": "PaymentIds",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.GeneratePaymentIdGetHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.IGeneratePaymentIdGetHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IPaymentIdsService",
+    "Method": "GeneratePaymentIdGetAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Implementation/GeneratePaymentIdGetHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/Bill/Services/PaymentIdsService.cs",
+    "Names": {
+      "_memberQueryService": "_memberQueryService",
+      "_zoneService": "_zoneService",
+      "Handle": "GeneratePaymentIdGetAsync"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Contracts/IGeneratePaymentIdGetHandler.cs"
+  },
+  {
+    "Feature": "PaymentIds",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.InvalidPaymentIdGetHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.IInvalidPaymentIdGetHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IPaymentIdsService",
+    "Method": "InvalidPaymentIdGetAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Implementation/InvalidPaymentIdGetHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/Bill/Services/PaymentIdsService.cs",
+    "Names": {
+      "_bedBesQueryService": "_bedBesQueryService",
+      "_title": "_title",
+      "Handle": "InvalidPaymentIdGetAsync"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Contracts/IInvalidPaymentIdGetHandler.cs"
+  },
+  {
+    "Feature": "InvoiceTogether",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.InvoiceTogetherCreateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Commands.Create.Contracts.IInvoiceTogetherCreateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IInvoiceTogetherService",
+    "Method": "InvoiceTogetherCreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Commands/Create/Implementation/InvoiceTogetherCreateHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/Bill/Services/InvoiceTogetherService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_invoiceCommandService": "_invoiceCommandService",
+      "_invoiceLineItemCommandService": "_invoiceLineItemCommandService",
+      "_invoiceInstallmentCommandService": "_invoiceInstallmentCommandService",
+      "Handle": "InvoiceTogetherCreateAsync"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/Bill/Handlers/Commands/Create/Contracts/IInvoiceTogetherCreateHandler.cs"
+  },
+  {
+    "Feature": "BillLists",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.BillReadingListGetHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.IBillReadingListGetHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IBillListsService",
+    "Method": "BillReadingListGetAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Implementation/BillReadingListGetHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/Bill/Services/BillListsService.cs",
+    "Names": {
+      "_bedBesQueryService": "_bedBesQueryService",
+      "_commonZoneService": "_commonZoneService",
+      "_title": "_title",
+      "Handle": "BillReadingListGetAsync"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Contracts/IBillReadingListGetHandler.cs"
+  },
+  {
+    "Feature": "BillLists",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.CollectBillsDetailGetAllHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.ICollectBillsDetailGetAllHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IBillListsService",
+    "Method": "CollectBillsDetailGetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Implementation/CollectBillsDetailGetAllHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/Bill/Services/BillListsService.cs",
+    "Names": {
+      "_collectBillsDetailQueryService": "_collectBillsDetailQueryService",
+      "Handle": "CollectBillsDetailGetAllAsync"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Contracts/ICollectBillsDetailGetAllHandler.cs"
+  },
+  {
+    "Feature": "ImpactSign",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.ImpactSignGetAllHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.IImpactSignGetAllHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.IImpactSignService",
+    "Method": "ImpactSignGetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Implementation/ImpactSignGetAllHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/Bill/Services/ImpactSignService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_impactSignQueryService": "_impactSignQueryService",
+      "Handle": "ImpactSignGetAllAsync"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Contracts/IImpactSignGetAllHandler.cs"
+  },
+  {
+    "Feature": "LatestBillSms",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.LatestBillSendSmsHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts.ILatestBillSendSmsHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Bill.Services.ILatestBillSmsService",
+    "Method": "LatestBillSendSmsAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Implementation/LatestBillSendSmsHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/Bill/Services/LatestBillSmsService.cs",
+    "Names": {
+      "_customerInfoHandler": "_customerInfoHandler",
+      "_waterInvoiceHandler": "_waterInvoiceHandler",
+      "_zoneService": "_zoneService",
+      "_backgroundJobClient": "_backgroundJobClient",
+      "_smsOldHandler": "_smsOldHandler",
+      "Handle": "LatestBillSendSmsAsync",
+      "GetText": "LatestBillSendSmsGetText"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/Bill/Handlers/Queries/Contracts/ILatestBillSendSmsHandler.cs"
+  },
+  {
+    "Feature": "MeterReadingSms",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.MeterReadingDetailSendSmsHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts.IMeterReadingDetailSendSmsHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.IMeterReadingSmsService",
+    "Method": "MeterReadingDetailSendSmsAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Implementations/MeterReadingDetailSendSmsHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/MeterReadingSmsService.cs",
+    "Names": {
+      "_jobClient": "_jobClient",
+      "_smsOldHandler": "_smsOldHandler",
+      "_meterFlowQueryService": "_meterFlowQueryService",
+      "_meterReadingDetailQueryService": "_meterReadingDetailQueryService",
+      "_meterSmsStateTemplateQueryService": "_meterSmsStateTemplateQueryService",
+      "_meterSmsFlowQueryService": "_meterSmsFlowQueryService",
+      "_smsDraftQueryService": "_smsDraftQueryService",
+      "_minWaterDebt": "_minWaterDebt",
+      "_defaultSmsFlowSmsCount": "_defaultSmsFlowSmsCount",
+      "_smsGroupId": "_smsGroupId",
+      "Handle": "MeterReadingDetailSendSmsAsync",
+      "CreateJob": "MeterReadingDetailSendSmsCreateJob",
+      "SendSms": "MeterReadingDetailSendSmsSendSms",
+      "GetNewSmsDraftList": "MeterReadingDetailSendSmsGetNewSmsDraftList",
+      "ExecSql": "MeterReadingDetailSendSmsExecSql",
+      "GetMeterSmsFlowInsertDto": "MeterReadingDetailSendSmsGetMeterSmsFlowInsertDto",
+      "GetCurrentTemplateAndFlow": "MeterReadingDetailSendSmsGetCurrentTemplateAndFlow",
+      "GetSmsDto": "MeterReadingDetailSendSmsGetSmsDto"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Contracts/IMeterReadingDetailSendSmsHandler.cs"
+  },
+  {
+    "Feature": "NonReadingBills",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.MeterReadingNonReadCreateHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts.IMeterReadingNonReadCreateHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.INonReadingBillsService",
+    "Method": "MeterReadingNonReadCreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Implementations/MeterReadingNonReadCreateHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/NonReadingBillsService.cs",
+    "Names": {
+      "_meterReadingCreateBaseHandler": "_meterReadingCreateBaseHandler",
+      "_meterFlowService": "_meterFlowService",
+      "_customerInfoService": "_customerInfoService",
+      "_billQueryService": "_billQueryService",
+      "_validator": "_validator",
+      "_agentCode": "_agentCode",
+      "_nonReadCounterStateId": "_nonReadCounterStateId",
+      "_maxDayCondition": "_maxDayCondition",
+      "Handle": "MeterReadingNonReadCreateAsync",
+      "GetMeterReadingDetails": "MeterReadingNonReadCreateGetMeterReadingDetails",
+      "GetReadingMeterDetails": "MeterReadingNonReadCreateGetReadingMeterDetails",
+      "GetMeterFlowCreateDto": "MeterReadingNonReadCreateGetMeterFlowCreateDto",
+      "InputValidate": "MeterReadingNonReadCreateInputValidate",
+      "GetResult": "MeterReadingNonReadCreateGetResult"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Contracts/IMeterReadingNonReadCreateHandler.cs"
+  },
+  {
+    "Feature": "MeterReadingFileRemoval",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.MeterReadingFileRemoveHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Delete.Contracts.IMeterReadingFileRemoveHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.IMeterReadingFileRemovalService",
+    "Method": "MeterReadingFileRemoveAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Delete/Implementations/MeterReadingFileRemoveHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/MeterReadingFileRemovalService.cs",
+    "Names": {
+      "_httpContextAccessor": "_httpContextAccessor",
+      "_meterFlowQueryService": "_meterFlowQueryService",
+      "_commonZoneService": "_commonZoneService",
+      "_t51QueryService": "_t51QueryService",
+      "_allowedRemoveFileStep": "_allowedRemoveFileStep",
+      "Handle": "MeterReadingFileRemoveAsync",
+      "ExecSql": "MeterReadingFileRemoveExecSql",
+      "Validate": "MeterReadingFileRemoveValidate"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Delete/Contracts/IMeterReadingFileRemoveHandler.cs"
+  },
+  {
+    "Feature": "MeterReadingExcludeCause",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.MeterReadingExcludeCauseGetHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts.IMeterReadingExcludeCauseGetHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.MeterReading.Services.IMeterReadingExcludeCauseService",
+    "Method": "MeterReadingExcludeCauseGetAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/MeterReadingExcludeCauseGetHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/MeterReading/Services/MeterReadingExcludeCauseService.cs",
+    "Names": {
+      "Handle": "MeterReadingExcludeCauseGetAsync"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Contracts/IMeterReadingExcludeCauseGetHandler.cs"
+  },
+  {
+    "Feature": "TankerTariff",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.TankerTariffGetAllHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Rule.Handlers.Queries.Implementations.ITankerTariffGetAllHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Rule.Services.ITankerTariffService",
+    "Method": "TankerTariffGetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/Rule/Handlers/Queries/Implementations/TankerTariffGetAllHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/Rule/Services/TankerTariffService.cs",
+    "Names": {
+      "_queryService": "_queryService",
+      "Handle": "TankerTariffGetAllAsync"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/Rule/Handlers/Queries/Implementations/ITankerTariffGetAllHandler.cs"
+  },
+  {
+    "Feature": "CalculationRequestPricing",
+    "Assembly": "Aban360.CalculationPool.Application",
+    "Original": "BeforeServiceNext28.CalculationRequestHandler",
+    "OldContract": "Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Contracts.ICalculationRequestHandler",
+    "Service": "Aban360.CalculationPool.Application.Features.Sale.Services.ICalculationRequestPricingService",
+    "Method": "CalculationRequestAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.CalculationPool.Application/Features/Sale/Handlers/Commands/Implementations/CalculationRequestHandler.cs",
+    "Output": "Aban360.CalculationPool.Application/Features/Sale/Services/CalculationRequestPricingService.cs",
+    "Names": {
+      "_saleGetHandler": "_saleGetHandler",
+      "_afterSaleGetHandler": "_afterSaleGetHandler",
+      "_trackingQueryService": "_trackingQueryService",
+      "_moshtrakQueryService": "_moshtrakQueryService",
+      "_commonMemberQueryService": "_commonMemberQueryService",
+      "_discountTypeQueryService": "_discountTypeQueryService",
+      "_moshtrakService": "_moshtrakService",
+      "_saleServiceId": "_saleServiceId",
+      "_afterSaleServiceId": "_afterSaleServiceId",
+      "_kartTypeId": "_kartTypeId",
+      "_intervalDueDate": "_intervalDueDate",
+      "_insertBy": "_insertBy",
+      "_operator": "_operator",
+      "Handle": "CalculationRequestAsync",
+      "GetSaleResult": "CalculationRequestGetSaleResult",
+      "GetAfterSaleResult": "CalculationRequestGetAfterSaleResult",
+      "GetMoshtrakService": "CalculationRequestGetMoshtrakService",
+      "GetHeaderResul": "CalculationRequestGetHeaderResul",
+      "ExecSql": "CalculationRequestExecSql",
+      "GetKartsInsertDto": "CalculationRequestGetKartsInsertDto",
+      "GetGhestInsertDto": "CalculationRequestGetGhestInsertDto"
+    },
+    "ContractSource": "./Aban360.CalculationPool.Application/Features/Sale/Handlers/Commands/Contracts/ICalculationRequestHandler.cs"
+  },
+  {
+    "Feature": "CalculationRequestWorkflow",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.CalculationRequestConfirmHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts.ICalculationRequestConfirmHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.ICalculationRequestWorkflowService",
+    "Method": "CalculationRequestConfirmAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/CalculationRequestConfirmHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Request/Services/CalculationRequestWorkflowService.cs",
+    "Names": {
+      "_trackingQueryService": "_trackingQueryService",
+      "_moshtrakQueryService": "_moshtrakQueryService",
+      "_ghestQueryService": "_ghestQueryService",
+      "_calculationConfirmedStatus": "_calculationConfirmedStatus",
+      "_requestOrigin": "_requestOrigin",
+      "_setAssessmentResult": "_setAssessmentResult",
+      "_reCalculateRequired": "_reCalculateRequired",
+      "_allowedStatus": "_allowedStatus",
+      "Handle": "CalculationRequestConfirmAsync",
+      "GetTrackingCreateDto": "CalculationRequestConfirmGetTrackingCreateDto",
+      "ExecuteSqlCommand": "CalculationRequestConfirmExecuteSqlCommand",
+      "Validation": "CalculationRequestConfirmValidation"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Contracts/ICalculationRequestConfirmHandler.cs"
+  },
+  {
+    "Feature": "CalculationRequestWorkflow",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.ReCalculationRequestHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts.IReCalculationRequestHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.ICalculationRequestWorkflowService",
+    "Method": "ReCalculationRequestAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/ReCalculationRequestHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Request/Services/CalculationRequestWorkflowService.cs",
+    "Names": {
+      "_trackingQueryService": "_trackingQueryService",
+      "_moshtrakQueryService": "_moshtrakQueryService",
+      "_recalculateStatus": "_recalculateStatus",
+      "_deletedSatatus": "_deletedSatatus",
+      "_disallowedStatusIds": "_disallowedStatusIds",
+      "_requestOrigin": "_requestOrigin",
+      "Handle": "ReCalculationRequestAsync",
+      "Validate": "ReCalculationRequestValidate",
+      "GetTrackingInsertDto": "ReCalculationRequestGetTrackingInsertDto"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Contracts/IReCalculationRequestHandler.cs"
+  },
+  {
+    "Feature": "CalculationRequestWorkflow",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.CalculationRequestDisplayHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts.ICalculationRequestDisplayHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.ICalculationRequestWorkflowService",
+    "Method": "CalculationRequestDisplayAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/CalculationRequestDisplayHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Request/Services/CalculationRequestWorkflowService.cs",
+    "Names": {
+      "_trackingQueryService": "_trackingQueryService",
+      "_kartQueryService": "_kartQueryService",
+      "_title": "_title",
+      "Handle": "CalculationRequestDisplayAsync"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Contracts/ICalculationRequestDisplayHandler.cs"
+  },
+  {
+    "Feature": "RequestFinalization",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.RequestCofirmeHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts.IRequestCofirmeHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.IRequestFinalizationService",
+    "Method": "RequestCofirmeAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/RequestCofirmeHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Request/Services/RequestFinalizationService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_trackingQueryService": "_trackingQueryService",
+      "_moshtrakQueryService": "_moshtrakQueryService",
+      "_examinationQueryService": "_examinationQueryService",
+      "_commonMemberQueryService": "_commonMemberQueryService",
+      "_commonZoneService": "_commonZoneService",
+      "_validator": "_validator",
+      "_currentDateJalali": "_currentDateJalali",
+      "_requestConfirmStatusId": "_requestConfirmStatusId",
+      "_validCounterStateCode": "_validCounterStateCode",
+      "_saleGroupServiceId": "_saleGroupServiceId",
+      "_operator": "_operator",
+      "_requestOrigin": "_requestOrigin",
+      "Handle": "RequestCofirmeAsync",
+      "ExecSql": "RequestCofirmeExecSql",
+      "GetCustomerInsertDto": "RequestCofirmeGetCustomerInsertDto",
+      "GetCustomerUpdateDto": "RequestCofirmeGetCustomerUpdateDto",
+      "GetCustomerUpdateAfterSetNewValues": "RequestCofirmeGetCustomerUpdateAfterSetNewValues",
+      "InputValidate": "RequestCofirmeInputValidate",
+      "Validate": "RequestCofirmeValidate",
+      "GetMoshtrakService": "RequestCofirmeGetMoshtrakService"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Contracts/IRequestCofirmeHandler.cs"
+  },
+  {
+    "Feature": "RequestFinalization",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.AmountRequestConfirmHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts.IAmountRequestConfirmHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.IRequestFinalizationService",
+    "Method": "AmountRequestConfirmAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/AmountRequestConfirmHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Request/Services/RequestFinalizationService.cs",
+    "Names": {
+      "_trackingQueryService": "_trackingQueryService",
+      "_ghestQueryService": "_ghestQueryService",
+      "_amountIsConfirmedStatus": "_amountIsConfirmedStatus",
+      "_calculationConfirmedStatus": "_calculationConfirmedStatus",
+      "_requestOrigin": "_requestOrigin",
+      "Handle": "AmountRequestConfirmAsync",
+      "Validate": "AmountRequestConfirmValidate",
+      "ExecuteSqlCommand": "AmountRequestConfirmExecuteSqlCommand"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Contracts/IAmountRequestConfirmHandler.cs"
+  },
+  {
+    "Feature": "RequestFinalization",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.SetBillIdHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts.ISetBillIdHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.IRequestFinalizationService",
+    "Method": "SetBillIdAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/SetBillIdHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Request/Services/RequestFinalizationService.cs",
+    "Names": {
+      "_memberQueryService": "_memberQueryService",
+      "_variabService": "_variabService",
+      "_trackingQueryService": "_trackingQueryService",
+      "_t52QueryService": "_t52QueryService",
+      "_setAssessmentResult": "_setAssessmentResult",
+      "_reCalculateRequired": "_reCalculateRequired",
+      "_allowedStatus": "_allowedStatus",
+      "Handle": "SetBillIdAsync",
+      "GetCustomerNumber": "SetBillIdGetCustomerNumber"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Contracts/ISetBillIdHandler.cs"
+  },
+  {
+    "Feature": "RequestDictionaries",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.ServiceGroupGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts.IServiceGroupGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.IRequestDictionariesService",
+    "Method": "ServiceGroupGetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/ServiceGroupGetAllHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Request/Services/RequestDictionariesService.cs",
+    "Names": {
+      "_t100QueryService": "_t100QueryService",
+      "Handle": "ServiceGroupGetAllAsync"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Contracts/IServiceGroupGetAllHandler.cs"
+  },
+  {
+    "Feature": "RequestDictionaries",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.TrackingResultGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts.ITrackingResultGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.IRequestDictionariesService",
+    "Method": "TrackingResultGetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/TrackingResultGetAllHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Request/Services/RequestDictionariesService.cs",
+    "Names": {
+      "_trackingResultQueryService": "_trackingResultQueryService",
+      "Handle": "TrackingResultGetAllAsync"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Contracts/ITrackingResultGetAllHandler.cs"
+  },
+  {
+    "Feature": "RequestCartable",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.ReferredRequestGetHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts.IReferredRequestGetHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.IRequestCartableService",
+    "Method": "ReferredRequestGetAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/ReferredRequestGetHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Request/Services/RequestCartableService.cs",
+    "Names": {
+      "_trackingQueryService": "_trackingQueryService",
+      "_commonZoneService": "_commonZoneService",
+      "_title": "_title",
+      "_referredStatusId": "_referredStatusId",
+      "Handle": "ReferredRequestGetAsync"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Contracts/IReferredRequestGetHandler.cs"
+  },
+  {
+    "Feature": "RequestCartable",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.UnAssessmentGetAllHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts.IUnAssessmentGetAllHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.IRequestCartableService",
+    "Method": "UnAssessmentGetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/UnAssessmentGetAllHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Request/Services/RequestCartableService.cs",
+    "Names": {
+      "_examinationQueryService": "_examinationQueryService",
+      "_commonZoneService": "_commonZoneService",
+      "_title": "_UnAssessmentGetAlltitle",
+      "Handle": "UnAssessmentGetAllAsync"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Contracts/IUnAssessmentGetAllHandler.cs"
+  },
+  {
+    "Feature": "RequestCartable",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.UnconfirmedRequestGetByZoneIdHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts.IUnconfirmedRequestGetByZoneIdHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Request.Services.IRequestCartableService",
+    "Method": "UnconfirmedRequestGetByZoneIdAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/UnconfirmedRequestGetByZoneIdHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Request/Services/RequestCartableService.cs",
+    "Names": {
+      "_trackingQueryService": "_trackingQueryService",
+      "_title": "_UnconfirmedRequestGetByZoneIdtitle",
+      "Handle": "UnconfirmedRequestGetByZoneIdAsync"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Contracts/IUnconfirmedRequestGetByZoneIdHandler.cs"
+  },
+  {
+    "Feature": "GeneralRequestInformation",
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeServiceNext28.GeneralInformationHandler",
+    "OldContract": "Aban360.ClaimPool.Application.Features.Tracking.Handler.Queries.Contracts.IGeneralInformationHandler",
+    "Service": "Aban360.ClaimPool.Application.Features.Tracking.Services.IGeneralRequestInformationService",
+    "Method": "GeneralInformationAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.ClaimPool.Application/Features/Tracking/Handler/Queries/Implementations/GeneralInformationHandler.cs",
+    "Output": "Aban360.ClaimPool.Application/Features/Tracking/Services/GeneralRequestInformationService.cs",
+    "Names": {
+      "_trackingQueryService": "_trackingQueryService",
+      "_moshtrakQueryService": "_moshtrakQueryService",
+      "_moshtrakService": "_moshtrakService",
+      "Handle": "GeneralInformationAsync",
+      "GetSDto": "GeneralInformationGetSDto",
+      "GetOutput": "GeneralInformationGetOutput"
+    },
+    "ContractSource": "./Aban360.ClaimPool.Application/Features/Tracking/Handler/Queries/Contracts/IGeneralInformationHandler.cs"
+  },
+  {
+    "Feature": "BillRemoval",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceNext28.RemoveBillHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts.IRemoveBillHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Processing.Services.IBillRemovalService",
+    "Method": "RemoveBillAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application/Features/Processing/Handlers/Commands/Implementations/RemoveBillHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Processing/Services/BillRemovalService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_customerInfoQueryService": "_customerInfoQueryService",
+      "_billQueryService": "_billQueryService",
+      "_variabService": "_variabService",
+      "_bedBesQueryService": "_bedBesQueryService",
+      "_tavizQueryService": "_tavizQueryService",
+      "_operator": "_operator",
+      "Handle": "RemoveBillAsync",
+      "ExecSql": "RemoveBillExecSql",
+      "GetControUpdate": "RemoveBillGetControUpdate",
+      "GetPreviousBedBesData": "RemoveBillGetPreviousBedBesData",
+      "GetZoneIdAndCustomerNumber": "RemoveBillGetZoneIdAndCustomerNumber",
+      "GetRemoveBillDto": "RemoveBillGetRemoveBillDto",
+      "GetRemoveBillInputDto": "RemoveBillGetRemoveBillInputDto"
+    },
+    "ContractSource": "./Aban360.OldCalcPool.Application/Features/Processing/Handlers/Commands/Contracts/IRemoveBillHandler.cs"
+  },
+  {
+    "Feature": "BillRemoval",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceNext28.BillsCanRemovedGetHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Contracts.IBillsCanRemovedGetHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Processing.Services.IBillRemovalService",
+    "Method": "BillsCanRemovedGetAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application/Features/Processing/Handlers/Queries/Implementations/BillsCanRemovedGetHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Processing/Services/BillRemovalService.cs",
+    "Names": {
+      "_customerInfoService": "_customerInfoService",
+      "_billQueryService": "_billQueryService",
+      "Handle": "BillsCanRemovedGetAsync"
+    },
+    "ContractSource": "./Aban360.OldCalcPool.Application/Features/Processing/Handlers/Queries/Contracts/IBillsCanRemovedGetHandler.cs"
+  }
+]

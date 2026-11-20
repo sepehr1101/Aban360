@@ -2,7 +2,6 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.Constants.Literals;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
-using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;

@@ -1,0 +1,32 @@
+[
+  {
+    "Path": "Aban360.CalculationPool.Application/Features/Base/CollectBillsDetailJobService.cs",
+    "Snapshot": "0.txt",
+    "Hash": "208a8ca0d52d6550164aa55fdc6da15ddef4cdbdc0eac74d8a4bf1f80f0d01f8"
+  },
+  {
+    "Path": "Aban360.CalculationPool.Application/Features/CollectBills/Services/CollectBillsFilesService.cs",
+    "Snapshot": "1.txt",
+    "Hash": "876153909db8bf27aa4fb623a7d5621a98d2bea1baa62e0a3cf0bbecb203e0ac"
+  },
+  {
+    "Path": "Aban360.CalculationPool.Application/Features/CollectBills/Handlers/Queries/Implementations/CollectBillsDetailWithLastStepGetHadler.cs",
+    "Snapshot": "2.txt",
+    "Hash": "4af97a896a60c78255955de9a1f67f6f15ea8f8d6f74419de8040ce36ccd8e01"
+  },
+  {
+    "Path": "Aban360.CalculationPool.Application/Features/CollectBills/Handlers/Queries/Contracts/ICollectBillsDetailWithLastStepGetHadler.cs",
+    "Snapshot": "3.txt",
+    "Hash": "25a2029874dc1d3f302c2eff5088d0a3e42b189aef1b637c6d72bfe5495eb140"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/CollectBills/CollectBillsController.cs",
+    "Snapshot": "4.txt",
+    "Hash": "2c018f5d296cbcb5f0f2cedf02826251a803b3b514d8bdacd88766b43aeb65dd"
+  },
+  {
+    "Path": "Aban360.Api/Cronjobs/CollectBillsJob.cs",
+    "Snapshot": "5.txt",
+    "Hash": "3b1351af4533e28a22be3f3414a140805596a842dd09aebd6661b816bbd1e1d2"
+  }
+]

@@ -1,0 +1,146 @@
+[
+  {
+    "Path": "Aban360.LocationPool.GatewayAdhoc/Features/MainHirearchy/Implementations/LocationTreeAdHoc.cs",
+    "Assembly": "Aban360.LocationPool.GatewayAdhoc",
+    "Current": "Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.LocationTreeAdHoc",
+    "Original": "BeforeCompactConsumers.Aban360.LocationPool.GatewayAdhoc.Features.MainHirearchy.Implementations.LocationTreeAdHoc"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/TaxPool/MaaherTSP/TaxController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.TaxPool.MaaherTSP.TaxController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.TaxPool.MaaherTSP.TaxController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/SystemPool/Logging/Queries/HttpRequestReportsController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.SystemPool.Logging.Queries.HttpRequestReportsController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.SystemPool.Logging.Queries.HttpRequestReportsController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/SystemPool/Logging/Queries/HttpErrorLogsController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.SystemPool.Logging.Queries.HttpErrorLogsController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.SystemPool.Logging.Queries.HttpErrorLogsController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/SystemPool/Logging/Queries/HttpErrorLogDetailController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.SystemPool.Logging.Queries.HttpErrorLogDetailController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.SystemPool.Logging.Queries.HttpErrorLogDetailController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ReportPool/ConsumersInfo/BillTransactionDetailsController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo.BillTransactionDetailsController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo.BillTransactionDetailsController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/WaterReturnGetController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries.WaterReturnGetController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries.WaterReturnGetController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/WaterReturnGetByBillIdController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries.WaterReturnGetByBillIdController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries.WaterReturnGetByBillIdController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/WaterReturnedController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries.WaterReturnedController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries.WaterReturnedController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/ReturnBillConfirmController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries.ReturnBillConfirmController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries.ReturnBillConfirmController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/BillToReturnedGetController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries.BillToReturnedGetController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries.BillToReturnedGetController"
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/ReportPool/LocationsInfo/ZoneByRegionIdGetController.cs",
+    "Assembly": "Aban360.BrdigeApi",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.ReportPool.LocationsInfo.ZoneByRegionIdGetController",
+    "Original": "BeforeCompactConsumers.Aban360.BrdigeApi.Controllers.V1.ReportPool.LocationsInfo.ZoneByRegionIdGetController"
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/WaterDiameterGetAllController.cs",
+    "Assembly": "Aban360.BrdigeApi",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.CalculationPool.WaterDiameterGetAllController",
+    "Original": "BeforeCompactConsumers.Aban360.BrdigeApi.Controllers.V1.CalculationPool.WaterDiameterGetAllController"
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/SiphonDiameterGetAllController.cs",
+    "Assembly": "Aban360.BrdigeApi",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.CalculationPool.SiphonDiameterGetAllController",
+    "Original": "BeforeCompactConsumers.Aban360.BrdigeApi.Controllers.V1.CalculationPool.SiphonDiameterGetAllController"
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/BlockGetAllController.cs",
+    "Assembly": "Aban360.BrdigeApi",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.CalculationPool.BlockGetAllController",
+    "Original": "BeforeCompactConsumers.Aban360.BrdigeApi.Controllers.V1.CalculationPool.BlockGetAllController"
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/BillToReturnedGetController.cs",
+    "Assembly": "Aban360.BrdigeApi",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.CalculationPool.BillToReturnedGetController",
+    "Original": "BeforeCompactConsumers.Aban360.BrdigeApi.Controllers.V1.CalculationPool.BillToReturnedGetController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Land/UsageController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.UsageController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.ClaimPool.Land.UsageController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/AssessmentController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.AssessmentController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.ClaimPool.AssessmentController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Rule/TariffController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.Rule.TariffController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.CalculationPool.Rule.TariffController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Queries/MeterReadingUploadedToRegisteredController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries.MeterReadingUploadedToRegisteredController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries.MeterReadingUploadedToRegisteredController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/MeterReadingFileController.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.MeterReading.MeterReadingFileController",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.CalculationPool.MeterReading.MeterReadingFileController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Commands/TariffCalculationManager.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands.TariffCalculationManager",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands.TariffCalculationManager"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Commands/TariffCalculationImaginaryManager.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands.TariffCalculationImaginaryManager",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands.TariffCalculationImaginaryManager"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Commands/TariffBatchCalculationManager.cs",
+    "Assembly": "Aban360.Api",
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands.TariffBatchCalculationManager",
+    "Original": "BeforeCompactConsumers.Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands.TariffBatchCalculationManager"
+  }
+]

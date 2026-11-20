@@ -1,17 +1,18 @@
-﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.ClaimPool.Application.Features.Request.Services;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
 {
     [Route("v1/request")]
     public class UnAssessmentRequestController : BaseController
     {
-        private readonly IUnAssessmentGetAllHandler _unAssessmentHandler;
-        public UnAssessmentRequestController(IUnAssessmentGetAllHandler unAssessmentHandler)
+        private readonly IRequestCartableService _unAssessmentHandler;
+        public UnAssessmentRequestController(IRequestCartableService unAssessmentHandler)
         {
             _unAssessmentHandler = unAssessmentHandler;
             _unAssessmentHandler.NotNull(nameof(unAssessmentHandler));
@@ -22,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UnAssessmentHeaderOutputDto, UnAssessmentDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUnAssessment(CancellationToken cancellationToken)
         {
-            ReportOutput<UnAssessmentHeaderOutputDto, UnAssessmentDataOutputDto> result = await _unAssessmentHandler.Handle(CurrentUser, cancellationToken);
+            ReportOutput<UnAssessmentHeaderOutputDto, UnAssessmentDataOutputDto> result = await _unAssessmentHandler.UnAssessmentGetAllAsync(CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

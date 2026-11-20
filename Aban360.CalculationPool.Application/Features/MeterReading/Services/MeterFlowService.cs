@@ -38,6 +38,7 @@ using Aban360.Common.ApplicationUser;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.CalculationPool.Application.Features.MeterReading.Services;
 
 namespace Aban360.CalculationPool.Application.Features.MeterReading.Services
 {
@@ -79,8 +80,8 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Services
         const string _CalculationConfirmationtypeTitle = "قبض";
         const string _CalculationConfirmationreadingStateTitle = "دارای کد مامور";
         private readonly IOldTariffEngine _tariffEngine;
-        private readonly IMeterReadingDetailSendSmsHandler _detailSendSmsHandler;
-        public MeterFlowService(IHttpContextAccessor contextAccessor, IMeterReadingDetailQueryService meterReadingDetailService, ICommonMemberQueryService commonMemberQueryService, ICommonZoneService commonZoneService, IMeterFlowQueryService meterFlowQueryService, IBedBesQueryService bedBesQueryService, IVariabService variabService, ICounterStateQueryService counterStateQueryService, IUserQueryService userQueryService, IT51QueryService t51QueryService, IT7QueryService t7QueryService, IT5QueryService t5QueryService, IT41QueryService t41QueryService, IIdempotentOperationService idempotentOperationService, IConfiguration configuration, IOldTariffEngine tariffEngine, IMeterReadingDetailSendSmsHandler detailSendSmsHandler) : base(configuration)
+        private readonly IMeterReadingSmsService _detailSendSmsHandler;
+        public MeterFlowService(IHttpContextAccessor contextAccessor, IMeterReadingDetailQueryService meterReadingDetailService, ICommonMemberQueryService commonMemberQueryService, ICommonZoneService commonZoneService, IMeterFlowQueryService meterFlowQueryService, IBedBesQueryService bedBesQueryService, IVariabService variabService, ICounterStateQueryService counterStateQueryService, IUserQueryService userQueryService, IT51QueryService t51QueryService, IT7QueryService t7QueryService, IT5QueryService t5QueryService, IT41QueryService t41QueryService, IIdempotentOperationService idempotentOperationService, IConfiguration configuration, IOldTariffEngine tariffEngine, IMeterReadingSmsService detailSendSmsHandler) : base(configuration)
         {
             _contextAccessor = contextAccessor;
             _contextAccessor.NotNull(nameof(contextAccessor));
@@ -865,7 +866,7 @@ namespace Aban360.CalculationPool.Application.Features.MeterReading.Services
         public async Task MeterReadingCalculationConfirmThenSendSmsAsync(int latestFlowId, Guid userId, CancellationToken cancellationToken)
         {
             MeterReadingCheckedOutputDto calculationConfirmResult = await this.CalculationConfirmationAsync(latestFlowId, userId, cancellationToken);
-            await _detailSendSmsHandler.Handle(latestFlowId, userId, cancellationToken);
+            await _detailSendSmsHandler.MeterReadingDetailSendSmsAsync(latestFlowId, userId, cancellationToken);
         }
     }
 }

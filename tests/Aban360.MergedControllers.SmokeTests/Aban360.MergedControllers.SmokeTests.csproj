@@ -58,4 +58,18 @@
     <None Update="ServiceConsolidationOperations19.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <ItemGroup><Compile Remove="OriginalConsumersOperations19/**/*.cs" /></ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationNext28/Contracts/**/*.cs" Link="LegacyNext28/%(Filename)%(Extension)" />
+    <None Update="ServiceConsolidationNext28.json" Link="ServiceConsolidationNext28.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Shared/ServiceConsolidationCompact/Contracts/**/*.cs" Link="LegacyCompact/%(Filename)%(Extension)" />
+    <None Update="ServiceConsolidationCompact.json" Link="ServiceConsolidationCompact.json" CopyToOutputDirectory="PreserveNewest" />
+  <None Update="CompactInputs.json" CopyToOutputDirectory="PreserveNewest" /><None Update="CompactConsumers.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+  <ItemGroup><Compile Include="../Aban360.CollectBillsConsolidation.RegressionTests/CollectBillsRuntimeChecks.cs" Link="CollectBillsRuntimeChecks.cs" /></ItemGroup>
+  <ItemGroup>
+    <None Update="SalesReportsInputs.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="SalesReportsConsumers.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="ServiceConsolidationSalesReports.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
 </Project>

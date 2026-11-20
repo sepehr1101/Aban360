@@ -1,7 +1,6 @@
 using Aban360.Common.Categories.UseragentLog;
 using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts;
 using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
 using Aban360.UserPool.Domain.Constants;
 using Aban360.UserPool.Domain.Features.Auth.Dto.Commands;

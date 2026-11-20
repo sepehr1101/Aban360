@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Aban360.OldCalcPool.Application.Features.Processing.Services;
 using Aban360.Api.Controllers.V1.OldCalcPool.Processing;
+using Aban360.CalculationPool.Application.Features.Bill.Services;
 
 namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
 {
@@ -26,9 +27,9 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         private readonly IBillGenerationService _billGenerationService;
         private readonly ISmsOldHandler _smsOldHandler;
         private readonly IBackgroundJobClient _backgroundJobClient;
-        private readonly ILatestBillSendSmsHandler _latestBillSendSmsHandler;
+        private readonly ILatestBillSmsService _latestBillSendSmsHandler;
         private readonly IOpLogCommandService _opLogCommandService;
-        public GenerateBillController(IBillGenerationService billGenerationService, ISmsOldHandler smsOldHandler, IBackgroundJobClient backgroundJobClient, ILatestBillSendSmsHandler latestBillSendSmsHandler, IOpLogCommandService opLogCommandService)
+        public GenerateBillController(IBillGenerationService billGenerationService, ISmsOldHandler smsOldHandler, IBackgroundJobClient backgroundJobClient, ILatestBillSmsService latestBillSendSmsHandler, IOpLogCommandService opLogCommandService)
         {
             _billGenerationService = billGenerationService;
             _billGenerationService.NotNull(nameof(billGenerationService));
@@ -100,7 +101,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
                 if (result.ErrorCode == (int)NowGenerateBillErrorCodeEnum.Success)
                 {
                     billIssued = true;
-                    await _latestBillSendSmsHandler.Handle(inputDto.BillId, inputDto.MobileNumber, appUser, cancellationToken);
+                    await _latestBillSendSmsHandler.LatestBillSendSmsAsync(inputDto.BillId, inputDto.MobileNumber, appUser, cancellationToken);
                     await InsertOpLog(OpLogLiterals.NowGenerateBillRequestSuccessedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber, appUser);
                 }
                 else
