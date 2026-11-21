@@ -51,7 +51,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         public async Task Handle(TankerDeleteInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             await _commonZoneService.IsUserInZone(appUser, inputDto.ZoneId);
-            TankerOutputDto tankerInfo = await DateValidate(inputDto);
+            TankerOutputDto tankerInfo = await ValidateDates(inputDto);
             string opLogText = string.Format(OpLogLiterals.TankerDeleteOpLog, appUser.Username, DateTime.Now.ToShortPersianDateString(), inputDto.ZoneId, tankerInfo.BillId, tankerInfo.CustomerNumber, tankerInfo.Amount);
             TankerDeleteDto tankerDeleteDto = new(inputDto.ZoneId, inputDto.CustomerNumber, _operator);
             ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = new(tankerDeleteDto.ZoneId, tankerDeleteDto.CustomerNumber);
@@ -75,7 +75,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                     BillCommandService billCommandService = new(connection, transaction);
 
                     await tankerCommandService.Delete(tankerDeleteDto, dbName);
-                    await bedBesCommandService.Delete(zoneIdAndCustomerNumber, dbName);
+                    await bedBesCommandService.DeleteForTanker(zoneIdAndCustomerNumber, dbName);
                     await billCommandService.Delete(zoneIdAndCustomerNumber);
                     await opLogCommandService.Insert(opLogText, appUser);
 
@@ -83,7 +83,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 }
             }
         }
-        private async Task<TankerOutputDto> DateValidate(TankerDeleteInputDto inputDto)
+        private async Task<TankerOutputDto> ValidateDates(TankerDeleteInputDto inputDto)
         {
             string DateCheckVariab = await _variabService.GetDateCheck(inputDto.ZoneId);
             TankerOutputDto tankerInfo = await _tankerQueryService.Get(new ZoneIdAndCustomerNumber(inputDto.ZoneId, inputDto.CustomerNumber));

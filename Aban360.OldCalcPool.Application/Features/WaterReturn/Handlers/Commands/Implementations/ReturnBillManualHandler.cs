@@ -103,24 +103,20 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             var (bedBesResult, bedBesUpdateDelDto) = await ValidateAndGetBedBesInfo(inputDto, customerInfo);
             RepairCreateDto repairCreateDto = GetRepairDto(bedBesResult, memberInfo, inputDto, minutesNumber, bedBesUpdateDelDto?.Count() ?? 0, memberInfo.DebtAmount ?? 0);
             AutoBackCreateDto autoBackDto = GetAutoBackCreate(repairCreateDto, inputDto.Description);
-            ICollection<AutoBackCreateDto> autoBackCreateDto = new List<AutoBackCreateDto>() { autoBackDto, autoBackDto, autoBackDto };
-            IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn = await GetBillsToReturn(customerInfo, repairCreateDto);
-            if ((billsIdToReturn?.Count() ?? 0) != (bedBesUpdateDelDto?.Count() ?? 0))
-            {
-                throw new ReturnedBillException(ExceptionLiterals.InvalidBillIdToReturn);
-            }
-
+            AutoBackCreateDto zeroAutoBackDto = GetZeroAutoBackCreate(repairCreateDto, inputDto.Description);
+            ICollection<AutoBackCreateDto> autoBackCreateDto = new List<AutoBackCreateDto>() { zeroAutoBackDto, zeroAutoBackDto, autoBackDto };
+           
             if (!inputDto.IsConfirm)
             {
                 return GetResult(repairCreateDto, customerInfo, returnCauseTitle);
             }
 
             long amount = inputDto.ReturnType == ReturnBillManualTypeEnum.Returned ? -1 * (long)repairCreateDto.Baha : (long)repairCreateDto.Baha;
-            await ExecSql(autoBackCreateDto, bedBesUpdateDelDto, billsIdToReturn, repairCreateDto, customerInfo, appUser, dbName, amount);
+            await ExecSql(autoBackCreateDto, repairCreateDto, customerInfo, appUser, dbName);
 
             return GetResult(repairCreateDto, customerInfo, returnCauseTitle);
         }
-        private async Task ExecSql(ICollection<AutoBackCreateDto> autoBackCreateDto, IEnumerable<BedBesUpdateDelDto> bedBesUpdateDelDto, IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn, RepairCreateDto repairCreateDto, CustomerInfoOutputDto customerInfo, IAppUser appUser, string dbName, long amount)
+        private async Task ExecSql(ICollection<AutoBackCreateDto> autoBackCreateDto, RepairCreateDto repairCreateDto, CustomerInfoOutputDto customerInfo, IAppUser appUser, string dbName)
         {
             using (IDbConnection connection = _sqlReportConnection)
             {
@@ -141,20 +137,11 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                         repairCreateDto.TodayDate, repairCreateDto.Baha, minutesNumber);
                     AutoBackCommandService autoBackCommandService = new(connection, transaction);
                     RepairCommandService repairCommandService = new(connection, transaction);
-                    WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
-                    MembersCommandService membersCommandService = new(connection, transaction);
-                    BillCommandService billCommandService = new(connection, transaction);
-                    BedBesCommandService bedBesCommandService = new(connection, transaction);
                     OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
 
 
                     await autoBackCommandService.Create(autoBackCreateDto, ReportLiterals.Atlas, true);
-                    int repairId = await repairCommandService.Insert(repairCreateDto, dbName);
-                    await waterDebtCommandService.UpdateAmount(customerInfo.BillId, amount);
-                    await membersCommandService.UpdateBedbes(new ZoneIdAndCustomerNumber(customerInfo.ZoneId, customerInfo.Radif), amount, dbName);
-                    await billCommandService.InsertReturnByRepair(repairId, dbName);
-                    await billCommandService.UpdateOldDbDel(billsIdToReturn);
-                    await bedBesCommandService.UpdateDel(bedBesUpdateDelDto, dbName);
+                    int repairId = await repairCommandService.Insert(repairCreateDto, ReportLiterals.Atlas);
                     await opLogCommandService.Insert(logText, appUser);
 
                     transaction.Commit();
@@ -248,6 +235,82 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 Tafavot = repairDto.Tafavot,
                 MasHadar = repairDto.MasHadar,
                 AbHadar = repairDto.AbHadar,
+                RangeMas = repairDto.RangeMas,
+                TafBack = repairDto.TafBack,
+                TabAbnA = repairDto.TabAbnA,
+                TabAbnF = repairDto.TabAbnF,
+                TabsFa = repairDto.TabsFa,
+                Bodjeh = repairDto.Bodjeh,
+                Faz = repairDto.Faz,//
+                TmpDateBed = repairDto.TmpDateBed,
+                TmpMohlat = repairDto.TmpMohlat,
+                TmpPriDate = repairDto.TmpPriDate,
+                TmpTavizDate = repairDto.TmpTavizDate,
+                TmpTodayDate = repairDto.TmpTodayDate,
+                EdarehK = repairDto.EdarehK,
+                Group1 = repairDto.Group1,
+                Avarez = repairDto.Avarez,
+                DateSbt = repairDto.DateSbt,
+                Description = description
+            };
+        }
+        private AutoBackCreateDto GetZeroAutoBackCreate(RepairCreateDto repairDto, string? description)
+        {
+            return new AutoBackCreateDto()
+            {
+                Town = repairDto.Town,
+                Radif = repairDto.Radif,
+                Eshtrak = repairDto.Eshtrak,
+                Barge = repairDto.Barge,
+                PriNo = repairDto.PriNo,
+                TodayNo = repairDto.TodayNo,
+                PriDate = repairDto.PriDate,
+                TodayDate = repairDto.TodayDate,
+                AbonFas = 0,
+                FasBaha = 0,
+                AbBaha = 0,
+                Ztadil = 0,
+                Masraf = 0,
+                Shahrdari = 0,
+                Modat = 0,
+                DateBed = repairDto.DateBed,
+                JalaseNo = repairDto.JalaseNo,
+                Mohlat = string.Empty,//
+                Baha = 0,
+                AbonAb = 0,
+                Pard = 0,
+                Jam = 0,
+                CodVas = 0,
+                Ghabs = "0",//
+                Del = false,
+                Type = repairDto.Type,
+                CodEnshab = repairDto.CodEnshab,
+                Enshab = repairDto.Enshab,
+                Elat = repairDto.Elat,
+                Ser = 0,
+                Serial = 0,
+                ZaribFasl = 0,
+                Ab10 = 0,
+                Ab20 = 0,
+                TedadMas = repairDto.TedadMas,
+                TedadTej = repairDto.TedadTej,
+                TedadVahd = repairDto.TedadVahd,
+                TedGhabs = repairDto.TedGhabs,
+                TedKhane = repairDto.TedKhane,
+                NoeVa = repairDto.NoeVa,
+                Jarime = repairDto.Jarime,
+                Masjar = repairDto.Masjar,
+                Sabt = 0,
+                Rate = 0,
+                Operator = repairDto.Operator,
+                Mamor = repairDto.Mamor,
+                TavizDate = repairDto.TavizDate,
+                ZaribCntr = repairDto.ZaribCntr,
+                ZaribD = repairDto.ZaribD,
+                Zabresani = repairDto.Zabresani,
+                Tafavot = repairDto.Tafavot,
+                MasHadar = 0,
+                AbHadar = 0,
                 RangeMas = repairDto.RangeMas,
                 TafBack = repairDto.TafBack,
                 TabAbnA = repairDto.TabAbnA,

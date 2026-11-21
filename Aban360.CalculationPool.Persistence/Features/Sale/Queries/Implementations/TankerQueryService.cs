@@ -74,7 +74,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
                     Left Join [Db70].dbo.T150 t150
                     	On a.type_pay Collate SQL_Latin1_General_CP1_CI_AS=t150.C1 Collate SQL_Latin1_General_CP1_CI_AS
                     Where
-                        date BETWEEN @FromDateJalali AND @ToDateJalali AND
+                        t.date BETWEEN @FromDateJalali AND @ToDateJalali AND 
 	                    t.user_hasf=0";
         }
         private string GetByCustomerNumber(string dbName)

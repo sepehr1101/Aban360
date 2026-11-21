@@ -60,6 +60,7 @@ namespace BeforeServiceOperations19.Aban360.OldCalcPool.Application.Features.Pro
             _commonZoneService.NotNull(nameof(commonZoneService));
             _validator = validator;
             _validator.NotNull(nameof(validator));
+
             _requestService = requestService;
             _requestService.NotNull(nameof(requestService));
         }

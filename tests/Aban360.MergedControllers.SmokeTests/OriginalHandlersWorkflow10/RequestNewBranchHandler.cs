@@ -32,7 +32,7 @@ namespace BeforeServiceWorkflow10.Aban360.ClaimPool.Application.Features.Request
         private readonly IMoshtrakService _moshtrakService;
         private readonly IValidator<RequestNewBranchInputDto> _validator;
         static string _insertWayTitle = ReportLiterals.RayabPersian;
-        static int _setAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentResult;
+        static int _setAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentTime;
         static int _firstStepStatusId = (int)TrackingStatusEnum.RequestRegistered;
         static int saleRequestTypeId = ReportLiterals.SaleRequestTypeId;
         static int _requestOrigin = 12;

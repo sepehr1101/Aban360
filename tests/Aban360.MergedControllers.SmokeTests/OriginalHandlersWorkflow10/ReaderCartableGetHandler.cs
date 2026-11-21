@@ -18,7 +18,6 @@ using global::Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 using System.Text.Json;
 using global::Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using System.Threading;
@@ -109,8 +108,8 @@ namespace BeforeServiceWorkflow10.Aban360.MeterPool.Application.Features.Reading
                 {
                     TrackingCommandService trackingCommandService = new(connection, transaction);
 
-                    //await trackingCommandService.UpdateSeen(trackingSeenUpdateDto);
-                    //await trackingCommandService.InsertDuplicate(trackingDuplicateInsertDto);
+                    await trackingCommandService.UpdateSeen(trackingSeenUpdateDto);
+                    await trackingCommandService.InsertDuplicate(trackingDuplicateInsertDto);
 
                     transaction.Commit();
                 }
@@ -179,6 +178,7 @@ namespace BeforeServiceWorkflow10.Aban360.MeterPool.Application.Features.Reading
                     DomesticUnit = d.DomesticUnit,
                     CommercialUnit = d.CommercialUnit,
                     OtherUnit = d.OtherUnit,
+                    EmptyUnit=d.EmptyUnit,
                     MeterDiameterId = d.MeterDiameterId,
                     MeterDiameterTitle = d.MeterDiameterTitle,
                     SiphonDiameterId = d.SiphonDiameterId,

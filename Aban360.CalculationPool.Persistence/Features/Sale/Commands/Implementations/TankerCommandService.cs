@@ -56,7 +56,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Commands.Implementat
         {
             return @$"Update [{dbName}].dbo.tanker
                     Set del=1 , date_hasf=@CurrentDateJalali, user_hasf=@UserCode
-                    Where radif=@CustomerNumber AND town=@ZoneId";
+                    Where radif=@CustomerNumber AND town=@ZoneId AND [date]>'1405/08/01'";
         }
     }
 }

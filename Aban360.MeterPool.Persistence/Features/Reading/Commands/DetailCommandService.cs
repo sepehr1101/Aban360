@@ -68,6 +68,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
             table.Columns.Add("DomesticUnit", typeof(int));
             table.Columns.Add("CommercialUnit", typeof(int));
             table.Columns.Add("OtherUnit", typeof(int));
+            table.Columns.Add("EmptyUnit", typeof(int));
             table.Columns.Add("MeterDiameterId", typeof(int));
             table.Columns.Add("SiphonDiameterId", typeof(int));
             table.Columns.Add("PostalCode", typeof(string));

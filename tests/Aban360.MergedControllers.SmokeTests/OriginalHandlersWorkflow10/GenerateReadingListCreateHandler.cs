@@ -303,6 +303,7 @@ namespace BeforeServiceWorkflow10.Aban360.MeterPool.Application.Features.Reading
                 DomesticUnit = customerInfo.DomesticUnit,
                 CommercialUnit = customerInfo.CommercialUnit,
                 OtherUnit = customerInfo.OtherUnit,
+                EmptyUnit = customerInfo.EmptyUnit,
                 MeterDiameterId = customerInfo.MeterDiameterId,
                 SiphonDiameterId = customerInfo.MainSiphon,
                 PostalCode = customerInfo.PostalCode,
