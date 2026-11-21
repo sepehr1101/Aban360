@@ -66,7 +66,7 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             IEnumerable<PreviousRequestGetDto> result = await _sqlReportConnection.QueryAsync<PreviousRequestGetDto>(query, inputDto);
             if (!result.Any())
             {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidBillId);
+                throw new InvalidTrackingException(ExceptionLiterals.NotFoundTrackingByBillId);
             }
             return result;
         }

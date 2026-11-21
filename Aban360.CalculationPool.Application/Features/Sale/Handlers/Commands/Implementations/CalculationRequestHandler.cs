@@ -37,6 +37,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private static int _afterSaleServiceId = 2;
         private static int _kartTypeId = 2;
         private static int _intervalDueDate = 30;
+        private static long _minAmountToGeneratePayId = 1_000;
         private static string _insertBy = "Aban";
         private static int _operator = ReportLiterals.RayabOperator;
 
@@ -340,7 +341,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
                 DueDateJalali = DateTime.Now.AddDays(_intervalDueDate).ToShortPersianDateString(),
                 InsertBy = _insertBy,
                 BillId = billId ?? string.Empty,//todo:remove
-                PaymentId = TransactionIdGenerator.GeneratePaymentId(header.FinalAmount, billId, $"{CommonLiterals.BranchPayIdUniqueCode}00")
+                PaymentId = header.FinalAmount < _minAmountToGeneratePayId ? string.Empty : TransactionIdGenerator.GeneratePaymentId(header.FinalAmount, billId, $"{CommonLiterals.BranchPayIdUniqueCode}00")
             };
         }
     }

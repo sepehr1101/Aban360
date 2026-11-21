@@ -102,6 +102,7 @@
         public static string InvoiceNotFound => " قبض یافت نشد";
         public static string BillIdNotFound => "شناسه قبض یافت نشد";
         public static string InvalidBillId => "شناسه قبض معتبر نیست";
+        public static string NotFoundTrackingByBillId => "درخواستی با شناسه قبض جاری یافت نشد";
         public static string InvalidReadingNumber => "شماره اشتراک معتبر نیست";
         public static string InvalidDuplicateReadingNumber => "شماره اشتراک تکراری است";
         public static string InvalidMoreThan1ReadingNumber => "بیش از یک مشترک با شماره اشتراک وارد شده یافت شده است.";
