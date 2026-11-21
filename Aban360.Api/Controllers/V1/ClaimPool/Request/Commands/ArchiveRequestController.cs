@@ -1,4 +1,4 @@
-﻿using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
@@ -7,31 +7,26 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.ClaimPool.Application.Features.Request.Services;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
 {
     [Route("v1/request")]
     public class ArchiveRequestController : BaseController
     {
-        private readonly IArchiveRequestHandler _archiveRequestHandler;
-        private readonly IArchivedRequestHandler _archivedRequestHandler;
-        public ArchiveRequestController(
-            IArchiveRequestHandler archiveRequestHandler,
-            IArchivedRequestHandler archivedRequestHandler)
+        private readonly IRequestLifecycleService _requestLifecycleService;
+        public ArchiveRequestController(IRequestLifecycleService requestLifecycleService)
         {
-            _archiveRequestHandler = archiveRequestHandler;
-            _archiveRequestHandler.NotNull(nameof(archiveRequestHandler));
-
-            _archivedRequestHandler = archivedRequestHandler;
-            _archivedRequestHandler.NotNull(nameof(archivedRequestHandler));
+            _requestLifecycleService = requestLifecycleService;
+            _requestLifecycleService.NotNull(nameof(requestLifecycleService));
         }
 
-        [HttpGet,HttpPost]
+        [HttpGet, HttpPost]
         [Route("archived")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<TrackingKartableHeaderOutputDto, TrackingKartableDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Archived(CancellationToken cancellationToken)
         {
-            ReportOutput<TrackingKartableHeaderOutputDto, TrackingKartableDataOutputDto> result = await _archivedRequestHandler.Handle(cancellationToken);
+            ReportOutput<TrackingKartableHeaderOutputDto, TrackingKartableDataOutputDto> result = await _requestLifecycleService.ArchivedRequestAsync(cancellationToken);
             return Ok(result);
         }
 
@@ -41,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
         public async Task<IActionResult> Archive([FromBody] ArchiveRequestInputDto inputDto, CancellationToken cancellationToken)
         {
             int userCode = UserService.GetUserCode(CurrentUser.Username);
-            await _archiveRequestHandler.Handle(inputDto, userCode, cancellationToken);
+            await _requestLifecycleService.ArchiveRequestAsync(inputDto, userCode, cancellationToken);
             return Ok(inputDto);
         }
     }

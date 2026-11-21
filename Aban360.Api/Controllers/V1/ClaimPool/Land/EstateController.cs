@@ -1,3 +1,5 @@
+using Aban360.ClaimPool.Application.Features.Land.Services;
+
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land
 {
     using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
@@ -16,25 +18,13 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
     public class EstateController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IEstateDeleteHandler _estateDeleteHandler;
-        private readonly IEstateCreateHandler _estateCreateHandler;
-        private readonly IEstateUpdateHandler _estateUpdateHandler;
-        private readonly IEstateGetAllHandler _estateGetAllHandler;
-        private readonly IEstateGetSingleHandler _estateGetSingleHandler;
-        public EstateController(IUnitOfWork unitOfWork, IEstateDeleteHandler estateDeleteHandler, IEstateCreateHandler estateCreateHandler, IEstateUpdateHandler estateUpdateHandler, IEstateGetAllHandler estateGetAllHandler, IEstateGetSingleHandler estateGetSingleHandler)
+        private readonly IEstateService _estateService;
+        public EstateController(IUnitOfWork unitOfWork, IEstateService estateService)
         {
             _unitOfWork = unitOfWork;
             _unitOfWork.NotNull(nameof(_unitOfWork));
-            _estateDeleteHandler = estateDeleteHandler;
-            _estateDeleteHandler.NotNull(nameof(_estateDeleteHandler));
-            _estateCreateHandler = estateCreateHandler;
-            _estateCreateHandler.NotNull(nameof(_estateCreateHandler));
-            _estateUpdateHandler = estateUpdateHandler;
-            _estateUpdateHandler.NotNull(nameof(_estateUpdateHandler));
-            _estateGetAllHandler = estateGetAllHandler;
-            _estateGetAllHandler.NotNull(nameof(_estateGetAllHandler));
-            _estateGetSingleHandler = estateGetSingleHandler;
-            _estateGetSingleHandler.NotNull(nameof(_estateGetSingleHandler));
+            _estateService = estateService;
+            _estateService.NotNull(nameof(_estateService));
         }
 
         [HttpPost, HttpDelete]
@@ -42,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] EstateDeleteDto deleteDto, CancellationToken cancellationToken)
         {
-            await _estateDeleteHandler.Handle(deleteDto, cancellationToken);
+            await _estateService.DeleteAsync(deleteDto, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Ok(deleteDto);
         }
@@ -52,7 +42,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] EstateCreateDto createDto, CancellationToken cancellationToken)
         {
-            await _estateCreateHandler.Handle(createDto, cancellationToken);
+            await _estateService.CreateAsync(createDto, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Ok(createDto);
         }
@@ -62,7 +52,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] EstateUpdateDto updateDto, CancellationToken cancellationToken)
         {
-            await _estateUpdateHandler.Handle(updateDto, cancellationToken);
+            await _estateService.UpdateAsync(updateDto, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Ok(updateDto);
         }
@@ -72,7 +62,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<EstateGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            ICollection<EstateGetDto> estate = await _estateGetAllHandler.Handle(cancellationToken);
+            ICollection<EstateGetDto> estate = await _estateService.GetAllAsync(cancellationToken);
             return Ok(estate);
         }
 
@@ -81,7 +71,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         [ProducesResponseType(typeof(ApiResponseEnvelope<EstateGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(int id, CancellationToken cancellationToken)
         {
-            EstateGetDto estate = await _estateGetSingleHandler.Handle(id, cancellationToken);
+            EstateGetDto estate = await _estateService.GetSingleAsync(id, cancellationToken);
             return Ok(estate);
         }
     }

@@ -1,0 +1,72 @@
+﻿namespace Aban360.ClaimPool.Persistence.Constants.Literals
+{
+    internal static class ExceptionLiterals
+    {
+        public static string NotFoundUniqueCode => "کد یکتا ناحیه انتخاب شده یافت نشد";
+        public static string InvalidIdentifier { get { return "موجودیت با شناسه ارسالی پیدا نشد"; } }
+        public static string InvalidStateId => "وضعیت ارسالی یافت نشد.";
+        public static string NotFoundTask => "وظیفه ای یافت نشد.";
+        public static string InvalidInsertTracking => "خطا در ذخیره درخواست";
+        public static string InvalidInsertBillId => "خطا در ذخیره شناسه قبض";
+        public static string InvalidUpdateMoshtrakin => "خطا در ویرایش اطلاعات مشترک";
+        public static string InvalidInsertCustomerNumber => "خطا در ذخیره ردیف";
+        public static string InvalidInsertAssessment => "خطا در ذخیره نتیجه ارزیابی";
+        public static string InvalidInsertAssessmentCompeletion => "خطا در ذخیره ارزیابی تکمیلی";
+        public static string InvalidInsertMother => "خطا در ذخیره اطلاعات مادر-فرزند";
+        public static string InvalidUpdateMother => "خطا در ویرایش اطلاعات مادر-فرزند";
+        public static string InvalidDeleteMother => "خطا در حذف اطلاعات مادر-فرزند";
+        public static string InvalidUpdateToDayJalali => "خطا در ویرایش 'تا تاریخ'";
+        public static string InvalidInsertArchmem => "خطا در ذخیره تاریخچه مشترک";
+        public static string InvalidUpdateBillAmount => "خطا در ویرایش مبلغ قبض";
+        public static string InvalidUpdateTrackNumber => "خطا در ویرایش شماره پیگیری";
+        public static string InvalidInsertRequestBillDetails => "خطا در ذخیره اقلام محاسبه شده ..";
+        public static string InvalidRemoveRequestBillDetails => "خطا در حذف آیتم انتخاب شده.";
+        public static string InvalidInsertKart => "خطا در ذخیره اقلام محاسبه شده";
+        public static string InvalidUpdateInstallmentKart => "خطا در ویرایش اقساط اقلام";
+        public static string InvalidRemoveKart => "خطا در حذف قلم";
+        public static string InvalidInsertGhest => "خطا در ذخیره اقساط";
+        public static string InvalidDeleteGhest => "خطا در حذف اقساط";
+        public static string InvalidUpdateGhest => "خطا در ویرایش اقساط";
+        public static string InvalidInsertComment => "خطا در ذخیره کامنت";
+        public static string InvalidSwapRequestType => "خطا در ویرایش نوع درخواست";
+        public static string InvalidUpdateMoshtrakInstallment => "خطا در ویرایش اطلاعات اقساط مشترک";
+        public static string InvalidUpdateMoshtrak => "خطا در ویرایش اطلاعات مشترک";
+        public static string InvalidInsertQueue => "خطا در ذخیره پیامک";
+        public static string InvalidInsertAssessmentOff => "خطا در ثبت مرخصی";
+        public static string NotFoundId => "شناسه وارد شده یافت نشد";
+
+        public static string InvalidZoneTitle => "کد ناحیه یافت نشد";
+        public static string InvalidMeterDiameterTitle => "کد قطر انشعاب یافت نشد";
+        public static string InvalidUsageTitle => "کد کاربری یافت نشد";
+        public static string InvalidBranchTypeTitle => "کد نوع واگذاری یافت نشد";
+        public static string InvalidDiscountTypeTitle => "کد نوع تخفیف یافت نشد";
+        public static string InvalidDeletionStateTitle => "کد وضعیت انشعاب یافت نشد";
+
+        public static string InvalidInsertConnectDisconnect => "خطا در ذخیره قطع/وصل";
+        public static string InvalidUpdateConnectDisconnect => "خطا در ویرایش قطع/وصل";
+        public static string InvalidRemoveConnectDisconnect => "خطا در حذف قطع/وصل";
+        public static string InvalidConnectDisconnectId => "کد درخواست قطع/وصل یافت نشد.";
+
+        public static string InvalidInsertConCompany => "خطا در ذخیره پیمانکار قطع/وصل";
+        public static string InvalidUpdateConCompany => "خطا در ویرایش پیمانکار قطع/وصل";
+        public static string InvalidRemoveConCompany => "خطا در حذف پیمانکار قطع/وصل";
+        public static string InvalidConCompanyId => "کد پیمانکار قطع/وصل یافت نشد.";
+        public static string InvalidConCompanyPersonnelId => "کد مامور قطع/وصل یافت نشد.";
+        public static string InvalidInsertConCompanyPersonnel => "خطا در ایجاد مامور قطع/وصل";
+        public static string InvalidUpdateConCompanyPersonnel => "خطا در ویرایش مامور قطع/وصل";
+        public static string InvalidRemoveConCompanyPersonnel => "خطا در حذف مامور قطع/وصل";
+
+        public static string NotFoundT100 => "کد اقلام ارسالی یافت نشد.";
+        public static string NotFoundRequestBillDetail => "قبض برگشتی یافت نشد.";
+
+        public static string InvalidInsertUsageGroup1 => "خطا در ذخیره گروه1 کاربری";
+        public static string InvalidUpdateUsageGroup1 => "خطا در ویرایش گروه1 کاربری";
+        public static string InvalidRemoveUsageGroup1 => "خطا در حذف گروه1 کاربری";
+        public static string InvalidInsertUsageGroup2 => "خطا در ذخیره گروه2 کاربری";
+        public static string InvalidUpdateUsageGroup2 => "خطا در ویرایش گروه2 کاربری";
+        public static string InvalidRemoveUsageGroup2 => "خطا در حذف گروه2 کاربری";
+        public static string InvalidInsertUsageGroup3 => "خطا در ذخیره گروه3 کاربری";
+        public static string InvalidUpdateUsageGroup3 => "خطا در ویرایش گروه3 کاربری";
+        public static string InvalidRemoveUsageGroup3 => "خطا در حذف گروه3 کاربری";
+    }
+}

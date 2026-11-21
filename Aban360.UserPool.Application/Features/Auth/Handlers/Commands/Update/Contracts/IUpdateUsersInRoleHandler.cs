@@ -1,4 +1,4 @@
-﻿namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts
+namespace Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts
 {
     public interface IUpdateUsersInRoleHandler
     {

@@ -1,0 +1,174 @@
+[
+  {
+    "Path": "Aban360.Api/Controllers/V1/CommunicationPool/Commands/BroadcastMessageController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CommunicationPool_Commands_BroadcastMessageController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CommunicationPool/Queries/OnlineUsersGetController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CommunicationPool_Queries_OnlineUsersGetController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/NotificationPool/Commands/BillSendLatestSmsController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_NotificationPool_Commands_BillSendLatestSmsController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/OldCalcPool/Processing/BillsRemovableController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_OldCalcPool_Processing_BillsRemovableController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/OldCalcPool/Processing/GenerateBillController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_OldCalcPool_Processing_GenerateBillController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/OldCalcPool/Processing/RemoveBillController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_OldCalcPool_Processing_RemoveBillController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/UserPool/Auth/RoleController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_UserPool_Auth_RoleController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Commands/InvoiceTogetherCreateController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CalculationPool_Bill_Commands_InvoiceTogetherCreateController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Commands/PaymentIdBatchUpdateController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CalculationPool_Bill_Commands_PaymentIdBatchUpdateController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Queries/BillReadingListController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CalculationPool_Bill_Queries_BillReadingListController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Queries/CollectBillsDetailController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CalculationPool_Bill_Queries_CollectBillsDetailController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Queries/GeneratePaymentIdController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CalculationPool_Bill_Queries_GeneratePaymentIdController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Queries/ImpactSignGetAllController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CalculationPool_Bill_Queries_ImpactSignGetAllController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Queries/InvalidPaymentIdController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CalculationPool_Bill_Queries_InvalidPaymentIdController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/MeterFlowRemoveController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CalculationPool_MeterReading_Commands_MeterFlowRemoveController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/NonReadingBillCreateController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CalculationPool_MeterReading_Commands_NonReadingBillCreateController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/SendSmsTestController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CalculationPool_MeterReading_Commands_SendSmsTestController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Queries/MeterReadingExcludeCauseController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CalculationPool_MeterReading_Queries_MeterReadingExcludeCauseController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Rule/Queries/TankerTariffController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_CalculationPool_Rule_Queries_TankerTariffController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Land/Commands/JudicalNoticeController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Land_Commands_JudicalNoticeController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Land/Queries/CustomerGetByBillIdController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Land_Queries_CustomerGetByBillIdController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Land/Queries/VillageGetAllController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Land_Queries_VillageGetAllController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Metering/Queries/ModifyCauseController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Metering_Queries_ModifyCauseController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/CalculationRequestController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Request_Commands_CalculationRequestController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ConfirmController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Request_Commands_ConfirmController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/RequestBranchController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Request_Commands_RequestBranchController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/SetAmountConfirmRequestController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Request_Commands_SetAmountConfirmRequestController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/SetBillIdController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Request_Commands_SetBillIdController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/AmountItemsDictionaryController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Request_Queries_AmountItemsDictionaryController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/ReferredRequestController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Request_Queries_ReferredRequestController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestKartableDetailsController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Request_Queries_RequestKartableDetailsController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestResultDictionaryController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Request_Queries_RequestResultDictionaryController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/UnAssessmentRequestController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Request_Queries_UnAssessmentRequestController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/UnconfirmedRequestController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_ClaimPool_Request_Queries_UnconfirmedRequestController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/UserPool/Auth/Commands/LoginController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_UserPool_Auth_Commands_LoginController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/UserPool/Auth/Queries/AssessmentGetByZoneIdController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_UserPool_Auth_Queries_AssessmentGetByZoneIdController.cs.txt"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/WorkflowPool/Design/Queries/WorkflowStatusGetAllController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.Api_Controllers_V1_WorkflowPool_Design_Queries_WorkflowStatusGetAllController.cs.txt"
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/ServiceLinkController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.BrdigeApi_Controllers_V1_ServiceLinkController.cs.txt"
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/BillsRemovableController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.BrdigeApi_Controllers_V1_CalculationPool_BillsRemovableController.cs.txt"
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/RemoveBillController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.BrdigeApi_Controllers_V1_CalculationPool_RemoveBillController.cs.txt"
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/Security/LoginController.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.BrdigeApi_Controllers_V1_Security_LoginController.cs.txt"
+  },
+  {
+    "Path": "Aban360.CalculationPool.Application/Features/MeterReading/Services/MeterFlowService.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.CalculationPool.Application_Features_MeterReading_Services_MeterFlowService.cs.txt"
+  },
+  {
+    "Path": "Aban360.ClaimPool.Application/Features/Request/Services/RequestDisplayService.cs",
+    "Baseline": "tests/Aban360.CriticalServiceStructure.RegressionTests/Next28Baseline/Aban360.ClaimPool.Application_Features_Request_Services_RequestDisplayService.cs.txt"
+  }
+]

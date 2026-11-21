@@ -1,4 +1,3 @@
-using Aban360.ClaimPool.Application.Features.Sms.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Tracking.Dto;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
@@ -13,13 +12,14 @@ using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.Api.Filters;
+using Aban360.ClaimPool.Application.Features.Tracking.Services;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking
 {
+    [Route("v1/tracking")]
     public class TrackingController : BaseController
     {
-        private readonly ISmsByTrackIdGetHandler _c0_smsByTrackIdHandler;
-        private readonly ISmsByQueueIdGetHandler _c0_smsByQueueIdHandler;
+        private readonly ITrackingSmsService _trackingSmsService;
         private readonly ISmsOldHandler _c0_smsOldHandler;
         private readonly IBackgroundJobClient _c0_backgroundJobClient;
         private readonly IRequestIsRegisteredDetailHandler _c1_requestIsRegisteredHandler;
@@ -32,12 +32,10 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking
         private readonly ITrackingDetailGetByIdHandler _c1_trackingDetailGetByIdHandler;
         private readonly ISeenByAssessmentHandler _c1_seenByAssessmentHandler;
         private readonly ITrackingFlowGetHandler _c2_trackingFlowHandler;
-        public TrackingController(ISmsByTrackIdGetHandler c0_smsByTrackIdHandler, ISmsByQueueIdGetHandler c0_smsByQueueIdHandler, ISmsOldHandler c0_smsOldHandler, IBackgroundJobClient c0_backgroundJobClient, IRequestIsRegisteredDetailHandler c1_requestIsRegisteredHandler, IExamineTimeSetDetailHandler c1_examineTimeSetDetailHandler, ISetExaminationResultDetailHandler c1_setExaminationResultDetailHandler, ITrackNumberAndDescriptionDetailHandler c1_trackNumberAndDescriptionDetailHandler, ICalculationConfirmedDetailHandler c1_calculationConfirmedDetailHandler, ICustomerNumberSpecifiedDetailHandler c1_customerNumberSpecifiedDetailHandler, IAmountConfirmedDetailHandler c1_amountConfirmedDetailHandler, ITrackingDetailGetByIdHandler c1_trackingDetailGetByIdHandler, ISeenByAssessmentHandler c1_seenByAssessmentHandler, ITrackingFlowGetHandler c2_trackingFlowHandler)
+        public TrackingController(ITrackingSmsService trackingSmsService, ISmsOldHandler c0_smsOldHandler, IBackgroundJobClient c0_backgroundJobClient, IRequestIsRegisteredDetailHandler c1_requestIsRegisteredHandler, IExamineTimeSetDetailHandler c1_examineTimeSetDetailHandler, ISetExaminationResultDetailHandler c1_setExaminationResultDetailHandler, ITrackNumberAndDescriptionDetailHandler c1_trackNumberAndDescriptionDetailHandler, ICalculationConfirmedDetailHandler c1_calculationConfirmedDetailHandler, ICustomerNumberSpecifiedDetailHandler c1_customerNumberSpecifiedDetailHandler, IAmountConfirmedDetailHandler c1_amountConfirmedDetailHandler, ITrackingDetailGetByIdHandler c1_trackingDetailGetByIdHandler, ISeenByAssessmentHandler c1_seenByAssessmentHandler, ITrackingFlowGetHandler c2_trackingFlowHandler)
         {
-            _c0_smsByTrackIdHandler = c0_smsByTrackIdHandler;
-            _c0_smsByTrackIdHandler.NotNull(nameof(c0_smsByTrackIdHandler));
-            _c0_smsByQueueIdHandler = c0_smsByQueueIdHandler;
-            _c0_smsByQueueIdHandler.NotNull(nameof(c0_smsByQueueIdHandler));
+            _trackingSmsService = trackingSmsService;
+            _trackingSmsService.NotNull(nameof(trackingSmsService));
             _c0_smsOldHandler = c0_smsOldHandler;
             _c0_smsOldHandler.NotNull(nameof(c0_smsOldHandler));
             _c0_backgroundJobClient = c0_backgroundJobClient;
@@ -65,28 +63,28 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking
         }
 
         [HttpPost]
-        [Route("~/v1/tracking/display-sms")]
+        [Route("display-sms")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<TrackingSmsHeaderOutputDto, TrackingSmsDataOutputDto>>), StatusCodes.Status200OK)]
         [ActionName("DisplayFlow")]
         public async Task<IActionResult> DisplayFlowFromSmsByTrackIdGet0([FromBody] GuidInput input, CancellationToken cancellationToken)
         {
-            ReportOutput<TrackingSmsHeaderOutputDto, TrackingSmsDataOutputDto> result = await _c0_smsByTrackIdHandler.Handle(input.Input, cancellationToken);
+            ReportOutput<TrackingSmsHeaderOutputDto, TrackingSmsDataOutputDto> result = await _trackingSmsService.GetByTrackIdAsync(input.Input, cancellationToken);
             return Ok(result);
         }
 
         [HttpPost]
-        [Route("~/v1/tracking/resend-sms")]
+        [Route("resend-sms")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<TrackingSmsHeaderOutputDto, TrackingSmsDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ResendSms([FromBody] GuidInput input, CancellationToken cancellationToken)
         {
-            TrackingSmsDataOutputDto result = await _c0_smsByQueueIdHandler.Handle(input.Input, cancellationToken);
+            TrackingSmsDataOutputDto result = await _trackingSmsService.GetByQueueIdAsync(input.Input, cancellationToken);
             result.TrackId = result.TrackId is null ? Guid.Empty : result.TrackId;
             _c0_backgroundJobClient.Enqueue(() => _c0_smsOldHandler.SendNew(result.Receiver, result.Message, result.TrackId.Value));
             return Ok(result);
         }
 
         [HttpGet]
-        [Route("~/v1/tracking/request-registered/{trackId}")]
+        [Route("request-registered/{trackId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<RequestIsRegisterdOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRequestRegistered(Guid trackId, CancellationToken cancellationToken)
         {
@@ -95,7 +93,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking
         }
 
         [HttpGet]
-        [Route("~/v1/tracking/assessment-time/{trackId}")]
+        [Route("assessment-time/{trackId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<RequestIsRegisterdOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAssessmentTimeInfo(Guid trackId, CancellationToken cancellationToken)
         {
@@ -104,7 +102,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking
         }
 
         [HttpGet]
-        [Route("~/v1/tracking/assessment-result/{trackId}")]
+        [Route("assessment-result/{trackId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SetExaminationResultOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAssessmentResultInfo(Guid trackId, CancellationToken cancellationToken)
         {
@@ -113,7 +111,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking
         }
 
         [HttpGet]
-        [Route("~/v1/tracking/description/{trackId}")]
+        [Route("description/{trackId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TrackNumberAndDescriptionOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDescriptionInfo(Guid trackId, CancellationToken cancellationToken)
         {
@@ -122,7 +120,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking
         }
 
         [HttpGet]
-        [Route("~/v1/tracking/calculatation-confirmed/{trackId}")]
+        [Route("calculatation-confirmed/{trackId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CalculationConfirmedOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCalculationConfirmedInfo(Guid trackId, CancellationToken cancellationToken)
         {
@@ -131,7 +129,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking
         }
 
         [HttpGet]
-        [Route("~/v1/tracking/specified-customerNumber/{trackId}")]
+        [Route("specified-customerNumber/{trackId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CalculationConfirmedOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSpecifiedCustomerNumberInfo(Guid trackId, CancellationToken cancellationToken)
         {
@@ -140,7 +138,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking
         }
 
         [HttpGet]
-        [Route("~/v1/tracking/amount-confirmed/{trackId}")]
+        [Route("amount-confirmed/{trackId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CalculationConfirmedOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAmountConfirmedInfo(Guid trackId, CancellationToken cancellationToken)
         {
@@ -149,7 +147,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking
         }
 
         [HttpGet]
-        [Route("~/v1/tracking/assessment-seen/{trackId}")]
+        [Route("assessment-seen/{trackId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CalculationConfirmedOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAssessmentSeenInfo(Guid trackId, CancellationToken cancellationToken)
         {
@@ -158,7 +156,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking
         }
 
         [HttpPost]
-        [Route("~/v1/tracking/display-detail")]
+        [Route("display-detail")]
         public async Task<IActionResult> Detail([FromBody] TrackingDetailInputDto input, CancellationToken cancellationToken)
         {
             TrackingOutputDto trackingInfo = await _c1_trackingDetailGetByIdHandler.Handle(input.TrackId, cancellationToken);
@@ -224,7 +222,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Tracking
         }
 
         [HttpPost]
-        [Route("~/v1/tracking/display-flow")]
+        [Route("display-flow")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<TrackingDisplayFlowHeaderOutputDto, TrackingDisplayFlowDateOutputDto>>), StatusCodes.Status200OK)]
         [ActionName("DisplayFlow")]
         public async Task<IActionResult> DisplayFlowFromTrackingDisplayFlow2([FromBody] SearchByIdInput input, CancellationToken cancellationToken)

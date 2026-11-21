@@ -1,17 +1,18 @@
-﻿using Aban360.Api.Filters;
+using Aban360.Api.Filters;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.OldCalcPool.Application.Features.Processing.Services;
 
 namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
 {
     [Route("v1/bill")]
     public class RemoveBillController : BaseController
     {
-        private readonly IRemoveBillHandler _removedBillHandler;
-        public RemoveBillController(IRemoveBillHandler removedBillHandler)
+        private readonly IBillRemovalService _removedBillHandler;
+        public RemoveBillController(IBillRemovalService removedBillHandler)
         {
             _removedBillHandler = removedBillHandler;
             _removedBillHandler.NotNull(nameof(removedBillHandler));
@@ -23,7 +24,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         [TypeFilter(typeof(EndpointAuthorizationFilter))]
         public async Task<IActionResult> Remove(RemoveBillInputDto input, CancellationToken cancellationToken)
         {
-            await _removedBillHandler.Handle(input, CurrentUser, cancellationToken);
+            await _removedBillHandler.RemoveBillAsync(input, CurrentUser, cancellationToken);
             return Ok(input);
         }
     }

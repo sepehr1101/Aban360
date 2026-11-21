@@ -1,0 +1,173 @@
+[
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Sale/Article11Controller.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/SalesReportsBaseline/Consumers/Aban360.Api_Controllers_V1_CalculationPool_Sale_Article11Controller.cs.txt",
+    "Hash": "233F30077DCF08A272585C6B592D0D97B603D0B2046D37C12F4693B6E63F89AF",
+    "Bindings": {
+      "IArticle11CreateHadler": {
+        "Type": "IArticle11Service",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "Article11CreateAsync"
+        }
+      },
+      "IArticle11DeleteHadler": {
+        "Type": "IArticle11Service",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "Article11DeleteAsync"
+        }
+      },
+      "IArticle11UpdateHadler": {
+        "Type": "IArticle11Service",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "Article11UpdateAsync"
+        }
+      },
+      "IArticle11Service": {
+        "Type": "IArticle11Service",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Article11GetAllAsync": "Article11GetAllAsync",
+          "Article11GetAsync": "Article11GetAsync"
+        }
+      }
+    },
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.Sale.Article11Controller"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Sale/InstallationAndEquipmentController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/SalesReportsBaseline/Consumers/Aban360.Api_Controllers_V1_CalculationPool_Sale_InstallationAndEquipmentController.cs.txt",
+    "Hash": "5624A5F460955A75D9A8F8AE6BCA6C23954AAD322DA602A9E90E0BBC0FD58BD2",
+    "Bindings": {
+      "IInstallationAndEquipmentCreateHadler": {
+        "Type": "IInstallationAndEquipmentService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "InstallationAndEquipmentCreateAsync"
+        }
+      },
+      "IInstallationAndEquipmentDeleteHadler": {
+        "Type": "IInstallationAndEquipmentService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "InstallationAndEquipmentDeleteAsync"
+        }
+      },
+      "IInstallationAndEquipmentUpdateHadler": {
+        "Type": "IInstallationAndEquipmentService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "InstallationAndEquipmentUpdateAsync"
+        }
+      },
+      "IInstallationAndEquipmentService": {
+        "Type": "IInstallationAndEquipmentService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "InstallationAndEquipmentGetAllAsync": "InstallationAndEquipmentGetAllAsync",
+          "InstallationAndEquipmentGetAsync": "InstallationAndEquipmentGetAsync"
+        }
+      }
+    },
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.Sale.InstallationAndEquipmentController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Sale/TankerWaterDistanceTariffController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/SalesReportsBaseline/Consumers/Aban360.Api_Controllers_V1_CalculationPool_Sale_TankerWaterDistanceTariffController.cs.txt",
+    "Hash": "F6F1C3F19A2B41EAA350E7E73877A6E9529BC7CAA7C50896E3CB9AD9899ACEF9",
+    "Bindings": {
+      "ITankerWaterDistanceTariffCreateHadler": {
+        "Type": "ITankerWaterDistanceTariffService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "TankerWaterDistanceTariffCreateAsync"
+        }
+      },
+      "ITankerWaterDistanceTariffDeleteHadler": {
+        "Type": "ITankerWaterDistanceTariffService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "TankerWaterDistanceTariffDeleteAsync"
+        }
+      },
+      "ITankerWaterDistanceTariffUpdateHadler": {
+        "Type": "ITankerWaterDistanceTariffService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "TankerWaterDistanceTariffUpdateAsync"
+        }
+      },
+      "ITankerWaterDistanceTariffService": {
+        "Type": "ITankerWaterDistanceTariffService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "TankerWaterDistanceTariffGetAllAsync": "TankerWaterDistanceTariffGetAllAsync",
+          "TankerWaterDistanceTariffGetAsync": "TankerWaterDistanceTariffGetAsync"
+        }
+      }
+    },
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.Sale.TankerWaterDistanceTariffController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Queries/MeterReadingExcludedController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/SalesReportsBaseline/Consumers/Aban360.Api_Controllers_V1_CalculationPool_MeterReading_Queries_MeterReadingExcludedController.cs.txt",
+    "Hash": "3669CE108034D91C39F9066456919DE4851D0874A7EF31463746616C6F5CE1E3",
+    "Bindings": {
+      "IMeterReadingDetailExcludedGetHadler": {
+        "Type": "IMeterReadingChangeReportsService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.MeterReading.Services",
+        "Methods": {
+          "Handle": "MeterReadingDetailExcludedGetAsync"
+        }
+      }
+    },
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries.MeterReadingExcludedController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Queries/MeterReadingUpdatedController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/SalesReportsBaseline/Consumers/Aban360.Api_Controllers_V1_CalculationPool_MeterReading_Queries_MeterReadingUpdatedController.cs.txt",
+    "Hash": "093825DB40AC055104E76FE0227DD0A8FE63A7E9C39719AC9D378582DAA4F2A5",
+    "Bindings": {
+      "IMeterReadingDetailUpdatedGetHadler": {
+        "Type": "IMeterReadingChangeReportsService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.MeterReading.Services",
+        "Methods": {
+          "Handle": "MeterReadingDetailUpdatedGetAsync"
+        }
+      }
+    },
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries.MeterReadingUpdatedController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Sale/Command/TankerWaterController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/SalesReportsBaseline/Consumers/Aban360.Api_Controllers_V1_CalculationPool_Sale_Command_TankerWaterController.cs.txt",
+    "Hash": "19810CB0634BC09D0DC3C09DA4F53F112DD970241E8B45566BC32E587E5A7AFE",
+    "Bindings": {
+      "ITankerWaterDetailByCustomerNumberGetHandler": {
+        "Type": "ITankerWaterQueriesService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "TankerWaterDetailByCustomerNumberGetAsync"
+        }
+      }
+    },
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.Sale.Command.TankerWaterController"
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Sale/Queries/TankerGetController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/SalesReportsBaseline/Consumers/Aban360.Api_Controllers_V1_CalculationPool_Sale_Queries_TankerGetController.cs.txt",
+    "Hash": "C16360E22EED22E412B89D5E116FC3534ACA0F43DC6D583EE656DB342325BB1F",
+    "Bindings": {
+      "ITankerWaterGetHandler": {
+        "Type": "ITankerWaterQueriesService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "TankerWaterGetAsync"
+        }
+      }
+    },
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries.TankerGetController"
+  }
+]

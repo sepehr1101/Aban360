@@ -1,40 +1,40 @@
+using Aban360.Api.Filters;
 using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Update.Contracts;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
-using Aban360.Api.Filters;
+using Aban360.CalculationPool.Application.Features.MeterReading.Services;
+using Aban360.Api.Controllers.V1.CalculationPool.MeterReading;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading
 {
+    [Route("v1/meter-reading-detail")]
     public class MeterReadingDetailController : BaseController
     {
-        private readonly IMeterReadingDetailExcludeHandler _c0_meterReadingDetailExcludeHandler;
-        private readonly IMeterReadingDetailUpdateHandler _c1_meterReadingDetailUpdateHandler;
-        public MeterReadingDetailController(IMeterReadingDetailExcludeHandler c0_meterReadingDetailExcludedHandler, IMeterReadingDetailUpdateHandler c1_meterReadingDetailUpdateHandler)
+        private readonly IMeterReadingDetailService _meterReadingDetailService;
+        public MeterReadingDetailController(IMeterReadingDetailService meterReadingDetailService)
         {
-            _c0_meterReadingDetailExcludeHandler = c0_meterReadingDetailExcludedHandler;
-            _c0_meterReadingDetailExcludeHandler.NotNull(nameof(c0_meterReadingDetailExcludedHandler));
-            _c1_meterReadingDetailUpdateHandler = c1_meterReadingDetailUpdateHandler;
-            _c1_meterReadingDetailUpdateHandler.NotNull(nameof(c1_meterReadingDetailUpdateHandler));
+            _meterReadingDetailService = meterReadingDetailService;
+            _meterReadingDetailService.NotNull(nameof(meterReadingDetailService));
         }
 
         [HttpPost]
-        [Route("~/v1/meter-reading-detail/exclude")]
+        [Route("exclude")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingDetailExcludeInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Exclude([FromBody] MeterReadingDetailExcludeInputDto input, CancellationToken cancellationToken)
         {
-            await _c0_meterReadingDetailExcludeHandler.Handle(input, CurrentUser, cancellationToken);
+            await _meterReadingDetailService.MeterReadingDetailExcludeAsync(input, CurrentUser, cancellationToken);
             return Ok(input);
         }
 
         [HttpPost]
-        [Route("~/v1/meter-reading-detail/update")]
+        [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingDetailCheckedDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update(MeterReadingDetailUpdateDto input, CancellationToken cancellationToken)
         {
-            MeterReadingDetailCheckedDto result = await _c1_meterReadingDetailUpdateHandler.Handle(input, CurrentUser, cancellationToken);
+            MeterReadingDetailCheckedDto result = await _meterReadingDetailService.MeterReadingDetailUpdateAsync(input, CurrentUser, cancellationToken);
             return Ok(result);
         }
     }

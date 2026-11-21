@@ -1,4 +1,3 @@
-using Aban360.ClaimPool.Application.Features.AssessmentApk.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.AssessmentApk.Queries;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.Common.Categories.ApiResponse;
@@ -20,13 +19,14 @@ using Newtonsoft.Json.Linq;
 using Aban360.Api.Cronjobs;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.Api.Filters;
+using IAssessmentLookupsService = global::Aban360.ClaimPool.Application.Features.Request.Services.IAssessmentLookupsService;
+using IAssessmentApkService = global::Aban360.ClaimPool.Application.Features.AssessmentApk.Services.IAssessmentApkService;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool
 {
     public class AssessmentController : BaseController
     {
-        private readonly IAssessmentApkValidateVersionHandler _c0_validateVersionHandler;
-        private readonly IAssessmentApkLatestDownloadHandler _c0_latestDownloadHandler;
+        private readonly IAssessmentApkService _assessmentApkService;
         private string _c0_apkContentType = DirectoryLiterals.ApplicationContentType;
         private readonly IHttpContextAccessor _c1_contextAccessor;
         private readonly ISetAssessmentResultHandler _c1_setAssessmentResultHandler;
@@ -34,22 +34,16 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
         private readonly ISetAssessmentTimeHandler _c1_setAssessmentTimeHandler;
         private readonly ISetLightAssessmentResultHandler _c1_setLightAssessmentResultHandler;
         private readonly ISetPreAssessmentResultHandler _c1_setPreAssessmentResultHandler;
-        private readonly IAssessmentByTrackIdGetHandler _c1_assessmentByIdGetHandler;
+        private readonly IAssessmentLookupsService _assessmentLookupsService;
         private readonly IReAssessmentRequestHandler _c1_reAssessmentRequestHandler;
         private readonly ISmsOldHandler _c1_smsOldHandler;
         private readonly IBackgroundJobClient _c1_backgroudJobClient;
-        private readonly IAssessmentDuplicateDetailHandler _c2_assessmentDuplicateDetailHandler;
-        private readonly IAssessmentDuplicateParametersGetHandler _c2_assessmentDuplicateParametersGetHandler;
         private readonly IReportGenerator _c2_reportGenerator;
         private readonly IAssessmentTaskGetAllHandler _c3_assessmentTaskHandler;
-        private readonly IAssessmentLocatoinsGetHandler _c3_assessmentLocatoinsGetHandler;
-        private readonly IAssessmentDuplicateDetailHandler _c3_assessmentDuplicateDetailHandler;
-        public AssessmentController(IAssessmentApkValidateVersionHandler c0_validateVersionHandler, IAssessmentApkLatestDownloadHandler c0_latestDownloadHandler, IHttpContextAccessor c1_contextAccessor, ISetAssessmentResultHandler c1_setAssessmentResultHandler, IAssessmentResultCompletionHandler c1_assessmentResultCompletionHandler, ISetAssessmentTimeHandler c1_setAssessmentTimeHandler, ISetLightAssessmentResultHandler c1_setLightAssessmentResultHandler, ISetPreAssessmentResultHandler c1_setPreAssessmentResultHandler, IAssessmentByTrackIdGetHandler c1_assessmentByIdGetHandler, IReAssessmentRequestHandler c1_reAssessmentRequestHandler, ISmsOldHandler c1_smsOldHandler, IBackgroundJobClient c1_backgroudJobClient, IAssessmentDuplicateDetailHandler c2_assessmentDuplicateDetailHandler, IAssessmentDuplicateParametersGetHandler c2_assessmentDuplicateParametersGetHandler, IReportGenerator c2_reportGenerator, IAssessmentTaskGetAllHandler c3_assessmentTaskHandler, IAssessmentLocatoinsGetHandler c3_assessmentLocatoinsGetHandler, IAssessmentDuplicateDetailHandler c3_assessmentDuplicateDetailHandler)
+        public AssessmentController(IAssessmentApkService assessmentApkService, IHttpContextAccessor c1_contextAccessor, ISetAssessmentResultHandler c1_setAssessmentResultHandler, IAssessmentResultCompletionHandler c1_assessmentResultCompletionHandler, ISetAssessmentTimeHandler c1_setAssessmentTimeHandler, ISetLightAssessmentResultHandler c1_setLightAssessmentResultHandler, ISetPreAssessmentResultHandler c1_setPreAssessmentResultHandler, IAssessmentLookupsService assessmentLookupsService, IReAssessmentRequestHandler c1_reAssessmentRequestHandler, ISmsOldHandler c1_smsOldHandler, IBackgroundJobClient c1_backgroudJobClient, IReportGenerator c2_reportGenerator, IAssessmentTaskGetAllHandler c3_assessmentTaskHandler)
         {
-            _c0_validateVersionHandler = c0_validateVersionHandler;
-            _c0_validateVersionHandler.NotNull(nameof(c0_validateVersionHandler));
-            _c0_latestDownloadHandler = c0_latestDownloadHandler;
-            _c0_latestDownloadHandler.NotNull(nameof(c0_latestDownloadHandler));
+            _assessmentApkService = assessmentApkService;
+            _assessmentApkService.NotNull(nameof(assessmentApkService));
             _c1_contextAccessor = c1_contextAccessor;
             _c1_contextAccessor.NotNull(nameof(c1_contextAccessor));
             _c1_setAssessmentResultHandler = c1_setAssessmentResultHandler;
@@ -62,26 +56,18 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
             _c1_setLightAssessmentResultHandler.NotNull(nameof(c1_setLightAssessmentResultHandler));
             _c1_setPreAssessmentResultHandler = c1_setPreAssessmentResultHandler;
             _c1_setPreAssessmentResultHandler.NotNull(nameof(c1_setPreAssessmentResultHandler));
-            _c1_assessmentByIdGetHandler = c1_assessmentByIdGetHandler;
-            _c1_assessmentByIdGetHandler.NotNull(nameof(c1_assessmentByIdGetHandler));
+            _assessmentLookupsService = assessmentLookupsService;
+            _assessmentLookupsService.NotNull(nameof(assessmentLookupsService));
             _c1_reAssessmentRequestHandler = c1_reAssessmentRequestHandler;
             _c1_reAssessmentRequestHandler.NotNull(nameof(c1_reAssessmentRequestHandler));
             _c1_smsOldHandler = c1_smsOldHandler;
             _c1_smsOldHandler.NotNull(nameof(c1_smsOldHandler));
             _c1_backgroudJobClient = c1_backgroudJobClient;
             _c1_backgroudJobClient.NotNull(nameof(c1_backgroudJobClient));
-            _c2_assessmentDuplicateDetailHandler = c2_assessmentDuplicateDetailHandler;
-            _c2_assessmentDuplicateDetailHandler.NotNull(nameof(c2_assessmentDuplicateDetailHandler));
-            _c2_assessmentDuplicateParametersGetHandler = c2_assessmentDuplicateParametersGetHandler;
-            _c2_assessmentDuplicateParametersGetHandler.NotNull(nameof(c2_assessmentDuplicateParametersGetHandler));
             _c2_reportGenerator = c2_reportGenerator;
             _c2_reportGenerator.NotNull(nameof(_c2_reportGenerator));
             _c3_assessmentTaskHandler = c3_assessmentTaskHandler;
             _c3_assessmentTaskHandler.NotNull(nameof(c3_assessmentTaskHandler));
-            _c3_assessmentLocatoinsGetHandler = c3_assessmentLocatoinsGetHandler;
-            _c3_assessmentLocatoinsGetHandler.NotNull(nameof(c3_assessmentLocatoinsGetHandler));
-            _c3_assessmentDuplicateDetailHandler = c3_assessmentDuplicateDetailHandler;
-            _c3_assessmentDuplicateDetailHandler.NotNull(nameof(c3_assessmentDuplicateDetailHandler));
         }
 
         [HttpPost, HttpGet]
@@ -89,7 +75,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentApkValidateOutputDto>), StatusCodes.Status200OK)]
         public IActionResult ValidateVersion(string userVersion, CancellationToken cancellationToken)
         {
-            AssessmentApkValidateOutputDto result = _c0_validateVersionHandler.Handle(userVersion, cancellationToken);
+            AssessmentApkValidateOutputDto result = _assessmentApkService.AssessmentApkValidateVersion(userVersion, cancellationToken);
             return Ok(result);
         }
 
@@ -98,7 +84,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<UsageGroup1InsertDto>), StatusCodes.Status200OK)]
         public FileResult GetLatestApk(CancellationToken cancellationToken)
         {
-            var (fileStream, fileName) = _c0_latestDownloadHandler.Handle(cancellationToken);
+            var(fileStream, fileName) = _assessmentApkService.AssessmentApkLatestDownload(cancellationToken);
             return File(fileStream, _c0_apkContentType, fileName, enableRangeProcessing: true);
         }
 
@@ -200,6 +186,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
             {
                 return new SetAssessmentTimeOutputDto(result.TrackNumber, false, false, null, null);
             }
+
             string customerText = string.Format(SmsTemplates.RequestTimeSet, result.AssessmentName, result.AssessmentMobileNumber, result.AssessmentDateJalai, result.TrackNumber);
             string assessmentText = result.ServiceGroupId == 1 ? string.Format(SmsTemplates.NewRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.NeighbourBillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber, result.NeighbourBillId) : string.Format(SmsTemplates.AfterSaleRequestTimeSetAssessment, result.AssessmentName, result.AssessmentDateJalai, result.Address, result.FullName, result.BillId, result.MobileNumber, result.ServiceSelectedList, result.TrackNumber);
             if (hasAssessmentSms)
@@ -217,7 +204,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
 
         private async Task<JsonReportId> GetSetResultJsonReport(Guid id, int reportCode, CancellationToken cancellationToken)
         {
-            AssessmentDataOutputDto result = await _c1_assessmentByIdGetHandler.Handle(id, cancellationToken);
+            AssessmentDataOutputDto result = await _assessmentLookupsService.AssessmentByTrackIdGetAsync(id, cancellationToken);
             if (result is null || result.AllInJson is null || string.IsNullOrWhiteSpace(result.AllInJson))
             {
                 throw new InvalidTrackingException(ExceptionLiterals.InvalidShowPreviousRequest);
@@ -258,7 +245,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<NumericDictionary>>), StatusCodes.Status200OK)]
         public IActionResult GetDictionary(CancellationToken cancellationToken)
         {
-            IEnumerable<NumericDictionary> result = _c2_assessmentDuplicateParametersGetHandler.Handle(cancellationToken);
+            IEnumerable<NumericDictionary> result = _assessmentLookupsService.AssessmentDuplicateParametersGetAsync(cancellationToken);
             return Ok(result);
         }
 
@@ -267,7 +254,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<AssessmentDuplicatHeaderOutputDto, AssessmentDuplicateDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw([FromBody] AssessmentDuplicateInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<AssessmentDuplicatHeaderOutputDto, AssessmentDuplicateDetailDataOutputDto> result = await _c2_assessmentDuplicateDetailHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<AssessmentDuplicatHeaderOutputDto, AssessmentDuplicateDetailDataOutputDto> result = await _assessmentLookupsService.AssessmentDuplicateDetailAsync(inputDto, cancellationToken);
             return Ok(result);
         }
 
@@ -275,7 +262,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
         [Route("~/v1/assessment/duplicate-excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, AssessmentDuplicateInputDto inputDto, CancellationToken cancellationToken)
         {
-            await _c2_reportGenerator.FireAndInform(inputDto, cancellationToken, _c2_assessmentDuplicateDetailHandler.Handle, CurrentUser, ReportLiterals.ConsumptionManagerDetail, connectionId);
+            await _c2_reportGenerator.FireAndInform(inputDto, cancellationToken, _assessmentLookupsService.AssessmentDuplicateDetailAsync, CurrentUser, ReportLiterals.ConsumptionManagerDetail, connectionId);
             return Ok(inputDto);
         }
 
@@ -294,7 +281,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentLocationsGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetLocations(Guid trackId, CancellationToken cancellationToken)
         {
-            AssessmentLocationsGetDto result = await _c3_assessmentLocatoinsGetHandler.Handle(trackId, cancellationToken);
+            AssessmentLocationsGetDto result = await _assessmentLookupsService.AssessmentLocatoinsGetAsync(trackId, cancellationToken);
             return Ok(result);
         }
 
@@ -303,7 +290,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<AssessmentDuplicatHeaderOutputDto, AssessmentDuplicateDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDuplicateDetail([FromBody] AssessmentDuplicateInputDto inputDto, CancellationToken cancellationToken)
         {
-            ReportOutput<AssessmentDuplicatHeaderOutputDto, AssessmentDuplicateDetailDataOutputDto> result = await _c3_assessmentDuplicateDetailHandler.Handle(inputDto, cancellationToken);
+            ReportOutput<AssessmentDuplicatHeaderOutputDto, AssessmentDuplicateDetailDataOutputDto> result = await _assessmentLookupsService.AssessmentDuplicateDetailAsync(inputDto, cancellationToken);
             return Ok(result);
         }
     }

@@ -67,6 +67,45 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations
             result.StringTrackNumber = result.TrackNumber.ToString().PadLeft(11, '0');
             return result;
         }
+        public async Task<TrackingOutputDto> GetLatest(string billId)
+        {
+            const string query = @"SELECT TOP 1
+                    t.TrackID,
+                    t.TrackNumber,
+                    t.BillID,
+                    t46.C0 RegionId,
+                    t46.C2 RegionTitle,
+                    t.ZoneID,
+                    t51.C2 ZoneTitle,
+                    t.DateTimeJalali InsertDateJalali,
+                    t.DateAndTime InsertDateTimeGregorian,
+                    t.ServiceGroup_FK ServiceGroupId,
+                    sg.Title ServiceGroupTitle,
+                    t.Status StatusId,
+                    s.Description StatusTitle,
+                    t.InserrtedBy,
+                    t.Description,
+                    t.NotificationMobile,
+                    t.NeighbourBillId,
+                    t.Caller,
+                    t.RequestOrigin RequestOriginId
+                FROM AbAndFazelab.dbo.Tracking t
+                LEFT JOIN AbAndFazelab.dbo.Status s ON t.Status = s.StatusID
+                LEFT JOIN AbAndFazelab.dbo.ServiceGroup sg ON t.ServiceGroup_FK = sg.Id
+                LEFT JOIN Db70.dbo.T51 t51 ON t.ZoneID = t51.C0
+                LEFT JOIN Db70.dbo.T46 t46 ON t51.C1 = t46.C0
+                WHERE t.BillID = @billId
+                ORDER BY t.DateAndTime DESC, t.TrackNumber DESC, t.TrackID DESC";
+
+            var result = await _sqlReportConnection.QueryFirstOrDefaultAsync<TrackingOutputDto>(query, new { billId });
+            if (result is null)
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.InvalidBillId);
+            }
+            result.StringTrackNumber = result.TrackNumber.ToString().PadLeft(11, '0');
+            return result;
+        }
+
         public async Task<TrackingOutputDto> GetSecondToLatest(int trackNumber)
         {
             string query = GetTwoLatestByTrackNumberQuery();

@@ -11,7 +11,9 @@ static class CrudChecks
     public static async Task<int> Run(Contract[] contracts, ControllerActionDescriptor[] actions)
     {
         int checks = 0, covered = 0, scenarios = 0;
-        var services = Aban360.Tests.ServiceBaselines.ApplicationServiceBaseline.Operations.Select(o => o.Service).ToHashSet();
+        var services = Aban360.Tests.ServiceBaselines.ApplicationServiceBaseline.Operations
+            .Concat(Aban360.Tests.ServiceBaselines.ApplicationServiceBaseline.CriticalOperations)
+            .Concat(Aban360.Tests.ServiceBaselines.ApplicationServiceBaseline.AuxiliaryOperations).Select(o => o.Service).ToHashSet();
         void Check(bool condition, string text) { if (!condition) throw new InvalidOperationException(text); checks++; }
         foreach (var expected in contracts.Where(c => c.Project == "Api" && c.Action is "Create" or "Update" or "Delete"))
         {

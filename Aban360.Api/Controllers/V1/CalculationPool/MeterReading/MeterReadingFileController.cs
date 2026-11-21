@@ -13,6 +13,7 @@ using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.InvoiceInfo.Dto;
 using Aban360.CalculationPool.Application.Features.Base;
 using Aban360.Api.Filters;
+using IMeterReadingFileReportsService = global::Aban360.CalculationPool.Application.Features.MeterReading.Services.IMeterReadingFileReportsService;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading
 {
@@ -21,12 +22,12 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading
         private readonly IChangeDateBatchHandler _c0_changeDateBatchHandler;
         private readonly IMeterReadingExcelFileCreateHandler _c1_meterReadingFileHandle;
         private readonly IMeterReadingExcelMultiZoneFileCreateHandler _c1_meterReadingMultiZoneFileHandler;
-        private readonly IMeterReadingDownloadExcelFileHandler _c1_meterReadingDownloadExcelFile;
+        private readonly IMeterReadingFileReportsService _meterReadingFileReportsService;
         private readonly ICommonZoneService _c1_commonZoneService;
         private readonly IReportGenerator _c1_reportGenerator;
         private readonly IMeterReadingFileCreateHandler _c2_meterReadingFileHandle;
         private readonly IMeterReadingUploadDbFileWithSendCloseSmsJobService _c2_meterReadingUploadDbFileWithSendSmsJobService;
-        public MeterReadingFileController(IChangeDateBatchHandler c0_changeDateBatchHandler, IMeterReadingExcelFileCreateHandler c1_meterReadingFileHandle, IMeterReadingExcelMultiZoneFileCreateHandler c1_meterReadingMultiZoneFileHandler, IMeterReadingDownloadExcelFileHandler c1_meterReadingDownloadExcelFile, ICommonZoneService c1_commonZoneService, IReportGenerator c1_reportGenerator, IMeterReadingFileCreateHandler c2_meterReadingFileHandle, IMeterReadingUploadDbFileWithSendCloseSmsJobService c2_meterReadingUploadDbFileWithSendSmsJobService)
+        public MeterReadingFileController(IChangeDateBatchHandler c0_changeDateBatchHandler, IMeterReadingExcelFileCreateHandler c1_meterReadingFileHandle, IMeterReadingExcelMultiZoneFileCreateHandler c1_meterReadingMultiZoneFileHandler, IMeterReadingFileReportsService meterReadingFileReportsService, ICommonZoneService c1_commonZoneService, IReportGenerator c1_reportGenerator, IMeterReadingFileCreateHandler c2_meterReadingFileHandle, IMeterReadingUploadDbFileWithSendCloseSmsJobService c2_meterReadingUploadDbFileWithSendSmsJobService)
         {
             _c0_changeDateBatchHandler = c0_changeDateBatchHandler;
             _c0_changeDateBatchHandler.NotNull(nameof(c0_changeDateBatchHandler));
@@ -34,8 +35,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading
             _c1_meterReadingFileHandle.NotNull(nameof(c1_meterReadingFileHandle));
             _c1_meterReadingMultiZoneFileHandler = c1_meterReadingMultiZoneFileHandler;
             _c1_meterReadingMultiZoneFileHandler.NotNull(nameof(c1_meterReadingMultiZoneFileHandler));
-            _c1_meterReadingDownloadExcelFile = c1_meterReadingDownloadExcelFile;
-            _c1_meterReadingDownloadExcelFile.NotNull(nameof(c1_meterReadingDownloadExcelFile));
+            _meterReadingFileReportsService = meterReadingFileReportsService;
+            _meterReadingFileReportsService.NotNull(nameof(meterReadingFileReportsService));
             _c1_commonZoneService = c1_commonZoneService;
             _c1_commonZoneService.NotNull(nameof(c1_commonZoneService));
             _c1_reportGenerator = c1_reportGenerator;
@@ -79,8 +80,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading
         public async Task<IActionResult> Download(string connectionId, [FromBody] MeterReadingExcelFileDownloadDto input, CancellationToken cancellationToken)
         {
             await _c1_commonZoneService.IsUserInZone(CurrentUser, input.ZoneId);
-            ReportOutput<MeterReadingExcelFileDownloadHeaderOutputDto, MeterReadingExcelFileDownloadDateOutputDto> result = await _c1_meterReadingDownloadExcelFile.Handle(input, cancellationToken);
-            await _c1_reportGenerator.FireAndInform(input, cancellationToken, _c1_meterReadingDownloadExcelFile.Handle, CurrentUser, ReportLiterals.MeterReadingExcelFile, connectionId);
+            ReportOutput<MeterReadingExcelFileDownloadHeaderOutputDto, MeterReadingExcelFileDownloadDateOutputDto> result = await _meterReadingFileReportsService.MeterReadingDownloadExcelFileAsync(input, cancellationToken);
+            await _c1_reportGenerator.FireAndInform(input, cancellationToken, _meterReadingFileReportsService.MeterReadingDownloadExcelFileAsync, CurrentUser, ReportLiterals.MeterReadingExcelFile, connectionId);
             return Ok(result);
         }
 
@@ -89,8 +90,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading
         public async Task<IActionResult> DownloadMultiZone(string connectionId, [FromBody] MeterReadingExcelFileDownloadDto input, CancellationToken cancellationToken)
         {
             await _c1_commonZoneService.IsUserInZone(CurrentUser, input.ZoneId);
-            ReportOutput<MeterReadingExcelFileDownloadHeaderOutputDto, MeterReadingExcelFileDownloadDateOutputDto> result = await _c1_meterReadingDownloadExcelFile.Handle(input, cancellationToken);
-            await _c1_reportGenerator.FireAndInform(input, cancellationToken, _c1_meterReadingDownloadExcelFile.Handle, CurrentUser, ReportLiterals.MeterReadingExcelFile, connectionId);
+            ReportOutput<MeterReadingExcelFileDownloadHeaderOutputDto, MeterReadingExcelFileDownloadDateOutputDto> result = await _meterReadingFileReportsService.MeterReadingDownloadExcelFileAsync(input, cancellationToken);
+            await _c1_reportGenerator.FireAndInform(input, cancellationToken, _meterReadingFileReportsService.MeterReadingDownloadExcelFileAsync, CurrentUser, ReportLiterals.MeterReadingExcelFile, connectionId);
             return Ok(result);
         }
 
@@ -107,4 +108,3 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading
         }
     }
 }
-

@@ -1,0 +1,159 @@
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Timing;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPool.Persistence.Constants;
+using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
+using Aban360.ReportPool.Domain.Base;
+using FluentValidation;
+using Microsoft.Extensions.Configuration;
+using System.Data;
+using System.Xml.Linq;
+
+namespace Aban360.OldCalcPool.Application.Features.Processing.Services;
+public interface IMeterChangeService
+{
+    Task CreateAsync(MeterChangeInputDto inputDto, CancellationToken cancellationToken);
+    Task<IEnumerable<MeterChangeInfoOutputDto>> GetAsync(string billId, CancellationToken cancellationToken);
+}
+
+internal sealed class MeterChangeService : AbstractBaseConnection, IMeterChangeService
+{
+    private readonly ICommonMemberQueryService _memberQueryService;
+    private readonly IChangeMeterCauseQueryService _changeMeterCauseQueryService;
+    private readonly IValidator<MeterChangeInputDto> _validator;
+    const int _meterChangeDateLimitMonth = -1;
+    const int _changeCounterState = 2;
+    private readonly ITavizQueryService _tavizQueryService;
+    public MeterChangeService(ICommonMemberQueryService memberQueryService, IChangeMeterCauseQueryService changeMeterCauseQueryService, IValidator<MeterChangeInputDto> validator, IConfiguration configuration, ITavizQueryService tavizQueryService) : base(configuration)
+    {
+        _memberQueryService = memberQueryService;
+        _memberQueryService.NotNull(nameof(memberQueryService));
+        _changeMeterCauseQueryService = changeMeterCauseQueryService;
+        _changeMeterCauseQueryService.NotNull(nameof(changeMeterCauseQueryService));
+        _validator = validator;
+        _validator.NotNull(nameof(validator));
+        _tavizQueryService = tavizQueryService;
+        _tavizQueryService.NotNull(nameof(tavizQueryService));
+    }
+
+    public async Task CreateAsync(MeterChangeInputDto inputDto, CancellationToken cancellationToken)
+    {
+        await CreateValidation(inputDto, cancellationToken);
+        var(memberInfo, changeCause) = await CreateGetInfos(inputDto);
+        var(tavizInsertDto, meterChangeInsertDto, contorMeterChangeUpdateDto) = CreateGetCommandDtos(inputDto, memberInfo, changeCause);
+        if (inputDto.IsConfirm)
+        {
+            await CreateExecSql(tavizInsertDto, meterChangeInsertDto, contorMeterChangeUpdateDto);
+        }
+    }
+
+    private async Task CreateExecSql(TavizInsertDto tavizInsertDto, MeterChangeInsertDto meterChangeInsertDto, ContorUpdateDto contorMeterChangeUpdateDto)
+    {
+        string dbName = GetDbName(tavizInsertDto.ZoneId);
+        using (IDbConnection connection = _sqlReportConnection)
+        {
+            if (connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+
+            using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+            {
+                TavizCommandService tavizCommandService = new(connection, transaction);
+                MeterChangeCommandService meterChangeCommandService = new(connection, transaction);
+                ContorCommandService contorCommandService = new(connection, transaction);
+                await tavizCommandService.Insert(tavizInsertDto, dbName);
+                await meterChangeCommandService.Insert(meterChangeInsertDto);
+                await contorCommandService.Update(contorMeterChangeUpdateDto, dbName, true);
+                transaction.Commit();
+            }
+        }
+    }
+
+    private (TavizInsertDto, MeterChangeInsertDto, ContorUpdateDto /*ContorMeterChangeUpdateDto*/) CreateGetCommandDtos(MeterChangeInputDto inputDto, MemberInfoGetDto memberInfo, NumericDictionary changeCause)
+    {
+        TavizInsertDto tavizInsertDto = new()
+        {
+            ZoneId = memberInfo.ZoneId,
+            CustomerNumber = memberInfo.CustomerNumber,
+            Operator = ReportLiterals.RayabOperator,
+            MeterNumber = inputDto.MeterNumber ?? 0,
+            MeterChangeDateJalali = inputDto.MeterChangeDateJalali,
+            MeterDiameterId = memberInfo.MeterDiameterId,
+            BodySerial = inputDto.BodySerial,
+            ChangeCauseId = inputDto.ChangeCauseId,
+            UsageId = memberInfo.UsageId,
+        };
+        MeterChangeInsertDto meterChangeInsertDto = new()
+        {
+            ZoneId = memberInfo.ZoneId,
+            CustomerNumber = memberInfo.CustomerNumber,
+            MeterNumber = inputDto.MeterNumber ?? 0,
+            MeterChangeDateJalali = inputDto.MeterChangeDateJalali,
+            BodySerial = inputDto.BodySerial,
+            ChangeCauseId = changeCause.Id,
+            ChangeCauseTitle = changeCause.Title,
+        };
+        //ContorMeterChangeUpdateDto contorMeterChangeUpdateDto = new()
+        //{
+        //    ZoneId = memberInfo.ZoneId,
+        //    CustomerNumber = memberInfo.CustomerNumber,
+        //    MeterChangeDateJalali = inputDto.MeterChangeDateJalali,
+        //    MeterChangeNumber = inputDto.MeterNumber,
+        //};
+        ContorUpdateDto contorMeterChangeUpdateDto = new()
+        {
+            ZoneId = memberInfo.ZoneId,
+            CustomerNumber = memberInfo.CustomerNumber,
+            CurrentDateJalali = inputDto.MeterChangeDateJalali,
+            CurrentNumber = 0,
+            Consumption = 0,
+            ConsumptionAverage = 0,
+            MeterChangeDateJalali = inputDto.MeterChangeDateJalali,
+            MeterChangeNumber = inputDto.MeterNumber,
+            PreviousCounterState = _changeCounterState
+        };
+        return (tavizInsertDto, meterChangeInsertDto, contorMeterChangeUpdateDto);
+    }
+
+    private async Task<(MemberInfoGetDto, NumericDictionary)> CreateGetInfos(MeterChangeInputDto inputDto)
+    {
+        ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _memberQueryService.Get(inputDto.BillId);
+        MemberInfoGetDto memberInfo = await _memberQueryService.Get(zoneIdAndCustomerNumber);
+        NumericDictionary changeCause = await _changeMeterCauseQueryService.Get(inputDto.ChangeCauseId);
+        return (memberInfo, changeCause);
+    }
+
+    private async Task CreateValidation(MeterChangeInputDto inputDto, CancellationToken cancellationToken)
+    {
+        var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            string message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+            throw new CustomValidationException(message);
+        }
+
+        DateTime currentDateGregorian = DateTime.Now;
+        string meterChangeGregorian = ConvertDate.JalaliToGregorian(inputDto.MeterChangeDateJalali, true);
+        if (meterChangeGregorian.Length != 10)
+            throw new InvalidDateException(meterChangeGregorian);
+        if (meterChangeGregorian.CompareTo(currentDateGregorian.AddMonths(_meterChangeDateLimitMonth).Date.ToString("yyyy-MM-dd")) < 0)
+            throw new InvalidDateException(Exceptionliterals.InvalidDateLessThan1Month);
+        if (meterChangeGregorian.CompareTo(currentDateGregorian.Date.ToString("yyyy-MM-dd")) > 0)
+            throw new InvalidDateException(Exceptionliterals.InvalidDateMoreThanCurrentDay);
+    }
+
+    public async Task<IEnumerable<MeterChangeInfoOutputDto>> GetAsync(string billId, CancellationToken cancellationToken)
+    {
+        ZoneIdAndCustomerNumber zoneIdAndCustomerNumber = await _memberQueryService.Get(billId);
+        IEnumerable<MeterChangeInfoOutputDto> resutl = await _tavizQueryService.Get(zoneIdAndCustomerNumber);
+        return resutl;
+    }
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.BlobController.DMS.DocumentEntityController",
+    "Current": "Aban360.Api.Controllers.V1.BlobController.DMS.DocumentEntityController",
+    "Source": "Aban360.Api/Controllers/V1/BlobController/DMS/DocumentEntityController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.BlobController.Taxonomy.DocumentController",
+    "Current": "Aban360.Api.Controllers.V1.BlobController.Taxonomy.DocumentController",
+    "Source": "Aban360.Api/Controllers/V1/BlobController/Taxonomy/DocumentController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands.SmsFlowController",
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands.SmsFlowController",
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/SmsFlowController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands.SmsStateGroupController",
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands.SmsStateGroupController",
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/SmsStateGroupController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands.SmsStateTemplateController",
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands.SmsStateTemplateController",
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/SmsStateTemplateController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands.SmsTypeController",
+    "Current": "Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands.SmsTypeController",
+    "Source": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/SmsTypeController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.MeterPool.Apk.Commands.MeterApkFileController",
+    "Current": "Aban360.Api.Controllers.V1.MeterPool.Apk.Commands.MeterApkFileController",
+    "Source": "Aban360.Api/Controllers/V1/MeterPool/Apk/Commands/MeterApkFileController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.Commands.CreditByDocumentCreateController",
+    "Current": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.Commands.CreditByDocumentCreateController",
+    "Source": "Aban360.Api/Controllers/V1/PaymentPool/NegotiableInstrument/Commands/CreditByDocumentCreateController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.Commands.CreditWithoutDocumentCreateController",
+    "Current": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.Commands.CreditWithoutDocumentCreateController",
+    "Source": "Aban360.Api/Controllers/V1/PaymentPool/NegotiableInstrument/Commands/CreditWithoutDocumentCreateController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.SystemPool.Logging.Queries.AssessmentLogController",
+    "Current": "Aban360.Api.Controllers.V1.SystemPool.Logging.Queries.AssessmentLogController",
+    "Source": "Aban360.Api/Controllers/V1/SystemPool/Logging/Queries/AssessmentLogController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.SystemPool.Logging.Queries.MeterApkLogController",
+    "Current": "Aban360.Api.Controllers.V1.SystemPool.Logging.Queries.MeterApkLogController",
+    "Source": "Aban360.Api/Controllers/V1/SystemPool/Logging/Queries/MeterApkLogController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.SystemPool.ServerInfo.Queries.DiskInfoGetController",
+    "Current": "Aban360.Api.Controllers.V1.SystemPool.ServerInfo.Queries.DiskInfoGetController",
+    "Source": "Aban360.Api/Controllers/V1/SystemPool/ServerInfo/Queries/DiskInfoGetController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.SystemPool.ServerInfo.Queries.OsInfoGetController",
+    "Current": "Aban360.Api.Controllers.V1.SystemPool.ServerInfo.Queries.OsInfoGetController",
+    "Source": "Aban360.Api/Controllers/V1/SystemPool/ServerInfo/Queries/OsInfoGetController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.UserPool.Auth.Queries.UserSearchController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Queries.UserSearchController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Queries/UserSearchController.cs"
+  },
+  {
+    "Assembly": "Aban360.BlobPool.GatewayAddHoc",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.BlobPool.GatewayAddHoc.Features.Taxonomy.Implementations.DocumentCommandAddhoc",
+    "Current": "Aban360.BlobPool.GatewayAddHoc.Features.Taxonomy.Implementations.DocumentCommandAddhoc",
+    "Source": "Aban360.BlobPool.GatewayAddHoc/Features/Taxonomy/Implementations/DocumentCommandAddhoc.cs"
+  },
+  {
+    "Assembly": "Aban360.BlobPool.GatewayAddHoc",
+    "Original": "BeforeConsumersAuxiliary10.Aban360.BlobPool.GatewayAddHoc.Features.Taxonomy.Implementations.DocumentGetContentTypeAddhoc",
+    "Current": "Aban360.BlobPool.GatewayAddHoc.Features.Taxonomy.Implementations.DocumentGetContentTypeAddhoc",
+    "Source": "Aban360.BlobPool.GatewayAddHoc/Features/Taxonomy/Implementations/DocumentGetContentTypeAddhoc.cs"
+  }
+]

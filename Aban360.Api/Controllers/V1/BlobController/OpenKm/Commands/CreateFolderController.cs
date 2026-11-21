@@ -1,19 +1,19 @@
-﻿using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Querys.Contracts;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.BlobPool.Application.Features.OpenKm.Services;
 
 namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
 {
     [Route("v1/open-km")]
     public class CreateFolderController : BaseController
     {
-        private readonly ICreateFolderHandler _createFolderHandler;
-        public CreateFolderController(ICreateFolderHandler createFolderHandler)
+        private readonly IOpenKmFoldersMetadataService _openKmFoldersMetadataService;
+        public CreateFolderController(IOpenKmFoldersMetadataService openKmFoldersMetadataService)
         {
-            _createFolderHandler = createFolderHandler;
-            _createFolderHandler.NotNull(nameof(createFolderHandler));
+            _openKmFoldersMetadataService = openKmFoldersMetadataService;
+            _openKmFoldersMetadataService.NotNull(nameof(openKmFoldersMetadataService));
         }
 
         [HttpGet]
@@ -22,7 +22,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Commands
         [AllowAnonymous]
         public async Task<IActionResult> CreateFolder(string folderName, CancellationToken cancellation)
         {
-            string uuid = await _createFolderHandler.Handle(folderName, cancellation);
+            string uuid = await _openKmFoldersMetadataService.CreateFolderAsync(folderName, cancellation);
             return Ok(uuid);
         }
     }

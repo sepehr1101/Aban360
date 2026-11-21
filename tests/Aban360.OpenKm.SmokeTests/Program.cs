@@ -7,11 +7,13 @@ using System.Text.Json;
 using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Querys.Contracts;
+using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Contracts;
 using Aban360.BlobPool.Domain.Features.OpenKm;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Authentication;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
@@ -160,6 +162,50 @@ catch (InvalidOperationException)
     Check(!startAuditFailure.DestinationExists && startAuditFailure.Uploads == 0,
         "starting audit failure still prevents remote writes");
 }
+foreach (string? number in new string?[] { null, "", "20", "00000000020" })
+{
+    var lookup = new ArchiveLookupFixture();
+    var files = await lookup.Run(number);
+    Check(files.Documents.Count == 0 && lookup.Calls.SequenceEqual(new[] { "tracking:123", "folder:123", "files:123" }),
+        "Bill lookup precedes OpenKM; optional and matching request numbers are accepted");
+}
+var unknownBill = new ArchiveLookupFixture { LatestTrackNumber = null };
+try { await unknownBill.Run(null); throw new Exception("Unknown bill accepted"); }
+catch (InvalidBillIdException)
+{
+    Check(unknownBill.Calls.SequenceEqual(new[] { "tracking:123" }), "Unknown bill rejected before OpenKM");
+}
+foreach (string number in new[] { "10", "30", "0", "-1", "invalid", "null" })
+{
+    var lookup = new ArchiveLookupFixture();
+    try { await lookup.Run(number); throw new Exception("Invalid or mismatched request accepted"); }
+    catch (InvalidTrackNumberException)
+    {
+        Check(lookup.Calls.SequenceEqual(new[] { "tracking:123" }), "Mismatched request rejected even when bill folder exists");
+    }
+}
+var renameLookup = new ArchiveLookupFixture { BillFolderExists = false };
+await renameLookup.Run("20");
+Check(renameLookup.Calls.SequenceEqual(new[] { "tracking:123", "folder:123", "member:123", "latest:20", "folder:r_20", "uuid:r_20", "rename:123", "files:123" }),
+    "Matching request preserves existing folder rename flow");
+foreach (string? number in new string?[] { null, "", "20" })
+{
+    var subscriber = new ArchiveLookupFixture { BillFolderExists = false, MemberZoneId = 1 };
+    var files = await subscriber.Run(number);
+    Check(files.Documents.Count == 0 && subscriber.Calls.SequenceEqual(new[]
+        { "tracking:123", "folder:123", "member:123", "create:123", "metadata:created-folder:False" }),
+        "Subscriber gets an empty bill folder and returns early");
+}
+foreach (int? zoneId in new int?[] { null, 0 })
+{
+    var applicant = new ArchiveLookupFixture { BillFolderExists = false, MemberZoneId = zoneId };
+    try { await applicant.Run(null); throw new Exception("Applicant without request accepted"); }
+    catch (BaseException)
+    {
+        Check(applicant.Calls.SequenceEqual(new[] { "tracking:123", "folder:123", "member:123" }),
+            "Missing or invalid subscriber does not create a bill folder");
+    }
+}
 Console.WriteLine($"Passed {checks} OpenKM checks.");
 
 static async Task<MetaDataProperties> ReadMetadataResponse(string json)
@@ -171,6 +217,69 @@ static async Task<MetaDataProperties> ReadMetadataResponse(string json)
     var service = (IOpenKmQueryService)Activator.CreateInstance(serviceType, factory,
         Options.Create(new OpenKmOptions { GeMetadataEndpoint = "metadata" }), token)!;
     return await service.GetMetaDataProperties("document");
+}
+
+sealed class ArchiveLookupFixture
+{
+    public int? LatestTrackNumber = 20;
+    public bool BillFolderExists = true;
+    public int? MemberZoneId;
+    public List<string> Calls { get; } = new();
+
+    public Task<FileListResponse> Run(string? trackNumber)
+    {
+        var tracking = Proxy.Create<ITrackingQueryService>((method, args) =>
+        {
+            if (method.Name == "GetLatest" && args[0] is string)
+            {
+                Calls.Add($"tracking:{args[0]}");
+                return LatestTrackNumber.HasValue ? Task.FromResult(new TrackingOutputDto { TrackNumber = LatestTrackNumber.Value, BillId = "123" }) : Task.FromException<TrackingOutputDto>(new InvalidBillIdException("Invalid bill"));
+            }
+            if (method.Name == "GetLatest")
+            {
+                Calls.Add($"latest:{args[0]}");
+                return Task.FromResult(new TrackingOutputDto { TrackNumber = (int)args[0]!, BillId = "123" });
+            }
+            throw new InvalidOperationException(method.Name);
+        });
+        var openKm = Proxy.Create<IOpenKmQueryService>((method, args) =>
+        {
+            switch (method.Name)
+            {
+                case "CheckFolderExists":
+                    Calls.Add($"folder:{args[0]}");
+                    return Task.FromResult((string)args[0]! != "123" || BillFolderExists);
+                case "CreateFolder":
+                    Calls.Add($"create:{args[0]}");
+                    return Task.FromResult("created-folder");
+                case "MarkNodeAsMetadatable":
+                    Calls.Add($"metadata:{args[0]}:{args[1]}");
+                    return Task.CompletedTask;
+                case "GetFolderUuid":
+                    Calls.Add($"uuid:{args[0]}");
+                    return Task.FromResult("folder-uuid");
+                case "RenameFolder":
+                    Calls.Add($"rename:{args[1]}");
+                    return Task.CompletedTask;
+                case "GetFilesByBillId":
+                    Calls.Add($"files:{args[0]}");
+                    return Task.FromResult(new FileListResponse { Documents = [] });
+                default: throw new InvalidOperationException(method.Name);
+            }
+        });
+        var member = Proxy.Create<ICommonMemberQueryService>((method, args) =>
+        {
+            if (method.Name != "Get" || args[0] is not string || (bool)args[1]!) throw new InvalidOperationException(method.Name);
+            Calls.Add($"member:{args[0]}");
+            return Task.FromResult<ZoneIdAndCustomerNumber?>(MemberZoneId.HasValue
+                ? new ZoneIdAndCustomerNumber { ZoneId = MemberZoneId.Value, CustomerNumber = 1 } : null);
+        });
+        var zone = Proxy.Create<ICommonZoneService>((method, _) => throw new InvalidOperationException(method.Name));
+        var type = typeof(IGetFilesByBillId).Assembly.GetType(
+            "Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Implementations.GetFilesByBillId", true)!;
+        var handler = (IGetFilesByBillId)Activator.CreateInstance(type, openKm, member, zone, tracking)!;
+        return handler.Handle("123", trackNumber, new User(), CancellationToken.None);
+    }
 }
 
 sealed class Fixture

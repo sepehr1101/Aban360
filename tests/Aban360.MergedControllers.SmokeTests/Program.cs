@@ -20,6 +20,46 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+if (args.Contains("--sales-reports"))
+{
+    await SalesReportsChecks.Run();
+    return;
+}
+if (args.Contains("--compact"))
+{
+    await CompactRuntimeChecks.Run();
+    return;
+}
+if (args.Contains("--next28"))
+{
+    await Next28Checks.RunFocused();
+    return;
+}
+if (args.Contains("--operations19"))
+{
+    await Operations19Checks.RunFocused();
+    return;
+}
+if (args.Contains("--workflow10"))
+{
+    await Workflow10Checks.RunFocused();
+    return;
+}
+if (args.Contains("--management20"))
+{
+    await Management20Checks.RunFocused();
+    return;
+}
+if (args.Contains("--auxiliary10"))
+{
+    await Auxiliary10Checks.RunFocused();
+    return;
+}
+if (args.Contains("--critical10"))
+{
+    await Critical10Checks.RunFocused();
+    return;
+}
 var root = FindRoot();
 var fixturePath = Path.Combine(root, "tests", "Aban360.MergedControllers.SmokeTests", "Contracts.json");
 var assemblies = new Dictionary<string, Assembly>
@@ -202,7 +242,3 @@ class TestAuthentication(IOptionsMonitor<AuthenticationSchemeOptions> options, I
 {
     protected override Task<AuthenticateResult> HandleAuthenticateAsync() => Task.FromResult(Request.Headers.ContainsKey("X-Regression-User") ? AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.UserData, "22222222-2222-2222-2222-222222222222") }, Scheme.Name)), Scheme.Name)) : AuthenticateResult.NoResult());
 }
-
-
-
-

@@ -1,0 +1,97 @@
+[
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/MotherUpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/MotherUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/MotherDeleteHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/MotherDeleteHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/SetMotherChildRequestHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/SetMotherChildRequestHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/SetCommonSiphonRequestHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/SetCommonSiphonRequestHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/CalculationRequestInsertManualHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/CalculationRequestInsertManualHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/CalculationRequestRemoveManualHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/CalculationRequestRemoveManualHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/ReaderCartableGetHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/ReaderCartableGetHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/MeterReadingListOffLoadHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/MeterReadingListOffLoadHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/MeterReadingListFinishHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/MeterReadingListFinishHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/GenerateReadingListCreateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/GenerateReadingListCreateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/CustomerUpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/CustomerUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/CustomerBranchTypeToNormalUpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/CustomerBranchTypeToNormalUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/RequestNewBranchHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/RequestNewBranchHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersWorkflow10/RequestAfterSaleHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/Before/RequestAfterSaleHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Services/MotherChildRequestService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/After/MotherChildRequestService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Services/ManualCalculationRequestService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/After/ManualCalculationRequestService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.MeterPool.Application/Features/Reading/Services/ReadingListService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/After/ReadingListService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.ClaimPool.Application/Features/Land/Services/CustomerMaintenanceService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/After/CustomerMaintenanceService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Services/RequestRegistrationService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesWorkflow10/After/RequestRegistrationService.cs",
+    "Before": false
+  }
+]

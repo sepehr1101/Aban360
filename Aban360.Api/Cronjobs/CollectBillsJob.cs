@@ -1,4 +1,4 @@
-﻿using Aban360.CalculationPool.Application.Features.Base;
+using Aban360.CalculationPool.Application.Features.CollectBills.Services;
 using Aban360.Common.Extensions;
 using Hangfire;
 
@@ -7,12 +7,12 @@ namespace Aban360.Api.Cronjobs
     [DisableConcurrentExecution(timeoutInSeconds: 3600)]
     public class CollectBillsJob
     {
-        private readonly ICollectBillsDetailJobService _collectBillsService;
+        private readonly ICollectBillsApplicationService _collectBillsService;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ILogger<CollectBillsJob> _logger;
         private int _cancelAfterMin = 10;
         public CollectBillsJob(
-            ICollectBillsDetailJobService collectBillsService,
+            ICollectBillsApplicationService collectBillsService,
             IWebHostEnvironment webHostEnvironment,
             ILogger<CollectBillsJob> logger)
         {

@@ -1,0 +1,1648 @@
+[
+  {
+    "Feature": "Article11",
+    "Module": "CalculationPool",
+    "Name": "Article11GetAllHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Sale/Handlers/Queries/Implementations/Article11GetAllHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Sale/Article11Controller.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/article11/create",
+          "~/v1/article11/delete",
+          "~/v1/article11/update",
+          "~/v1/article11/get-all",
+          "~/v1/article11/get"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "Article11",
+    "Module": "CalculationPool",
+    "Name": "Article11GetHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Sale/Handlers/Queries/Implementations/Article11GetHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Sale/Article11Controller.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/article11/create",
+          "~/v1/article11/delete",
+          "~/v1/article11/update",
+          "~/v1/article11/get-all",
+          "~/v1/article11/get"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "InstallationAndEquipment",
+    "Module": "CalculationPool",
+    "Name": "InstallationAndEquipmentGetAllHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Sale/Handlers/Queries/Implementations/InstallationAndEquipmentGetAllHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Sale/InstallationAndEquipmentController.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/installation-and-equipment/create",
+          "~/v1/installation-and-equipment/delete",
+          "~/v1/installation-and-equipment/update",
+          "~/v1/installation-and-equipment/get-all",
+          "~/v1/installation-and-equipment/get"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "InstallationAndEquipment",
+    "Module": "CalculationPool",
+    "Name": "InstallationAndEquipmentGetHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Sale/Handlers/Queries/Implementations/InstallationAndEquipmentGetHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Sale/InstallationAndEquipmentController.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/installation-and-equipment/create",
+          "~/v1/installation-and-equipment/delete",
+          "~/v1/installation-and-equipment/update",
+          "~/v1/installation-and-equipment/get-all",
+          "~/v1/installation-and-equipment/get"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "TankerWaterDistanceTariff",
+    "Module": "CalculationPool",
+    "Name": "TankerWaterDistanceTariffGetAllHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Sale/Handlers/Queries/Implementations/TankerWaterDistanceTariffGetAllHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Sale/TankerWaterDistanceTariffController.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/tanker-water-distance-tariff/create",
+          "~/v1/tanker-water-distance-tariff/delete",
+          "~/v1/tanker-water-distance-tariff/update",
+          "~/v1/tanker-water-distance-tariff/get-all",
+          "~/v1/tanker-water-distance-tariff/get"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "TankerWaterDistanceTariff",
+    "Module": "CalculationPool",
+    "Name": "TankerWaterDistanceTariffGetHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Sale/Handlers/Queries/Implementations/TankerWaterDistanceTariffGetHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Sale/TankerWaterDistanceTariffController.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/tanker-water-distance-tariff/create",
+          "~/v1/tanker-water-distance-tariff/delete",
+          "~/v1/tanker-water-distance-tariff/update",
+          "~/v1/tanker-water-distance-tariff/get-all",
+          "~/v1/tanker-water-distance-tariff/get"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OtherExpensesItems",
+    "Module": "CalculationPool",
+    "Name": "OtherExpensesItemsInsertHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Commands/Implementations/OtherExpensesItemsInsertHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/ServiceLink/ServiceLinkOtherExpensesItemsController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link-other-expenses-items",
+          "insert",
+          "remove",
+          "get/{id}",
+          "get/{billId}/{itemId}",
+          "get"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OtherExpensesItems",
+    "Module": "CalculationPool",
+    "Name": "OtherExpensesItemsRemoveHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Commands/Implementations/OtherExpensesItemsRemoveHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/ServiceLink/ServiceLinkOtherExpensesItemsController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link-other-expenses-items",
+          "insert",
+          "remove",
+          "get/{id}",
+          "get/{billId}/{itemId}",
+          "get"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OtherExpensesItems",
+    "Module": "CalculationPool",
+    "Name": "OtherExpensesItemsGetAllHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Queries/Implementations/OtherExpensesItemsGetAllHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/ServiceLink/ServiceLinkOtherExpensesItemsController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link-other-expenses-items",
+          "insert",
+          "remove",
+          "get/{id}",
+          "get/{billId}/{itemId}",
+          "get"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OtherExpensesItems",
+    "Module": "CalculationPool",
+    "Name": "OtherExpensesItemsGetByIdHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Queries/Implementations/OtherExpensesItemsGetByIdHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/ServiceLink/ServiceLinkOtherExpensesItemsController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link-other-expenses-items",
+          "insert",
+          "remove",
+          "get/{id}",
+          "get/{billId}/{itemId}",
+          "get"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OtherExpensesItems",
+    "Module": "CalculationPool",
+    "Name": "OtherExpensesItemsGetByItemIdHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Queries/Implementations/OtherExpensesItemsGetByItemIdHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/ServiceLink/ServiceLinkOtherExpensesItemsController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link-other-expenses-items",
+          "insert",
+          "remove",
+          "get/{id}",
+          "get/{billId}/{itemId}",
+          "get"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "Tariff",
+    "Module": "CalculationPool",
+    "Name": "TariffCreateHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Rule/Handlers/Commands/Create/Implementations/TariffCreateHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Rule/TariffController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tariff",
+          "create",
+          "update",
+          "delete",
+          "single/{id}",
+          "all",
+          "duplicate",
+          "by-line-item-type/{id}",
+          "by-offering/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "Tariff",
+    "Module": "CalculationPool",
+    "Name": "TariffDuplicateHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Rule/Handlers/Commands/Create/Implementations/TariffDuplicateHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Rule/TariffController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tariff",
+          "create",
+          "update",
+          "delete",
+          "single/{id}",
+          "all",
+          "duplicate",
+          "by-line-item-type/{id}",
+          "by-offering/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "Tariff",
+    "Module": "CalculationPool",
+    "Name": "TariffDeleteHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Rule/Handlers/Commands/Delete/Implementations/TariffDeleteHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Rule/TariffController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tariff",
+          "create",
+          "update",
+          "delete",
+          "single/{id}",
+          "all",
+          "duplicate",
+          "by-line-item-type/{id}",
+          "by-offering/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "Tariff",
+    "Module": "CalculationPool",
+    "Name": "TariffUpdateHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Rule/Handlers/Commands/Update/Implementations/TariffUpdateHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Rule/TariffController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tariff",
+          "create",
+          "update",
+          "delete",
+          "single/{id}",
+          "all",
+          "duplicate",
+          "by-line-item-type/{id}",
+          "by-offering/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "Tariff",
+    "Module": "CalculationPool",
+    "Name": "TariffGetAllHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Rule/Handlers/Queries/Implementations/TariffGetAllHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Rule/TariffController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tariff",
+          "create",
+          "update",
+          "delete",
+          "single/{id}",
+          "all",
+          "duplicate",
+          "by-line-item-type/{id}",
+          "by-offering/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "Tariff",
+    "Module": "CalculationPool",
+    "Name": "TariffGetByLineItemTypeIdHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Rule/Handlers/Queries/Implementations/TariffGetByLineItemTypeIdHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Rule/TariffController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tariff",
+          "create",
+          "update",
+          "delete",
+          "single/{id}",
+          "all",
+          "duplicate",
+          "by-line-item-type/{id}",
+          "by-offering/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "Tariff",
+    "Module": "CalculationPool",
+    "Name": "TariffGetByOfferingIdHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Rule/Handlers/Queries/Implementations/TariffGetByOfferingIdHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Rule/TariffController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tariff",
+          "create",
+          "update",
+          "delete",
+          "single/{id}",
+          "all",
+          "duplicate",
+          "by-line-item-type/{id}",
+          "by-offering/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "Tariff",
+    "Module": "CalculationPool",
+    "Name": "TariffGetSingleHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Rule/Handlers/Queries/Implementations/TariffGetSingleHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Rule/TariffController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/tariff",
+          "create",
+          "update",
+          "delete",
+          "single/{id}",
+          "all",
+          "duplicate",
+          "by-line-item-type/{id}",
+          "by-offering/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "ServiceLinkPayment",
+    "Module": "CalculationPool",
+    "Name": "ServiceLinkDeleteHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Commands/Implementations/ServiceLinkDeleteHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/ServiceLink/ServiceLinkPaymentController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link",
+          "add-pay",
+          "remove-pay",
+          "paid"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "ServiceLinkPayment",
+    "Module": "CalculationPool",
+    "Name": "ServiceLinkRegisterManualHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Commands/Implementations/ServiceLinkRegisterManualHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/ServiceLink/ServiceLinkPaymentController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link",
+          "add-pay",
+          "remove-pay",
+          "paid"
+        ]
+      },
+      {
+        "Path": "Aban360.BrdigeApi/Controllers/V1/ServiceLinkController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link",
+          "inquiry",
+          "installment",
+          "modify-amount",
+          "register-manual",
+          "transaction-type",
+          "connection-fee",
+          "check-pay",
+          "items",
+          "disconnect",
+          "reconnect"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "ServiceLinkPayment",
+    "Module": "CalculationPool",
+    "Name": "ServiceLinkPaidGetHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Queries/Implementations/ServiceLinkPaidGetHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/ServiceLink/ServiceLinkPaymentController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link",
+          "add-pay",
+          "remove-pay",
+          "paid"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "ServiceLinkReturn",
+    "Module": "CalculationPool",
+    "Name": "ServiceLinkReturnDisconnectHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Commands/Implementations/ServiceLinkReturnDisconnectHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ServiceLinkReturnController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link",
+          "return",
+          "return-remove",
+          "return-disconnect",
+          "return-codes"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "ServiceLinkReturn",
+    "Module": "CalculationPool",
+    "Name": "ServiceLinkReturnHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Commands/Implementations/ServiceLinkReturnHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ServiceLinkReturnController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link",
+          "return",
+          "return-remove",
+          "return-disconnect",
+          "return-codes"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "ServiceLinkReturn",
+    "Module": "CalculationPool",
+    "Name": "ServiceLinkReturnRemoveHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Commands/Implementations/ServiceLinkReturnRemoveHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ServiceLinkReturnController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link",
+          "return",
+          "return-remove",
+          "return-disconnect",
+          "return-codes"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "ServiceLinkBatchReturn",
+    "Module": "CalculationPool",
+    "Name": "ServiceLinkRemoveUnconfirmedHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Commands/Implementations/ServiceLinkRemoveUnconfirmedHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ServiceLinkBatchReturnController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link",
+          "return-2",
+          "return-remove-2",
+          "return-unconfirmed-2/{billId}",
+          "return-confirmed-2/{billId}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "ServiceLinkBatchReturn",
+    "Module": "CalculationPool",
+    "Name": "ServiceLinkReturnConfirmeHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Commands/Implementations/ServiceLinkReturnConfirmeHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ServiceLinkBatchReturnController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link",
+          "return-2",
+          "return-remove-2",
+          "return-unconfirmed-2/{billId}",
+          "return-confirmed-2/{billId}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "ServiceLinkBatchReturn",
+    "Module": "CalculationPool",
+    "Name": "ServiceLinkTempReturnHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Commands/Implementations/ServiceLinkTempReturnHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ServiceLinkBatchReturnController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link",
+          "return-2",
+          "return-remove-2",
+          "return-unconfirmed-2/{billId}",
+          "return-confirmed-2/{billId}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "ServiceLinkBatchReturn",
+    "Module": "CalculationPool",
+    "Name": "ServiceLinkUnconfirmedGetHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Handler/Queries/Implementations/ServiceLinkUnconfirmedGetHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ServiceLinkBatchReturnController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/service-link",
+          "return-2",
+          "return-remove-2",
+          "return-unconfirmed-2/{billId}",
+          "return-confirmed-2/{billId}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "MeterReadingDetail",
+    "Module": "CalculationPool",
+    "Name": "MeterReadingDetailExcludeHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Update/Implementations/MeterReadingDetailExcludeHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/MeterReadingDetailController.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/meter-reading-detail/exclude",
+          "~/v1/meter-reading-detail/update"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "MeterReadingDetail",
+    "Module": "CalculationPool",
+    "Name": "MeterReadingDetailUpdateHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Update/Implementations/MeterReadingDetailUpdateHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/MeterReadingDetailController.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/meter-reading-detail/exclude",
+          "~/v1/meter-reading-detail/update"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "MeterReadingCartable",
+    "Module": "CalculationPool",
+    "Name": "CartableByZoneIdGetHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/CartableByZoneIdGetHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Queries/CartableGetController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/cartable",
+          "get",
+          "get-completed"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "MeterReadingCartable",
+    "Module": "CalculationPool",
+    "Name": "CartableHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/CartableHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Queries/CartableGetController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/cartable",
+          "get",
+          "get-completed"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "MeterReadingCheckedList",
+    "Module": "CalculationPool",
+    "Name": "CheckedListGetHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/CheckedListGetHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Queries/CheckedListGetController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/meter-flow",
+          "checked-list-get/{id}",
+          "checked-list-get-completed/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "MeterReadingCheckedList",
+    "Module": "CalculationPool",
+    "Name": "MeterReadingDetailCompletedHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/MeterReadingDetailCompletedHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Queries/CheckedListGetController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/meter-flow",
+          "checked-list-get/{id}",
+          "checked-list-get-completed/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "MeterFlow",
+    "Module": "CalculationPool",
+    "Name": "CalculationConfirmationHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Implementations/CalculationConfirmationHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/MeterFlowAmountConfirmedController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/meter-flow",
+          "amount-confirmed/{id}",
+          "amount-confirmed-then-send-sms/{id}"
+        ]
+      },
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/MeterFlowCalculationConfirmationController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/meter-flow",
+          "confirm/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "MeterFlow",
+    "Module": "CalculationPool",
+    "Name": "MeterFlowValidationGetHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/MeterFlowValidationGetHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/MeterFlowCalculationConfirmationController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/meter-flow",
+          "confirm/{id}"
+        ]
+      },
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/MeterFlowConsumptionCheckingController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/meter-flow",
+          "consumption-check/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "MeterFlow",
+    "Module": "CalculationPool",
+    "Name": "ConsumptionCheckedHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/ConsumptionCheckedHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/MeterFlowConsumptionCheckingController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/meter-flow",
+          "consumption-check/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "MeterFlow",
+    "Module": "CalculationPool",
+    "Name": "InitialCalculationHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Queries/Implementations/InitialCalculationHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/MeterFlowInitialCalculationController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/meter-flow",
+          "initial-calculate/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "MeterFlow",
+    "Module": "CalculationPool",
+    "Name": "MeterReadingCalculationConfirmThenSendSmsHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Handlers/Commands/Creata/Implementations/MeterReadingCalculationConfirmThenSendSmsHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Commands/MeterFlowAmountConfirmedController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/meter-flow",
+          "amount-confirmed/{id}",
+          "amount-confirmed-then-send-sms/{id}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "TankerWaterOperations",
+    "Module": "CalculationPool",
+    "Name": "TankerWaterSetPayHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Sale/Handlers/Commands/Implementations/TankerWaterSetPayHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Sale/TankerWaterTariffController.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/tanker-water-tariff/set-pay",
+          "~/v1/tanker-water-tariff/calc"
+        ]
+      },
+      {
+        "Path": "Aban360.BrdigeApi/Controllers/V1/WaterController.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/water/tanker",
+          "~/v1/water/tanker-set-pay",
+          "~/v1/water/events-summary"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "TankerWaterOperations",
+    "Module": "CalculationPool",
+    "Name": "TankerWaterCalculationHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/Sale/Handlers/Queries/Implementations/TankerWaterCalculationHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/Sale/TankerWaterTariffController.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/tanker-water-tariff/set-pay",
+          "~/v1/tanker-water-tariff/calc"
+        ]
+      },
+      {
+        "Path": "Aban360.BrdigeApi/Controllers/V1/WaterController.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/water/tanker",
+          "~/v1/water/tanker-set-pay",
+          "~/v1/water/events-summary"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "CollectBillsFiles",
+    "Module": "CalculationPool",
+    "Name": "CollectBillsDetailFileDownloadHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/CollectBills/Handlers/Commands/Implementations/CollectBillsDetailFileDownloadHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/CollectBills/CollectBillsController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/collect-bills",
+          "file-create",
+          "get",
+          "get",
+          "download/{fileName}",
+          "send-file",
+          "send-file/{day}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "CollectBillsFiles",
+    "Module": "CalculationPool",
+    "Name": "CollectBillsFileCreateHandler",
+    "Source": "Aban360.CalculationPool.Application/Features/CollectBills/Handlers/Commands/Implementations/CollectBillsFileCreateHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/CalculationPool/CollectBills/CollectBillsController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/collect-bills",
+          "file-create",
+          "get",
+          "get",
+          "download/{fileName}",
+          "send-file",
+          "send-file/{day}"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "BillGeneration",
+    "Module": "OldCalcPool",
+    "Name": "FreeGenerateBillHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/Processing/Handlers/Commands/Implementations/FreeGenerateBillHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/Processing/GenerateBillController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/generate-bill",
+          "calc",
+          "free",
+          "issue-remained",
+          "now"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "BillGeneration",
+    "Module": "OldCalcPool",
+    "Name": "GenerateBillHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/Processing/Handlers/Commands/Implementations/GenerateBillHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/Processing/GenerateBillController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/generate-bill",
+          "calc",
+          "free",
+          "issue-remained",
+          "now"
+        ]
+      },
+      {
+        "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/GenerateBillController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/bill",
+          "issue"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "BillGeneration",
+    "Module": "OldCalcPool",
+    "Name": "GenerateBillWithRemainedHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/Processing/Handlers/Commands/Implementations/GenerateBillWithRemainedHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/Processing/GenerateBillController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/generate-bill",
+          "calc",
+          "free",
+          "issue-remained",
+          "now"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "BillGeneration",
+    "Module": "OldCalcPool",
+    "Name": "NowGenerateBillHandler",
+    "Source": "Aban360.OldCalcPool.Application/Features/Processing/Handlers/Commands/Implementations/NowGenerateBillHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/OldCalcPool/Processing/GenerateBillController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/generate-bill",
+          "calc",
+          "free",
+          "issue-remained",
+          "now"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "BankReceipt",
+    "Module": "PaymentPool",
+    "Name": "BankReceiptDeleteHandler",
+    "Source": "Aban360.PaymentPool.Application/Features/BankReceipt/Implementations/BankReceiptDeleteHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/PaymentPool/BankReceipt/BankReceiptController.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/bank-receipt/delete-by-bank-date",
+          "~/v1/bank-receipt/files",
+          "~/v1/bank-receipt/upload",
+          "~/v1/bank-receipt/{id:guid}/validate",
+          "~/v1/bank-receipt/{id:guid}/display",
+          "~/v1/bank-receipt/{id:guid}/reconcile",
+          "~/v1/bank-receipt/{id:guid}/confirm"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "BankReceipt",
+    "Module": "PaymentPool",
+    "Name": "BankReceiptFlowHandler",
+    "Source": "Aban360.PaymentPool.Application/Features/BankReceipt/Implementations/BankReceiptFlowHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/PaymentPool/BankReceipt/BankReceiptController.cs",
+        "Blocked": false,
+        "Routes": [
+          "~/v1/bank-receipt/delete-by-bank-date",
+          "~/v1/bank-receipt/files",
+          "~/v1/bank-receipt/upload",
+          "~/v1/bank-receipt/{id:guid}/validate",
+          "~/v1/bank-receipt/{id:guid}/display",
+          "~/v1/bank-receipt/{id:guid}/reconcile",
+          "~/v1/bank-receipt/{id:guid}/confirm"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "BankReceipt",
+    "Module": "PaymentPool",
+    "Name": "BankReceiptDiscrepancyHandler",
+    "Source": "Aban360.PaymentPool.Application/Features/BankReceipt/Implementations/BankReceiptDiscrepancyHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/PaymentPool/BankReceipt/BankReceiptDiscrepancyController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/bank-receipt/discrepancy",
+          "report",
+          "{importId:guid}/{lineNumber:int}/description"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "BankReceipt",
+    "Module": "PaymentPool",
+    "Name": "BankReceiptBankGetAllHandler",
+    "Source": "Aban360.PaymentPool.Application/Features/BankReceipt/Implementations/BankReceiptBankGetAllHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/PaymentPool/BankReceipt/BankReceiptBankGetAllController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/bank-receipt/banks"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OpenKmFiles",
+    "Module": "BlobPool",
+    "Name": "AddFileHandler",
+    "Source": "Aban360.BlobPool.Application/Features/OpenKm/Handlers/Commands/Implementations/AddFileHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Commands/AddFileController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/open-km",
+          "add-file",
+          "add-file-discount",
+          "add-reading-image",
+          "add-file-base64"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OpenKmFiles",
+    "Module": "BlobPool",
+    "Name": "RemoveFileHandler",
+    "Source": "Aban360.BlobPool.Application/Features/OpenKm/Handlers/Commands/Implementations/RemoveFileHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Commands/RemoveFileController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/open-km",
+          "remove-file"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OpenKmFiles",
+    "Module": "BlobPool",
+    "Name": "GetDocumentBinaryHandler",
+    "Source": "Aban360.BlobPool.Application/Features/OpenKm/Handlers/Queries/Implementations/GetDocumentBinaryHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Queries/OpenKmBinaryDisplayerController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/open-km",
+          "document-binary"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OpenKmFiles",
+    "Module": "BlobPool",
+    "Name": "GetDownloadLinkHandler",
+    "Source": "Aban360.BlobPool.Application/Features/OpenKm/Handlers/Queries/Implementations/GetDownloadLinkHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Queries/GetDownloadLinkController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/open-km",
+          "download-link"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OpenKmFiles",
+    "Module": "BlobPool",
+    "Name": "DisplayRemovedFilesHandler",
+    "Source": "Aban360.BlobPool.Application/Features/OpenKm/Handlers/Commands/Implementations/DisplayRemovedFilesHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Queries/GetDirectoryTree2Controller.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/open-km",
+          "directory-tree2",
+          "discount-directory-tree2",
+          "request-directory-tree2",
+          "reading-directory-tree2",
+          "removed-directory-tree2"
+        ]
+      },
+      {
+        "Path": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Queries/GetFilesListController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/open-km",
+          "directory-tree",
+          "discount-directory-tree",
+          "request-directory-tree",
+          "removed-directory-tree"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OpenKmFoldersMetadata",
+    "Module": "BlobPool",
+    "Name": "CreateFolderHandler",
+    "Source": "Aban360.BlobPool.Application/Features/OpenKm/Handlers/Commands/Implementations/CreateFolderHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Commands/CreateFolderController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/open-km",
+          "create-folder"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OpenKmFoldersMetadata",
+    "Module": "BlobPool",
+    "Name": "AddOrUpdateMetaDataHandler",
+    "Source": "Aban360.BlobPool.Application/Features/OpenKm/Handlers/Commands/Implementations/AddOrUpdateMetaDataHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Commands/AddOrUpdateMetaDataController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/open-km",
+          "add-update-meta-data"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OpenKmFoldersMetadata",
+    "Module": "BlobPool",
+    "Name": "GetMetaDataPropertiesHandler",
+    "Source": "Aban360.BlobPool.Application/Features/OpenKm/Handlers/Queries/Implementations/GetMetaDataPropertiesHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Queries/GetMetaDataPropertiesController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/open-km",
+          "metadata",
+          "file-title"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "OpenKmFoldersMetadata",
+    "Module": "BlobPool",
+    "Name": "CopyTrackImagesToBillHandler",
+    "Source": "Aban360.BlobPool.Application/Features/OpenKm/Handlers/Commands/Implementations/CopyTrackImagesToBillHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/BlobController/OpenKm/Commands/CopyTrackImagesToBillController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/open-km",
+          "copy-track-images-to-bill"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestLifecycle",
+    "Module": "ClaimPool",
+    "Name": "CloseRequestHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/CloseRequestHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/RequestBranchController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "edit",
+          "close",
+          "refer-to",
+          "previous-status",
+          "general/{trackId}",
+          "previous/{billId}",
+          "swap-request-type"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestLifecycle",
+    "Module": "ClaimPool",
+    "Name": "PreviousStatusRequestHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/PreviousStatusRequestHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/RequestBranchController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "edit",
+          "close",
+          "refer-to",
+          "previous-status",
+          "general/{trackId}",
+          "previous/{billId}",
+          "swap-request-type"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestLifecycle",
+    "Module": "ClaimPool",
+    "Name": "ReferredToIndividualRequestHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/ReferredToIndividualRequestHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/RequestBranchController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "edit",
+          "close",
+          "refer-to",
+          "previous-status",
+          "general/{trackId}",
+          "previous/{billId}",
+          "swap-request-type"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestLifecycle",
+    "Module": "ClaimPool",
+    "Name": "MoshtrakRequestUpdateHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Update/Implementations/MoshtrakRequestUpdateHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/RequestBranchController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "edit",
+          "close",
+          "refer-to",
+          "previous-status",
+          "general/{trackId}",
+          "previous/{billId}",
+          "swap-request-type"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestLifecycle",
+    "Module": "ClaimPool",
+    "Name": "SwapRequestTypeHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Update/Implementations/SwapRequestTypeHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/RequestBranchController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "edit",
+          "close",
+          "refer-to",
+          "previous-status",
+          "general/{trackId}",
+          "previous/{billId}",
+          "swap-request-type"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestLifecycle",
+    "Module": "ClaimPool",
+    "Name": "ArchiveRequestHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Commands/Create/Implementations/ArchiveRequestHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ArchiveRequestController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "archived",
+          "archive"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestLifecycle",
+    "Module": "ClaimPool",
+    "Name": "ArchivedRequestHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/ArchivedRequestHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/ArchiveRequestController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "archived",
+          "archive"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestDisplay",
+    "Module": "ClaimPool",
+    "Name": "DisplayRequestHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/DisplayRequestHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/RequestBranchController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "edit",
+          "close",
+          "refer-to",
+          "previous-status",
+          "general/{trackId}",
+          "previous/{billId}",
+          "swap-request-type"
+        ]
+      },
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestBranchQueryController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "kartable",
+          "display",
+          "display-by-track/{trackNumber}",
+          "display/{trackId}",
+          "basic-info/{trackNumber}",
+          "set-assessment-time/{trackId}",
+          "set-reAssessment-time/{trackId}",
+          "calculation-confirm/{trackId}",
+          "block-dictionary",
+          "kit-dictionary"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestDisplay",
+    "Module": "ClaimPool",
+    "Name": "DisplayRequestByTrackIdHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/DisplayRequestByTrackIdHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestBranchQueryController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "kartable",
+          "display",
+          "display-by-track/{trackNumber}",
+          "display/{trackId}",
+          "basic-info/{trackNumber}",
+          "set-assessment-time/{trackId}",
+          "set-reAssessment-time/{trackId}",
+          "calculation-confirm/{trackId}",
+          "block-dictionary",
+          "kit-dictionary"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestDisplay",
+    "Module": "ClaimPool",
+    "Name": "KartableRequestGetAllHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/KartableRequestGetAllHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/RequestBranchController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "edit",
+          "close",
+          "refer-to",
+          "previous-status",
+          "general/{trackId}",
+          "previous/{billId}",
+          "swap-request-type"
+        ]
+      },
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestBranchQueryController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "kartable",
+          "display",
+          "display-by-track/{trackNumber}",
+          "display/{trackId}",
+          "basic-info/{trackNumber}",
+          "set-assessment-time/{trackId}",
+          "set-reAssessment-time/{trackId}",
+          "calculation-confirm/{trackId}",
+          "block-dictionary",
+          "kit-dictionary"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestDisplay",
+    "Module": "ClaimPool",
+    "Name": "RequestBasicInfoGetHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/RequestBasicInfoGetHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/RequestBranchController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "edit",
+          "close",
+          "refer-to",
+          "previous-status",
+          "general/{trackId}",
+          "previous/{billId}",
+          "swap-request-type"
+        ]
+      },
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestBranchQueryController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "kartable",
+          "display",
+          "display-by-track/{trackNumber}",
+          "display/{trackId}",
+          "basic-info/{trackNumber}",
+          "set-assessment-time/{trackId}",
+          "set-reAssessment-time/{trackId}",
+          "calculation-confirm/{trackId}",
+          "block-dictionary",
+          "kit-dictionary"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestDisplay",
+    "Module": "ClaimPool",
+    "Name": "PreviousRequestGetByBillIdHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/PreviousRequestGetByBillIdHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/RequestBranchController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "edit",
+          "close",
+          "refer-to",
+          "previous-status",
+          "general/{trackId}",
+          "previous/{billId}",
+          "swap-request-type"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestDisplay",
+    "Module": "ClaimPool",
+    "Name": "KitCodeDictionaryGetHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/KitCodeDictionaryGetHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestBranchQueryController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "kartable",
+          "display",
+          "display-by-track/{trackNumber}",
+          "display/{trackId}",
+          "basic-info/{trackNumber}",
+          "set-assessment-time/{trackId}",
+          "set-reAssessment-time/{trackId}",
+          "calculation-confirm/{trackId}",
+          "block-dictionary",
+          "kit-dictionary"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestDisplay",
+    "Module": "ClaimPool",
+    "Name": "ReadingBlockListGetHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/ReadingBlockListGetHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestBranchQueryController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "kartable",
+          "display",
+          "display-by-track/{trackNumber}",
+          "display/{trackId}",
+          "basic-info/{trackNumber}",
+          "set-assessment-time/{trackId}",
+          "set-reAssessment-time/{trackId}",
+          "calculation-confirm/{trackId}",
+          "block-dictionary",
+          "kit-dictionary"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestDisplay",
+    "Module": "ClaimPool",
+    "Name": "ToCalulationConfirmHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/ToCalulationConfirmHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestBranchQueryController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "kartable",
+          "display",
+          "display-by-track/{trackNumber}",
+          "display/{trackId}",
+          "basic-info/{trackNumber}",
+          "set-assessment-time/{trackId}",
+          "set-reAssessment-time/{trackId}",
+          "calculation-confirm/{trackId}",
+          "block-dictionary",
+          "kit-dictionary"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestDisplay",
+    "Module": "ClaimPool",
+    "Name": "ToSetAssessmentTimeGetByTrackIdHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/ToSetAssessmentTimeGetByTrackIdHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestBranchQueryController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "kartable",
+          "display",
+          "display-by-track/{trackNumber}",
+          "display/{trackId}",
+          "basic-info/{trackNumber}",
+          "set-assessment-time/{trackId}",
+          "set-reAssessment-time/{trackId}",
+          "calculation-confirm/{trackId}",
+          "block-dictionary",
+          "kit-dictionary"
+        ]
+      }
+    ]
+  },
+  {
+    "Feature": "RequestDisplay",
+    "Module": "ClaimPool",
+    "Name": "ToSetReAssessmentTimeGetByTrackIdHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/ToSetReAssessmentTimeGetByTrackIdHandler.cs",
+    "Consumers": [
+      {
+        "Path": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/RequestBranchQueryController.cs",
+        "Blocked": false,
+        "Routes": [
+          "v1/request",
+          "kartable",
+          "display",
+          "display-by-track/{trackNumber}",
+          "display/{trackId}",
+          "basic-info/{trackNumber}",
+          "set-assessment-time/{trackId}",
+          "set-reAssessment-time/{trackId}",
+          "calculation-confirm/{trackId}",
+          "block-dictionary",
+          "kit-dictionary"
+        ]
+      }
+    ]
+  }
+]

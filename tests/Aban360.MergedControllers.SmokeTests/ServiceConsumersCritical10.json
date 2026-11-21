@@ -1,0 +1,62 @@
+[
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersCritical10.Aban360.Api.Controllers.V1.OldCalcPool.Rule.AbonmanController",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.Rule.AbonmanController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersCritical10.Aban360.Api.Controllers.V1.OldCalcPool.Rule.NerkhController",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.Rule.NerkhController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersCritical10.Aban360.Api.Controllers.V1.OldCalcPool.Rule.SController",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.Rule.SController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersCritical10.Aban360.Api.Controllers.V1.OldCalcPool.Rule.Table1Controller",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.Rule.Table1Controller"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersCritical10.Aban360.Api.Controllers.V1.OldCalcPool.Rule.ZaribCController",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.Rule.ZaribCController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersCritical10.Aban360.Api.Controllers.V1.OldCalcPool.Rule.ZaribController",
+    "Current": "Aban360.Api.Controllers.V1.OldCalcPool.Rule.ZaribController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersCritical10.Aban360.Api.Controllers.V1.SystemPool.UserGuide.FaqController",
+    "Current": "Aban360.Api.Controllers.V1.SystemPool.UserGuide.FaqController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersCritical10.Aban360.Api.Controllers.V1.UserPool.Auth.CaptchaController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.CaptchaController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersCritical10.Aban360.Api.Controllers.V1.UserPool.Auth.RoleController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.RoleController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersCritical10.Aban360.Api.Controllers.V1.ClaimPool.Request.Commands.AssessmentOffController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Request.Commands.AssessmentOffController"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersCritical10.Aban360.Api.Controllers.V1.UserPool.Auth.Commands.LoginController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Commands.LoginController"
+  },
+  {
+    "Assembly": "Aban360.BrdigeApi",
+    "Original": "BeforeConsumersCritical10.Aban360.BrdigeApi.Controllers.V1.Security.LoginController",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.Security.LoginController"
+  }
+]

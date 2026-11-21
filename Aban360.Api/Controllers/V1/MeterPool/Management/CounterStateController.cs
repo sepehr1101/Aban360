@@ -8,33 +8,33 @@ using Aban360.OldCalcPool.Domain.Features.Db70.Dto.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
-using oldCalcPool = Aban360.OldCalcPool.Application.Features.Db70.Handlers.Queries.Contracts;
+using Aban360.OldCalcPool.Application.Features.Db70.Services;
 using Aban360.Common.BaseEntities;
 using Aban360.ReportPool.Application.Features.BuiltsIns.ServiceLinkTransactions.Handlers.Contracts;
 using Aban360.Api.Filters;
 
-namespace Aban360.Api.Controllers.V1.MeterPool.Management
-{
+namespace Aban360.Api.Controllers.V1.MeterPool.Management{
+    [Route("v1/counter-state")]
     public class CounterStateController : BaseController
     {
         private readonly IUnitOfWork _uow;
         private readonly ICounterStateService _service;
-        private readonly oldCalcPool.ICounterStateGetAllHandler _c0_oldCalcPoolCounterStateGetAllHandler;
+        private readonly ICounterStateLookupService _counterStateLookupService;
         private readonly ICounterStateGetHandler _c1_counterStateGetHandler;
-        public CounterStateController(IUnitOfWork uow, ICounterStateService service, oldCalcPool.ICounterStateGetAllHandler c0_oldCalcPoolCounterStateGetAllHandler, ICounterStateGetHandler c1_counterStateGetHandler)
+        public CounterStateController(IUnitOfWork uow, ICounterStateService service, ICounterStateLookupService counterStateLookupService, ICounterStateGetHandler c1_counterStateGetHandler)
         {
             uow.NotNull(nameof(uow));
             _uow = uow;
             service.NotNull(nameof(service));
             _service = service;
-            c0_oldCalcPoolCounterStateGetAllHandler.NotNull(nameof(c0_oldCalcPoolCounterStateGetAllHandler));
-            _c0_oldCalcPoolCounterStateGetAllHandler = c0_oldCalcPoolCounterStateGetAllHandler;
+            counterStateLookupService.NotNull(nameof(counterStateLookupService));
+            _counterStateLookupService = counterStateLookupService;
             c1_counterStateGetHandler.NotNull(nameof(c1_counterStateGetHandler));
             _c1_counterStateGetHandler = c1_counterStateGetHandler;
         }
 
         [HttpPost]
-        [Route("~/v1/counter-state/create")]
+        [Route("create")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CounterStateCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] CounterStateCreateDto createDto, CancellationToken cancellationToken)
         {
@@ -44,7 +44,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         }
 
         [HttpPost, HttpPatch]
-        [Route("~/v1/counter-state/update")]
+        [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CounterStateUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] CounterStateUpdateDto updateDto, CancellationToken cancellationToken)
         {
@@ -54,7 +54,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         }
 
         [HttpPost, HttpDelete]
-        [Route("~/v1/counter-state/delete")]
+        [Route("delete")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CounterStateDeleteDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Delete([FromBody] CounterStateDeleteDto deleteDto, CancellationToken cancellationToken)
         {
@@ -64,7 +64,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         }
 
         [HttpPost, HttpGet]
-        [Route("~/v1/counter-state/single/{id}")]
+        [Route("single/{id}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CounterStateGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle(short id, CancellationToken cancellationToken)
         {
@@ -73,7 +73,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         }
 
         [HttpPost, HttpGet]
-        [Route("~/v1/counter-state/all-aban360")]
+        [Route("all-aban360")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ICollection<CounterStateGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllAban360(CancellationToken cancellationToken)
         {
@@ -82,16 +82,16 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Management
         }
 
         [HttpPost, HttpGet]
-        [Route("~/v1/counter-state/all")]
+        [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<CounterStateCodeDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll([Optional] bool isReadable, CancellationToken cancellationToken)
         {
-            IEnumerable<CounterStateCodeDto> counterStates = await _c0_oldCalcPoolCounterStateGetAllHandler.Handle(isReadable, cancellationToken);
+            IEnumerable<CounterStateCodeDto> counterStates = await _counterStateLookupService.GetAllAsync(isReadable, cancellationToken);
             return Ok(counterStates);
         }
 
         [HttpGet]
-        [Route("~/v1/counter-state/get")]
+        [Route("get")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<StringDictionary>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(CancellationToken cancellationToken)
         {

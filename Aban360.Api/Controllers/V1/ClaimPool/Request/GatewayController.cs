@@ -1,7 +1,6 @@
 using Aban360.ClaimPool.Application.Features.Request.Services;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Delete.Contracts;
-using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Update.Contracts;
+
 using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;

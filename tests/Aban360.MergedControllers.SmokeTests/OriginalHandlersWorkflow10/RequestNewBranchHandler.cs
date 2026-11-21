@@ -1,0 +1,383 @@
+using global::Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations;
+using global::Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using global::Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
+using global::Aban360.ClaimPool.Domain.Constants;
+using global::Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
+using global::Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using global::Aban360.ClaimPool.Persistence.Features.Request.Commands.Contracts;
+using global::Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations;
+using global::Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
+using global::Aban360.Common.BaseEntities;
+using global::Aban360.Common.Db.Dapper;
+using global::Aban360.Common.Db.Services;
+using global::Aban360.Common.Exceptions;
+using global::Aban360.Common.Extensions;
+using global::Aban360.Common.Literals;
+using global::Aban360.Common.Timing;
+using global::Aban360.ReportPool.Domain.Base;
+using DNTPersianUtils.Core;
+using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System.Data;
+
+namespace BeforeServiceWorkflow10.Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Implementations{
+    internal sealed class RequestNewBranchHandler : AbstractBaseConnection, IRequestNewBranchHandler
+    {
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ICommonMemberQueryService _commonMemberQueryService;
+        private readonly IMoshtrakQueryService _moshtrakQueryService;
+        private readonly IExaminationScheduleQueryService _examinationScheduleQueryService;
+        private readonly IExaminationQueryService _examinationQueryService;
+        private readonly IMoshtrakService _moshtrakService;
+        private readonly IValidator<RequestNewBranchInputDto> _validator;
+        static string _insertWayTitle = ReportLiterals.RayabPersian;
+        static int _setAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentTime;
+        static int _firstStepStatusId = (int)TrackingStatusEnum.RequestRegistered;
+        static int saleRequestTypeId = ReportLiterals.SaleRequestTypeId;
+        static int _requestOrigin = 12;
+
+        public RequestNewBranchHandler(
+            IHttpContextAccessor contextAccessor,
+            ICommonMemberQueryService commonMemberQueryService,
+            IMoshtrakQueryService moshtrakQueryService,
+            IExaminationScheduleQueryService examinationScheduleQueryService,
+            IExaminationQueryService examinationQueryService,
+            IMoshtrakService moshtrakService,
+            IValidator<RequestNewBranchInputDto> validator,
+            IConfiguration configuration)
+            : base(configuration)
+        {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+
+            _commonMemberQueryService = commonMemberQueryService;
+            _commonMemberQueryService.NotNull(nameof(commonMemberQueryService));
+
+            _moshtrakQueryService = moshtrakQueryService;
+            _moshtrakQueryService.NotNull(nameof(moshtrakQueryService));
+
+            _examinationScheduleQueryService = examinationScheduleQueryService;
+            _examinationScheduleQueryService.NotNull(nameof(examinationScheduleQueryService));
+
+            _examinationQueryService = examinationQueryService;
+            _examinationQueryService.NotNull(nameof(examinationQueryService));
+
+            _moshtrakService = moshtrakService;
+            _moshtrakService.NotNull(nameof(moshtrakService));
+
+            _validator = validator;
+            _validator.NotNull(nameof(validator));
+        }
+
+        public async Task<(MoshtrakCreateDto, SetAssessmentTimeDataOutputDto?, Guid)> Handle(RequestNewBranchInputDto inputDto, int userName, CancellationToken cancellationToken)
+        {
+            await Validate(inputDto, cancellationToken);
+            MemberInfoGetDto? neighbourMemeberInfo = null;
+            if (!string.IsNullOrWhiteSpace(inputDto.NeighbourBillId))
+            {
+                ZoneIdAndCustomerNumber neighbourCustomerInfo = await _commonMemberQueryService.Get(inputDto.NeighbourBillId);
+                neighbourMemeberInfo = await _commonMemberQueryService.Get(neighbourCustomerInfo);
+                if (!inputDto.IsSkipDuplicate)
+                {
+                    await _moshtrakQueryService.CheckOpenRequest(inputDto.NationalCode, neighbourCustomerInfo.ZoneId);
+                }
+            }
+            var (assessmentCode, assessmentDateJalali) = await GetAssessmentDateTime(neighbourMemeberInfo);
+
+            var (moshtrakCreateDto, assessmentInsertDto, trackId) = await ExecSql(inputDto, userName, assessmentDateJalali, assessmentCode);
+            SetAssessmentTimeDataOutputDto? assessmentTimeDto = assessmentInsertDto is not null ?
+               await GetAssessmentTimeOutputDto(moshtrakCreateDto, neighbourMemeberInfo, assessmentInsertDto, trackId) :
+                null;
+            return (moshtrakCreateDto, assessmentTimeDto, trackId);
+        }
+        private async Task Validate(RequestNewBranchInputDto inputDto, CancellationToken cancellationToken)
+        {
+            var validationResult = await _validator.ValidateAsync(inputDto, cancellationToken);
+            if (!validationResult.IsValid)
+            {
+                var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
+                throw new CustomValidationException(message);
+            }
+        }
+        private async Task<MoshtrakCreateDto> GetMoshtrackCreateDto(RequestNewBranchInputDto inputDto, int trackNumber, int zoneId)
+        {
+            MoshtrakServiceDto serviceSelected = _moshtrakService.GetServicesSelected(inputDto.SelectedServices);
+            await SelectedServiceValidate(serviceSelected);
+            return new MoshtrakCreateDto()
+            {
+                TrackNumber = trackNumber,
+                ServiceGroupId = saleRequestTypeId,
+                StringTrackNumber = trackNumber.ToString().PadLeft(11, '0'),
+                BillId = string.Empty,
+                CustomerNumber = 0,
+                NeighbourBillId = inputDto.NeighbourBillId,
+                ZoneId = zoneId,
+                NotificationMobile = inputDto.MobileNumber ?? string.Empty,
+                UsageId = 0,
+                MeterDiameterId = 0,
+                BranchTypeId = 0,
+                DiscountTypeId = 0,
+                DiscountCount = 0,
+                PhoneNumber = inputDto.PhoneNumber ?? string.Empty,
+                MobileNumber = inputDto.MobileNumber,
+                NationalCode = inputDto.NationalCode,
+                FirstName = inputDto.FirstName,
+                Surname = inputDto.Surname,
+                FatherName = inputDto.FatherName ?? string.Empty,
+                Premises = 0,
+                ImprovementCommertial = 0,
+                ImprovementDomestic = 0,
+                ImprovementOverall = 0,
+                Siphon100 = 0,
+                Siphon125 = 0,
+                Siphon150 = 0,
+                Siphon200 = 0,
+                MainSiphon = 0,
+                CommonSiphon = 0,
+                ContractualCapacity = 0,
+                HouseValue = 0,
+                CommertialUnit = 0,
+                DomesticUnit = 0,
+                OtherUnit = 0,
+                IsNonPermanent = false,
+                Address = inputDto.Address,
+                PreViewId = string.Empty,
+                CounterType = 0,
+                InstallAgentState = 0,
+                BlockId = string.Empty,
+                InsertWayTitle = _insertWayTitle,
+                PostalCode = string.Empty,
+                ReadingNumber = string.Empty,
+                IsSpecial = false,
+                CertificateNumber = inputDto.BirthCertificateNumber ?? string.Empty,
+                BrokerId = 0,//todo8
+                s0 = serviceSelected.s0,
+                s1 = serviceSelected.s1,
+                s2 = serviceSelected.s2,
+                s3 = serviceSelected.s3,
+                s4 = serviceSelected.s4,
+                s5 = serviceSelected.s5,
+                s8 = serviceSelected.s8,
+                s9 = serviceSelected.s9,
+                s10 = serviceSelected.s10,
+                s11 = serviceSelected.s11,
+                s12 = serviceSelected.s12,
+                s13 = serviceSelected.s13,
+                s14 = serviceSelected.s14,
+                s15 = serviceSelected.s15,
+                s16 = serviceSelected.s16,
+                s17 = serviceSelected.s17,
+                s18 = serviceSelected.s18,
+                s19 = serviceSelected.s19,
+                s20 = serviceSelected.s20,
+                s21 = serviceSelected.s21,
+                s22 = serviceSelected.s22,
+                s23 = serviceSelected.s23,
+                s24 = serviceSelected.s24,
+                s25 = serviceSelected.s25,
+                s26 = serviceSelected.s26,
+                s27 = serviceSelected.s27,
+                s28 = serviceSelected.s28,
+                s29 = serviceSelected.s29,
+                s30 = serviceSelected.s30,
+                s31 = serviceSelected.s31,
+                s32 = serviceSelected.s32,
+                s33 = serviceSelected.s33,
+                s34 = serviceSelected.s34,
+                s35 = serviceSelected.s35,
+                s36 = serviceSelected.s36,
+                s37 = serviceSelected.s37,
+                s38 = serviceSelected.s38,
+                s39 = serviceSelected.s39,
+                s40 = serviceSelected.s40,
+                s41 = serviceSelected.s41,
+                s42 = serviceSelected.s42,
+                s43 = serviceSelected.s43,
+                s44 = serviceSelected.s44,
+                s45 = serviceSelected.s45,
+                s46 = serviceSelected.s46,
+                s47 = serviceSelected.s47,
+                s48 = serviceSelected.s48,
+            };
+        }
+        private async Task SelectedServiceValidate(MoshtrakServiceDto serviceSelected)
+        {
+            ICollection<int> selectedItems = await _moshtrakService.GetServicesSelected(serviceSelected, saleRequestTypeId);
+            if (!selectedItems.Any())
+            {
+                throw new InvalidTrackingException(ExceptionLiterals.InvalidZeroServiceSelected);
+            }
+        }
+        private TrackingInsertDto GetTrackingCreateDto(RequestNewBranchInputDto inputDto, int userName, int trackNumber, int zoneId)
+        {
+            return new TrackingInsertDto()
+            {
+                TrackNumber = trackNumber,
+                ZoneId = zoneId,
+                BillId = null,
+                ServiceGroupId = saleRequestTypeId,
+                StatusId = _firstStepStatusId,
+                InsertByUserId = userName,
+                Description = inputDto.Description,
+                NotificationMobile = inputDto.MobileNumber,
+                NeighbourBillId = inputDto.NeighbourBillId,
+                RequestOrigin = _requestOrigin,
+            };
+        }
+        private async Task<(MoshtrakCreateDto, AssessmentInsertDto?, Guid)> ExecSql(RequestNewBranchInputDto inputDto, int userName, string assessmentDateJalali, int assessmentCode)
+        {
+            MoshtrakCreateDto moshtrakInsertDto;
+            AssessmentInsertDto? assessmentInsert = null;
+            Guid trackId = new Guid();
+            string dbName = GetDbName(inputDto.ZoneId);
+
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.Serializable))
+                {
+                    MoshtrakCommandService moshtrakCommandService = new(connection, transaction);
+                    TrackingCommandService trackingCommandService = new(connection, transaction);
+                    T0CommandService t0CommandService = new(connection, transaction);
+                    ExaminationCommandService examinationCommandService = new(connection, transaction);
+
+                    int trackNumber = (int)(await t0CommandService.GetTrackNumber());
+                    moshtrakInsertDto = await GetMoshtrackCreateDto(inputDto, trackNumber, inputDto.ZoneId);
+                    TrackingInsertDto trackingSetRequestInsertDto = GetTrackingCreateDto(inputDto, userName, trackNumber, inputDto.ZoneId);
+                    trackId = trackingSetRequestInsertDto.TrackId;
+
+                    await moshtrakCommandService.Insert(moshtrakInsertDto, dbName);
+                    await trackingCommandService.Insert(trackingSetRequestInsertDto);
+
+                    if (!string.IsNullOrWhiteSpace(assessmentDateJalali))
+                    {
+                        TrackingInsertDuplicateDto trackingInsertSetTimeDto = new(trackNumber, _setAssessmentTimeStatusId, inputDto.Description, userName, _requestOrigin, true, false, 2);
+                        assessmentInsert = await GetAssessmentInsertDto(trackingInsertSetTimeDto, assessmentCode, assessmentDateJalali, trackingSetRequestInsertDto.ZoneId);
+                        await trackingCommandService.UpdateIsConsiderdLatest(trackingSetRequestInsertDto.TrackNumber, true);
+                        await trackingCommandService.InsertDuplicate(trackingInsertSetTimeDto);
+                        await examinationCommandService.Insert(assessmentInsert);
+                    }
+
+                    transaction.Commit();
+                }
+            }
+            return (moshtrakInsertDto, assessmentInsert, trackId);
+
+        }
+        private async Task<(int, string)> GetAssessmentDateTime(MemberInfoGetDto? memberInfo)
+        {
+            if (memberInfo is not null)
+            {
+                IEnumerable<AssessmentScaduleGetDto> assessmentsScadule = await _examinationScheduleQueryService.Get(memberInfo.ZoneId, memberInfo.ReadingNumber);
+
+                for (int offset = 1; offset <= 14; offset++)
+                {
+                    DateTime date = DateTime.Now.Date.AddDays(offset);
+                    string dateJalali = date.ToShortPersianDateString();
+
+                    int dayIndex =
+                        date.DayOfWeek == DayOfWeek.Saturday ? 0 :
+                        date.DayOfWeek == DayOfWeek.Sunday ? 1 :
+                        date.DayOfWeek == DayOfWeek.Monday ? 2 :
+                        date.DayOfWeek == DayOfWeek.Tuesday ? 3 :
+                        date.DayOfWeek == DayOfWeek.Wednesday ? 4 :
+                        date.DayOfWeek == DayOfWeek.Thursday ? 5 :
+                                                              6;
+
+                    foreach (var eachAssessment in assessmentsScadule)
+                    {
+                        int dayValue = dayIndex switch
+                        {
+                            0 => eachAssessment.Day0,
+                            1 => eachAssessment.Day1,
+                            2 => eachAssessment.Day2,
+                            3 => eachAssessment.Day3,
+                            4 => eachAssessment.Day4,
+                            5 => eachAssessment.Day5,
+                            6 => eachAssessment.Day6,
+                            _ => 0
+                        };
+
+                        if (dayValue <= 0) continue;
+
+                        int assessmentTaskCount =
+                            await _examinationQueryService.GetWithoutResultInDate(dateJalali, eachAssessment.AssessmentCode);
+
+                        if (assessmentTaskCount < dayValue)
+                        {
+                            return (eachAssessment.AssessmentCode, dateJalali);
+                        }
+                    }
+                }
+            }
+            return (0, string.Empty);
+        }
+        private async Task<AssessmentInsertDto> GetAssessmentInsertDto(TrackingInsertDuplicateDto trackingInsertSetTimeDto, int assessmentCode, string assessmentDateJalali, int zoneId)
+        {
+            AssessmentGetDto assessmentData = await _examinationQueryService.Get(assessmentCode);
+            string body = await new StreamReader(_contextAccessor.HttpContext.Request.Body).ReadToEndAsync();
+
+            return new AssessmentInsertDto()
+            {
+                TrackNumber = trackingInsertSetTimeDto.TrackNumber,
+                BillId = string.Empty,
+                AssessmentCode = assessmentData.Code,
+                AssessmentMobile = assessmentData.PhoneNumber,
+                AssessmentName = assessmentData.FullName,
+                ZoneId = zoneId,
+                AssessmentDateJalali = assessmentDateJalali,
+                AssessmentGregorianDateTime = ConvertDate.JalaliToDateTime(assessmentDateJalali, true),
+                ResultId = null,
+                Description = null,
+                TrackId = trackingInsertSetTimeDto.TrackId,
+                TrackIdResult = null,
+                X1 = "0",
+                Y1 = "0",
+                X2 = "0",
+                Y2 = "0",
+                TrenchLenS = 0,
+                TrenchLenW = 0,
+                AsphaltLenW = 0,
+                AsphaltLenS = 0,
+                RockyLenS = 0,
+                RockyLenW = 0,
+                OtherLenS = 0,
+                OtherLenW = 0,
+                BasementDepth = 0,
+                HasMap = false,//
+                ReadingNumber = string.Empty,
+                Premises = 0,
+                HouseValue = 0,
+                UsageId = 0,
+                AllInJson = body
+            };
+        }
+        private async Task<SetAssessmentTimeDataOutputDto> GetAssessmentTimeOutputDto(MoshtrakCreateDto moshtrakInsertDto, MemberInfoGetDto neighbourMemeberInfo, AssessmentInsertDto assessmentInsertDto, Guid trackId)
+        {
+            IEnumerable<NumericDictionary> moshtrakServiceSelected = await _moshtrakService.GetServicesSelectedDto(_moshtrakService.GetMoshtrakServiceDto(moshtrakInsertDto), moshtrakInsertDto.ServiceGroupId);
+            string serviceSelected = string.Join(",", moshtrakServiceSelected.Select(m => m.Title));
+
+            return new SetAssessmentTimeDataOutputDto()
+            {
+                TrackId = trackId,
+                ServiceGroupId = moshtrakInsertDto.ServiceGroupId,
+                TrackNumber = moshtrakInsertDto.TrackNumber,
+                Address = moshtrakInsertDto.Address,
+                FullName = $"{moshtrakInsertDto.FirstName} {moshtrakInsertDto.Surname}",
+                MobileNumber = moshtrakInsertDto.NotificationMobile,
+                BillId = moshtrakInsertDto.BillId,
+                ServiceSelectedList = serviceSelected,
+                NeighbourBillId = moshtrakInsertDto.NeighbourBillId,
+                NeighbourAddress = neighbourMemeberInfo.Address,
+                AssessmentName = assessmentInsertDto.AssessmentName,
+                AssessmentCode = assessmentInsertDto.AssessmentCode,
+                AssessmentMobileNumber = assessmentInsertDto.AssessmentMobile,
+                AssessmentDateJalai = assessmentInsertDto.AssessmentDateJalali,
+            };
+        }
+    }
+}

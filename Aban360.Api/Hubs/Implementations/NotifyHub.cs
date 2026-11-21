@@ -2,7 +2,6 @@ using Aban360.CommunicationPool.Application.Features.Hubs.Services;
 using Aban360.Api.Hubs.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.Extensions;
-using Aban360.CommunicationPool.Application.Features.Hubs.Handlers.Commands.Contracts;
 using Aban360.CommunicationPool.Domain.Features.Hubs.Dto.Commands;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;

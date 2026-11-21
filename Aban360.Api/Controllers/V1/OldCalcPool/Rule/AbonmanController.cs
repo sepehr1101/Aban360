@@ -1,37 +1,21 @@
 using Aban360.Api.Filters;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
-using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Contracts;
-using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Contracts;
-using Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.OldCalcPool.Application.Features.Rules.Services;
 
 namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule
 {
     [Route("v1/abonman")]
     public class AbonmanController : BaseController
     {
-        private readonly IAbonmanCreateHandler _abonmanCreateHandler;
-        private readonly IAbonmanUpdateHandler _abonmanUpdateHandler;
-        private readonly IAbonmanGetAllHandler _abonmanGetAllHandler;
-        private readonly IAbonmanGetHandler _abonmanGetHandler;
-
-        public AbonmanController(
-            IAbonmanCreateHandler abonmanCreateHandler,
-            IAbonmanUpdateHandler abonmanUpdateHandler,
-            IAbonmanGetAllHandler abonmanGetAllHandler,
-            IAbonmanGetHandler abonmanGetHandler)
+        private readonly IAbonmanService _abonmanService;
+        public AbonmanController(IAbonmanService abonmanService)
         {
-            _abonmanCreateHandler = abonmanCreateHandler;
-            _abonmanCreateHandler.NotNull(nameof(abonmanCreateHandler));
-            _abonmanUpdateHandler = abonmanUpdateHandler;
-            _abonmanUpdateHandler.NotNull(nameof(abonmanUpdateHandler));
-            _abonmanGetAllHandler = abonmanGetAllHandler;
-            _abonmanGetAllHandler.NotNull(nameof(abonmanGetAllHandler));
-            _abonmanGetHandler = abonmanGetHandler;
-            _abonmanGetHandler.NotNull(nameof(abonmanGetHandler));
+            _abonmanService = abonmanService;
+            _abonmanService.NotNull(nameof(abonmanService));
         }
 
         [HttpPost]
@@ -40,7 +24,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule
         [EndpointAuthorization("AbonmanCommand")]
         public async Task<IActionResult> Create(AbonmanCreateDto inputDto, CancellationToken cancellationToken)
         {
-            await _abonmanCreateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _abonmanService.CreateAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -50,7 +34,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbonmanUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update(AbonmanUpdateDto inputDto, CancellationToken cancellationToken)
         {
-            await _abonmanUpdateHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            await _abonmanService.UpdateAsync(inputDto, CurrentUser, cancellationToken);
             return Ok(inputDto);
         }
 
@@ -59,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<AbonmanGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            IEnumerable<AbonmanGetDto> result = await _abonmanGetAllHandler.Handle(cancellationToken);
+            IEnumerable<AbonmanGetDto> result = await _abonmanService.GetAllAsync(cancellationToken);
             return Ok(result);
         }
 
@@ -68,7 +52,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Rule
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbonmanGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
         {
-            AbonmanGetDto result = await _abonmanGetHandler.Handle(id, cancellationToken);
+            AbonmanGetDto result = await _abonmanService.GetAsync(id, cancellationToken);
             return Ok(result);
         }
     }

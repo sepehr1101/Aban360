@@ -6,6 +6,7 @@ using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.Categories.ApiResponse;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
+using Aban360.BlobPool.Application.Features.OpenKm.Services;
 
 namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
 {
@@ -15,16 +16,14 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
         private readonly IGetFilesByBillIdWithTitles _handler;
         private readonly IGetFilesDiscount _discountHandler;
         private readonly IGetFilesRequest _requestHandler;
-        private readonly IDisplayRemovedFilesHandler _removedHandler;
+        private readonly IOpenKmFilesService _openKmFilesService;
         private readonly IArchiveFileTitleEnricher _titles;
-
-        public GetDirectoryTree2Controller(IGetFilesByBillIdWithTitles handler, IGetFilesDiscount discountHandler,
-            IGetFilesRequest requestHandler, IDisplayRemovedFilesHandler removedHandler, IArchiveFileTitleEnricher titles)
+        public GetDirectoryTree2Controller(IGetFilesByBillIdWithTitles handler, IGetFilesDiscount discountHandler, IGetFilesRequest requestHandler, IOpenKmFilesService openKmFilesService, IArchiveFileTitleEnricher titles)
         {
             _handler = handler;
             _discountHandler = discountHandler;
             _requestHandler = requestHandler;
-            _removedHandler = removedHandler;
+            _openKmFilesService = openKmFilesService;
             _titles = titles;
         }
 
@@ -57,8 +56,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
         [HttpGet]
         [Route("reading-directory-tree2")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<FileListWithTitlesResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetReadingDirectoryTree(string billId,
-            [FromServices] IReadingArchiveService handler, CancellationToken cancellation)
+        public async Task<IActionResult> GetReadingDirectoryTree(string billId, [FromServices] IReadingArchiveService handler, CancellationToken cancellation)
         {
             return Ok(await handler.Get(billId, CurrentUser, cancellation));
         }
@@ -68,7 +66,7 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
         [ProducesResponseType(typeof(ApiResponseEnvelope<FileListWithTitlesResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRemovedTree([FromBody] RemovedFilesInput input, CancellationToken cancellation)
         {
-            var files = await _removedHandler.Handle(input, cancellation);
+            var files = await _openKmFilesService.DisplayRemovedFilesAsync(input, cancellation);
             return Ok(await _titles.Enrich(files, cancellation));
         }
     }

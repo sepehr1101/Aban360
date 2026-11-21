@@ -1,4 +1,4 @@
-﻿using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
+using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Implementations;
 using Aban360.BlobPool.Domain.Features.OpenKm;
@@ -7,6 +7,7 @@ using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.InteropServices;
+using Aban360.BlobPool.Application.Features.OpenKm.Services;
 
 namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
 {
@@ -16,24 +17,16 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
         private readonly IGetFilesByBillId _getFilesByBillIdHandler;
         private readonly IGetFilesDiscount _discountHandler;
         private readonly IGetFilesRequest _requestHandler;
-        private readonly IDisplayRemovedFilesHandler _displayRemovedFilesHandler;
-
-        public GetFilesListController(
-            IGetFilesByBillId getFilesByBillIdHandler,
-            IGetFilesDiscount getFilesDiscountHandler,
-            IGetFilesRequest getFilesRequest,
-            IDisplayRemovedFilesHandler displayRemovedFilesHandler)
+        private readonly IOpenKmFilesService _openKmFilesService;
+        public GetFilesListController(IGetFilesByBillId getFilesByBillIdHandler, IGetFilesDiscount getFilesDiscountHandler, IGetFilesRequest getFilesRequest, IOpenKmFilesService openKmFilesService)
         {
             _getFilesByBillIdHandler = getFilesByBillIdHandler;
             _getFilesByBillIdHandler.NotNull(nameof(getFilesByBillIdHandler));
-
             _discountHandler = getFilesDiscountHandler;
             _discountHandler.NotNull(nameof(getFilesDiscountHandler));
-
             _requestHandler = getFilesRequest;
             _requestHandler.NotNull(nameof(getFilesRequest));
-
-            _displayRemovedFilesHandler=displayRemovedFilesHandler;
+            _openKmFilesService = openKmFilesService;
         }
 
         [HttpGet]
@@ -66,9 +59,9 @@ namespace Aban360.Api.Controllers.V1.BlobController.OpenKm.Queries
         [HttpPost]
         [Route("removed-directory-tree")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<FileListResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRemovedTree([FromBody]RemovedFilesInput input, CancellationToken cancellation)
+        public async Task<IActionResult> GetRemovedTree([FromBody] RemovedFilesInput input, CancellationToken cancellation)
         {
-            FileListResponse result = await _displayRemovedFilesHandler.Handle(input, cancellation);
+            FileListResponse result = await _openKmFilesService.DisplayRemovedFilesAsync(input, cancellation);
             return Ok(result);
         }
     }

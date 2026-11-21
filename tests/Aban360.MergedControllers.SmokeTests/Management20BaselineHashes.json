@@ -1,0 +1,130 @@
+[
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_ClaimPool_Draft_RequestSubscriptionController.cs",
+    "Sha256": "200e1275f16950c9b544b2ec7bb7687b068a9528ac406f036c73fee4f6748155"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_ClaimPool_Land_Commands_ConCompanyController.cs",
+    "Sha256": "6dfdec8c18d7f52f5c74ee0b4b0150bf3b380700be4f5dab331855a97d029586"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_ClaimPool_Land_Commands_UsageGroup1Controller.cs",
+    "Sha256": "49075762effb2d463dfc485be904180045273c49a86bf04ac53288a0e984d185"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_ClaimPool_Land_Commands_UsageGroup2Controller.cs",
+    "Sha256": "46efc52645856d70e9a94be3580732237746e900f0d80e8f543f48d277ccf820"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_ClaimPool_Land_Commands_UsageGroup3Controller.cs",
+    "Sha256": "956a07acdf69c24bb7e5491a77df24b17331d2a3fe19562031ea04679f8cba11"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_ClaimPool_Land_EstateController.cs",
+    "Sha256": "d5d240dba83950389b14b4d3478276850378a2a960c3ecf140afc9ffe9ad5e73"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_ClaimPool_Land_InstallationDateAssignmentController.cs",
+    "Sha256": "b98780f9f19d0db11b91f8b0567ab20b72e996ffa3ffa3ca158c8f5db68ff3e5"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_ClaimPool_Land_SubscriptionAssignmentController.cs",
+    "Sha256": "9cb48d06034573c9244b2490e0df260cec3be160c33116b21a80e10362398adc"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_ClaimPool_Metering_WaterMeterController.cs",
+    "Sha256": "e22e91fdfbafc9693e58b95b9b80910c8a89475a0f9833fd29ecfa4d4507c068"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_ClaimPool_People_Commands_CustomerCommentController.cs",
+    "Sha256": "2ed422a4f829a81aeabd19827e5cae2d0f480b287c5a049b76ad01e68b8ae546"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_ClaimPool_People_Commands_CustomerInfoController.cs",
+    "Sha256": "34f4fa6874258e6a70f41a0f214582acbe5a2dc0f7b779ae576468f1773bf2c0"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_MeterPool_Management_CounterStateController.cs",
+    "Sha256": "a79c5e662af967e22c3e4374c72d5eafab0944dafcfa977c3d16a5f68240fe5f"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_OldCalcPool_Db70_BillReturnCauseController.cs",
+    "Sha256": "7075ae3f107cf68543b56a1c7985577d2017a8b211db2f89939dcf8190bbad45"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_OldCalcPool_Processing_MeterChangeController.cs",
+    "Sha256": "4d0ad69b01cfb217b64d5638396fedf736e4e755728a9fda04d40acb3058b819"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_UserPool_Auth_Commands_LoginController.cs",
+    "Sha256": "6f6afa28219097d6cff2744df3d01267d7935af87ecb3c14b02a23a3f7ad4ce1"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_UserPool_Auth_Commands_LogoutController.cs",
+    "Sha256": "9c6aef28a08cd4d67ca9f2568fa2a1dc115b1f3f80f7976c3936f51b7e3d9a85"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_UserPool_Auth_Commands_UserChangePasswordManagerController.cs",
+    "Sha256": "7164e2ccb30a8da9cca2a1e3aeedf28b1ad568b59129849caac64966091c6e38"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_UserPool_Auth_Commands_UserCreateController.cs",
+    "Sha256": "bdbb5bc4c83761be7e30fee98d95329c005cf90336c591c6d8329693e110fdcd"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_UserPool_Auth_Commands_UserDeleteManagerController.cs",
+    "Sha256": "2c5e17a453fdbec7c311a60557397fe0be33c255e9a3075179ba0ded6244be75"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_UserPool_Auth_Commands_UserLockManagerController.cs",
+    "Sha256": "51df3b277291e9b2728825b36bb29af45e33693fb1056e530a7f7f7235860ec2"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_UserPool_Auth_Commands_UserResetPasswordManagerController.cs",
+    "Sha256": "5328f9f38e3222cd6cc300b0fc4f061831530acf407801bd4d30175bc14ced40"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_UserPool_Auth_Commands_UserUnLockManagerController.cs",
+    "Sha256": "ddcefe1987f29a745dfc49180eef58d2b54f6fedb8303aab3c40056310a02e76"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_UserPool_Auth_Commands_UserUpdateController.cs",
+    "Sha256": "fef2cf2d44e97c3582ee5d38887814b774e2ef8c955f37d5347ed9f27328808d"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_UserPool_Auth_Queries_UserAllQueryController.cs",
+    "Sha256": "458b9b7f1733404500bc205d47c5dcf93dfc3025f9de97faf7270f94c74f07e5"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_UserPool_Auth_Queries_UserGetSingleQueryController.cs",
+    "Sha256": "27ea8ededd0a5a3d6b5629dfc829e5ef09b8b94c92642edc1737078105366de4"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.Api_Controllers_V1_UserPool_Auth_Queries_UserGridifyQueryController.cs",
+    "Sha256": "f540c78c16b0138175663a19b8ff085420487b3e4c85eadc2edc6657ec67a325"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.BrdigeApi_Controllers_V1_CalculationPool_MeterChangeController.cs",
+    "Sha256": "af30ea9c5fca016fa7f761403c230e9fc56669f22aa447b972de5f64958ff0db"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.BrdigeApi_Controllers_V1_ReportPool_ConsumersInfo_BillCounterStateGetController.cs",
+    "Sha256": "0ca3efd0d651b4faec5732afd7b938d881e6fb2d82b7fc8d848b9a67263cb171"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.BrdigeApi_Controllers_V1_ReportPool_ConsumersInfo_BillReturnCauseGetAllController.cs",
+    "Sha256": "20970aa861a89b26d6d875a50df8506fc2144dbff16ab5eb21bf0f357f07af6b"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.BrdigeApi_Controllers_V1_Security_LoginController.cs",
+    "Sha256": "2e1873f2aa7389ad6d8138cd1f7d198064cf6c72d11a3de7e54ae5673b66cc87"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.BrdigeApi_Controllers_V1_Security_LogoutController.cs",
+    "Sha256": "89641e306ddc1aab1d593ac619474bd4fe9ce5259a0f9e41e1e9dedb3429d95c"
+  },
+  {
+    "File": "tests/Aban360.MergedControllers.SmokeTests/OriginalConsumersManagement20/Aban360.BrdigeApi_Controllers_V1_ServiceLinkController.cs",
+    "Sha256": "f9282222410007f5fd7b012ad736c6d79ddea2e2acc514637c90b26bcce7678e"
+  }
+]

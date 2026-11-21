@@ -1,0 +1,72 @@
+[
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersAuxiliary10/MeterApkFileInsertHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/MeterApkFileInsertHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersAuxiliary10/MeterApkFileRemoveHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/MeterApkFileRemoveHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersAuxiliary10/MeterApkFileSetIsActiveHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/MeterApkFileSetIsActiveHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersAuxiliary10/SmsStateTemplateCreateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/SmsStateTemplateCreateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersAuxiliary10/SmsStateTemplateRemoveHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/SmsStateTemplateRemoveHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersAuxiliary10/SmsFlowCreateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/SmsFlowCreateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersAuxiliary10/SmsFlowUpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/SmsFlowUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersAuxiliary10/SmsTypeInsertHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/SmsTypeInsertHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersAuxiliary10/SmsStateGroupInsertHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/SmsStateGroupInsertHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsTypeApplicationService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/SmsTypeApplicationService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsStateGroupApplicationService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/SmsStateGroupApplicationService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsFlowService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/SmsFlowService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.MeterPool.Application/Features/Apk/Services/MeterApkFileService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/MeterApkFileService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Services/SmsStateTemplateService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesAuxiliary10/SmsStateTemplateService.cs",
+    "Before": false
+  }
+]

@@ -1,0 +1,162 @@
+[
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/OtherExpensesItemsInsertHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/OtherExpensesItemsInsertHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/OtherExpensesItemsRemoveHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/OtherExpensesItemsRemoveHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/ServiceLinkDeleteHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/ServiceLinkDeleteHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/ServiceLinkRegisterManualHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/ServiceLinkRegisterManualHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/ServiceLinkReturnDisconnectHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/ServiceLinkReturnDisconnectHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/ServiceLinkReturnHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/ServiceLinkReturnHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/ServiceLinkReturnRemoveHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/ServiceLinkReturnRemoveHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/ServiceLinkRemoveUnconfirmedHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/ServiceLinkRemoveUnconfirmedHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/ServiceLinkReturnConfirmeHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/ServiceLinkReturnConfirmeHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/ServiceLinkTempReturnHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/ServiceLinkTempReturnHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/MeterReadingDetailExcludeHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/MeterReadingDetailExcludeHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/MeterReadingDetailUpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/MeterReadingDetailUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/CalculationConfirmationHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/CalculationConfirmationHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/ConsumptionCheckedHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/ConsumptionCheckedHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/InitialCalculationHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/InitialCalculationHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/FreeGenerateBillHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/FreeGenerateBillHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/GenerateBillHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/GenerateBillHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/NowGenerateBillHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/NowGenerateBillHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/CloseRequestHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/CloseRequestHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/PreviousStatusRequestHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/PreviousStatusRequestHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/ReferredToIndividualRequestHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/ReferredToIndividualRequestHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/MoshtrakRequestUpdateHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/MoshtrakRequestUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/SwapRequestTypeHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/SwapRequestTypeHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests/Aban360.MergedControllers.SmokeTests/OriginalHandlersOperations19/ArchiveRequestHandler.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/Before/ArchiveRequestHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Services/OtherExpensesItemsService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/After/OtherExpensesItemsService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Services/ServiceLinkPaymentService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/After/ServiceLinkPaymentService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Services/ServiceLinkReturnService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/After/ServiceLinkReturnService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/ServiceLink/Services/ServiceLinkBatchReturnService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/After/ServiceLinkBatchReturnService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Services/MeterReadingDetailService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/After/MeterReadingDetailService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.CalculationPool.Application/Features/MeterReading/Services/MeterFlowService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/After/MeterFlowService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Application/Features/Processing/Services/BillGenerationService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/After/BillGenerationService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Services/RequestLifecycleService.cs",
+    "Fixture": "tests/Aban360.MergedControllers.SmokeTests/SqlFixturesOperations19/After/RequestLifecycleService.cs",
+    "Before": false
+  }
+]

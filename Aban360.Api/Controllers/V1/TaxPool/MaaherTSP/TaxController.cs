@@ -9,6 +9,7 @@ using Aban360.Api.Cronjobs;
 using Aban360.Common.BaseEntities;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.Api.Filters;
+using IMaaherInvoiceQueriesService = global::Aban360.TaxPool.Application.Features.MaaherSTP.Services.IMaaherInvoiceQueriesService;
 
 namespace Aban360.Api.Controllers.V1.TaxPool.MaaherTSP
 {
@@ -16,21 +17,18 @@ namespace Aban360.Api.Controllers.V1.TaxPool.MaaherTSP
     {
         private readonly INewListCreateHandler _c0_sentInvoiceHandler;
         private readonly ISentInvoiceHandler _c1_sentInvoiceHandler;
-        private readonly IMaliatMaaherDetailGetByWrapperIdHandler _c2_maliatMaaherDetailGetHandler;
+        private readonly IMaaherInvoiceQueriesService _maaherInvoiceQueriesService;
         private readonly IReportGenerator _c2_reportGenerator;
-        private readonly IMaliatMaaherWrapperGetAllHandler _c3_maaherWrapperGetAllHandler;
-        public TaxController(INewListCreateHandler c0_sentInvoiceHandler, ISentInvoiceHandler c1_sentInvoiceHandler, IMaliatMaaherDetailGetByWrapperIdHandler c2_maliatMaaherDetailGetHandler, IReportGenerator c2_reportGenerator, IMaliatMaaherWrapperGetAllHandler c3_maaherWrapperGetAllHandler)
+        public TaxController(INewListCreateHandler c0_sentInvoiceHandler, ISentInvoiceHandler c1_sentInvoiceHandler, IMaaherInvoiceQueriesService maaherInvoiceQueriesService, IReportGenerator c2_reportGenerator)
         {
             _c0_sentInvoiceHandler = c0_sentInvoiceHandler;
             _c0_sentInvoiceHandler.NotNull(nameof(c0_sentInvoiceHandler));
             _c1_sentInvoiceHandler = c1_sentInvoiceHandler;
             _c1_sentInvoiceHandler.NotNull(nameof(c1_sentInvoiceHandler));
-            _c2_maliatMaaherDetailGetHandler = c2_maliatMaaherDetailGetHandler;
-            _c2_maliatMaaherDetailGetHandler.NotNull(nameof(c2_maliatMaaherDetailGetHandler));
+            _maaherInvoiceQueriesService = maaherInvoiceQueriesService;
+            _maaherInvoiceQueriesService.NotNull(nameof(maaherInvoiceQueriesService));
             _c2_reportGenerator = c2_reportGenerator;
             _c2_reportGenerator.NotNull(nameof(c2_reportGenerator));
-            _c3_maaherWrapperGetAllHandler = c3_maaherWrapperGetAllHandler;
-            _c3_maaherWrapperGetAllHandler.NotNull(nameof(c3_maaherWrapperGetAllHandler));
         }
 
         [HttpPost]
@@ -64,7 +62,7 @@ namespace Aban360.Api.Controllers.V1.TaxPool.MaaherTSP
         [Route("~/v1/tax/excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, SearchByIdInput inputDto, CancellationToken cancellationToken)
         {
-            await _c2_reportGenerator.FireAndInform(inputDto, cancellationToken, _c2_maliatMaaherDetailGetHandler.Handle, CurrentUser, ReportLiterals.ClientValidation, connectionId);
+            await _c2_reportGenerator.FireAndInform(inputDto, cancellationToken, _maaherInvoiceQueriesService.MaliatMaaherDetailGetByWrapperIdAsync, CurrentUser, ReportLiterals.ClientValidation, connectionId);
             return Ok(inputDto);
         }
 
@@ -73,7 +71,7 @@ namespace Aban360.Api.Controllers.V1.TaxPool.MaaherTSP
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MaliatMaaherWrapperGetDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> All(CancellationToken cancellationToken)
         {
-            IEnumerable<MaliatMaaherWrapperGetDto> result = await _c3_maaherWrapperGetAllHandler.Handle(cancellationToken);
+            IEnumerable<MaliatMaaherWrapperGetDto> result = await _maaherInvoiceQueriesService.MaliatMaaherWrapperGetAllAsync(cancellationToken);
             return Ok(result);
         }
     }

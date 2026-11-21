@@ -1,20 +1,19 @@
-﻿using Aban360.CalculationPool.Application.Features.TestTariff.Handlers.Contrats;
 using Aban360.CalculationPool.Domain.Features.Bill.Dtos.Commands;
 using Aban360.Common.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ITariffTestsService = global::Aban360.CalculationPool.Application.Features.TestTariff.Services.ITariffTestsService;
 
 namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
 {
     [Route("v1/tariff-calculation")]
     public class TariffBatchCalculationManager : BaseController
     {
-        private readonly ITariffTestBatchHandler _tariffCalculationHandler;
-        public TariffBatchCalculationManager(
-            ITariffTestBatchHandler tariffCalculationHandler)
+        private readonly ITariffTestsService _tariffTestsService;
+        public TariffBatchCalculationManager(ITariffTestsService tariffTestsService)
         {
-            _tariffCalculationHandler = tariffCalculationHandler;
-            _tariffCalculationHandler.NotNull();
+            _tariffTestsService = tariffTestsService;
+            _tariffTestsService.NotNull();
         }
 
         [HttpPost]
@@ -22,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
         [AllowAnonymous]
         public async Task<IActionResult> Test([FromBody] CaluclationIntervalBatchTestInput tariffTestInput, CancellationToken cancellationToken)
         {
-            CaluclationIntervalDiscrepancytWrapper wrapper = await _tariffCalculationHandler.Handle(tariffTestInput, cancellationToken);
+            CaluclationIntervalDiscrepancytWrapper wrapper = await _tariffTestsService.TariffTestBatchAsync(tariffTestInput, cancellationToken);
             return Ok(wrapper);
         }
     }

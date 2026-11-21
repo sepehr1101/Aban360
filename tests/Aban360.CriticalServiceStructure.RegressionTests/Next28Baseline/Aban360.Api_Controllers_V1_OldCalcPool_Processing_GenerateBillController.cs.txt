@@ -1,0 +1,178 @@
+using System.Net;
+using Aban360.CalculationPool.Application.Features.Bill.Handlers.Queries.Contracts;
+using Aban360.Common.ApplicationUser;
+using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Db.Constants.Literals;
+using Aban360.Common.Db.Services;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using Aban360.NotificationPool.Application.Features.Sms;
+using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
+using Aban360.OldCalcPool.Domain.Constants;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Hangfire;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Aban360.OldCalcPool.Application.Features.Processing.Services;
+using Aban360.Api.Controllers.V1.OldCalcPool.Processing;
+
+namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
+{
+    [Route("v1/generate-bill")]
+    public class GenerateBillController : BaseController
+    {
+        private readonly IBillGenerationService _billGenerationService;
+        private readonly ISmsOldHandler _smsOldHandler;
+        private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly ILatestBillSendSmsHandler _latestBillSendSmsHandler;
+        private readonly IOpLogCommandService _opLogCommandService;
+        public GenerateBillController(IBillGenerationService billGenerationService, ISmsOldHandler smsOldHandler, IBackgroundJobClient backgroundJobClient, ILatestBillSendSmsHandler latestBillSendSmsHandler, IOpLogCommandService opLogCommandService)
+        {
+            _billGenerationService = billGenerationService;
+            _billGenerationService.NotNull(nameof(billGenerationService));
+            _smsOldHandler = smsOldHandler;
+            _smsOldHandler.NotNull(nameof(smsOldHandler));
+            _backgroundJobClient = backgroundJobClient;
+            _backgroundJobClient.NotNull(nameof(backgroundJobClient));
+            _latestBillSendSmsHandler = latestBillSendSmsHandler;
+            _latestBillSendSmsHandler.NotNull(nameof(latestBillSendSmsHandler));
+            _opLogCommandService = opLogCommandService;
+            _opLogCommandService.NotNull(nameof(opLogCommandService));
+        }
+
+        [HttpPost, HttpGet]
+        [Route("calc")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<NewBillOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Calculation(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
+        {
+            NewBillOutputDto result = await _billGenerationService.GenerateBillAsync(inputDto, CurrentUser, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("free")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<NewBillOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> FreeCalculation(FreeGenerateBillInputDto inputDto, CancellationToken cancellationToken)
+        {
+            NewBillOutputDto result = await _billGenerationService.FreeGenerateBillAsync(inputDto, string.Empty, CurrentUser, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("issue-remained")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<BillIssueRemainedOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetIssueRemained(string billId, CancellationToken cancellationToken)
+        {
+            BillIssueRemainedOutputDto result = await _billGenerationService.GenerateBillWithRemainedAsync(billId, CurrentUser, cancellationToken);
+            return Ok(result);
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("now")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<NowGenerateBillOutputDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<NowGenerateBillOutputDto>), StatusCodes.Status429TooManyRequests)]
+        public async Task<IActionResult> GetInstantly(NowGenerateBillInputDto inputDto, CancellationToken cancellationToken)
+        {
+            IAppUser appUser = new AppUserManual();
+            bool billIssued = false;
+            bool failureSmsHandled = false;
+            await InsertOpLog(OpLogLiterals.NowGenerateBillRequestOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber, appUser);
+            try
+            {
+                NowGenerateBillOutputDto handleResult = await _billGenerationService.NowGenerateBillAsync(inputDto, appUser, cancellationToken);
+                HttpStatusCode statusResult = handleResult.ErrorCode switch
+                {
+                    (int)NowGenerateBillErrorCodeEnum.Success => HttpStatusCode.OK,
+                    (int)NowGenerateBillErrorCodeEnum.Low => HttpStatusCode.RequestedRangeNotSatisfiable,
+                    (int)NowGenerateBillErrorCodeEnum.High => HttpStatusCode.RequestedRangeNotSatisfiable,
+                    (int)NowGenerateBillErrorCodeEnum.PreNumberHigherThanTodayNumber => HttpStatusCode.RequestedRangeNotSatisfiable,
+                    (int)NowGenerateBillErrorCodeEnum.PreNumberEqualTodayNumber => HttpStatusCode.RequestedRangeNotSatisfiable,
+                    (int)NowGenerateBillErrorCodeEnum.NotAvailableNow => HttpStatusCode.RequestedRangeNotSatisfiable,
+                    (int)NowGenerateBillErrorCodeEnum.InvalidDeletionState => HttpStatusCode.RequestedRangeNotSatisfiable,
+                    (int)NowGenerateBillErrorCodeEnum.BadRequest => HttpStatusCode.BadRequest,
+                    (int)NowGenerateBillErrorCodeEnum.MobileDailyLimitReached => HttpStatusCode.TooManyRequests,
+                    (int)NowGenerateBillErrorCodeEnum.BillDailyLimitReached => HttpStatusCode.TooManyRequests,
+                };
+                NowGenerateBillOutputDto result = new(handleResult.Message, handleResult.ErrorCode);
+                if (result.ErrorCode == (int)NowGenerateBillErrorCodeEnum.Success)
+                {
+                    billIssued = true;
+                    await _latestBillSendSmsHandler.Handle(inputDto.BillId, inputDto.MobileNumber, appUser, cancellationToken);
+                    await InsertOpLog(OpLogLiterals.NowGenerateBillRequestSuccessedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber, appUser);
+                }
+                else
+                {
+                    EnqueueFailureSms(inputDto, handleResult);
+                    failureSmsHandled = true;
+                    await InsertOpLog(OpLogLiterals.NowGenerateBillRequestFailedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber, appUser);
+                }
+
+                if (statusResult == HttpStatusCode.TooManyRequests)
+                {
+                    return StatusCode((int)statusResult, new ApiResponseEnvelope<NowGenerateBillOutputDto>((int)statusResult, handleResult, handleResult.Message));
+                }
+
+                return CustomeStatus(handleResult, statusResult, handleResult.Message);
+            }
+            catch
+            {
+                NowGenerateBillOutputDto result = new("سیستم قادر به محاسبه نیست", (int)NowGenerateBillErrorCodeEnum.NotAvailableNow);
+                if (!billIssued && !failureSmsHandled)
+                {
+                    EnqueueFailureSms(inputDto, result);
+                }
+
+                await InsertOpLog(OpLogLiterals.NowGenerateBillRequestFailedOpLog, inputDto.BillId, inputDto.CurrentMeterNumber, inputDto.MobileNumber, appUser);
+                return CustomeStatus(result, HttpStatusCode.RequestedRangeNotSatisfiable, result.Message);
+            }
+        }
+
+        private void EnqueueFailureSms(NowGenerateBillInputDto inputDto, NowGenerateBillOutputDto result)
+        {
+            string? mobileNumber = inputDto.MobileNumber;
+            if (string.IsNullOrEmpty(mobileNumber) || mobileNumber.Length != 11 || !mobileNumber.StartsWith("09", StringComparison.Ordinal) || !mobileNumber.All(char.IsAsciiDigit))
+            {
+                return;
+            }
+
+            string text = string.Format(SmsTemplates.NowGenerateBillFailed, inputDto.BillId, GetFailureSmsReason(result));
+            Guid trackingId = Guid.NewGuid();
+            try
+            {
+                _backgroundJobClient.Enqueue<ISmsOldHandler>(sender => sender.SendNew(mobileNumber, text, trackingId));
+            }
+            catch (Exception exception)
+            {
+                Serilog.Log.Error(exception, "Could not enqueue bill failure SMS for bill {BillId}", inputDto.BillId);
+            }
+        }
+
+        private static string GetFailureSmsReason(NowGenerateBillOutputDto result)
+        {
+            var category = result.SmsCategory ?? ((NowGenerateBillErrorCodeEnum)result.ErrorCode switch
+            {
+                NowGenerateBillErrorCodeEnum.MobileDailyLimitReached or NowGenerateBillErrorCodeEnum.BillDailyLimitReached => NowGenerateBillSmsCategoryEnum.DailyLimit,
+                NowGenerateBillErrorCodeEnum.BadRequest or NowGenerateBillErrorCodeEnum.InvalidDeletionState => NowGenerateBillSmsCategoryEnum.Subscription,
+                NowGenerateBillErrorCodeEnum.Low or NowGenerateBillErrorCodeEnum.High or NowGenerateBillErrorCodeEnum.PreNumberHigherThanTodayNumber or NowGenerateBillErrorCodeEnum.PreNumberEqualTodayNumber => NowGenerateBillSmsCategoryEnum.ReadingReview,
+                _ => NowGenerateBillSmsCategoryEnum.System
+            });
+            return category switch
+            {
+                NowGenerateBillSmsCategoryEnum.DailyLimit => SmsTemplates.NowGenerateBillDailyLimitReason,
+                NowGenerateBillSmsCategoryEnum.Subscription => SmsTemplates.NowGenerateBillSubscriptionReason,
+                NowGenerateBillSmsCategoryEnum.ReadingReview => SmsTemplates.NowGenerateBillReadingReviewReason,
+                NowGenerateBillSmsCategoryEnum.RecentBill => SmsTemplates.NowGenerateBillRecentBillReason,
+                _ => SmsTemplates.NowGenerateBillSystemReason
+            };
+        }
+
+        private async Task InsertOpLog(string baseText, string billId, int meterNumber, string mobileNumber, IAppUser appUser)
+        {
+            string requestSeccessOpLogText = string.Format(baseText, billId, meterNumber, mobileNumber);
+            await _opLogCommandService.Insert(requestSeccessOpLogText, appUser);
+        }
+    }
+}

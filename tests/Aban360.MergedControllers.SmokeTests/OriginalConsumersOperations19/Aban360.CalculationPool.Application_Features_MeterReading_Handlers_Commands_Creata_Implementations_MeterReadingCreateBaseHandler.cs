@@ -1,0 +1,687 @@
+using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Contracts;
+using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Queries.Contracts;
+using Aban360.CalculationPool.Domain.Constants;
+using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Commands;
+using Aban360.CalculationPool.Domain.Features.MeterReading.Dtos.Queries;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Commands.Implementations;
+using Aban360.CalculationPool.Persistence.Features.MeterReading.Queries.Contracts;
+using Aban360.ClaimPool.Domain.Constants;
+using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Db.Constants.Literals;
+using Aban360.Common.Db.Dapper;
+using Aban360.Common.Db.Services;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using Aban360.Common.Timing;
+using Aban360.NotificationPool.Application.Features.Sms;
+using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Commands.Contracts;
+using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Implementations;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
+using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
+using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
+using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
+using Aban360.ReportPool.Domain.Base;
+using DNTPersianUtils.Core;
+using FluentValidation;
+using Hangfire;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using System.Data;
+using Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations;
+
+namespace BeforeConsumersOperations19.Aban360.CalculationPool.Application.Features.MeterReading.Handlers.Commands.Creata.Implementations
+{
+    internal sealed class MeterReadingCreateBaseHandler : AbstractBaseConnection, IMeterReadingCreateBaseHandler
+    {
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IBackgroundJobClient _backgroundJobClient;
+        private readonly ISmsOldHandler _smsOldHandler;
+        private readonly IMeterFlowQueryService _meterFlowService;
+        private readonly ICustomerInfoService _customerInfoService;
+        private readonly IMeterReadingDetailQueryService _meterReadingDetailService;
+        private readonly IMeterFlowValidationGetHandler _meterFlowValidationGetHandler;
+        private readonly IOldTariffEngine _tariffEngine;
+        private readonly IValidator<MeterReadingFileCreateDto> _validator;
+        private readonly IPreviousAverageHandler _previousAverageHandler;
+        private readonly IBedBesQueryService _bedBesQueryService;
+        private int[] _domesticUnits =
+        {
+            (int)UsageEnum.Domestic,
+            (int)UsageEnum.DomesticCommercial,
+            (int)UsageEnum.Garden,
+            (int)UsageEnum.Residence
+        };
+        const int _conditionByConsumption = 99_999_999;
+        const int _paymentDeadline = 7;
+        const double _maxAmount = 999_999_999_999;
+        public MeterReadingCreateBaseHandler(IHttpContextAccessor contextAccessor, IBackgroundJobClient backgroundJobClient, ISmsOldHandler smsOldHandler, IMeterFlowQueryService meterFlowService, ICustomerInfoService customerInfoService, IMeterReadingDetailQueryService meterReadingDetailService, IOldTariffEngine tariffEngine, IMeterFlowValidationGetHandler meterFlowValidationGetHandler, IValidator<MeterReadingFileCreateDto> validator, IPreviousAverageHandler previousAverageHandler, IBedBesQueryService bedBesQueryService, IConfiguration configuration) : base(configuration)
+        {
+            _contextAccessor = contextAccessor;
+            _contextAccessor.NotNull(nameof(contextAccessor));
+            _backgroundJobClient = backgroundJobClient;
+            _backgroundJobClient.NotNull(nameof(backgroundJobClient));
+            _smsOldHandler = smsOldHandler;
+            _smsOldHandler.NotNull(nameof(smsOldHandler));
+            _meterFlowService = meterFlowService;
+            _meterFlowService.NotNull(nameof(_meterFlowService));
+            _customerInfoService = customerInfoService;
+            _customerInfoService.NotNull(nameof(_customerInfoService));
+            _meterReadingDetailService = meterReadingDetailService;
+            _meterReadingDetailService.NotNull(nameof(_meterReadingDetailService));
+            _tariffEngine = tariffEngine;
+            _tariffEngine.NotNull(nameof(tariffEngine));
+            _meterFlowValidationGetHandler = meterFlowValidationGetHandler;
+            _meterFlowValidationGetHandler.NotNull(nameof(meterFlowValidationGetHandler));
+            _validator = validator;
+            _validator.NotNull(nameof(_validator));
+            _previousAverageHandler = previousAverageHandler;
+            _previousAverageHandler.NotNull(nameof(_previousAverageHandler));
+            _bedBesQueryService = bedBesQueryService;
+            _bedBesQueryService.NotNull(nameof(bedBesQueryService));
+        }
+
+        public async Task<ICollection<MeterReadingDetailCreateDto>> GetReadingDetailCreateFinal(IEnumerable<MeterReadingDetailCreateDto> readingDetails, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = new List<MeterReadingDetailCreateDto>();
+            foreach (var readingDetail in readingDetails)
+            {
+                var(isValid, hasExclude, excludeCauseEnum) = DataValidate(readingDetail);
+                if (isValid)
+                {
+                    if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Malfunction) //xarab
+                    {
+                        float previousAverage = await _previousAverageHandler.HandleByPreviousYear(readingDetail.ZoneId, readingDetail.CustomerNumber, readingDetail.PreviousDateJalali, readingDetail.CurrentDateJalali) ?? await _previousAverageHandler.HandleByLatestReading(readingDetail.ZoneId, readingDetail.CustomerNumber, readingDetail.PreviousDateJalali, readingDetail.CurrentDateJalali);
+                        MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto()
+                        {
+                            BillId = readingDetail.BillId,
+                            CurrentDateJalali = readingDetail.CurrentDateJalali,
+                            MonthlyAverageConsumption = previousAverage,
+                            PreviousDateJalali = readingDetail.PreviousDateJalali,
+                        };
+                        try
+                        {
+                            AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
+                            if (abBahaCalc.SumItems > _maxAmount)
+                            {
+                                throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
+                            }
+
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null, null));
+                        }
+                        catch (Exception ex)when (IsInException(ex))
+                        {
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
+                        }
+                    }
+                    else if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Change && string.IsNullOrWhiteSpace(readingDetail.TavizDateJalali))
+                    {
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
+                    }
+                    else if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Change && readingDetail.TavizDateJalali.CompareTo(readingDetail.CurrentDateJalali) > 0)
+                    {
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
+                    }
+                    else if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Change && readingDetail.TavizDateJalali.CompareTo(readingDetail.PreviousDateJalali) < 0)
+                    {
+                        readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
+                    }
+                    else if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Change) //taviz
+                    {
+                        int previousNumber = readingDetail.PreviousNumber;
+                        string previousDateJalali = readingDetail.PreviousDateJalali;
+                        readingDetail.PreviousNumber = 0;
+                        readingDetail.PreviousDateJalali = readingDetail.TavizDateJalali; //TODO: check has value
+                        MeterImaginaryInputDto meterImaginaryTmp = GetMeterImaginary(readingDetail);
+                        try
+                        {
+                            AbBahaCalculationDetails abBahaCalcTmp = await _tariffEngine.Handle(meterImaginaryTmp, cancellationToken);
+                            readingDetail.PreviousNumber = previousNumber;
+                            readingDetail.PreviousDateJalali = previousDateJalali;
+                            MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto()
+                            {
+                                BillId = readingDetail.BillId,
+                                CurrentDateJalali = readingDetail.CurrentDateJalali,
+                                MonthlyAverageConsumption = abBahaCalcTmp.MonthlyConsumption,
+                                PreviousDateJalali = readingDetail.PreviousDateJalali,
+                            };
+                            AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
+                            if (abBahaCalc.SumItems > _maxAmount)
+                            {
+                                throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
+                            }
+
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null, null));
+                        }
+                        catch (Exception ex)when (IsInException(ex))
+                        {
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
+                        }
+                    }
+                    else //not xarab, nor taviz
+                    {
+                        MeterImaginaryInputDto meterImaginary = GetMeterImaginary(readingDetail);
+                        try
+                        {
+                            AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterImaginary, cancellationToken);
+                            if (abBahaCalc.SumItems > _maxAmount)
+                            {
+                                throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
+                            }
+
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null, null));
+                        }
+                        catch (Exception ex)when (IsInException(ex))
+                        {
+                            readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
+                        }
+                    }
+                }
+                else
+                {
+                    Guid? excludedUserId = hasExclude ? appUser.UserId : null;
+                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, excludedUserId, excludeCauseEnum));
+                }
+            }
+
+            return readingDetailsCreate;
+        }
+
+        public async Task<ICollection<MeterReadingDetailCreateDto>> GetReadingDetailCreateFinalNonRead(IEnumerable<MeterReadingDetailCreateDto> readingDetails, FileCreateDto fileInfo, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            ICollection<MeterReadingDetailCreateDto> readingDetailsCreate = new List<MeterReadingDetailCreateDto>();
+            foreach (var readingDetail in readingDetails)
+            {
+                try
+                {
+                    MeterDateInfoWithMonthlyConsumptionOutputDto meterInfo = new MeterDateInfoWithMonthlyConsumptionOutputDto()
+                    {
+                        BillId = readingDetail.BillId,
+                        CurrentDateJalali = readingDetail.CurrentDateJalali,
+                        MonthlyAverageConsumption = readingDetail.MonthlyConsumption ?? 0,
+                        PreviousDateJalali = readingDetail.PreviousDateJalali,
+                    };
+                    AbBahaCalculationDetails abBahaCalc = await _tariffEngine.Handle(meterInfo, cancellationToken);
+                    if (abBahaCalc.SumItems > _maxAmount)
+                    {
+                        throw new InvalidBillCommandException(ExceptionLiterals.InvalidDisallowedAmount(readingDetail.BillId, _maxAmount));
+                    }
+
+                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, abBahaCalc, false, null, null));
+                }
+                catch (Exception ex)when (IsInException(ex))
+                {
+                    readingDetailsCreate.Add(GetMeterReadingDetailByAbBahaValue(readingDetail, null, true, appUser.UserId, ExcludedCauseEnum.Error));
+                }
+            }
+
+            return readingDetailsCreate;
+        }
+
+        public async Task<(CustomersInfoGetDto, int)> GetCustomerInfoAndFirstFlowId(ICollection<MeterReadingFileDetail> meterReadings, string fileName, string filePath, string? description, Guid userId)
+        {
+            MeterReadingFileDetail? firstMeterDetail = meterReadings.FirstOrDefault();
+            if (firstMeterDetail == null)
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidDataInReadingFile);
+            }
+
+            string fromReadingNumber = meterReadings?.Min(m => m.ReadingNumber) ?? string.Empty;
+            string toReadingNumber = meterReadings?.Max(m => m.ReadingNumber) ?? string.Empty;
+            MeterFlowCreateDto importedMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Imported, 0, fileName, firstMeterDetail.ZoneId, fromReadingNumber, toReadingNumber, meterReadings?.Count() ?? 0, userId, description);
+            ICollection<int> customerNumbers = meterReadings.Select(m => m.CustomerNumber).ToList();
+            IEnumerable<ZoneIdAndCustomerNumber> customersByInvalidPreviousBedBes = new List<ZoneIdAndCustomerNumber>();
+            IEnumerable<BedBesPreviousNumberAndDateOutputDto> previousBillsInfo = new List<BedBesPreviousNumberAndDateOutputDto>();
+            CustomersInfoGetDto customersInfo;
+            int meterFlowId = 0;
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    MeterFlowCommandService meterflowCommandService = new(connection, transaction);
+                    meterFlowId = await meterflowCommandService.Insert(importedMeterFlow);
+                    await meterflowCommandService.Update(meterFlowId, meterFlowId);
+                    customersInfo = await _customerInfoService.GetByBulkCopy(connection, transaction, firstMeterDetail.ZoneId, customerNumbers);
+                    previousBillsInfo = await _bedBesQueryService.GetPreviousDateAndNumber(connection, transaction, firstMeterDetail.ZoneId, customerNumbers);
+                    transaction.Commit();
+                }
+            }
+
+            foreach (var item in customersInfo.BedBesInfo)
+            {
+                BedBesPreviousNumberAndDateOutputDto? previousInfo = previousBillsInfo.Where(p => p.CustomerNumber == item.CustomerNumber).FirstOrDefault();
+                if (previousInfo is null)
+                {
+                    string? waterInstallationDateJalali = customersInfo?.MembersInfo?.Where(c => c.CustomerNumber == item.CustomerNumber)?.FirstOrDefault()?.WaterInstallationDateJalali ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(waterInstallationDateJalali))
+                    {
+                        throw new InvalidBillCommandException(ExceptionLiterals.InvalidBedBesPreviousNumberAndDateAndInstallationDate(item.BillId));
+                    }
+
+                    item.LastMeterNumber = 0;
+                    item.LastMeterDateJalali = waterInstallationDateJalali;
+                    item.LastCounterStateCode = 0;
+                    item.LastConsumption = 0;
+                    item.LastMonthlyConsumption = 0;
+                }
+                else
+                {
+                    item.LastMeterNumber = previousInfo.PreviousNumber;
+                    item.LastMeterDateJalali = previousInfo.PreviousDateJalali;
+                    item.LastCounterStateCode = previousInfo.CounterStateCode;
+                    item.LastConsumption = previousInfo.Consumption;
+                    item.LastMonthlyConsumption = previousInfo.ConsumptionAverage;
+                }
+            }
+
+            return (customersInfo, meterFlowId);
+        }
+
+        public IEnumerable<MeterReadingDetailCreateDto> GetReadingMeterDetails(ICollection<MeterReadingFileDetail> meterReadings, CustomersInfoGetDto customersInfo, int meterFlowId)
+        {
+            return
+                from meterReading in meterReadings
+                join members in customersInfo.MembersInfo on meterReading.CustomerNumber equals members.CustomerNumber into membersJoin
+                from members in membersJoin.DefaultIfEmpty()join bedbes in customersInfo.BedBesInfo on members.CustomerNumber equals bedbes.CustomerNumber into bedbesJoin
+                from bedbes in bedbesJoin.DefaultIfEmpty()join taviz in customersInfo.TavizInfo on members.CustomerNumber equals taviz.CustomerNumber into tavizJoin
+                from taviz in tavizJoin.DefaultIfEmpty()select new MeterReadingDetailCreateDto()
+                {
+                    FlowImportedId = meterFlowId,
+                    ZoneId = meterReading.ZoneId,
+                    CustomerNumber = meterReading.CustomerNumber,
+                    ReadingNumber = meterReading.ReadingNumber,
+                    BillId = members.BillId,
+                    AgentCode = meterReading.AgentCode,
+                    CurrentCounterStateCode = meterReading.CurrentCounterStateCode,
+                    PreviousDateJalali = bedbes is null ? members.WaterInstallationDateJalali : bedbes.LastMeterDateJalali,
+                    CurrentDateJalali = meterReading.CurrentDateJalali,
+                    PreviousNumber = bedbes?.LastMeterNumber ?? 0,
+                    CurrentNumber = meterReading.CurrentNumber,
+                    InsertByUserId = meterReading.InsertByUserId,
+                    InsertDateTime = meterReading.InsertDateTime,
+                    WaterDebt = members.LatestDebtAmount,
+                    DeletionStateId = members.DeletionStateId,
+                    MobileNumber = members.MobileNumber ?? string.Empty,
+                    BranchTypeId = members.BranchTypeId,
+                    UsageId = members.UsageId,
+                    ConsumptionUsageId = members.ConsumptionUsageId,
+                    DomesticUnit = members.DomesticUnit,
+                    CommercialUnit = members.CommercialUnit,
+                    OtherUnit = members.OtherUnit,
+                    EmptyUnit = members.EmptyUnit,
+                    WaterInstallationDateJalali = members.WaterInstallationDateJalali,
+                    SewageInstallationDateJalali = members.SewageInstallationDateJalali,
+                    WaterRegisterDate = members.WaterRegisterDate,
+                    SewageRegisterDate = members.WaterRegisterDate,
+                    WaterCount = members.WaterCount,
+                    SewageCalcState = members.SewageCalcState,
+                    ContractualCapacity = members.ContractualCapacity,
+                    HouseholdDate = members.HouseholdDate,
+                    HouseholdNumber = members.HouseholdNumber,
+                    VillageId = members.VillageId,
+                    IsSpecial = members.IsSpecial,
+                    MeterDiameterId = members.MeterDiameterId,
+                    VirtualCategoryId = members.VirtualCategoryId,
+                    BodySerial = members.BodySerial,
+                    TavizCause = taviz?.TavizCause,
+                    TavizDateJalali = taviz?.TavizDateJalali,
+                    TavizNumber = taviz?.TavizNumber,
+                    TavizRegisterDateJalali = taviz?.TavizRegisterDateJalali,
+                    LastMeterDateJalali = bedbes is null ? members.WaterInstallationDateJalali : bedbes.LastMeterDateJalali,
+                    LastMeterNumber = bedbes?.LastMeterNumber ?? 0,
+                    LastConsumption = bedbes?.LastConsumption ?? 0,
+                    LastMonthlyConsumption = bedbes?.LastMonthlyConsumption ?? 0,
+                    LastCounterStateCode = bedbes?.LastCounterStateCode ?? 0,
+                    LastSumItems = bedbes?.LastSumItems ?? 0
+                };
+        }
+
+        public async Task ExecSql(ICollection<MeterReadingDetailCreateDto> readingDetailsCreate, FileCreateDto fileInfo, IAppUser appUser)
+        {
+            int firstFlowId = readingDetailsCreate.FirstOrDefault().FlowImportedId;
+            int zoneId = readingDetailsCreate.FirstOrDefault().ZoneId;
+            string fromReadingNumber = readingDetailsCreate?.Min(m => m.ReadingNumber) ?? string.Empty;
+            string toReadingNumber = readingDetailsCreate?.Max(m => m.ReadingNumber) ?? string.Empty;
+            string opLogText = string.Format(OpLogLiterals.MeterReadingFileInportOpLog, firstFlowId, fileInfo.FileName, readingDetailsCreate?.Count() ?? 0);
+            MeterFlowDeleteDto meterFlowDeleteDto = new(firstFlowId, appUser.UserId, DateTime.Now);
+            using (IDbConnection connection = _sqlReportConnection)
+            {
+                if (connection.State != ConnectionState.Open)
+                {
+                    connection.Open();
+                }
+
+                using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
+                {
+                    MeterReadingDetailCommandService meterReadingDetailService = new(connection, transaction);
+                    MeterFlowCommandService meterFlowCommand = new(connection, transaction);
+                    OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+                    try
+                    {
+                        await meterReadingDetailService.Insert(readingDetailsCreate);
+                        await MeterFlowCommands(connection, transaction, firstFlowId, firstFlowId, zoneId, fromReadingNumber, toReadingNumber, readingDetailsCreate?.Count() ?? 0, fileInfo.FileName, appUser, fileInfo.Description);
+                        await opLogCommandService.Insert(opLogText, appUser);
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        await meterFlowCommand.Delete(meterFlowDeleteDto);
+                        throw ex;
+                    //DeleteFromDisk(filePath);//todo:Error
+                    }
+                }
+            }
+        }
+
+        public ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> GetReturnData(IEnumerable<MeterReadingDetailCreateDto> data, string title)
+        {
+            int[] closedAndObstacleCounterState =
+            {
+                4,
+                7,
+                8
+            };
+            MeterReadingDetailHeaderOutputDto header = new MeterReadingDetailHeaderOutputDto()
+            {
+                Amount = data.Sum(m => m.SumItems) ?? 0,
+                Consumption = data.Sum(m => m.Consumption) ?? 0,
+                RecordCount = data.Count(),
+                Closed = data.Count(r => r.CurrentCounterStateCode == 4),
+                Obstacle = data.Count(r => r.CurrentCounterStateCode == 7),
+                Temporarily = data.Count(r => r.CurrentCounterStateCode == 8),
+                PureReading = data.Count(r => !closedAndObstacleCounterState.Contains(r.CurrentCounterStateCode)),
+                Malfunction = data.Count(r => r.CurrentCounterStateCode == 1)
+            };
+            ReportOutput<MeterReadingDetailHeaderOutputDto, MeterReadingDetailCreateDto> result = new(title, header, data);
+            return result;
+        }
+
+        private async Task MeterFlowCommands(IDbConnection connection, IDbTransaction transaction, int firstFlowId, int latestFlowId, int ZoneId, string fromReadingNumber, string toReadingNumber, int primaryCount, string fileName, IAppUser appUser, string? description)
+        {
+            MeterFlowCommandService meterFlowService = new(connection, transaction);
+            MeterFlowUpdateDto meterFlowUpdate = new(latestFlowId, appUser.UserId, DateTime.Now);
+            await meterFlowService.Update(meterFlowUpdate);
+            MeterFlowCreateDto newMeterFlow = GetMeterFlowCreateDto(MeterFlowStepEnum.Calculated, firstFlowId, fileName, ZoneId, fromReadingNumber, toReadingNumber, primaryCount, appUser.UserId, description);
+            await meterFlowService.Insert(newMeterFlow);
+        }
+
+        public MeterReadingFileDetail CreateMeterReading(int zoneId, int customerNumber, string readingNumber, int agentCode, short currentCounterStateCode, string previousDateJalali, string currentDateJalali, int previousNumber, int currentNumber, Guid userId)
+        {
+            return new MeterReadingFileDetail(zoneId: zoneId, customerNumber: customerNumber, readingNumber: readingNumber, agentCode: agentCode, currentCounterStateCode: currentCounterStateCode, previousDateJalali: previousDateJalali, currentDateJalali: currentDateJalali, previousNumber: previousNumber, currentNumber: currentNumber, insertByUserId: userId, insertDateTime: DateTime.Now);
+        }
+
+        public MeterFlowCreateDto GetMeterFlowCreateDto(MeterFlowStepEnum step, int firstFlowId, string fileName, int zoneId, string fromReadingNumber, string toReadingNumber, int primaryCount, Guid userId, string description)
+        {
+            return new MeterFlowCreateDto()
+            {
+                MeterFlowStepId = step,
+                FirstFlowId = firstFlowId,
+                FileName = fileName,
+                ZoneId = zoneId,
+                FromReadingNumber = fromReadingNumber,
+                ToReadingNumber = toReadingNumber,
+                PrimaryCount = primaryCount,
+                InsertByUserId = userId,
+                InsertDateTime = DateTime.Now,
+                Description = description
+            };
+        }
+
+        public async Task CheckDuplicateFile(string fileName, CancellationToken cancellationToken)
+        {
+            string? insertDateTime = await _meterFlowService.GetInsertDateTime(fileName);
+            if (insertDateTime is not null)
+            {
+                string insertDateJalali = ConvertDate.GregorianToJalali(insertDateTime);
+                throw new ReadingException(ExceptionLiterals.InvalidDuplicateFileName(insertDateJalali));
+            }
+        }
+
+        private (bool, bool, ExcludedCauseEnum? ) DataValidate(MeterReadingDetailCreateDto readingDetail)
+        {
+            int[] invalidCounterStateCode = [(int)CounterStateCodeEnum.Close, /*_withoutConsumptionMeterTypeId,*/ (int)CounterStateCodeEnum.Block, (int)CounterStateCodeEnum.NonRead, (int)CounterStateCodeEnum.DesolateUnit, (int)CounterStateCodeEnum.Disconnection];
+            DateTime? previousDate = ConvertDate.JalaliToDateTime(readingDetail.PreviousDateJalali, false);
+            if (previousDate is null)
+            {
+                return (false, true, ExcludedCauseEnum.Error);
+            }
+
+            if (readingDetail.CurrentDateJalali.CompareTo(previousDate.Value.AddDays(3).ToShortPersianDateString()) < 0)
+            {
+                return (false, true, ExcludedCauseEnum.PriGTCurrent);
+            }
+
+            if (readingDetail.DeletionStateId == (int)DeletionStateEnum.HazfMovaghat && readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Close)
+            {
+                return (false, true, ExcludedCauseEnum.Deleted_Close);
+            }
+
+            if (readingDetail.DeletionStateId == (int)DeletionStateEnum.HazfMovaghat && readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Block)
+            {
+                return (false, true, ExcludedCauseEnum.Deleted_Block);
+            }
+
+            if (readingDetail.DeletionStateId == (int)DeletionStateEnum.HazfMovaghat && readingDetail.CurrentNumber != 0)
+            {
+                return (false, true, ExcludedCauseEnum.Deleted_HasMeterNumber);
+            }
+
+            if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Common && readingDetail.PreviousNumber > readingDetail.CurrentNumber)
+            {
+                return (false, true, ExcludedCauseEnum.Error);
+            }
+
+            if (readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.WithoutConsumption && readingDetail.PreviousNumber != readingDetail.CurrentNumber)
+            {
+                return (false, true, ExcludedCauseEnum.Error);
+            }
+
+            if (invalidCounterStateCode.Contains(readingDetail.CurrentCounterStateCode))
+            {
+                return (false, false, null);
+            }
+            else if ((readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Change || readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.Reverse || readingDetail.CurrentCounterStateCode == (int)CounterStateCodeEnum.NextRound) && readingDetail.CurrentNumber > readingDetail.PreviousNumber)
+            {
+                return (false, true, ExcludedCauseEnum.Error);
+            }
+
+            if (!_domesticUnits.Contains(readingDetail.UsageId) && (readingDetail.ContractualCapacity <= 0))
+            {
+                return (false, true, ExcludedCauseEnum.Error);
+            }
+
+            if (readingDetail.CurrentNumber > _conditionByConsumption)
+            {
+                return (false, true, ExcludedCauseEnum.Error);
+            }
+
+            return (true, false, null); //(IsValid,HasExclude,ExcludedCause)
+        }
+
+        private MeterImaginaryInputDto GetMeterImaginary(MeterReadingDetailCreateDto readingDetail)
+        {
+            CustomerDetailInfoInputDto customerInfo = new()
+            {
+                ZoneId = readingDetail.ZoneId,
+                Radif = readingDetail.CustomerNumber,
+                BranchType = readingDetail.BranchTypeId, //todo
+                UsageId = readingDetail.UsageId,
+                DomesticUnit = readingDetail.DomesticUnit,
+                CommertialUnit = readingDetail.CommercialUnit,
+                OtherUnit = readingDetail.OtherUnit,
+                EmptyUnit = readingDetail.EmptyUnit,
+                WaterInstallationDateJalali = readingDetail.WaterInstallationDateJalali,
+                SewageInstallationDateJalali = readingDetail.SewageInstallationDateJalali,
+                WaterRegisterDate = readingDetail.WaterRegisterDate,
+                SewageRegisterDate = readingDetail.SewageRegisterDate,
+                SewageCalcState = readingDetail.SewageCalcState,
+                ContractualCapacity = readingDetail.ContractualCapacity,
+                HouseholdDate = readingDetail.HouseholdDate,
+                HouseholdNumber = readingDetail.HouseholdNumber,
+                ReadingNumber = readingDetail.ReadingNumber,
+                VillageId = readingDetail.VillageId,
+                IsSpecial = readingDetail.IsSpecial,
+                VirtualCategoryId = readingDetail.VirtualCategoryId,
+                CounterStateCode = readingDetail.CurrentCounterStateCode,
+            };
+            MeterInfoByPreviousDataInputDto meterInfo = new()
+            {
+                BillId = readingDetail.BillId,
+                PreviousDateJalali = readingDetail.PreviousDateJalali,
+                PreviousNumber = readingDetail.PreviousNumber,
+                CurrentDateJalali = readingDetail.CurrentDateJalali,
+                CurrentMeterNumber = readingDetail.CurrentNumber,
+                CounterStateCode = readingDetail.CurrentCounterStateCode
+            };
+            return new MeterImaginaryInputDto()
+            {
+                CustomerInfo = customerInfo,
+                MeterPreviousData = meterInfo,
+            };
+        }
+
+        private MeterReadingDetailCreateDto GetMeterReadingDetailByAbBahaValue(MeterReadingDetailCreateDto r, AbBahaCalculationDetails? abBahaCalc, bool hasZeroValue, Guid? userIdExclude, ExcludedCauseEnum? excludedCauseEnum)
+        {
+            double preDebtAmount = r.WaterDebt;
+            var(sumItems, jam, pard) = TransactionIdGenerator.GetAmounts(preDebtAmount, abBahaCalc?.SumItems ?? 0);
+            string mohlatDateJalali = DateTime.Now.AddDays(_paymentDeadline).ToShortPersianDateString();
+            r.ExcludedByUserId = userIdExclude;
+            r.ExcludedDateTime = userIdExclude.HasValue ? DateTime.Now : null;
+            r.ExcludedCauseId = userIdExclude.HasValue && excludedCauseEnum.HasValue ? (int)excludedCauseEnum : null;
+            r.ExcludedCauseTitle = userIdExclude.HasValue && excludedCauseEnum.HasValue ? GetExcludedCauseTitle(excludedCauseEnum.Value) : null;
+            r.Barge = 0;
+            r.PriNo = r.PreviousNumber;
+            r.TodayNo = r.CurrentNumber;
+            r.PriDate = r.PreviousDateJalali;
+            r.TodayDate = r.CurrentDateJalali;
+            r.AbonAb = (decimal)(abBahaCalc?.AbonmanAbAmount ?? 0);
+            r.AbonFas = (decimal)(abBahaCalc?.AbonmanFazelabAmount ?? 0);
+            r.FasBaha = ((decimal)(abBahaCalc?.FazelabAmount ?? 0)) + ((decimal)(abBahaCalc?.HotSeasonFazelabAmount ?? 0));
+            r.AbBaha = (decimal)(abBahaCalc?.AbBahaAmount ?? 0);
+            r.Ztadil = 0; //todo
+            r.Masraf = (decimal)(abBahaCalc?.Consumption ?? 0);
+            r.Shahrdari = (decimal)(abBahaCalc?.MaliatAmount ?? 0);
+            r.Modat = abBahaCalc?.Duration ?? 0;
+            r.DateBed = DateTime.Now.ToShortPersianDateString();
+            r.JalaseNo = 0; //todo
+            r.Mohlat = mohlatDateJalali;
+            r.Baha = (decimal)sumItems;
+            r.Pard = (decimal)pard;
+            r.Jam = (decimal)jam;
+            r.WaterDebt = preDebtAmount;
+            r.CodVas = r.CurrentCounterStateCode;
+            r.Ghabs = "1";
+            r.Del = false;
+            r.Type = "1";
+            r.CodEnshab = r.UsageId;
+            r.Enshab = r.MeterDiameterId;
+            r.Elat = 0;
+            r.Serial = 0;
+            r.Ser = 0;
+            r.ZaribFasl = (decimal)(abBahaCalc?.HotSeasonAbBahaAmount ?? 0);
+            r.Ab10 = 0;
+            r.Ab20 = 0;
+            r.TedadVahd = r.OtherUnit;
+            r.TedKhane = r.HouseholdNumber;
+            r.TedadMas = r.DomesticUnit;
+            r.TedadTej = r.CommercialUnit;
+            r.NoeVa = r.BranchTypeId;
+            r.Jarime = 0;
+            r.Masjar = 0;
+            r.Sabt = 0;
+            r.Rate = (decimal)(abBahaCalc?.MonthlyConsumption ?? 0);
+            r.Operator = ReportLiterals.RayabOperator;
+            r.Mamor = r.AgentCode;
+            r.TavizDate = ""; //todo
+            r.ZaribCntr = 0;
+            r.Zabresani = 0;
+            r.ZaribD = (decimal)(abBahaCalc?.JavaniAmount ?? 0);
+            r.Tafavot = 0;
+            r.KasrHa = (decimal)(abBahaCalc?.DiscountSum ?? 0);
+            r.FixMas = r.ContractualCapacity;
+            r.ShGhabs1 = r.BillId;
+            r.ShPard1 = ""; //todo
+            r.TabAbnA = 0;
+            r.TabAbnF = 0;
+            r.TabsFa = 0;
+            r.NewAb = 0;
+            r.NewFa = 0;
+            r.Bodjeh = (decimal)(abBahaCalc?.SumBoodje ?? 0);
+            r.Group1 = r.ConsumptionUsageId;
+            r.MasFas = 0;
+            r.Faz = (abBahaCalc?.FazelabAmount ?? 0) > 0;
+            r.ChkKarbari = 0;
+            r.C200 = 0;
+            r.AbSevom = 0;
+            r.AbSevom1 = 0;
+            r.C70 = 0;
+            r.C80 = 0;
+            r.C90 = 0;
+            r.C101 = 0;
+            r.KhaliS = r.EmptyUnit;
+            r.EdarehK = r.IsSpecial;
+            r.Avarez = (decimal)(abBahaCalc?.AvarezAmount ?? 0);
+            r.AbBahaDiscount = abBahaCalc?.AbBahaDiscount ?? 0;
+            r.HotSeasonDiscount = abBahaCalc?.HotSeasonDiscount ?? 0;
+            r.HotSeasonFazelabDiscount = abBahaCalc?.HotSeasonFazelabDiscount ?? 0;
+            r.FazelabDiscount = abBahaCalc?.FazelabDiscount ?? 0;
+            r.AbonmanAbDiscount = abBahaCalc?.AbonmanAbDiscount ?? 0;
+            r.AbonmanFazelabDiscount = abBahaCalc?.AbonmanFazelabDiscount ?? 0;
+            r.AvarezDiscount = abBahaCalc?.AvarezDiscount ?? 0;
+            r.JavaniDiscount = abBahaCalc?.JavaniDiscount ?? 0;
+            r.BoodjeDiscount = abBahaCalc?.BoodjeDiscount ?? 0;
+            r.MaliatDiscount = abBahaCalc?.MaliatDiscount ?? 0;
+            if (hasZeroValue)
+            {
+                r.SumItemsBeforeDiscount = 0;
+                r.SumItems = 0;
+                r.DiscountSum = 0;
+                r.Consumption = 0;
+                r.MonthlyConsumption = 0;
+                r.MonthlyPerUnit = 0;
+            }
+            else
+            {
+                double monthlyConsumption = abBahaCalc?.MonthlyConsumption ?? 0;
+                int totalUnit = abBahaCalc?.Customer?.UnitAll ?? 0;
+                int finalTotalUnit = totalUnit == 0 ? 1 : totalUnit;
+                r.SumItemsBeforeDiscount = abBahaCalc?.SumItemsBeforeDiscount ?? 0;
+                r.SumItems = abBahaCalc?.SumItems ?? 0;
+                r.DiscountSum = abBahaCalc?.DiscountSum ?? 0;
+                r.Consumption = Math.Round((abBahaCalc?.Consumption ?? 0), 2);
+                r.MonthlyConsumption = Math.Round(monthlyConsumption, 2);
+                r.MonthlyPerUnit = Math.Round((monthlyConsumption / finalTotalUnit), 2);
+            }
+
+            return r;
+        }
+
+        private bool IsInException(Exception ex)
+        {
+            return ex is InvalidDateException || ex is InvalidBillIdException || ex is TariffDateException || ex is InvalidBillCommandException || ex is TariffCalcException;
+        }
+
+        private string GetExcludedCauseTitle(ExcludedCauseEnum input)
+        {
+            return input switch
+            {
+                ExcludedCauseEnum.PriGTCurrent => ReportLiterals.PriGTCurrent,
+                ExcludedCauseEnum.NeedEvaluate => ReportLiterals.NeedEvaluate,
+                ExcludedCauseEnum.Error => ReportLiterals.Error,
+                ExcludedCauseEnum.DuplicateBill => ReportLiterals.DuplicateBill,
+                ExcludedCauseEnum.Deleted_Close => ReportLiterals.Deleted_Close,
+                ExcludedCauseEnum.DuplicateBill5 => ReportLiterals.DuplicateBill5,
+                ExcludedCauseEnum.Deleted_Block => ReportLiterals.Deleted_Block,
+                ExcludedCauseEnum.Deleted_HasMeterNumber => ReportLiterals.Deleted_HasMeterNumber,
+                _ => string.Empty,
+            };
+        }
+    }
+}

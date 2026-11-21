@@ -1,0 +1,56 @@
+using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
+using Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts;
+using Aban360.UserPool.Domain.Features.Auth.Dto.Queries;
+using Microsoft.AspNetCore.Mvc;
+using Aban360.Api.Controllers.V1;
+namespace BeforeConsumersAuxiliary10.Aban360.Api.Controllers.V1.UserPool.Auth.Queries{
+    [Route("v1/user")]
+    public class UserSearchController : BaseController
+    {
+        private readonly IUserSearchHandler _userSearch;
+        private readonly IUserSearchByRoleIdHandler _userSearchByRoleIdHandler;
+        private readonly IUserSearchByRoleIdAndZoneIdHandler _userSearchByRoleIdAndZoneIdHandler;
+        public UserSearchController(
+            IUserSearchHandler userSearch,
+            IUserSearchByRoleIdHandler userSearchByRoleIdHandler,
+            IUserSearchByRoleIdAndZoneIdHandler userSearchByRoleIdAndZoneIdHandler)
+        {
+            _userSearch = userSearch;
+            _userSearch.NotNull(nameof(userSearch));
+
+            _userSearchByRoleIdHandler = userSearchByRoleIdHandler;
+            _userSearchByRoleIdHandler.NotNull(nameof(userSearchByRoleIdHandler));
+
+            _userSearchByRoleIdAndZoneIdHandler = userSearchByRoleIdAndZoneIdHandler;
+            _userSearchByRoleIdAndZoneIdHandler.NotNull(nameof(userSearchByRoleIdAndZoneIdHandler));
+        }
+
+        [HttpPost]
+        [Route("search")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UserQueryDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Search(SearchUserDto inputDto, CancellationToken cancellationToken)
+        {
+            IEnumerable<UserQueryDto> userParamsOfCreateDto = await _userSearch.Handle(inputDto, cancellationToken);
+            return Ok(userParamsOfCreateDto);
+        }
+
+        [HttpGet, HttpPost]
+        [Route("search-by-role/{roleId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UserQueryDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SearchByRoleId(int roleId, CancellationToken cancellationToken)
+        {
+            IEnumerable<UserQueryDto> users = await _userSearchByRoleIdHandler.Handle(roleId, cancellationToken);
+            return Ok(users);
+        }
+
+        [HttpGet, HttpPost]
+        [Route("search-by-role-zone/{roleId}/{zoneId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<UserQueryDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SearchByRoleIdAndZoneId(int roleId, int zoneId, CancellationToken cancellationToken)
+        {
+            IEnumerable<UserQueryDto> users = await _userSearchByRoleIdAndZoneIdHandler.Handle(roleId, zoneId, cancellationToken);
+            return Ok(users);
+        }
+    }
+}

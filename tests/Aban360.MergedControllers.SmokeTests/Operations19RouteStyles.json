@@ -1,0 +1,9 @@
+{
+  "Aban360.Api.Controllers.V1.CalculationPool.MeterReading.MeterReadingDetailController": "v1/meter-reading-detail",
+  "Aban360.Api.Controllers.V1.CalculationPool.Sale.Article11Controller": "v1/article11",
+  "Aban360.Api.Controllers.V1.CalculationPool.Sale.InstallationAndEquipmentController": "v1/installation-and-equipment",
+  "Aban360.Api.Controllers.V1.CalculationPool.Sale.TankerWaterDistanceTariffController": "v1/tanker-water-distance-tariff",
+  "Aban360.Api.Controllers.V1.CalculationPool.Sale.TankerWaterTariffController": "v1/tanker-water-tariff",
+  "Aban360.BrdigeApi.Controllers.V1.WaterController": "v1/water",
+  "Aban360.Api.Controllers.V1.PaymentPool.BankReceipt.BankReceiptController": "v1/bank-receipt"
+}

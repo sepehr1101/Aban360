@@ -1,0 +1,122 @@
+[
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.ClaimPool.Land.SubscriptionAssignmentController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.SubscriptionAssignmentController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Land/SubscriptionAssignmentController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.ClaimPool.Tracking.TrackingController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Tracking.TrackingController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Tracking/TrackingController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.MeterPool.Reading.MeterReadingController",
+    "Current": "Aban360.Api.Controllers.V1.MeterPool.Reading.MeterReadingController",
+    "Source": "Aban360.Api/Controllers/V1/MeterPool/Reading/MeterReadingController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.UserPool.Auth.KartableAccessController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.KartableAccessController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/KartableAccessController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.UserPool.Auth.RoleController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.RoleController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/RoleController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.UserPool.UiElement.TopbarDisplayerController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.UiElement.TopbarDisplayerController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/UiElement/TopbarDisplayerController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.ClaimPool.Land.Commands.CustomerUpdateController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.Commands.CustomerUpdateController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Land/Commands/CustomerUpdateController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.ClaimPool.Land.Commands.EmptyUnitRegisterUpdateController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.Commands.EmptyUnitRegisterUpdateController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Land/Commands/EmptyUnitRegisterUpdateController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.ClaimPool.Land.Commands.HouseholdRegisterUpdateController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Land.Commands.HouseholdRegisterUpdateController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Land/Commands/HouseholdRegisterUpdateController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.ClaimPool.Request.Commands.AfterSaleRequestController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Request.Commands.AfterSaleRequestController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/AfterSaleRequestController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.ClaimPool.Request.Commands.CalculationRequestController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Request.Commands.CalculationRequestController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/CalculationRequestController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.ClaimPool.Request.Commands.MotherChildRequestController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Request.Commands.MotherChildRequestController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/MotherChildRequestController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.ClaimPool.Request.Commands.NewRequestController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Request.Commands.NewRequestController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Request/Commands/NewRequestController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.ClaimPool.Request.Queries.ParentChildDisplayController",
+    "Current": "Aban360.Api.Controllers.V1.ClaimPool.Request.Queries.ParentChildDisplayController",
+    "Source": "Aban360.Api/Controllers/V1/ClaimPool/Request/Queries/ParentChildDisplayController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.Commands.CreditByDocumentCreateController",
+    "Current": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.Commands.CreditByDocumentCreateController",
+    "Source": "Aban360.Api/Controllers/V1/PaymentPool/NegotiableInstrument/Commands/CreditByDocumentCreateController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.Commands.CreditWithoutDocumentCreateController",
+    "Current": "Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.Commands.CreditWithoutDocumentCreateController",
+    "Source": "Aban360.Api/Controllers/V1/PaymentPool/NegotiableInstrument/Commands/CreditWithoutDocumentCreateController.cs"
+  },
+  {
+    "Assembly": "Aban360.Api",
+    "Original": "BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.UserPool.Auth.Commands.LoginController",
+    "Current": "Aban360.Api.Controllers.V1.UserPool.Auth.Commands.LoginController",
+    "Source": "Aban360.Api/Controllers/V1/UserPool/Auth/Commands/LoginController.cs"
+  },
+  {
+    "Assembly": "Aban360.BrdigeApi",
+    "Original": "BeforeConsumersWorkflow10.Aban360.BrdigeApi.Controllers.V1.Security.LoginController",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.Security.LoginController",
+    "Source": "Aban360.BrdigeApi/Controllers/V1/Security/LoginController.cs"
+  },
+  {
+    "Assembly": "Aban360.BrdigeApi",
+    "Original": "BeforeConsumersWorkflow10.Aban360.BrdigeApi.Controllers.V1.ClaimPool.Requests.NewRequestController",
+    "Current": "Aban360.BrdigeApi.Controllers.V1.ClaimPool.Requests.NewRequestController",
+    "Source": "Aban360.BrdigeApi/Controllers/V1/ClaimPool/Requests/NewRequestController.cs"
+  },
+  {
+    "Assembly": "Aban360.ClaimPool.Application",
+    "Original": "BeforeConsumersWorkflow10.Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations.ToCalulationConfirmHandler",
+    "Current": "Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Implementations.ToCalulationConfirmHandler",
+    "Source": "Aban360.ClaimPool.Application/Features/Request/Handler/Queries/Implementations/ToCalulationConfirmHandler.cs"
+  }
+]

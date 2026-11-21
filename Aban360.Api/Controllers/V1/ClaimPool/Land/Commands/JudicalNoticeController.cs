@@ -1,4 +1,4 @@
-﻿using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
+using Aban360.ClaimPool.Application.Features.Land.Handlers.Commands.Create.Contracts;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Land.Dto.Queries;
 using Aban360.Common.BaseEntities;
@@ -8,31 +8,25 @@ using Aban360.Common.Literals;
 using Aban360.NotificationPool.Application.Features.Sms;
 using Hangfire;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.ClaimPool.Application.Features.Land.Services;
 
 namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
 {
     [Route("v1/judical-notice")]
     public class JudicalNoticeController : BaseController
     {
-        private readonly IJudicalNoticeCommandHandler _judicalNoticeCommandHandler;
+        private readonly IJudicalNoticeService _judicalNoticeCommandHandler;
         private readonly IJudicialNoticeSetResultHandler _judicialNoticeSetResultHandler;
         private readonly ISmsOldHandler _smsHandler;
         private readonly IBackgroundJobClient _jobClient;
-        public JudicalNoticeController(
-            IJudicalNoticeCommandHandler judicalNoticeCommandHandler,
-            IJudicialNoticeSetResultHandler judicialNoticeSetResultHandler,
-            ISmsOldHandler smsHandler,
-            IBackgroundJobClient jobClient)
+        public JudicalNoticeController(IJudicalNoticeService judicalNoticeCommandHandler, IJudicialNoticeSetResultHandler judicialNoticeSetResultHandler, ISmsOldHandler smsHandler, IBackgroundJobClient jobClient)
         {
             _judicalNoticeCommandHandler = judicalNoticeCommandHandler;
             _judicalNoticeCommandHandler.NotNull(nameof(judicalNoticeCommandHandler));
-
             _judicialNoticeSetResultHandler = judicialNoticeSetResultHandler;
             _judicialNoticeSetResultHandler.NotNull(nameof(smsHandler));
-
             _smsHandler = smsHandler;
             _smsHandler.NotNull(nameof(smsHandler));
-
             _jobClient = jobClient;
             _jobClient.NotNull(nameof(jobClient));
         }
@@ -43,9 +37,8 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
         public async Task<IActionResult> GetCommandSti([FromBody] JudicalNoticeCommandInputDto inputDto, CancellationToken cancellationToken)
         {
             int reportCode = (int)StiReportCodeLiterals.JudicialNoticeServiceLink;
-            FlatReportOutput<JudicalNoticeCommandHeaderOutputDto, JudicalNoticeCommandDataOutputDto> result = await _judicalNoticeCommandHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            FlatReportOutput<JudicalNoticeCommandHeaderOutputDto, JudicalNoticeCommandDataOutputDto> result = await _judicalNoticeCommandHandler.JudicalNoticeCommandAsync(inputDto, CurrentUser, cancellationToken);
             _jobClient.Enqueue(() => _smsHandler.SendNew(result.ReportData.CustomerMobileNumber, result.ReportHeader.Message, Guid.NewGuid()));
-
             JsonReportId jsonReport = await JsonOperation.ExportToJsonFlat(result, cancellationToken, reportCode, true);
             return Ok(jsonReport);
         }

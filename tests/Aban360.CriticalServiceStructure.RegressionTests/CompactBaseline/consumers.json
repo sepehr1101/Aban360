@@ -1,0 +1,485 @@
+[
+  {
+    "Path": "Aban360.LocationPool.GatewayAdhoc/Features/MainHirearchy/Implementations/LocationTreeAdHoc.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.LocationPool.GatewayAdhoc_Features_MainHirearchy_Implementations_LocationTreeAdHoc.cs.txt",
+    "Hash": "4932BB326F4C22EA53B5037300E1E213C9632A47CCA4AA82AA85CBE48EFB28FC",
+    "Bindings": {
+      "ILocationValueKeyQueryHandler": {
+        "Type": "ILocationLookupService",
+        "Namespace": "Aban360.LocationPool.Application.Features.MainHierarchy.Services",
+        "Methods": {
+          "Handle": "LocationValueKeyQueryAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/TaxPool/MaaherTSP/TaxController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_TaxPool_MaaherTSP_TaxController.cs.txt",
+    "Hash": "27372A6DA0DF6B4344F6A575488E55B17D3CA253C17897AD04EC258395F6EF31",
+    "Bindings": {
+      "IMaliatMaaherWrapperGetAllHandler": {
+        "Type": "IMaaherInvoiceQueriesService",
+        "Namespace": "Aban360.TaxPool.Application.Features.MaaherSTP.Services",
+        "Methods": {
+          "Handle": "MaliatMaaherWrapperGetAllAsync"
+        }
+      },
+      "IMaliatMaaherDetailGetByWrapperIdHandler": {
+        "Type": "IMaaherInvoiceQueriesService",
+        "Namespace": "Aban360.TaxPool.Application.Features.MaaherSTP.Services",
+        "Methods": {
+          "Handle": "MaliatMaaherDetailGetByWrapperIdAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/SystemPool/Logging/Queries/HttpRequestReportsController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_SystemPool_Logging_Queries_HttpRequestReportsController.cs.txt",
+    "Hash": "3F58042B9A39256DF9F074A4C89F0A0AA9908209B09BACC4BAFA43D47513C960",
+    "Bindings": {
+      "IHttpRequestReportHandler": {
+        "Type": "IHttpLogQueriesService",
+        "Namespace": "Aban360.SystemPool.Application.Features.Logging.Services",
+        "Methods": {
+          "Handle": "HttpRequestReportAsync",
+          "Parse": "HttpRequestReportParse"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/SystemPool/Logging/Queries/HttpErrorLogsController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_SystemPool_Logging_Queries_HttpErrorLogsController.cs.txt",
+    "Hash": "5C5FDB1A7A94F3D881258B768E8E9BAA0FE5E05472700FF5523B17FA945DF4F3",
+    "Bindings": {
+      "IHttpErrorLogHandler": {
+        "Type": "IHttpLogQueriesService",
+        "Namespace": "Aban360.SystemPool.Application.Features.Logging.Services",
+        "Methods": {
+          "GetDetail": "HttpErrorLogGetDetail",
+          "Handle": "HttpErrorLogAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/SystemPool/Logging/Queries/HttpErrorLogDetailController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_SystemPool_Logging_Queries_HttpErrorLogDetailController.cs.txt",
+    "Hash": "75E8AB3A1EE683812DEDB00FC05608493F4477E24AC47FBE86EF5AD52B409B15",
+    "Bindings": {
+      "IHttpErrorLogHandler": {
+        "Type": "IHttpLogQueriesService",
+        "Namespace": "Aban360.SystemPool.Application.Features.Logging.Services",
+        "Methods": {
+          "GetDetail": "HttpErrorLogGetDetail",
+          "Handle": "HttpErrorLogAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ReportPool/ConsumersInfo/BillTransactionDetailsController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_ReportPool_ConsumersInfo_BillTransactionDetailsController.cs.txt",
+    "Hash": "6670F59AB6E7279AEFEAB4FEBA295E35CA26984450D2DC19CB7E29A226BC1F64",
+    "Bindings": {
+      "IMeterReadingDetailLatestInfoByReadingNumberGetHandler": {
+        "Type": "IMeterFlowLookupService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.MeterReading.Services",
+        "Methods": {
+          "Handle": "MeterReadingDetailLatestInfoByReadingNumberGetAsync",
+          "GetCustomerInfo": "MeterReadingDetailLatestInfoByReadingNumberGetGetCustomerInfo",
+          "GetMeterReadingData": "MeterReadingDetailLatestInfoByReadingNumberGetGetMeterReadingData",
+          "GetHeader": "MeterReadingDetailLatestInfoByReadingNumberGetGetHeader"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/WaterReturnGetController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_OldCalcPool_WaterReturn_Queries_WaterReturnGetController.cs.txt",
+    "Hash": "A30E1701028DA40CCC9C31385C38705C54B9DDB96946FEFF5EE3BD4902D85266",
+    "Bindings": {
+      "IRepairGetHandler": {
+        "Type": "IBillReturnRepairService",
+        "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Services",
+        "Methods": {
+          "Handle": "RepairGetAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/WaterReturnGetByBillIdController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_OldCalcPool_WaterReturn_Queries_WaterReturnGetByBillIdController.cs.txt",
+    "Hash": "FAB44C4BB97D50D1EA4DB64005E6BE4AAA2EC08BFB44E1B1A1BCB2FC8E3E2BEE",
+    "Bindings": {
+      "IRepairGetByBillIdHandler": {
+        "Type": "IBillReturnRepairService",
+        "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Services",
+        "Methods": {
+          "Handle": "RepairGetByBillIdAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/WaterReturnedController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_OldCalcPool_WaterReturn_Queries_WaterReturnedController.cs.txt",
+    "Hash": "C6E870C7292F8A2B0404583962B5EB9D7B3C681BD7D40FA86B3CAB9F6AA33CB8",
+    "Bindings": {
+      "IReturedBillAfterDateLockGetHandler": {
+        "Type": "IBillReturnLookupsService",
+        "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Services",
+        "Methods": {
+          "Handle": "ReturedBillAfterDateLockGetAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/ReturnBillConfirmController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_OldCalcPool_WaterReturn_Queries_ReturnBillConfirmController.cs.txt",
+    "Hash": "1A3C8193628C09711CEDB1F1F5617E2FFAF6BFA3E1F676B525DA6B6C59F3E143",
+    "Bindings": {
+      "IUnconfirmedBillReturnGetByBillIdHandler": {
+        "Type": "IBillReturnLookupsService",
+        "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Services",
+        "Methods": {
+          "Handle": "UnconfirmedBillReturnGetByBillIdAsync"
+        }
+      },
+      "IUnconfirmedBillReturnGetByZoneHandler": {
+        "Type": "IBillReturnLookupsService",
+        "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Services",
+        "Methods": {
+          "Handle": "UnconfirmedBillReturnGetByZoneAsync",
+          "GetDate": "UnconfirmedBillReturnGetByZoneGetDate"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/OldCalcPool/WaterReturn/Queries/BillToReturnedGetController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_OldCalcPool_WaterReturn_Queries_BillToReturnedGetController.cs.txt",
+    "Hash": "B523753F1AF79170DEAB9C5C4CF6225CAF538405C7ABA161E086EB607160CE4C",
+    "Bindings": {
+      "IBillToReturnListGetHandler": {
+        "Type": "IBillReturnLookupsService",
+        "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Services",
+        "Methods": {
+          "Handle": "BillToReturnListGetAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/ReportPool/LocationsInfo/ZoneByRegionIdGetController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.BrdigeApi_Controllers_V1_ReportPool_LocationsInfo_ZoneByRegionIdGetController.cs.txt",
+    "Hash": "BA6C4530C3C5A89CC72183527F9478BBF371CAE76B99867984AD2F3CA178F7EE",
+    "Bindings": {
+      "IZonesByRegionIdGetHandler": {
+        "Type": "ILocationLookupService",
+        "Namespace": "Aban360.LocationPool.Application.Features.MainHierarchy.Services",
+        "Methods": {
+          "Handle": "ZonesByRegionIdGetAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/WaterDiameterGetAllController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.BrdigeApi_Controllers_V1_CalculationPool_WaterDiameterGetAllController.cs.txt",
+    "Hash": "18C9BA907D9D81CDC9094791A528E2B56C99A9BAE55F34D7D0241462E40C96E4",
+    "Bindings": {
+      "IWaterDiameterGetAllHandler": {
+        "Type": "ISaleDictionariesService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "WaterDiameterGetAllAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/SiphonDiameterGetAllController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.BrdigeApi_Controllers_V1_CalculationPool_SiphonDiameterGetAllController.cs.txt",
+    "Hash": "39850CA63D4A3DBC3BFD217802FC101C054C5492D7CFCD94E63E27BE84E20581",
+    "Bindings": {
+      "ISiphonDiameterGetAllHandler": {
+        "Type": "ISaleDictionariesService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "SiphonDiameterGetAllAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/BlockGetAllController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.BrdigeApi_Controllers_V1_CalculationPool_BlockGetAllController.cs.txt",
+    "Hash": "7F5F683150F441CA33C6F9A43419241383AF3A497FB00A5BDAACAAB268BFC1C6",
+    "Bindings": {
+      "IBlockGetAllHandler": {
+        "Type": "ISaleDictionariesService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Sale.Services",
+        "Methods": {
+          "Handle": "BlockGetAllAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.BrdigeApi/Controllers/V1/CalculationPool/BillToReturnedGetController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.BrdigeApi_Controllers_V1_CalculationPool_BillToReturnedGetController.cs.txt",
+    "Hash": "1563373D793C53CB63A7BE0BA9077FAD80D88D9CF63ECC63D2B7C8D7D9A4569C",
+    "Bindings": {
+      "IBillToReturnListGetHandler": {
+        "Type": "IBillReturnLookupsService",
+        "Namespace": "Aban360.OldCalcPool.Application.Features.WaterReturn.Services",
+        "Methods": {
+          "Handle": "BillToReturnListGetAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/Land/UsageController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_ClaimPool_Land_UsageController.cs.txt",
+    "Hash": "C1FBFAC2B6113B512DFD3BE3B9804659D804D39F564F97C905DE3DCD832C994C",
+    "Bindings": {
+      "IUsageCreateHandler": {
+        "Type": "IRequestUsageService",
+        "Namespace": "Aban360.ClaimPool.Application.Features.Land.Services",
+        "Methods": {
+          "Handle": "UsageCreateAsync"
+        }
+      },
+      "IUsageDeleteHandler": {
+        "Type": "IRequestUsageService",
+        "Namespace": "Aban360.ClaimPool.Application.Features.Land.Services",
+        "Methods": {
+          "Handle": "UsageDeleteAsync"
+        }
+      },
+      "IUsageUpdateHandler": {
+        "Type": "IRequestUsageService",
+        "Namespace": "Aban360.ClaimPool.Application.Features.Land.Services",
+        "Methods": {
+          "Handle": "UsageUpdateAsync"
+        }
+      },
+      "IUsageGetAllHandler": {
+        "Type": "IRequestUsageService",
+        "Namespace": "Aban360.ClaimPool.Application.Features.Land.Services",
+        "Methods": {
+          "Handle": "UsageGetAllAsync"
+        }
+      },
+      "IUsageGetSingleHandler": {
+        "Type": "IRequestUsageService",
+        "Namespace": "Aban360.ClaimPool.Application.Features.Land.Services",
+        "Methods": {
+          "Handle": "UsageGetSingleAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/ClaimPool/AssessmentController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_ClaimPool_AssessmentController.cs.txt",
+    "Hash": "0E922E3D5B8D65FE80C0A6B991950CD6B05B3226C63E38DD3529AFACBBBFB79D",
+    "Bindings": {
+      "IAssessmentByTrackIdGetHandler": {
+        "Type": "IAssessmentLookupsService",
+        "Namespace": "Aban360.ClaimPool.Application.Features.Request.Services",
+        "Methods": {
+          "Handle": "AssessmentByTrackIdGetAsync"
+        }
+      },
+      "IAssessmentDuplicateDetailHandler": {
+        "Type": "IAssessmentLookupsService",
+        "Namespace": "Aban360.ClaimPool.Application.Features.Request.Services",
+        "Methods": {
+          "Handle": "AssessmentDuplicateDetailAsync",
+          "SetColour": "AssessmentDuplicateDetailSetColour"
+        }
+      },
+      "IAssessmentDuplicateParametersGetHandler": {
+        "Type": "IAssessmentLookupsService",
+        "Namespace": "Aban360.ClaimPool.Application.Features.Request.Services",
+        "Methods": {
+          "Handle": "AssessmentDuplicateParametersGetAsync"
+        }
+      },
+      "IAssessmentLocatoinsGetHandler": {
+        "Type": "IAssessmentLookupsService",
+        "Namespace": "Aban360.ClaimPool.Application.Features.Request.Services",
+        "Methods": {
+          "Handle": "AssessmentLocatoinsGetAsync"
+        }
+      },
+      "IAssessmentApkLatestDownloadHandler": {
+        "Type": "IAssessmentApkService",
+        "Namespace": "Aban360.ClaimPool.Application.Features.AssessmentApk.Services",
+        "Methods": {
+          "Handle": "AssessmentApkLatestDownload"
+        }
+      },
+      "IAssessmentApkValidateVersionHandler": {
+        "Type": "IAssessmentApkService",
+        "Namespace": "Aban360.ClaimPool.Application.Features.AssessmentApk.Services",
+        "Methods": {
+          "Handle": "AssessmentApkValidateVersion"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Rule/TariffController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_CalculationPool_Rule_TariffController.cs.txt",
+    "Hash": "186FC88059A0DF3D318FC753F06AD085BA1310B1884806C6CFAC6B39DD2A93C3",
+    "Bindings": {
+      "ITariffCreateHandler": {
+        "Type": "ITariffService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Rule.Services",
+        "Methods": {
+          "Handle": "TariffCreateAsync"
+        }
+      },
+      "ITariffDuplicateHandler": {
+        "Type": "ITariffService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Rule.Services",
+        "Methods": {
+          "Handle": "TariffDuplicateAsync"
+        }
+      },
+      "ITariffDeleteHandler": {
+        "Type": "ITariffService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Rule.Services",
+        "Methods": {
+          "Handle": "TariffDeleteAsync"
+        }
+      },
+      "ITariffUpdateHandler": {
+        "Type": "ITariffService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Rule.Services",
+        "Methods": {
+          "Handle": "TariffUpdateAsync"
+        }
+      },
+      "ITariffGetAllHandler": {
+        "Type": "ITariffService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Rule.Services",
+        "Methods": {
+          "Handle": "TariffGetAllAsync"
+        }
+      },
+      "ITariffGetByLineItemTypeIdHandler": {
+        "Type": "ITariffService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Rule.Services",
+        "Methods": {
+          "Handle": "TariffGetByLineItemTypeIdAsync"
+        }
+      },
+      "ITariffGetByOfferingIdHandler": {
+        "Type": "ITariffService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Rule.Services",
+        "Methods": {
+          "Handle": "TariffGetByOfferingIdAsync"
+        }
+      },
+      "ITariffGetSingleHandler": {
+        "Type": "ITariffService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Rule.Services",
+        "Methods": {
+          "Handle": "TariffGetSingleAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/Queries/MeterReadingUploadedToRegisteredController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_CalculationPool_MeterReading_Queries_MeterReadingUploadedToRegisteredController.cs.txt",
+    "Hash": "9B417D5F952E89CF0E5238DE837E0810F1B34CACBF3A5661C9DCE411057C5C41",
+    "Bindings": {
+      "IMeterReadingUploadedToRegisteredSummaryByZoneGetHandler": {
+        "Type": "IMeterReadingFileReportsService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.MeterReading.Services",
+        "Methods": {
+          "Handle": "MeterReadingUploadedToRegisteredSummaryByZoneGetAsync",
+          "InputValidate": "MeterReadingUploadedToRegisteredSummaryByZoneGetInputValidate"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/MeterReading/MeterReadingFileController.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_CalculationPool_MeterReading_MeterReadingFileController.cs.txt",
+    "Hash": "49076BD731CA3053BF202AC1956FE1D942E50C09BCFA0AE0FDC47E5BC00DA86B",
+    "Bindings": {
+      "IMeterReadingDownloadExcelFileHandler": {
+        "Type": "IMeterReadingFileReportsService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.MeterReading.Services",
+        "Methods": {
+          "Handle": "MeterReadingDownloadExcelFileAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Commands/TariffCalculationManager.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_CalculationPool_Bill_Commands_TariffCalculationManager.cs.txt",
+    "Hash": "2B10C151BACA84C4EDF63FDE5C5023DB5BA5813527B1A234EEAA12DB7D636994",
+    "Bindings": {
+      "ITariffTestSingleCustomerHandler": {
+        "Type": "ITariffTestsService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.TestTariff.Services",
+        "Methods": {
+          "Handle": "TariffTestSingleCustomerAsync",
+          "CreateCalculationResultWrapper": "TariffTestSingleCustomerCreateCalculationResultWrapper",
+          "CreateCalculationResult3": "TariffTestSingleCustomerCreateCalculationResult3"
+        }
+      },
+      "IInvoiceInserterHandler": {
+        "Type": "IInvoiceService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.Bill.Services",
+        "Methods": {
+          "Handle": "InvoiceInserterAsync"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Commands/TariffCalculationImaginaryManager.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_CalculationPool_Bill_Commands_TariffCalculationImaginaryManager.cs.txt",
+    "Hash": "B0E97767EA21991D86F269724A346617E0DC3633A0DAEC731B56F604EE846E1E",
+    "Bindings": {
+      "ITariffTestImaginaryCustomerHandler": {
+        "Type": "ITariffTestsService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.TestTariff.Services",
+        "Methods": {
+          "Handle": "TariffTestImaginaryCustomerAsync",
+          "CreateCalculationResultWrapper": "TariffTestImaginaryCustomerCreateCalculationResultWrapper",
+          "CreateCalculationResult3": "TariffTestImaginaryCustomerCreateCalculationResult3"
+        }
+      }
+    }
+  },
+  {
+    "Path": "Aban360.Api/Controllers/V1/CalculationPool/Bill/Commands/TariffBatchCalculationManager.cs",
+    "Snapshot": "tests/Aban360.CriticalServiceStructure.RegressionTests/CompactBaseline/Consumers/Aban360.Api_Controllers_V1_CalculationPool_Bill_Commands_TariffBatchCalculationManager.cs.txt",
+    "Hash": "B4CDECEEC2DF0CE51D6CC28B51E3AAC4CBA3173B6E1FBC80507129363A701D67",
+    "Bindings": {
+      "ITariffTestBatchHandler": {
+        "Type": "ITariffTestsService",
+        "Namespace": "Aban360.CalculationPool.Application.Features.TestTariff.Services",
+        "Methods": {
+          "Handle": "TariffTestBatchAsync",
+          "GetAmount": "TariffTestBatchGetAmount"
+        }
+      }
+    }
+  }
+]

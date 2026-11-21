@@ -1,5 +1,5 @@
 using Aban360.Common.Exceptions;
-using Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Implementations;
+using Aban360.SystemPool.Application.Features.Logging.Services;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Input;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Output;
 using Aban360.SystemPool.Persistence.Features.Logging.Queries.Contracts;
@@ -16,32 +16,32 @@ HttpErrorLogInput Valid() => new()
     FromTime = "08:30", ToTime = "23:59"
 };
 var query = new CaptureQuery();
-var handler = new HttpErrorLogHandler(query);
+var handler = (IHttpLogQueriesService)Activator.CreateInstance(typeof(IHttpLogQueriesService).Assembly.GetType("Aban360.SystemPool.Application.Features.Logging.Services.HttpLogQueriesService", true)!, new object?[] { query, null })!;
 using var cancellation = new CancellationTokenSource();
-var result = await handler.Handle(Valid(), cancellation.Token);
+var result = await handler.HttpErrorLogAsync(Valid(), cancellation.Token);
 Check(ReferenceEquals(result, query.Rows), "Error details returned unchanged");
 Check(query.From == new DateTime(2026, 3, 21, 8, 30, 0), "Jalali start conversion");
 Check(query.To == new DateTime(2026, 3, 23), "Includes end minute and midnight rollover");
 Check(query.Lower == 400 && query.Upper == 500, "4XX includes 400 through 499");
 Check(query.Token == cancellation.Token && query.Page == 1 && query.Size == 50, "Cancellation and paging defaults");
-var detail = await handler.GetDetail(1, cancellation.Token);
+var detail = await handler.HttpErrorLogGetDetail(1, cancellation.Token);
 Check(detail?.Id == 1 && detail.Exception == "Stored exception" && query.Token == cancellation.Token,
     "Detail retrieves the requested row and propagates cancellation");
-Check(await handler.GetDetail(2, default) is null, "Missing detail remains absent");
+Check(await handler.HttpErrorLogGetDetail(2, default) is null, "Missing detail remains absent");
 var server = Valid();
 server.StatusCodeClass = " 5xx ";
 server.FromDate = "۱۴۰۵/۰۱/۰۱";
 server.FromTime = "٠٨:٣٠";
 server.Page = int.MaxValue;
 server.PageSize = 200;
-await handler.Handle(server, default);
+await handler.HttpErrorLogAsync(server, default);
 Check(query.Lower == 500 && query.Upper == 600, "5XX includes 500 through 599");
 Check(query.From == new DateTime(2026, 3, 21, 8, 30, 0) && query.Page == int.MaxValue && query.Size == 200,
     "Localized digits and maximum paging");
 var minute = Valid();
 minute.ToDate = minute.FromDate;
 minute.ToTime = minute.FromTime;
-await handler.Handle(minute, default);
+await handler.HttpErrorLogAsync(minute, default);
 Check(query.To - query.From == TimeSpan.FromMinutes(1), "Same minute is searchable");
 
 foreach (var mutate in new Action<HttpErrorLogInput>[]
@@ -59,10 +59,10 @@ foreach (var mutate in new Action<HttpErrorLogInput>[]
     var invalid = Valid();
     mutate(invalid);
     var calls = query.Calls;
-    try { await handler.Handle(invalid, default); throw new Exception("Invalid search accepted"); }
+    try { await handler.HttpErrorLogAsync(invalid, default); throw new Exception("Invalid search accepted"); }
     catch (BaseException) { Check(calls == query.Calls, "Invalid search rejected before database access"); }
 }
-try { await handler.Handle(null!, default); throw new Exception("Null search accepted"); }
+try { await handler.HttpErrorLogAsync(null!, default); throw new Exception("Null search accepted"); }
 catch (CustomValidationException) { checks++; }
 Console.WriteLine($"PASS: {checks} HTTP error log checks. No database connection was opened.");
 

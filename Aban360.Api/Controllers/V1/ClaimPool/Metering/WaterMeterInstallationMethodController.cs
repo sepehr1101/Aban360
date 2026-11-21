@@ -1,7 +1,4 @@
 using Aban360.ClaimPool.Application.Features.Metering.Services;
-using Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Delete.Contracts;
-using Aban360.ClaimPool.Application.Features.Metering.Handlers.Commands.Update.Contracts;
 using Aban360.ClaimPool.Application.Features.Metering.Handlers.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Metering.Dto.Queries;

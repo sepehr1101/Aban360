@@ -66,7 +66,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Queries.Implementati
 						t150.C2 PaymentTypeTitle
                     From [{dbName}].dbo.tanker t
 					Left Join [{dbName}].dbo.vosolab a
-						ON t.radif=a.radif AND t.town=a.town AND a.date_bes>=t.date
+						ON t.radif=a.radif AND t.town=a.town AND a.date_bes>='1405/06/01'
                     Join [Db70].dbo.T51 t51 
                     	ON t.town=t51.C0
                     Join [Db70].dbo.T46 t46 

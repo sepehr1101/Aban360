@@ -1,17 +1,18 @@
-﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.Processing.Handlers.Queries.Contracts;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Microsoft.AspNetCore.Mvc;
+using Aban360.OldCalcPool.Application.Features.Processing.Services;
 
 namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
 {
     [Route("v1/bill")]
     public class BillsRemovableController : BaseController
     {
-        private readonly IBillsCanRemovedGetHandler _billsCanRemovedHandler;
-        public BillsRemovableController(IBillsCanRemovedGetHandler billsCanRemovedHandler)
+        private readonly IBillRemovalService _billsCanRemovedHandler;
+        public BillsRemovableController(IBillRemovalService billsCanRemovedHandler)
         {
             _billsCanRemovedHandler = billsCanRemovedHandler;
             _billsCanRemovedHandler.NotNull(nameof(billsCanRemovedHandler));
@@ -22,7 +23,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<BillsCanRemoveOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCanRemoved([FromBody] SearchInput inputDto, CancellationToken cancellationToken)
         {
-            IEnumerable<BillsCanRemoveOutputDto> result = await _billsCanRemovedHandler.Handle(inputDto, cancellationToken);
+            IEnumerable<BillsCanRemoveOutputDto> result = await _billsCanRemovedHandler.BillsCanRemovedGetAsync(inputDto, cancellationToken);
             return Ok(result);
         }
     }

@@ -1,0 +1,80 @@
+using Microsoft.AspNetCore.Mvc;
+using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Contracts;
+using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Commands.Implementations;
+using Aban360.CalculationPool.Application.Features.ServiceLink.Handler.Queries.Contracts;
+using Aban360.CalculationPool.Domain.Features.ServiceLink;
+using Aban360.Common.Categories.ApiResponse;
+using Aban360.Common.Extensions;
+using Aban360.Api.Controllers.V1.CalculationPool.ServiceLink;
+using Aban360.Api.Controllers.V1.CalculationPool.ServiceLink;
+
+namespace BeforeConsumersOperations19.Aban360.Api.Controllers.V1.CalculationPool.ServiceLink
+{
+    [Route("v1/service-link-other-expenses-items")]
+    public class ServiceLinkOtherExpensesItemsController : BaseController
+    {
+        private readonly IOtherExpensesItemsInsertHandler _otherExpensesItemsInsertHandler;
+        private readonly IOtherExpensesItemsRemoveHandler _otherExpensesItemsRemoveHandler;
+        private readonly IOtherExpensesItemsGetAllHandler _otherExpensesItemsGetAllHandler;
+        private readonly IOtherExpensesItemsGetByIdHandler _otherExpensesItemsGetByIdaHandler;
+        private readonly IOtherExpensesItemsGetByItemIdHandler _otherExpensesItemsGetByItemIdHandler;
+        public ServiceLinkOtherExpensesItemsController(IOtherExpensesItemsInsertHandler otherExpensesItemsInsertHandler, IOtherExpensesItemsRemoveHandler otherExpensesItemsRemoveHandler, IOtherExpensesItemsGetAllHandler otherExpensesItemsGetAllHandler, IOtherExpensesItemsGetByIdHandler otherExpensesItemsGetByIdaHandler, IOtherExpensesItemsGetByItemIdHandler otherExpensesItemsGetByItemIdHandler)
+        {
+            _otherExpensesItemsInsertHandler = otherExpensesItemsInsertHandler;
+            _otherExpensesItemsInsertHandler.NotNull(nameof(otherExpensesItemsInsertHandler));
+            _otherExpensesItemsRemoveHandler = otherExpensesItemsRemoveHandler;
+            _otherExpensesItemsRemoveHandler.NotNull(nameof(otherExpensesItemsRemoveHandler));
+            _otherExpensesItemsGetAllHandler = otherExpensesItemsGetAllHandler;
+            _otherExpensesItemsGetAllHandler.NotNull(nameof(otherExpensesItemsGetAllHandler));
+            _otherExpensesItemsGetByIdaHandler = otherExpensesItemsGetByIdaHandler;
+            _otherExpensesItemsGetByIdaHandler.NotNull(nameof(otherExpensesItemsGetByIdaHandler));
+            _otherExpensesItemsGetByItemIdHandler = otherExpensesItemsGetByItemIdHandler;
+            _otherExpensesItemsGetByItemIdHandler.NotNull(nameof(otherExpensesItemsGetByItemIdHandler));
+        }
+
+        [HttpPost]
+        [Route("insert")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsInsertInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Insert([FromBody] OtherExpensesItemsInsertInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _otherExpensesItemsInsertHandler.Handle(inputDto, CurrentUser, cancellationToken);
+            return Ok(inputDto);
+        }
+
+        [HttpPost]
+        [Route("remove")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsRemoveInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Remove([FromBody] OtherExpensesItemsRemoveInputDto inputDto, CancellationToken cancellationToken)
+        {
+            await _otherExpensesItemsRemoveHandler.Handle(inputDto.Id, CurrentUser, cancellationToken);
+            return Ok(inputDto);
+        }
+
+        [HttpGet]
+        [Route("get/{id}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsDataDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetById(int id, CancellationToken cancellationToken)
+        {
+            OtherExpensesItemsDataDto data = await _otherExpensesItemsGetByIdaHandler.Handle(id, cancellationToken);
+            return Ok(data);
+        }
+
+        [HttpGet]
+        [Route("get/{billId}/{itemId}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<OtherExpensesItemsDataDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByItemId(string billId, int itemId, CancellationToken cancellationToken)
+        {
+            OtherExpensesItemsDataDto data = await _otherExpensesItemsGetByItemIdHandler.Handle(billId, itemId, cancellationToken);
+            return Ok(data);
+        }
+
+        [HttpPost, HttpGet]
+        [Route("get")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<OtherExpensesItemsDataDto>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        {
+            IEnumerable<OtherExpensesItemsDataDto> data = await _otherExpensesItemsGetAllHandler.Handle(cancellationToken);
+            return Ok(data);
+        }
+    }
+}

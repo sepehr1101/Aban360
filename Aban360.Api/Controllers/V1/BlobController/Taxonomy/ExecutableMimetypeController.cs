@@ -1,8 +1,4 @@
 using Aban360.BlobPool.Application.Features.Taxonomy.Services;
-using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Create.Contracts;
-using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Delete.Contracts;
-using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Commands.Update.Contracts;
-using Aban360.BlobPool.Application.Features.Taxonomy.Handlers.Queries.Contracts;
 using Aban360.BlobPool.Domain.Features.Taxonomy.Dto.Commands;
 using Aban360.BlobPool.Domain.Features.Taxonomy.Dto.Queries;
 using Aban360.BlobPool.Persistence.Contexts.Contracts;

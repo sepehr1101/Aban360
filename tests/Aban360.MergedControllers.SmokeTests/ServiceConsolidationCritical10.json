@@ -1,0 +1,808 @@
+[
+  {
+    "Feature": "Role",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations.RoleCreateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts.IRoleCreateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IRoleService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Commands\\Create\\Implementations\\RoleCreateHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/RoleService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_roleCommandService": "_roleCommandService",
+      "_httpContextAccessor": "_httpContextAccessor",
+      "_roleValidator": "_createValidator",
+      "Handle": "CreateAsync"
+    }
+  },
+  {
+    "Feature": "Role",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations.RoleUpdateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts.IRoleUpdateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IRoleService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Commands\\Update\\Implementations\\RoleUpdateHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/RoleService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_roleQueryService": "_roleQueryService",
+      "_endpointQueryService": "_endpointQueryService",
+      "_roleValidator": "_updateValidator",
+      "Handle": "UpdateAsync"
+    }
+  },
+  {
+    "Feature": "Role",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Implementations.RoleDeleteHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Contracts.IRoleDeleteHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IRoleService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Commands\\Delete\\Implementations\\RoleDeleteHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/RoleService.cs",
+    "Names": {
+      "_roleQueryService": "_roleQueryService",
+      "_roleCommandService": "_roleCommandService",
+      "_contextAccessor": "_httpContextAccessor",
+      "Handle": "DeleteAsync"
+    }
+  },
+  {
+    "Feature": "Role",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.RoleGetSingleHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IRoleGetSingleHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IRoleService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Queries\\Implementations\\RoleGetSingleHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/RoleService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_roleQueryService": "_roleQueryService",
+      "_endpointQueryService": "_endpointQueryService",
+      "Handle": "GetSingleAsync",
+      "CreateAccessTree": "GetSingleCreateAccessTree"
+    }
+  },
+  {
+    "Feature": "Role",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.RoleGetAllHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IRoleGetAllHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IRoleService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Queries\\Implementations\\RoleGetAllHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/RoleService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_roleQueryService": "_roleQueryService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "Role",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.RoleQueryParamsOfCreateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IRoleQueryParamsOfCreateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IRoleService",
+    "Method": "GetCreateParamsAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Queries\\Implementations\\RoleQueryParamsOfCreateHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/RoleService.cs",
+    "Names": {
+      "_endpointQueryService": "_endpointQueryService",
+      "Handle": "GetCreateParamsAsync",
+      "CreateAccessTree": "GetCreateParamsCreateAccessTree"
+    }
+  },
+  {
+    "Feature": "Faq",
+    "Assembly": "Aban360.SystemPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.SystemPool.Application.Features.UserGuide.Implementations.CreateFaqHandler",
+    "OldContract": "Aban360.SystemPool.Application.Features.UserGuide.Contracts.ICreateFaqHandler",
+    "Service": "Aban360.SystemPool.Application.Features.UserGuide.Services.IFaqApplicationService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.SystemPool.Application\\Features\\UserGuide\\Implementations\\CreateFaqHandler.cs",
+    "Output": "Aban360.SystemPool.Application/Features/UserGuide/Services/FaqApplicationService.cs",
+    "Names": {
+      "_faqService": "_faqService",
+      "Handle": "CreateAsync",
+      "Map": "CreateMap"
+    }
+  },
+  {
+    "Feature": "Faq",
+    "Assembly": "Aban360.SystemPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.SystemPool.Application.Features.UserGuide.Implementations.UpdateFaqHandler",
+    "OldContract": "Aban360.SystemPool.Application.Features.UserGuide.Contracts.IUpdateFaqHandler",
+    "Service": "Aban360.SystemPool.Application.Features.UserGuide.Services.IFaqApplicationService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.SystemPool.Application\\Features\\UserGuide\\Implementations\\UpdateFaqHandler.cs",
+    "Output": "Aban360.SystemPool.Application/Features/UserGuide/Services/FaqApplicationService.cs",
+    "Names": {
+      "_faqService": "_faqService",
+      "Handle": "UpdateAsync"
+    }
+  },
+  {
+    "Feature": "Faq",
+    "Assembly": "Aban360.SystemPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.SystemPool.Application.Features.UserGuide.Implementations.DeleteFaqHandler",
+    "OldContract": "Aban360.SystemPool.Application.Features.UserGuide.Contracts.IDeleteFaqHandler",
+    "Service": "Aban360.SystemPool.Application.Features.UserGuide.Services.IFaqApplicationService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.SystemPool.Application\\Features\\UserGuide\\Implementations\\DeleteFaqHandler.cs",
+    "Output": "Aban360.SystemPool.Application/Features/UserGuide/Services/FaqApplicationService.cs",
+    "Names": {
+      "_faqService": "_faqService",
+      "Handle": "DeleteAsync"
+    }
+  },
+  {
+    "Feature": "Faq",
+    "Assembly": "Aban360.SystemPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.SystemPool.Application.Features.UserGuide.Implementations.GetFaqByIdHandler",
+    "OldContract": "Aban360.SystemPool.Application.Features.UserGuide.Contracts.IGetFaqByIdHandler",
+    "Service": "Aban360.SystemPool.Application.Features.UserGuide.Services.IFaqApplicationService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.SystemPool.Application\\Features\\UserGuide\\Implementations\\GetFaqByIdHandler.cs",
+    "Output": "Aban360.SystemPool.Application/Features/UserGuide/Services/FaqApplicationService.cs",
+    "Names": {
+      "_faqService": "_faqService",
+      "Handle": "GetSingleAsync"
+    }
+  },
+  {
+    "Feature": "Faq",
+    "Assembly": "Aban360.SystemPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.SystemPool.Application.Features.UserGuide.Implementations.GetAllFaqsHandler",
+    "OldContract": "Aban360.SystemPool.Application.Features.UserGuide.Contracts.IGetAllFaqsHandler",
+    "Service": "Aban360.SystemPool.Application.Features.UserGuide.Services.IFaqApplicationService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.SystemPool.Application\\Features\\UserGuide\\Implementations\\GetAllFaqsHandler.cs",
+    "Output": "Aban360.SystemPool.Application/Features/UserGuide/Services/FaqApplicationService.cs",
+    "Names": {
+      "_faqService": "_faqService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "Captcha",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations.CaptchaCreateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts.ICaptchaCreateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.ICaptchaService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Commands\\Create\\Implementations\\CaptchaCreateHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/CaptchaService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_captchaQueryService": "_captchaQueryService",
+      "_captchaCommandService": "_captchaCommandService",
+      "_captchaLanguageQueryService": "_captchaLanguageQueryService",
+      "_captchaDisplayModeQueryService": "_captchaDisplayModeQueryService",
+      "_captchaValidator": "_createValidator",
+      "Handle": "CreateAsync",
+      "Validate": "CreateValidate"
+    }
+  },
+  {
+    "Feature": "Captcha",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Implementations.CaptchaUpdateHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Update.Contracts.ICaptchaUpdateHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.ICaptchaService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Commands\\Update\\Implementations\\CaptchaUpdateHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/CaptchaService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_commandService": "_captchaCommandService",
+      "_captchaValidator": "_updateValidator",
+      "Handle": "UpdateAsync"
+    }
+  },
+  {
+    "Feature": "Captcha",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.CaptchaGetSingleHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.ICaptchaGetSingleHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.ICaptchaService",
+    "Method": "GetSingleAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Queries\\Implementations\\CaptchaGetSingleHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/CaptchaService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_queryService": "_captchaQueryService",
+      "Handle": "GetSingleAsync"
+    }
+  },
+  {
+    "Feature": "Captcha",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.CaptchaGetListHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.ICaptchaGetListHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.ICaptchaService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Queries\\Implementations\\CaptchaGetListHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/CaptchaService.cs",
+    "Names": {
+      "_mapper": "_mapper",
+      "_queryService": "_captchaQueryService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "Captcha",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.CaptchaLanguageQueryHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.ICaptchaLanguageQueryHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.ICaptchaService",
+    "Method": "GetLanguagesAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Queries\\Implementations\\CaptchaLanguageQueryHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/CaptchaService.cs",
+    "Names": {
+      "_captchaLanguageQueryService": "_captchaLanguageQueryService",
+      "_mapper": "_mapper",
+      "Handle": "GetLanguagesAsync"
+    }
+  },
+  {
+    "Feature": "Captcha",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.CaptchaDisplayModeQueryHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.ICaptchaDisplayModeQueryHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.ICaptchaService",
+    "Method": "GetDisplayModesAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Queries\\Implementations\\CaptchaDisplayModeQueryHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/CaptchaService.cs",
+    "Names": {
+      "_captchaDisplayModeQueryService": "_captchaDisplayModeQueryService",
+      "_mapper": "_mapper",
+      "Handle": "GetDisplayModesAsync"
+    }
+  },
+  {
+    "Feature": "Captcha",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.CaptchaDictionaryHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.ICaptchaDictionaryHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.ICaptchaService",
+    "Method": "GetDictionaryAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Queries\\Implementations\\CaptchaDictionaryHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/CaptchaService.cs",
+    "Names": {
+      "_captchaQueryService": "_captchaQueryService",
+      "Handle": "GetDictionaryAsync"
+    }
+  },
+  {
+    "Feature": "AssessmentOff",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Implementations.AssessmentOffInsertHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Create.Contracts.IAssessmentOffInsertHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IAssessmentOffService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Commands\\Create\\Implementations\\AssessmentOffInsertHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/AssessmentOffService.cs",
+    "Names": {
+      "_userQueryService": "_userQueryService",
+      "Handle": "CreateAsync"
+    }
+  },
+  {
+    "Feature": "AssessmentOff",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Implementations.AssessmentOffRemoveHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Commands.Delete.Contracts.IAssessmentOffRemoveHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IAssessmentOffService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Commands\\Delete\\Implementations\\AssessmentOffRemoveHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/AssessmentOffService.cs",
+    "Names": {
+      "_userQueryService": "_userQueryService",
+      "Handle": "DeleteAsync"
+    }
+  },
+  {
+    "Feature": "AssessmentOff",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.AssessmentOffGetAllHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IAssessmentOffGetAllHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IAssessmentOffService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Queries\\Implementations\\AssessmentOffGetAllHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/AssessmentOffService.cs",
+    "Names": {
+      "_examinerOffQueryService": "_examinerOffQueryService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "AssessmentOff",
+    "Assembly": "Aban360.UserPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Implementations.AssessmentOffByAssessmentCodeGetHandler",
+    "OldContract": "Aban360.UserPool.Application.Features.Auth.Handlers.Queries.Contracts.IAssessmentOffByAssessmentCodeGetHandler",
+    "Service": "Aban360.UserPool.Application.Features.Auth.Services.IAssessmentOffService",
+    "Method": "GetByAssessmentCodeAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.UserPool.Application\\Features\\Auth\\Handlers\\Queries\\Implementations\\AssessmentOffByAssessmentCodeGetHandler.cs",
+    "Output": "Aban360.UserPool.Application/Features/Auth/Services/AssessmentOffService.cs",
+    "Names": {
+      "_examinerOffQueryService": "_examinerOffQueryService",
+      "_userQueryService": "_userQueryService",
+      "Handle": "GetByAssessmentCodeAsync"
+    }
+  },
+  {
+    "Feature": "Zarib",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Implementations.ZaribCreateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Contracts.IZaribCreateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.IZaribService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Create\\Implementations\\ZaribCreateHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/ZaribService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_t51QueryService": "_t51QueryService",
+      "_validator": "_createValidator",
+      "Handle": "CreateAsync",
+      "ExecSql": "CreateExecSql",
+      "GetCreateDto": "CreateGetCreateDto",
+      "InputValidate": "CreateInputValidate"
+    }
+  },
+  {
+    "Feature": "Zarib",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Implementations.ZaribUpdateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Contracts.IZaribUpdateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.IZaribService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Update\\Implementations\\ZaribUpdateHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/ZaribService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_t51QueryService": "_t51QueryService",
+      "_zaribGetService": "_zaribGetService",
+      "_validator": "_updateValidator",
+      "Handle": "UpdateAsync",
+      "ExecSql": "UpdateExecSql",
+      "GetUpdateDto": "UpdateGetUpdateDto",
+      "InputValidate": "UpdateInputValidate"
+    }
+  },
+  {
+    "Feature": "Zarib",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implementations.ZaribGetHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.IZaribGetHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.IZaribService",
+    "Method": "GetAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Queries\\Implementations\\ZaribGetHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/ZaribService.cs",
+    "Names": {
+      "_zaribGetService": "_zaribGetService",
+      "Handle": "GetAsync"
+    }
+  },
+  {
+    "Feature": "Zarib",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.ZaribGetAllHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.IZaribGetAllHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.IZaribService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Queries\\Implementations\\ZaribGetAllHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/ZaribService.cs",
+    "Names": {
+      "_zaribGetAllService": "_zaribGetAllService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "ZaribC",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Implementations.ZaribCCreateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Contracts.IZaribCCreateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.IZaribCService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Create\\Implementations\\ZaribCCreateHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/ZaribCService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_validator": "_createValidator",
+      "Handle": "CreateAsync",
+      "ExecSql": "CreateExecSql",
+      "InputValidate": "CreateInputValidate"
+    }
+  },
+  {
+    "Feature": "ZaribC",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Implementations.ZaribCUpdateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Contracts.IZaribCUpdateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.IZaribCService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Update\\Implementations\\ZaribCUpdateHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/ZaribCService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_zaribCQueryService": "_zaribCQueryService",
+      "_validator": "_updateValidator",
+      "Handle": "UpdateAsync",
+      "ExecSql": "UpdateExecSql",
+      "InputValidate": "UpdateInputValidate"
+    }
+  },
+  {
+    "Feature": "ZaribC",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Delete.Implementations.ZaribCDeleteHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Delete.Contracts.IZaribCDeleteHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.IZaribCService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Delete\\Implementations\\ZaribCDeleteHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/ZaribCService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "Handle": "DeleteAsync",
+      "ExecSql": "DeleteExecSql"
+    }
+  },
+  {
+    "Feature": "ZaribC",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implementations.ZaribCGetHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.IZaribCGetHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.IZaribCService",
+    "Method": "GetAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Queries\\Implementations\\ZaribCGetHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/ZaribCService.cs",
+    "Names": {
+      "_zaribCQueryService": "_zaribCQueryService",
+      "Handle": "GetAsync"
+    }
+  },
+  {
+    "Feature": "ZaribC",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implementations.ZaribCGetAllHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.IZaribCGetAllHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.IZaribCService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Queries\\Implementations\\ZaribCGetAllHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/ZaribCService.cs",
+    "Names": {
+      "_zaribCQueryService": "_zaribCQueryService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "Table1",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Implementations.Table1CreateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Contracts.ITable1CreateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.ITable1Service",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Create\\Implementations\\Table1CreateHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/Table1Service.cs",
+    "Names": {
+      "_table1CreateService": "_table1CreateService",
+      "_table1CreateValidator": "_createValidator",
+      "Handle": "CreateAsync"
+    }
+  },
+  {
+    "Feature": "Table1",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Implementations.Table1UpdateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Contracts.ITable1UpdateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.ITable1Service",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Update\\Implementations\\Table1UpdateHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/Table1Service.cs",
+    "Names": {
+      "_table1UpdateService": "_table1UpdateService",
+      "_table1UpdateValidator": "_updateValidator",
+      "Handle": "UpdateAsync"
+    }
+  },
+  {
+    "Feature": "Table1",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implementations.Table1GetHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.ITable1GetHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.ITable1Service",
+    "Method": "GetAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Queries\\Implementations\\Table1GetHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/Table1Service.cs",
+    "Names": {
+      "_table1GetService": "_table1GetService",
+      "Handle": "GetAsync"
+    }
+  },
+  {
+    "Feature": "Table1",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implementations.Table1GetAllHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.ITable1GetAllHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.ITable1Service",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Queries\\Implementations\\Table1GetAllHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/Table1Service.cs",
+    "Names": {
+      "_table1GetAllService": "_table1GetAllService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "S",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Implementations.SCreateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Contracts.ISCreateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.ISService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Create\\Implementations\\SCreateHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/SService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_validator": "_createValidator",
+      "Handle": "CreateAsync",
+      "ExecSql": "CreateExecSql",
+      "InputValidate": "CreateInputValidate"
+    }
+  },
+  {
+    "Feature": "S",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Implementations.SUpdateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Contracts.ISUpdateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.ISService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Update\\Implementations\\SUpdateHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/SService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_sQueryService": "_sQueryService",
+      "_validator": "_updateValidator",
+      "Handle": "UpdateAsync",
+      "ExecSql": "UpdateExecSql",
+      "InputValidate": "UpdateInputValidate"
+    }
+  },
+  {
+    "Feature": "S",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Delete.Implementations.SDeleteHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Delete.Contracts.ISDeleteHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.ISService",
+    "Method": "DeleteAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Delete\\Implementations\\SDeleteHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/SService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_sQueryService": "_sQueryService",
+      "Handle": "DeleteAsync",
+      "ExecSql": "DeleteExecSql"
+    }
+  },
+  {
+    "Feature": "S",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implementations.SGetHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.ISGetHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.ISService",
+    "Method": "GetAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Queries\\Implementations\\SGetHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/SService.cs",
+    "Names": {
+      "_sQueryService": "_sQueryService",
+      "Handle": "GetAsync"
+    }
+  },
+  {
+    "Feature": "S",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implementations.SGetAllHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.ISGetAllHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.ISService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Queries\\Implementations\\SGetAllHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/SService.cs",
+    "Names": {
+      "_sQueryService": "_sQueryService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "S",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implementations.SGetByIdHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.ISGetByIdHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.ISService",
+    "Method": "GetByIdAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Queries\\Implementations\\SGetByIdHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/SService.cs",
+    "Names": {
+      "_sQueryService": "_sQueryService",
+      "Handle": "GetByIdAsync"
+    }
+  },
+  {
+    "Feature": "Nerkh",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Implementations.NerkhCreateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Contracts.INerkhCreateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.INerkhService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Create\\Implementations\\NerkhCreateHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/NerkhService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_nerkhCreateValidator": "_createValidator",
+      "Handle": "CreateAsync",
+      "ExecSql": "CreateExecSql",
+      "InputValidate": "CreateInputValidate"
+    }
+  },
+  {
+    "Feature": "Nerkh",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Implementations.NerkhUpdateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Contracts.INerkhUpdateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.INerkhService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Update\\Implementations\\NerkhUpdateHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/NerkhService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_nerkhGetService": "_nerkhGetService",
+      "_validator": "_updateValidator",
+      "Handle": "UpdateAsync",
+      "ExecSql": "UpdateExecSql",
+      "InputValidate": "UpdateInputValidate"
+    }
+  },
+  {
+    "Feature": "Nerkh",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implementations.NerkhGetHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.INerkhGetHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.INerkhService",
+    "Method": "GetAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Queries\\Implementations\\NerkhGetHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/NerkhService.cs",
+    "Names": {
+      "_nerkhGetService": "_nerkhGetService",
+      "Handle": "GetAsync"
+    }
+  },
+  {
+    "Feature": "Nerkh",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implementations.NerkhGetAllHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.INerkhGetAllHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.INerkhService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Queries\\Implementations\\NerkhGetAllHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/NerkhService.cs",
+    "Names": {
+      "_nerkhGetAllService": "_nerkhGetAllService",
+      "Handle": "GetAllAsync"
+    }
+  },
+  {
+    "Feature": "Abonman",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Implementations.AbonmanCreateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Create.Contracts.IAbonmanCreateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.IAbonmanService",
+    "Method": "CreateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Create\\Implementations\\AbonmanCreateHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/AbonmanService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_validator": "_createValidator",
+      "Handle": "CreateAsync",
+      "ExecSql": "CreateExecSql",
+      "InputValidate": "CreateInputValidate"
+    }
+  },
+  {
+    "Feature": "Abonman",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Implementations.AbonmanUpdateHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Commands.Update.Contracts.IAbonmanUpdateHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.IAbonmanService",
+    "Method": "UpdateAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Commands\\Update\\Implementations\\AbonmanUpdateHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/AbonmanService.cs",
+    "Names": {
+      "_contextAccessor": "_contextAccessor",
+      "_abonmanQueryService": "_abonmanQueryService",
+      "_validator": "_updateValidator",
+      "Handle": "UpdateAsync",
+      "ExecSql": "UpdateExecSql",
+      "InputValidate": "UpdateInputValidate"
+    }
+  },
+  {
+    "Feature": "Abonman",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implementations.AbonmanGetHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.IAbonmanGetHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.IAbonmanService",
+    "Method": "GetAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Queries\\Implementations\\AbonmanGetHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/AbonmanService.cs",
+    "Names": {
+      "_abonmanQueryService": "_abonmanQueryService",
+      "Handle": "GetAsync"
+    }
+  },
+  {
+    "Feature": "Abonman",
+    "Assembly": "Aban360.OldCalcPool.Application",
+    "Original": "BeforeServiceCritical10.Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Implementations.AbonmanGetAllHandler",
+    "OldContract": "Aban360.OldCalcPool.Application.Features.Rules.Handlers.Queries.Contracts.IAbonmanGetAllHandler",
+    "Service": "Aban360.OldCalcPool.Application.Features.Rules.Services.IAbonmanService",
+    "Method": "GetAllAsync",
+    "OldMethod": "Handle",
+    "Source": "Aban360.OldCalcPool.Application\\Features\\Rules\\Handlers\\Queries\\Implementations\\AbonmanGetAllHandler.cs",
+    "Output": "Aban360.OldCalcPool.Application/Features/Rules/Services/AbonmanService.cs",
+    "Names": {
+      "_abonmanQueryService": "_abonmanQueryService",
+      "Handle": "GetAllAsync"
+    }
+  }
+]

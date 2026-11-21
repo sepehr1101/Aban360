@@ -1,0 +1,102 @@
+[
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\AssessmentOffInsertHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\AssessmentOffInsertHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\AssessmentOffRemoveHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\AssessmentOffRemoveHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\ZaribCreateHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\ZaribCreateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\ZaribUpdateHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\ZaribUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\ZaribCCreateHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\ZaribCCreateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\ZaribCUpdateHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\ZaribCUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\ZaribCDeleteHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\ZaribCDeleteHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\SCreateHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\SCreateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\SUpdateHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\SUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\SDeleteHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\SDeleteHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\NerkhCreateHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\NerkhCreateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\NerkhUpdateHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\NerkhUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\AbonmanCreateHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\AbonmanCreateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "tests\\Aban360.MergedControllers.SmokeTests\\OriginalHandlersCritical10\\AbonmanUpdateHandler.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\AbonmanUpdateHandler.cs",
+    "Before": true
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Application/Features/Rules/Services/AbonmanService.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\AbonmanService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Application/Features/Rules/Services/NerkhService.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\NerkhService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Application/Features/Rules/Services/SService.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\SService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Application/Features/Rules/Services/ZaribCService.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\ZaribCService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.OldCalcPool.Application/Features/Rules/Services/ZaribService.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\ZaribService.cs",
+    "Before": false
+  },
+  {
+    "Source": "Aban360.UserPool.Application/Features/Auth/Services/AssessmentOffService.cs",
+    "Fixture": "tests\\Aban360.MergedControllers.SmokeTests\\SqlFixturesCritical10\\AssessmentOffService.cs",
+    "Before": false
+  }
+]

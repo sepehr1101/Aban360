@@ -1,6 +1,5 @@
 using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
-using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Querys.Contracts;
 using Aban360.BlobPool.Domain.Features.DmsServices.Dto.Commands;
 using Aban360.BlobPool.Domain.Providers.Dto;
 using Aban360.Common.ApplicationUser;
@@ -12,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Net;
 using System.Net.Http.Headers;
+using Aban360.BlobPool.Application.Features.OpenKm.Services;
 
 namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Implementations
 {
@@ -23,18 +23,16 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
         private readonly ICommonMemberQueryService _members;
         private readonly ICommonZoneService _zones;
         private readonly IOpenKmQueryService _archive;
-        private readonly ICreateFolderHandler _folders;
+        private readonly IOpenKmFoldersMetadataService _openKmFoldersMetadataService;
         private readonly IReadingImageWatermarker _watermarker;
         private readonly IOpLogCommandService _opLog;
         private readonly ILogger<ReadingArchiveService> _logger;
-
-        public ReadingArchiveService(ICommonMemberQueryService members, ICommonZoneService zones, IOpenKmQueryService archive,
-            ICreateFolderHandler folders, IReadingImageWatermarker watermarker, IOpLogCommandService opLog, ILogger<ReadingArchiveService> logger)
+        public ReadingArchiveService(ICommonMemberQueryService members, ICommonZoneService zones, IOpenKmQueryService archive, IOpenKmFoldersMetadataService openKmFoldersMetadataService, IReadingImageWatermarker watermarker, IOpLogCommandService opLog, ILogger<ReadingArchiveService> logger)
         {
             _members = members;
             _zones = zones;
             _archive = archive;
-            _folders = folders;
+            _openKmFoldersMetadataService = openKmFoldersMetadataService;
             _watermarker = watermarker;
             _opLog = opLog;
             _logger = logger;
@@ -50,7 +48,6 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
             byte[] image = await _watermarker.Apply(input.File, billId, name, capturedAt, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
             string fileName = $"{capturedAt.ToShortPersianDateString().Replace('/', '-')}_{capturedAt.ToString("HH-mm-ss-fff", CultureInfo.InvariantCulture)}_{billId}_{Guid.NewGuid():N}.jpg";
-
             var folderLock = FolderLocks[(uint)StringComparer.Ordinal.GetHashCode(billId) % FolderLocks.Length];
             await folderLock.WaitAsync(cancellationToken);
             try
@@ -58,14 +55,18 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
                 await EnsureFolder(billId, string.Empty, cancellationToken);
                 await EnsureFolder(Folder, billId, cancellationToken);
             }
-            finally { folderLock.Release(); }
+            finally
+            {
+                folderLock.Release();
+            }
 
             cancellationToken.ThrowIfCancellationRequested();
             using var stream = new MemoryStream(image, writable: false);
             using var content = new StreamContent(stream);
             content.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
             var result = await _archive.AddFile($"{billId}/{Folder}/{fileName}", content, fileName);
-            if (string.IsNullOrWhiteSpace(result?.Uuid)) throw new InvalidOperationException("Archive upload returned no document UUID.");
+            if (string.IsNullOrWhiteSpace(result?.Uuid))
+                throw new InvalidOperationException("Archive upload returned no document UUID.");
             try
             {
                 await _opLog.Insert($"بارگذاری تصویر قرائت کنتور؛ شناسه قبض: {billId}؛ فایل: {fileName}؛ شناسه سند: {result.Uuid}", appUser);
@@ -74,6 +75,7 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
             {
                 _logger.LogError(exception, "Reading image {DocumentId} for bill {BillId} was saved, but its operation log failed for user {UserId}.", result.Uuid, billId, appUser.UserId);
             }
+
             return result;
         }
 
@@ -81,16 +83,14 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
         {
             billId = await ValidateBill(billId, appUser, cancellationToken);
             string path = $"{billId}/{Folder}";
-            if (!await _archive.CheckFolderExists(path)) return new FileListWithTitlesResponse();
+            if (!await _archive.CheckFolderExists(path))
+                return new FileListWithTitlesResponse();
             cancellationToken.ThrowIfCancellationRequested();
             var files = await _archive.GetFilesByBillId(path);
             cancellationToken.ThrowIfCancellationRequested();
             return new FileListWithTitlesResponse
             {
-                Documents = files.Documents?.Select(file => new DocumentWithFileTitle(file)
-                {
-                    FileTitle = "تصویر قرائت کنتور"
-                }).ToList() ?? new()
+                Documents = files.Documents?.Select(file => new DocumentWithFileTitle(file) { FileTitle = "تصویر قرائت کنتور" }).ToList() ?? new()
             };
         }
 
@@ -98,9 +98,11 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
         {
             cancellationToken.ThrowIfCancellationRequested();
             string billId = input?.Trim() ?? string.Empty;
-            if (!TransactionIdGenerator.IsBillIdStructureValid(billId)) throw new CustomValidationException("شناسه قبض معتبر نیست.");
+            if (!TransactionIdGenerator.IsBillIdStructureValid(billId))
+                throw new CustomValidationException("شناسه قبض معتبر نیست.");
             var member = await _members.Get(billId, false);
-            if (member is null || member.ZoneId <= 0) throw new CustomValidationException("شناسه قبض در اطلاعات مشترکین یافت نشد.");
+            if (member is null || member.ZoneId <= 0)
+                throw new CustomValidationException("شناسه قبض در اطلاعات مشترکین یافت نشد.");
             await _zones.IsUserInZone(user, member.ZoneId);
             cancellationToken.ThrowIfCancellationRequested();
             return billId;
@@ -109,12 +111,16 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Impleme
         private async Task EnsureFolder(string folder, string parent, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            try { await _folders.Handle(folder, cancellationToken, parent); }
-            catch (HttpRequestException exception) when (exception.StatusCode == HttpStatusCode.Conflict)
+            try
+            {
+                await _openKmFoldersMetadataService.CreateFolderAsync(folder, cancellationToken, parent);
+            }
+            catch (HttpRequestException exception)when (exception.StatusCode == HttpStatusCode.Conflict)
             {
                 // Another API process may have created the same folder after the existence check.
                 string path = string.IsNullOrEmpty(parent) ? folder : $"{parent}/{folder}";
-                if (!await _archive.CheckFolderExists(path)) throw;
+                if (!await _archive.CheckFolderExists(path))
+                    throw;
             }
         }
     }

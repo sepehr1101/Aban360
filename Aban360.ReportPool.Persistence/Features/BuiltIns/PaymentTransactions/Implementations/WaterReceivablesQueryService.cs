@@ -10,9 +10,10 @@ internal sealed class WaterReceivablesQueryService : AbstractBaseConnection, IWa
 {
     public WaterReceivablesQueryService(IConfiguration configuration) : base(configuration) { }
 
-    public Task<IEnumerable<WaterReceivablesAmountOutputDto>> GetSales(WaterReceivablesGroupingEnum groupBy, string fromDate, string toDate, CancellationToken cancellationToken)
+    public Task<IEnumerable<WaterReceivablesAmountOutputDto>> GetSales(WaterReceivablesGroupingEnum groupBy, string fromDate, string toDate, ICollection<int>? zoneIds, CancellationToken cancellationToken)
     {
         var (field, join) = GetGrouping(groupBy, "b");
+        string zoneFilter = zoneIds is { Count: > 0 } ? "AND b.ZoneId IN @zoneIds" : string.Empty;
         string query = $@"SELECT {field} AS GroupTitle,
                    /*SUM(CAST(b.Item1 AS bigint)
                        + CAST(b.Item2 AS bigint)
@@ -37,27 +38,30 @@ internal sealed class WaterReceivablesQueryService : AbstractBaseConnection, IWa
             {join}
             WHERE b.RegisterDay BETWEEN @fromDate AND @toDate
               AND b.TypeCode IN (1, 3, 4, 5, 9) 
+              {zoneFilter}
             GROUP BY {field}";
-        return GetAmounts(query, fromDate, toDate, cancellationToken);
+        return GetAmounts(query, fromDate, toDate, zoneIds, cancellationToken);
     }
 
-    public Task<IEnumerable<WaterReceivablesAmountOutputDto>> GetCollections(WaterReceivablesGroupingEnum groupBy, string fromDate, string toDate, CancellationToken cancellationToken)
+    public Task<IEnumerable<WaterReceivablesAmountOutputDto>> GetCollections(WaterReceivablesGroupingEnum groupBy, string fromDate, string toDate, ICollection<int>? zoneIds, CancellationToken cancellationToken)
     {
         var (field, join) = GetGrouping(groupBy, "p");
+        string zoneFilter = zoneIds is { Count: > 0 } ? "AND p.ZoneId IN @zoneIds" : string.Empty;
         string query = $@"SELECT {field} AS GroupTitle,
                    SUM(CAST(p.Amount AS bigint)) AS Amount
             FROM [CustomerWarehouse].dbo.Payments p
             {join}
             WHERE p.RegisterDay BETWEEN @fromDate AND @toDate
+              {zoneFilter}
             GROUP BY {field}";
-        return GetAmounts(query, fromDate, toDate, cancellationToken);
+        return GetAmounts(query, fromDate, toDate, zoneIds, cancellationToken);
     }
 
-    private async Task<IEnumerable<WaterReceivablesAmountOutputDto>> GetAmounts(string query, string fromDate, string toDate, CancellationToken cancellationToken)
+    private async Task<IEnumerable<WaterReceivablesAmountOutputDto>> GetAmounts(string query, string fromDate, string toDate, ICollection<int>? zoneIds, CancellationToken cancellationToken)
     {
         using var connection = _sqlReportConnection;
         return await connection.QueryAsync<WaterReceivablesAmountOutputDto>(
-            new CommandDefinition(query, new { fromDate, toDate }, commandTimeout: 3600, cancellationToken: cancellationToken));
+            new CommandDefinition(query, new { fromDate, toDate, zoneIds }, commandTimeout: 3600, cancellationToken: cancellationToken));
     }
 
     private static (string Field, string Join) GetGrouping(WaterReceivablesGroupingEnum groupBy, string alias)

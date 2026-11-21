@@ -1,9 +1,0 @@
-﻿using Aban360.Common.ApplicationUser;
-
-namespace Aban360.MeterPool.Application.Features.Apk.Handlers.Command.Delete.Contracts
-{
-    public interface IMeterApkFileRemoveHandler
-    {
-        Task Handle(short id, IAppUser appUser, CancellationToken cancellationToken);
-    }
-}

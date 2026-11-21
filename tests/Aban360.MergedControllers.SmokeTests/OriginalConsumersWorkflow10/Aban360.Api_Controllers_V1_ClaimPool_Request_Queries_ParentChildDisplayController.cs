@@ -1,0 +1,40 @@
+using global::Aban360.Api.Controllers.V1.ClaimPool.Request.Queries;
+using Microsoft.Extensions.Logging;
+using global::Aban360.Api.Controllers.V1;
+using global::Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
+using global::Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
+using global::Aban360.Common.BaseEntities;
+using global::Aban360.Common.Categories.ApiResponse;
+using global::Aban360.Common.Extensions;
+using Microsoft.AspNetCore.Mvc;
+
+namespace BeforeConsumersWorkflow10.Aban360.Api.Controllers.V1.ClaimPool.Request.Queries{
+    [Route("v1/request")]
+    public class ParentChildDisplayController : BaseController
+    {
+        private readonly IMotherChildGetByTrackNumberHandler _motherChildGetHandler;
+        public ParentChildDisplayController(IMotherChildGetByTrackNumberHandler motherChildGetHandler)
+        {
+            _motherChildGetHandler = motherChildGetHandler;
+            _motherChildGetHandler.NotNull(nameof(motherChildGetHandler));
+        }
+
+        [HttpGet, HttpPost]
+        [Route("display-parent-child")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MotherChildOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get(SearchNumericInput input, CancellationToken cancellationToken)
+        {
+            MotherChildOutputDto result = await _motherChildGetHandler.Handle(input.Input, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("display-parent-child/{trackNumber}")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<MotherChildOutputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByQuery(int trackNumber, CancellationToken cancellationToken)
+        {
+            MotherChildOutputDto result = await _motherChildGetHandler.Handle(trackNumber, cancellationToken);
+            return Ok(result);
+        }
+    }
+}
