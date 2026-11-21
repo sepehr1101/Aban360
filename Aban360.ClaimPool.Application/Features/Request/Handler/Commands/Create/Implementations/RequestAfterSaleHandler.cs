@@ -32,7 +32,7 @@ namespace Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create
         private readonly IValidator<RequestAfterSaleInputDto> _validator;
         static string _insertWayTitle = ReportLiterals.RayabPersian;
         static int _afterSaleRequestServiceId = ReportLiterals.AfterSaleRequestTypeId;
-        static int _setAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentResult;
+        static int _setAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentTime;
         static int _firstStepStatusId = (int)TrackingStatusEnum.RequestRegistered;
         static int _requestOrigin = 12;
         public RequestAfterSaleHandler(

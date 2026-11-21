@@ -2,9 +2,7 @@
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Dapper;
-using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
-using Aban360.Common.Literals;
 using Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Contracts;
 using Aban360.MeterPool.Domain.Constants;
 using Aban360.MeterPool.Domain.Features.Reading.Dtos.Queries;
@@ -17,10 +15,8 @@ using Aban360.UserPool.Persistence.Features.Auth.Queries.Contracts;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
 using System.Text.Json;
 using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
-using System.Threading;
 
 namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Implementataions
 {
@@ -109,8 +105,8 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                 {
                     TrackingCommandService trackingCommandService = new(connection, transaction);
 
-                    //await trackingCommandService.UpdateSeen(trackingSeenUpdateDto);
-                    //await trackingCommandService.InsertDuplicate(trackingDuplicateInsertDto);
+                    await trackingCommandService.UpdateSeen(trackingSeenUpdateDto);
+                    await trackingCommandService.InsertDuplicate(trackingDuplicateInsertDto);
 
                     transaction.Commit();
                 }
@@ -179,6 +175,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
                     DomesticUnit = d.DomesticUnit,
                     CommercialUnit = d.CommercialUnit,
                     OtherUnit = d.OtherUnit,
+                    EmptyUnit=d.EmptyUnit,
                     MeterDiameterId = d.MeterDiameterId,
                     MeterDiameterTitle = d.MeterDiameterTitle,
                     SiphonDiameterId = d.SiphonDiameterId,

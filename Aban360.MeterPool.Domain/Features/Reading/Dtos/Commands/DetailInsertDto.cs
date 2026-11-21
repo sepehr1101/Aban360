@@ -16,6 +16,7 @@
         public int DomesticUnit { get; set; }
         public int CommercialUnit { get; set; }
         public int OtherUnit { get; set; }
+        public int EmptyUnit { get; set; }
         public int? MeterDiameterId { get; set; }
         public int? SiphonDiameterId { get; set; }
         public string? PostalCode { get; set; }

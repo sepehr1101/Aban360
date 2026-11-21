@@ -81,7 +81,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
 
                     await trackingCommandService.UpdateSeen(trackingUpdateSeenDto);
                     await trackingCommandService.InsertDuplicate(trackingDuplicateDto);
-                    //await detailCommandService.Update(detailUpdateList);
+                    await detailCommandService.Update(detailUpdateList);
 
                     transaction.Commit();
                 }
@@ -94,7 +94,7 @@ namespace Aban360.MeterPool.Application.Features.Reading.Handlers.Commands.Imple
             {
                 if (!_validStepFlowIds.Contains(tracking.FlowStepId))
                 {
-                    //throw new ReadingException(ExceptionLiterals.InvalidDetailByCurrentTrackingFlowId(tracking.TrackNumber));
+                    throw new ReadingException(ExceptionLiterals.InvalidDetailByCurrentTrackingFlowId(tracking.TrackNumber));
                 }
                 if (tracking.CounterReaderId != appUser.UserId)
                 {
