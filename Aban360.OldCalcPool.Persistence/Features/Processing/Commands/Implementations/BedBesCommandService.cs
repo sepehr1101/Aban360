@@ -43,26 +43,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             return recordId.Value;
         }
         public async Task Insert(ICollection<BedBesCreateDto> input, string dbName)
-        {
-            //using (var connection = _connection)
-            //{
-            //    await connection.OpenAsync();
-
-            //    using (var transaction = connection.BeginTransaction())
-            //    {
-            //        try
-            //        {
+        {        
             await _connection.ExecuteAsync(GetBedBesCreateQuery(dbName), input, transaction: _transaction);
-            //            transaction.Commit();
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            transaction.Rollback();
-            //            throw new IWaterCalculationAddException(ExceptionLiterals.UnSuccessfulToSave(tableName));
-            //        }
-            //    }
-
-            //}
         }
         public async Task InsertByBulk(ICollection<BedBesCreateDto> input, string dbName)
         {
@@ -90,9 +72,9 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 throw new ReadingException(ExceptionLiterals.NotFoundBillsToRemoved);
             }
         }
-        public async Task Delete(ZoneIdAndCustomerNumber input, string dbName)
+        public async Task DeleteForTanker(ZoneIdAndCustomerNumber input, string dbName)
         {
-            string query = GetDeleteByCustomerNumberQuery(dbName);
+            string query = GetDeleteQueryForTanker(dbName);
             int rowsAffected = await _connection.ExecuteAsync(query, input, _transaction);
 
             if (rowsAffected == 0)
@@ -326,10 +308,10 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             return $"Delete FROM [{dbName}].dbo.bed_bes " +
                     "Where Id=@id AND town=@zoneId";
         }
-        private string GetDeleteByCustomerNumberQuery(string dbName)
+        private string GetDeleteQueryForTanker(string dbName)
         {
             return $"Delete FROM [{dbName}].dbo.bed_bes " +
-                    "Where radif=@customerNumber AND town=@zoneId";
+                    "Where radif=@customerNumber AND town=@zoneId AND date_bed>='1405/08/01'";
         }
         private string GetUpdateDelCommand(string dbName)
         {
