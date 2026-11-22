@@ -38,16 +38,6 @@
         public int? BranchTypeId { get; set; }
         public int? CounterNumber { get; set; }
         public int? CurrentCounterStateCode { get; set; }
-        public string? PossibleAddress { get; set; }
-        public string? PossibleBodySerial { get; set; }
-        public string? PossibleReadingNumber { get; set; }
-        public string? PossibleMobileNumber { get; set; }
-        public string? PossiblePhoneNumber { get; set; }
-        public int? PossibleDomesticUnit { get; set; }
-        public int? PossibleCommercialUnit { get; set; }
-        public int? PossibleOtherUnit { get; set; }
-        public int? PossibleUsageId { get; set; }
-        public int? PossibleEmptyUnit { get; set; }
         public DateTime? OffLoadDateTime { get; set; }
         public string? OffloadDateJalali { get; set; }
         public string? OffLoadTime { get; set; }
@@ -60,16 +50,11 @@
         public double? CurrentConsumptionAverage{ get; set; }
         public int? DateDifference { get; set; }
         public bool? CounterNumberShown { get; set; }
-        public bool? ExcludedForBazdid { get; set; }
-        public bool? ExcludedForEslah { get; set; }
-        public string? JsonItems { get; set; }
+        public string? Traverse { get; set; }
         public int? ConsumptionStateId { get; set; }
         public string? Description { get; set; }
         public bool? IsCalculated { get; set; }
         public string? CalculationErrorDescription { get; set; }
-        public string? D1 { get; set; }
-        public string? D2 { get; set; }
-        public int? CounterStatePosition { get; set; }
         public int? AttemptCount { get; set; }
         public bool? IsLocked { get; set; }
         public string? LocationDateTime { get; set; }
@@ -82,7 +67,6 @@
         public Guid? ModifierUserId { get; set; }
         public int? GuildId { get; set; }
         public string? SiphonInstallationDateJalali { get; set; }
-        public int? PreGuildId { get; set; }
         public int? HighLowStateId { get; set; }
         public Guid? ExcludeBy { get; set; }
         public DateTime? ExcludeDateTime { get; set; }
