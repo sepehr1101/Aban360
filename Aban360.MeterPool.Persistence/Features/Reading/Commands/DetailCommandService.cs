@@ -61,7 +61,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
             table.Columns.Add("CustomerNumber", typeof(int));
             table.Columns.Add("ReadingNumber", typeof(string));
             table.Columns.Add("FirstName", typeof(string));
-            table.Columns.Add("SureName", typeof(string));
+            table.Columns.Add("SurName", typeof(string));
             table.Columns.Add("Address", typeof(string));
             table.Columns.Add("Plaque", typeof(string));
             table.Columns.Add("UsageId", typeof(int));

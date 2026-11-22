@@ -9,7 +9,7 @@
         public int CustomerNumber { get; set; }
         public string ReadingNumber { get; set; } = null!;
         public string FirstName { get; set; } = null!;
-        public string SureName { get; set; } = null!;
+        public string SurName { get; set; } = null!;
         public string Address { get; set; } = null!;
         public string Plaque { get; set; } = null!;
         public int UsageId { get; set; }
