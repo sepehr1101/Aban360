@@ -9,6 +9,7 @@ using DNTPersianUtils.Core;
 using Aban360.OldCalcPool.Persistence.Features.Rules.Queries.Contracts;
 using org.matheval;
 using Aban360.OldCalcPool.Domain.Features.Rules.Dto.Queries;
+using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
 
 namespace Aban360.CalculationPool.Application.Features.Base
 {
@@ -19,6 +20,8 @@ namespace Aban360.CalculationPool.Application.Features.Base
         private readonly IZaribCQueryService _zaribCQueryService;
         private readonly IZaribGetService _zaribGetService;
         static float _hotSeasonMultiple = 0.2f;
+        static int _ziyarVillage = 144411;
+        static int _ziyarZoneId = 134411;
         public TankerCalculationBaseService(
             ITankerWaterDistanceTariffQueryService tankerQueryService,
             ITankerTariffQueryService tankerTariffQueryService,
@@ -54,7 +57,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
         }
         private async Task<decimal> GetWaterAmount(TankerWaterCalculationInputDto input, int c, decimal zb)
         {
-            TankerTariffGetDto tankerTariffInfo = await _tankerTariffQueryService.Get(input.ZoneId);
+            TankerTariffGetDto tankerTariffInfo = await _tankerTariffQueryService.Get(GetZoneId(input.ZoneId));
 
             float saleStateZarib = input.SaleState == TankerWaterSaleStateEnum.Nomads ? tankerTariffInfo.NomandSS : tankerTariffInfo.CommonSS;
             object parameters = new { M = input.Consumption, SS = saleStateZarib, C = c, K = zb };
@@ -83,7 +86,7 @@ namespace Aban360.CalculationPool.Application.Features.Base
             string currentDateJalali = DateTime.Now.ToShortPersianDateString();
 
             ZaribCQueryDto zaribC = await _zaribCQueryService.Get(currentDateJalali);
-            ZaribGetDto zarib = await _zaribGetService.Get(zoneId, currentDateJalali);
+            ZaribGetDto zarib = await _zaribGetService.Get(GetZoneId(zoneId), currentDateJalali);
 
             return (zaribC.C, zarib.Zb);
         }
@@ -95,6 +98,15 @@ namespace Aban360.CalculationPool.Application.Features.Base
             string hotSeasonFromDateJalali = $"{yearJalali}/03/01";
             string hotSeasonToDateJalali = $"{yearJalali}/06/31";
             return currentDateJalali.CompareTo(hotSeasonFromDateJalali) >= 0 && currentDateJalali.CompareTo(hotSeasonToDateJalali) <= 0;
+        }
+        private int GetZoneId(int zoneId)
+        {
+            int finalZoneId = zoneId;
+            if (zoneId == _ziyarVillage)
+            {
+                finalZoneId = _ziyarZoneId;
+            }
+            return finalZoneId;
         }
     }
 }
