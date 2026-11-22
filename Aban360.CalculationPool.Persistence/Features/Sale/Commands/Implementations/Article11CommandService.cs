@@ -57,7 +57,7 @@ namespace Aban360.CalculationPool.Persistence.Features.Sale.Commands.Implementat
 
         private string DeleteQuery()
         {
-                return @"UPDATE [Aban360].CalculationPool.Article11
+            return @"UPDATE [Aban360].CalculationPool.Article11
                         SET
                             RemoveDateTime = @RemoveDateTime ,
 						    RemoveByUserId= @RemoveByUserId
