@@ -68,7 +68,7 @@ internal sealed class ReadingBoundService : IReadingBoundService
     {
         ReadingBound readingBound = await _readingBoundQueryService.Get(updateDto.Id);
         readingBound.IsValid = false;
-    
+
         ICollection<ReadingBlock> readingBlocks = await _readingBlockQueryService.GetByBoundId(readingBound.Id);
         if (!readingBlocks.Any())
         {
@@ -81,17 +81,17 @@ internal sealed class ReadingBoundService : IReadingBoundService
         {
             throw new ReadingException(ExceptionLiterals.ReadingBlockNotFound);
         }
-    
+
         string perToReadingNumber = "";
         for (int i = 0; i < (readingBlockOrdered?.Count() ?? 0); i++)
         {
             ReadingBlock? block = readingBlockOrdered.ElementAt(i);
-    
+
             if (fromReadingNumber.Length != block.FromReadingNumber.Length || fromReadingNumber.Length != block.ToReadingNumber.Length)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidBlocksReadingNumberChars);
             }
-    
+
             if (i == 0 && readingBound.FromReadingNumber != block.FromReadingNumber)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidBoundAndBlockStartReadingNumber);
@@ -103,12 +103,12 @@ internal sealed class ReadingBoundService : IReadingBoundService
                     throw new ReadingException(string.Format(ExceptionLiterals.InvalidStartReadingNumber, block.Title));
                 }
             }
-    
+
             perToReadingNumber = block.ToReadingNumber;
         }
-    
+
         readingBound.IsValid = true;
-    
+
     }
 
     public async Task DeleteAsync(ReadingBoundDeleteDto deleteDto, CancellationToken cancellationToken)
@@ -120,6 +120,7 @@ internal sealed class ReadingBoundService : IReadingBoundService
     public async Task CreateAsync(ReadingBoundCreateDto createDto, CancellationToken cancellationToken)
     {
         ReadingBound readingBound = _mapper.Map<ReadingBound>(createDto);
+        readingBound.IsValid = true;
         await _readingBoundCommandService.Add(readingBound);
     }
 

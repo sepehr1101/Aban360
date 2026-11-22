@@ -28,11 +28,10 @@ using FluentValidation;
 using Guild = Aban360.ReportPool.Persistence.Features.ConsumersInfo.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Data;
 using System.Text.Json;
-using System.Threading;
+using Aban360.Common.Timing;
 
 namespace Aban360.MeterPool.Application.Features.Reading.Services;
 public interface IReadingListService
@@ -152,8 +151,8 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
             using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 TrackingCommandService trackingCommandService = new(connection, transaction);
-                //await trackingCommandService.UpdateSeen(trackingSeenUpdateDto);
-                //await trackingCommandService.InsertDuplicate(trackingDuplicateInsertDto);
+                await trackingCommandService.UpdateSeen(trackingSeenUpdateDto);
+                await trackingCommandService.InsertDuplicate(trackingDuplicateInsertDto);
                 transaction.Commit();
             }
         }
@@ -162,7 +161,7 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
     private async Task<ReaderCartableOutputDto> GetReaderCartableGetResult(IEnumerable<TrackingGetDto> trackingInfo, IEnumerable<DetailGetDto> detailInfo, CancellationToken cancellationToken)
     {
         IEnumerable<TrackingDataOutputDto> trackingData = trackingInfo.Select(t => new TrackingDataOutputDto() { Id = t.Id, BlockId = t.BlockId, TrackNumber = t.TrackNumber, TbReadingProgramId = t.TbReadingProgramId, ZoneId = t.ZoneId, ZoneTitle = t.ZoneTitle, FlowStepId = t.FlowStepId, FromReadingNumber = t.FromReadingNumber, ToReadingNumber = t.ToReadingNumber, ListNumber = t.ListNumber, InsertBy = t.InsertBy, InsertDateJalali = t.InsertDateJalali, InsertDateTime = t.InsertDateTime, Seen = t.Seen, CounterReaderCode = t.CounterReaderCode, CounterReaderId = t.CounterReaderId, CounterReaderName = t.CounterReaderName, CounterReaderMobile = t.CounterReaderMobile, IsBazdid = t.IsBazdid, IsRoosta = t.IsRoosta, FromDate = t.FromDate, ToDate = t.ToDate, OverallCustomerCount = t.OverallCustomerCount, ItemCustomerCount = t.ItemCustomerCount, ProvisionallyPercent = t.ProvisionallyPercent, ImagePercent = t.ImagePercent, HasPreNumber = t.HasPreNumber, DisplayBillId = t.DisplayBillId, DisplayCustomerNumber = t.DisplayCustomerNumber, Description = t.Description, X = t.X, Y = t.Y, DisplayPreDate = t.DisplayPreDate, DisplayMobile = t.DisplayMobile, HasImage = t.HasImage, DisplayDebt = t.DisplayDebt, DisplayIcons = t.DisplayIcons, }).ToList();
-        IEnumerable<DetailDataOutputDto> detailData = detailInfo.Select(d => new DetailDataOutputDto() { Id = d.Id, TrackingId = d.TrackingId, TrackNumber = d.TrackNumber, BillId = d.BillId, CustomerNumber = d.CustomerNumber, ReadingNumber = d.ReadingNumber, FirstName = d.FirstName, SureName = d.SureName, Address = d.Address, Plaque = d.Plaque, UsageId = d.UsageId, UsageTitle = d.UsageTitle, DomesticUnit = d.DomesticUnit, CommercialUnit = d.CommercialUnit, OtherUnit = d.OtherUnit, MeterDiameterId = d.MeterDiameterId, MeterDiameterTitle = d.MeterDiameterTitle, SiphonDiameterId = d.SiphonDiameterId, SiphonDiameterTitle = d.SiphonDiameterTitle ?? string.Empty, PostalCode = d.PostalCode, PreNumber = d.PreNumber, PreDateJalali = d.PreDateJalali, PreDateTime = d.PreDateTime, PreConsumptionAverage = d.PreConsumptionAverage, PreCounterStateCode = d.PreCounterStateCode, BodySerial = d.BodySerial, MeterInstallationDateJalali = d.MeterInstallationDateJalali, ChangeDateJalali = d.ChangeDateJalali, ChangeNumber = d.ChangeNumber, ContractualCapacity = d.ContractualCapacity, MobileNumber = d.MobileNumber, DeletionStateId = d.DeletionStateId, BranchTypeId = d.BranchTypeId, CounterNumber = d.CounterNumber, CurrentCounterStateCode = d.CurrentCounterStateCode, PossibleAddress = d.PossibleAddress, PossibleBodySerial = d.PossibleBodySerial, PossibleReadingNumber = d.PossibleReadingNumber, PossibleMobileNumber = d.PossibleMobileNumber, PossiblePhoneNumber = d.PossiblePhoneNumber, PossibleDomesticUnit = d.PossibleDomesticUnit, PossibleCommercialUnit = d.PossibleCommercialUnit, PossibleOtherUnit = d.PossibleOtherUnit, PossibleUsageId = d.PossibleUsageId, PossibleEmptyUnit = d.PossibleEmptyUnit, OffLoadDateTime = d.OffLoadDateTime, OffloadDateJalali = d.OffloadDateJalali, OffLoadTime = d.OffLoadTime, OffLoadBy = d.OffLoadBy, Y = d.Y, X = d.X, GisAccuracy = d.GisAccuracy, ImageCount = d.ImageCount, CurrentConsumption = d.CurrentConsumption, CurrentConsumptionAverage = d.CurrentConsumptionAverage, DateDifference = d.DateDifference, CounterNumberShown = d.CounterNumberShown, ExcludedForBazdid = d.ExcludedForBazdid, ExcludedForEslah = d.ExcludedForEslah, JsonItems = d.JsonItems, ConsumptionStateId = d.ConsumptionStateId, Description = d.Description, IsCalculated = d.IsCalculated, CalculationErrorDescription = d.CalculationErrorDescription, D1 = d.D1, D2 = d.D2, CounterStatePosition = d.CounterStatePosition, AttemptCount = d.AttemptCount, IsLocked = d.IsLocked, LocationDateTime = d.LocationDateTime, PhoneDateTime = d.PhoneDateTime, FatherName = d.FatherName, OldReadingNumber = d.OldReadingNumber, OldCustomerNumber = d.OldCustomerNumber, MobilesNumber = d.MobilesNumber, WaterDebt = d.WaterDebt, ModifierUserId = d.ModifierUserId, GuildId = d.GuildId, SiphonInstallationDateJalali = d.SiphonInstallationDateJalali, PreGuildId = d.PreGuildId, HighLowStateId = d.HighLowStateId, ExcludeBy = d.ExcludeBy, ExcludeDateTime = d.ExcludeDateTime, ExcludeCauseId = d.ExcludeCauseId, ExcludeCauseTitle = d.ExcludeCauseTitle, }).ToList();
+        IEnumerable<DetailDataOutputDto> detailData = detailInfo.Select(d => new DetailDataOutputDto() { Id = d.Id, TrackingId = d.TrackingId, TrackNumber = d.TrackNumber, BillId = d.BillId, CustomerNumber = d.CustomerNumber, ReadingNumber = d.ReadingNumber, FirstName = d.FirstName, SurName = d.SurName, Address = d.Address, Plaque = d.Plaque, UsageId = d.UsageId, UsageTitle = d.UsageTitle, DomesticUnit = d.DomesticUnit, CommercialUnit = d.CommercialUnit, OtherUnit = d.OtherUnit, MeterDiameterId = d.MeterDiameterId, MeterDiameterTitle = d.MeterDiameterTitle, SiphonDiameterId = d.SiphonDiameterId, SiphonDiameterTitle = d.SiphonDiameterTitle ?? string.Empty, PostalCode = d.PostalCode, PreNumber = d.PreNumber, PreDateJalali = d.PreDateJalali, PreDateTime = d.PreDateTime, PreConsumptionAverage = d.PreConsumptionAverage, PreCounterStateCode = d.PreCounterStateCode, BodySerial = d.BodySerial, MeterInstallationDateJalali = d.MeterInstallationDateJalali, ChangeDateJalali = d.ChangeDateJalali, ChangeNumber = d.ChangeNumber, ContractualCapacity = d.ContractualCapacity, MobileNumber = d.MobileNumber, DeletionStateId = d.DeletionStateId, BranchTypeId = d.BranchTypeId, CounterNumber = d.CounterNumber, CurrentCounterStateCode = d.CurrentCounterStateCode, OffLoadDateTime = d.OffLoadDateTime, OffloadDateJalali = d.OffloadDateJalali, OffLoadTime = d.OffLoadTime, OffLoadBy = d.OffLoadBy, Y = d.Y, X = d.X, GisAccuracy = d.GisAccuracy, ImageCount = d.ImageCount, CurrentConsumption = d.CurrentConsumption, CurrentConsumptionAverage = d.CurrentConsumptionAverage, DateDifference = d.DateDifference, CounterNumberShown = d.CounterNumberShown, Traverse = d.Traverse, ConsumptionStateId = d.ConsumptionStateId, Description = d.Description, IsCalculated = d.IsCalculated, CalculationErrorDescription = d.CalculationErrorDescription, AttemptCount = d.AttemptCount, IsLocked = d.IsLocked, LocationDateTime = d.LocationDateTime, PhoneDateTime = d.PhoneDateTime, FatherName = d.FatherName, OldReadingNumber = d.OldReadingNumber, OldCustomerNumber = d.OldCustomerNumber, MobilesNumber = d.MobilesNumber, WaterDebt = d.WaterDebt, ModifierUserId = d.ModifierUserId, GuildId = d.GuildId, SiphonInstallationDateJalali = d.SiphonInstallationDateJalali, HighLowStateId = d.HighLowStateId, ExcludeBy = d.ExcludeBy, ExcludeDateTime = d.ExcludeDateTime, ExcludeCauseId = d.ExcludeCauseId, ExcludeCauseTitle = d.ExcludeCauseTitle, }).ToList();
         IEnumerable<NumericDictionary> usageList = await _usageQueryService.Get();
         IEnumerable<NumericDictionary> branchTypeList = await _branchTypeQueryService.Get();
         IEnumerable<NumericDictionary> deletionStateList = await _deletionStateQueryService.Get();
@@ -189,7 +188,7 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
         User userInfo = await _userQueryService.GetByRoleInfo(appUser.UserId);
         if (!userInfo.UserRoles.Where(role => role.RoleId == _readerRoleId).Any())
         {
-        //throw new ReadingException(ExceptionLiterals.NotFoundCurrentUserByReaderRole);
+            throw new ReadingException(ExceptionLiterals.NotFoundCurrentUserByReaderRole);
         }
 
         return userInfo;
@@ -282,7 +281,7 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
         //appUser Validate
         IEnumerable<TrackingGetDto> trackingsInfo = await OffloadTrackingValidate(inputDto, appUser);
         await OffloadDetailValidate(inputDto);
-        var(trackingDuplicateDto, trackingUpdateSeenDto) = OffloadGetTrackingDuplicateList(trackingsInfo, appUser);
+        var (trackingDuplicateDto, trackingUpdateSeenDto) = OffloadGetTrackingDuplicateList(trackingsInfo, appUser);
         IEnumerable<DetailUpdateDto> detailsUpdateList = OffloadGetDetailUpdateList(inputDto, appUser);
         await OffloadExecSql(trackingDuplicateDto, trackingUpdateSeenDto, detailsUpdateList);
     }
@@ -302,7 +301,7 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
                 DetailCommandService detailCommandService = new(connection, transaction);
                 await trackingCommandService.UpdateSeen(trackingUpdateSeenDto);
                 await trackingCommandService.InsertDuplicate(trackingDuplicateDto);
-                //await detailCommandService.Update(detailUpdateList);
+                await detailCommandService.Update(detailUpdateList);
                 transaction.Commit();
             }
         }
@@ -315,7 +314,7 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
         {
             if (!_validStepFlowIds.Contains(tracking.FlowStepId))
             {
-            //throw new ReadingException(ExceptionLiterals.InvalidDetailByCurrentTrackingFlowId(tracking.TrackNumber));
+                throw new ReadingException(ExceptionLiterals.InvalidDetailByCurrentTrackingFlowId(tracking.TrackNumber));
             }
 
             if (tracking.CounterReaderId != appUser.UserId)
@@ -415,7 +414,7 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
     public async Task<GenerateReadingListOutputDto> GenerateAsync(GenerateReadingListInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
     {
         await GenerateValidate(inputDto, appUser, cancellationToken);
-        var(newBoundDto, newBlockList, newTrackingList, newDetailList) = await GenerateGetBlocksInsert(inputDto, appUser);
+        var (newBoundDto, newBlockList, newTrackingList, newDetailList) = await GenerateGetBlocksInsert(inputDto, appUser);
         string opLogText = string.Format(OpLogLiterals.MeterReadingInsertOpLog, newBoundDto.Id);
         await GenerateExecSql(newBoundDto, newBlockList, newTrackingList, newDetailList, opLogText, appUser);
         GenerateReadingListOutputDto result = await GenerateGetResult(inputDto, newBoundDto, newBlockList?.Count() ?? 0);
@@ -615,6 +614,17 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
 
     private DetailInsertDto GenerateGetDetail(CustomerInfoByBillsAndChangeGetDto customerInfo, TrackingInsertDto newTrackingInfo)
     {
+        string? previousDateJalali = null;
+        string? errorDescription = null;
+        DateTime? previousDateTime = ConvertDate.JalaliToDateTime(customerInfo.BillDateJalali, false);
+        if (previousDateTime.HasValue)
+        {
+            previousDateJalali = customerInfo.BillDateJalali;
+        }
+        else
+        {
+            errorDescription = "تاریخ قرائت و نصب انشعاب نامعتبر است.";
+        }
         return new DetailInsertDto()
         {
             TrackingId = newTrackingInfo.Id,
@@ -623,19 +633,20 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
             CustomerNumber = customerInfo.CustomerNumber,
             ReadingNumber = customerInfo.ReadingNumber,
             FirstName = customerInfo.FirstName,
-            SureName = customerInfo.Surname,
+            SurName = customerInfo.Surname,
             Address = customerInfo.Address,
             Plaque = customerInfo.Plaque,
             UsageId = customerInfo.UsageId,
             DomesticUnit = customerInfo.DomesticUnit,
             CommercialUnit = customerInfo.CommercialUnit,
             OtherUnit = customerInfo.OtherUnit,
+            EmptyUnit= customerInfo.EmptyUnit,
             MeterDiameterId = customerInfo.MeterDiameterId,
             SiphonDiameterId = customerInfo.MainSiphon,
             PostalCode = customerInfo.PostalCode,
             PreNumber = customerInfo.BillNumber,
-            PreDateJalali = customerInfo.BillDateJalali,
-            PreDateTime = null,
+            PreDateJalali = previousDateJalali,
+            PreDateTime = previousDateTime,
             PreConsumptionAverage = customerInfo.BillConsumption,
             PreCounterStateCode = customerInfo.BillCounterStateCode,
             BodySerial = customerInfo.BodySerial,
@@ -646,6 +657,8 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
             MobileNumber = customerInfo.MobileNumber,
             DeletionStateId = customerInfo.DeletionStateId,
             BranchTypeId = customerInfo.BranchTypeId,
+            GuildId = customerInfo.Guild,
+            ErrorDescription = errorDescription
         };
     }
 }
