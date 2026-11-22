@@ -26,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ContractRepairHeaderOutputDto, ContractRepairDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ContractRepairInputDto input, CancellationToken cancellationToken)
@@ -35,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, ContractRepairInputDto inputDto, CancellationToken cancellationToken)
         {

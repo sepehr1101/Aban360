@@ -1,9 +1,13 @@
+using Aban360.Common.Caching;
+using Aban360.ReportPool.Application.Extensions;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Contracts;
 using Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Validations;
 using Aban360.ReportPool.Domain.Constants;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Inputs;
 using Aban360.ReportPool.Domain.Features.BuiltIns.PaymentsTransactions.Outputs;
 using Aban360.ReportPool.Persistence.Features.BuiltIns.PaymentTransactions.Contracts;
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 
 void Check(bool condition, string name)
 {
@@ -13,9 +17,16 @@ void Check(bool condition, string name)
 
 var validator = new WaterReceivablesValidator();
 var queries = new FakeQueries();
-var handlerType = typeof(IWaterReceivablesHandler).Assembly.GetType(
-    "Aban360.ReportPool.Application.Features.BuiltsIns.PaymentTransacionts.Handlers.Implementations.WaterReceivablesHandler")!;
-var handler = (IWaterReceivablesHandler)Activator.CreateInstance(handlerType, queries, validator)!;
+var services = new ServiceCollection();
+services.AddReportPoolApplicationInjections();
+services.AddSingleton<IWaterReceivablesQueryService>(queries);
+services.AddSingleton<IValidator<WaterReceivablesInputDto>>(validator);
+using var provider = services.BuildServiceProvider(validateScopes: true);
+using var scope = provider.CreateScope();
+var cache = provider.GetRequiredService<IQueryCache>();
+var handler = scope.ServiceProvider.GetRequiredService<IWaterReceivablesHandler>();
+Check(ReferenceEquals(cache, scope.ServiceProvider.GetRequiredService<IQueryCache>()),
+    "Report handlers use the shared cache instance");
 var input = new WaterReceivablesInputDto
 {
     GroupBy = WaterReceivablesGroupingEnum.Usage,
@@ -39,13 +50,23 @@ Check(result.ReportData.Single(r => r.GroupTitle == "history-only").ClosingBalan
 Check(result.ReportData.Single(r => r.GroupTitle == "sales-only").ClosingBalance == 10,
     "Sales-only groups survive merge");
 
-foreach (ICollection<int>? zoneIds in new ICollection<int>?[] { null, Array.Empty<int>(), new[] { 101, 102 } })
-{
-    queries.Calls.Clear();
-    await handler.Handle(input with { ZoneIds = zoneIds }, CancellationToken.None);
-    Check(queries.Calls.Count == 4 && queries.Calls.All(c => ReferenceEquals(c.ZoneIds, zoneIds)),
-        "Optional zoneIds reaches all opening and period queries");
-}
+queries.Calls.Clear();
+home.OpeningBalance = 0;
+result.ReportHeader.OpeningBalance = 0;
+var cached = await handler.Handle(input with { ZoneIds = Array.Empty<int>() }, CancellationToken.None);
+Check(queries.Calls.Count == 0, "Empty and omitted zoneIds share an unfiltered cache entry");
+Check(cached.ReportData.Single(r => r.GroupTitle == "home").OpeningBalance == 70 &&
+    cached.ReportHeader.OpeningBalance == 110, "Mutating a response does not affect the cached report");
+
+await handler.Handle(input with { ZoneIds = new[] { 102, 101, 102 } }, CancellationToken.None);
+Check(queries.Calls.Count == 4 && queries.Calls.All(c => c.ZoneIds!.SequenceEqual(new[] { 101, 102 })),
+    "The selected zone set is normalized for every query and is separate from the unfiltered entry");
+await handler.Handle(input with { ZoneIds = new[] { 101, 102 } }, CancellationToken.None);
+Check(queries.Calls.Count == 4, "Equivalent zone selections reuse the same cache entry");
+await handler.Handle(input with { ZoneIds = new[] { 101 } }, CancellationToken.None);
+Check(queries.Calls.Count == 8, "Different zone selections never reuse the same cache entry");
+await handler.Handle(input with { GroupBy = WaterReceivablesGroupingEnum.Zone }, CancellationToken.None);
+Check(queries.Calls.Count == 12, "Different report groupings use different cache entries");
 
 queries.Calls.Clear();
 await handler.Handle(input with { FromDateJalali = "1404/01/01" }, CancellationToken.None);
@@ -63,6 +84,65 @@ foreach (var invalid in new[]
     input with { FromDateJalali = null! }
 })
     Check(!validator.Validate(invalid).IsValid, "Invalid grouping/date input rejected");
+
+var computation = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+int factoryCalls = 0;
+Task<int> Compute(int input, CancellationToken token)
+{
+    factoryCalls++;
+    return computation.Task.WaitAsync(token);
+}
+TimeSpan ttl = TimeSpan.FromMinutes(1);
+var producer = cache.GetOrCreateAsync("concurrent", 1, ttl, Compute, CancellationToken.None);
+using var waiterCancellation = new CancellationTokenSource();
+var canceledWaiter = cache.GetOrCreateAsync("concurrent", 1, ttl, Compute, waiterCancellation.Token);
+var waiter = cache.GetOrCreateAsync("concurrent", 1, ttl, Compute, CancellationToken.None);
+waiterCancellation.Cancel();
+try
+{
+    await canceledWaiter;
+    throw new Exception("Canceled waiter returned a result");
+}
+catch (OperationCanceledException) { }
+computation.SetResult(42);
+Check((await Task.WhenAll(producer, waiter)).All(value => value == 42) && factoryCalls == 1,
+    "Concurrent requests share one computation and a canceled waiter does not cancel it");
+
+using var producerCancellation = new CancellationTokenSource();
+var pending = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+var canceledProducer = cache.GetOrCreateAsync("retry", 1, ttl,
+    (_, token) => pending.Task.WaitAsync(token), producerCancellation.Token);
+var retryingWaiter = cache.GetOrCreateAsync("retry", 1, ttl, (_, _) => Task.FromResult(8), CancellationToken.None);
+producerCancellation.Cancel();
+try
+{
+    await canceledProducer;
+    throw new Exception("Canceled producer returned a result");
+}
+catch (OperationCanceledException) { }
+Check(await retryingWaiter.WaitAsync(TimeSpan.FromSeconds(5)) == 8,
+    "An active waiter can retry after the producing request is canceled");
+
+try
+{
+    await cache.GetOrCreateAsync<int, int>("failure", 1, ttl,
+        (_, _) => throw new InvalidOperationException("Query failed"), CancellationToken.None);
+    throw new Exception("A factory exception was not propagated");
+}
+catch (InvalidOperationException error) when (error.Message == "Query failed") { }
+Check(await cache.GetOrCreateAsync("failure", 1, ttl, (_, _) => Task.FromResult(7), CancellationToken.None) == 7,
+    "Failed computations do not prevent a retry");
+
+var firstInput = new Dictionary<string, int[]> { ["zones"] = [1, 2], ["years"] = [1405] };
+var sameInput = new Dictionary<string, int[]> { ["years"] = [1405], ["zones"] = [1, 2] };
+await cache.GetOrCreateAsync("first-report", firstInput, ttl, (_, _) => Task.FromResult(10), CancellationToken.None);
+Check(await cache.GetOrCreateAsync("first-report", sameInput, ttl, (_, _) => Task.FromResult(20), CancellationToken.None) == 10,
+    "Equivalent JSON objects with different property order share one entry");
+Check(await cache.GetOrCreateAsync("second-report", sameInput, ttl, (_, _) => Task.FromResult(20), CancellationToken.None) == 20,
+    "Different operation prefixes isolate the same input");
+sameInput["zones"] = [2, 1];
+Check(await cache.GetOrCreateAsync("first-report", sameInput, ttl, (_, _) => Task.FromResult(30), CancellationToken.None) == 30,
+    "Array order is preserved in the generic cache key");
 
 sealed class FakeQueries : IWaterReceivablesQueryService
 {

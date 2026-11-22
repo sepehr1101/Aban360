@@ -27,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
             _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterMeterReplacementsHeaderOutputDto, WaterMeterReplacementsDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(WaterMeterReplacementsInputDto input, CancellationToken cancellationToken)
@@ -36,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
             return Ok(waterMeterReplacements);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, WaterMeterReplacementsInputDto inputDto, CancellationToken cancellationToken)
         {

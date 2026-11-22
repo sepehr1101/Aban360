@@ -78,6 +78,8 @@ Check(Tokens(controllerNow.AttributeLists.Single()) == Tokens(controllerBefore.A
 foreach (var method in controllerBefore.Members.OfType<MethodDeclarationSyntax>())
 {
     var text = method.ToFullString().Replace("_collectBillsFilesService.", "_collectBillsService.").Replace("_collectBillsDetailWithLastStepHandler.Handle(", "_collectBillsService.GetDetailWithLastStepAsync(").Replace("_jobService.Initialize(", "_collectBillsService.Initialize(");
+    if (method.Identifier.ValueText == "CreateFile")
+        text = text.Replace("[HttpPost, HttpGet]", "[HttpPost]", StringComparison.Ordinal);
     var expected = Parse("class T {" + text + "}").DescendantNodes().OfType<MethodDeclarationSyntax>().Single();
     Check(Tokens(controllerNow.Members.OfType<MethodDeclarationSyntax>().Single(m => m.Identifier.Text == expected.Identifier.Text)) == Tokens(expected), "Controller contract or behavior changed: " + method.Identifier);
 }

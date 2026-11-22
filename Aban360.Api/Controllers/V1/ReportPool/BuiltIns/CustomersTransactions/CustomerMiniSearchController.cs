@@ -33,7 +33,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             _commonZoneService.NotNull(nameof(_commonZoneService));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CustomerMiniSearchHeaderOutputDto, CustomerMiniSearchDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(CustomerMiniSearchInputDto inputDto, CancellationToken cancellationToken)
@@ -43,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             return Ok(CustomerMiniSearch);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, CustomerMiniSearchInputDto inputDto, CancellationToken cancellationToken)
         {

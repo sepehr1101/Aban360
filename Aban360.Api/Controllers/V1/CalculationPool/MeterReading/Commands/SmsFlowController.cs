@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Commands
             return Ok(inputDto);
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SmsFlowUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] SmsFlowUpdateDto inputDto, CancellationToken cancellationToken)

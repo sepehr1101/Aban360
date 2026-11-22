@@ -26,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UsageChangeHistoryHeaderOutputDto, ChangeHistoryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(UsageChangeHistoryInputDto inputDto, CancellationToken cancellationToken)
@@ -35,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             return Ok(usageChangeHistory);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, UsageChangeHistoryInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -43,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             return Ok(inputDto);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStiReport(UsageChangeHistoryInputDto inputDto, CancellationToken cancellationToken)

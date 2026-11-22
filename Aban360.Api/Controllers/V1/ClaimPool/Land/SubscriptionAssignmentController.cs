@@ -40,7 +40,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
         //    await _subscriptionAssignmentHandler.Handle(updateDto, cancellationToken);
         //    return Ok(updateDto);
         //}
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionAssignmentInputUpdateDto>), StatusCodes.Status200OK)]
         [AllowAnonymous]
@@ -50,7 +50,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
             return Ok(updateDto);
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("update-by-tracknumber")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionAssignmentByTrackNumberUpdateDto>), StatusCodes.Status200OK)]
         [AllowAnonymous]
@@ -60,7 +60,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
             return Ok(updateDto);
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("single")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionAssignmentGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle([FromBody] SearchInput input, CancellationToken cancellationToken)

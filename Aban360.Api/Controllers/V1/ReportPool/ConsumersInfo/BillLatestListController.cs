@@ -24,7 +24,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
             _reportGenerator.NotNull(nameof(reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("latest-list")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<BillLatestListHeaderOutputDto, BillLatestListDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw([FromBody] BillLatestListInputDto inputDto, CancellationToken cancellationToken)

@@ -42,7 +42,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Dms
             return Ok(data);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("add")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ClientDiscountInsertDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add([FromBody] ClientDiscountInsertDto input, CancellationToken cancellationToken)
@@ -51,7 +51,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Dms
             return Ok(input);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("edit")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ClientDiscountInsertDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([FromBody] ClientDiscountUpdateDto input, CancellationToken cancellationToken)

@@ -25,7 +25,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
             _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("check_pay")]
         [AllowTimeWindowFilter]
         [ProducesResponseType(typeof(ApiResponseEnvelope<PaymentInquiryOutputDto>), StatusCodes.Status200OK)]

@@ -18,7 +18,7 @@ namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
         }
 
         [Route("get")]
-        [HttpPost, HttpGet]
+        [HttpPost]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<LoggingOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(LoggingInputByStringDto inputDto, CancellationToken cancellation)
         {

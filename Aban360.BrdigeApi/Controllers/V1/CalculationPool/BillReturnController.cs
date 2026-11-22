@@ -24,7 +24,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
             _c1_billFullHandler.NotNull(nameof(c1_billFullHandler));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("~/v1/bill-return/confirm")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Confirm([FromBody] ReturnBillSetConfirmInputDto input, CancellationToken cancellationToken)
@@ -33,7 +33,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("~/v1/bill-return/partial")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> PartialReturn([FromBody] ReturnBillPartialInputDto input, CancellationToken cancellationToken)
@@ -42,7 +42,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("~/v1/bill-return/full")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> FullReturn([FromBody] ReturnBillFullInputDto input, CancellationToken cancellationToken)

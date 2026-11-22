@@ -79,7 +79,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(inputDto);
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("calculation-display")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> CalculationDisplay([FromBody] SearchNumericInput inputDto, CancellationToken cancellationToken)

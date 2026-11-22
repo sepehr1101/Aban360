@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
         }
 
         [Route("upload")]
-        [HttpPost, HttpGet]
+        [HttpPost]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MeterApkLogInsertDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UploadFile(MeterApkLogInsertDto inputDto, CancellationToken cancellation)
         {

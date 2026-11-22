@@ -62,7 +62,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("get")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TankerWaterDistanceTariffOutputDto>), StatusCodes.Status200OK)]
         [ActionName("GetAll")]

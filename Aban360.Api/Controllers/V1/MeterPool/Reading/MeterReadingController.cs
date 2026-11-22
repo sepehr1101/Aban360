@@ -19,7 +19,7 @@ namespace Aban360.Api.Controllers.V1.MeterPool.Reading
         }
 
         [Route("generate-list")]
-        [HttpPost, HttpGet]
+        [HttpPost]
         [ProducesResponseType(typeof(ApiResponseEnvelope<GenerateReadingListOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GenerateList([FromBody] GenerateReadingListInputDto inputDto, CancellationToken cancellationToken)
         {

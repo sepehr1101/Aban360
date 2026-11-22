@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             _jobClient.NotNull(nameof(jobClient));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("command")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCommandSti([FromBody] JudicalNoticeCommandInputDto inputDto, CancellationToken cancellationToken)
@@ -43,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             return Ok(jsonReport);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("set-result")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JudicalNoticeSetResultInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetResult([FromBody] JudicalNoticeSetResultInputDto inputDto, CancellationToken cancellationToken)
