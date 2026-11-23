@@ -389,7 +389,7 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
             throw new ReadingException(string.Format(ExceptionLiterals.InvalidFinishTrackingByUncompleteDetail, uncompleteDetailList?.Count() ?? 0));
         }
 
-        TrackingDuplicateInsertDto newTrackingDto = new(new List<Guid>() { trackingsInfo.Id }.ToList(), (int)ReadingFlowStepEnum.Upload, appUser.UserId);
+        TrackingDuplicateInsertDto newTrackingDto = new(new List<Guid>() { trackingsInfo.Id }.ToList(), (int)ReadingFlowStepEnum.OffLoad, appUser.UserId);
         await FinishExecSql(newTrackingDto);
     }
 
@@ -640,7 +640,7 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
             DomesticUnit = customerInfo.DomesticUnit,
             CommercialUnit = customerInfo.CommercialUnit,
             OtherUnit = customerInfo.OtherUnit,
-            EmptyUnit= customerInfo.EmptyUnit,
+            EmptyUnit = customerInfo.EmptyUnit,
             MeterDiameterId = customerInfo.MeterDiameterId,
             SiphonDiameterId = customerInfo.MainSiphon,
             PostalCode = customerInfo.PostalCode,

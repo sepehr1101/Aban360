@@ -370,7 +370,11 @@
         public static string CollectBillsReport { get { return $" {Report} تجمیع قبوض "; } }
 
         public static string BillReadingList { get { return $" لیست قرائت "; } }
+        public static string ReadingCartable { get { return $" کارتابل قرائت"; } }
+        public static string ReadingTreackingFlow { get { return $" روند قرائت"; } }
+        public static string ReadingDetail { get { return $" جزئیات لیست قرائت"; } }
         public static string InvalidPaymentId { get { return $" شناسه پرداخت نامعتبر "; } }
+     
 
 
 

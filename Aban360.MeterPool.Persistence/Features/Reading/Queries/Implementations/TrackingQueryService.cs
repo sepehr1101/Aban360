@@ -41,6 +41,13 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
             }
             return result;
         }
+        public async Task<IEnumerable<TrackingDataDto>> GetFlow(long trackNumber)
+        {
+            string query = GetFlowByTrackNumberQuery();
+            IEnumerable<TrackingDataDto> result = await _sqlReportConnection.QueryAsync<TrackingDataDto>(query, new { trackNumber });
+
+            return result;
+        }
         public async Task<IEnumerable<TrackingGetDto>> Get(IEnumerable<long> trackNumbers)
         {
             string query = GetByTrackNumbersQuery();
@@ -51,6 +58,12 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
         {
             string query = GetByUserIdAndStepFlowIdQuery();
             IEnumerable<TrackingGetDto> result = await _sqlReportConnection.QueryAsync<TrackingGetDto>(query, new { readerId, flowStepId });
+            return result;
+        }
+        public async Task<IEnumerable<MeterReadingCartableDataOutputDto>> Get(MeterReadingCartableGetDto input)
+        {
+            string query = GetCartableQuery();
+            IEnumerable<MeterReadingCartableDataOutputDto> result = await _sqlReportConnection.QueryAsync<MeterReadingCartableDataOutputDto>(query, input);
             return result;
         }
 
@@ -145,7 +158,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
 						t.HasImage,
 						t.DisplayDebt,
 						t.DisplayIcons
-					From [Atlas].reading.Tracking
+					From [Atlas].reading.Tracking t
 					Join [Atlas].reading.FlowStep s
 						ON t.FlowStepId=s.Id
 					Where t.Id = @Id;";
@@ -197,6 +210,34 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
 						ON t.FlowStepId=s.Id
 					Where t.TrackNumber = @TrackNumber
 					Order By t.InsertDateTime Desc;";
+        }
+        private string GetFlowByTrackNumberQuery()
+        {
+            return $@"Select
+						t.Id,
+						t.FirstId,
+						t.BlockId ,
+						t.TrackNumber ,
+						t.ZoneId ,
+						t.ZoneTitle ,
+						t.FlowStepId ,
+						s.Title FlowStepTitle,
+						t.FromReadingNumber ,
+						t.ToReadingNumber ,
+						t.InsertBy ,
+						t.InsertDateJalali ,
+						t.InsertDateTime ,
+						t.CounterReaderCode ,
+						t.CounterReaderId ,
+						t.CounterReaderName ,
+						t.CounterReaderMobile ,
+						LAG(InsertDateTime) OVER(partition by FirstId Order by InsertDateTime) PreviousInsertDate,
+						DATEDIFF(HOUR,lag(InsertDateTime) OVER(partition by FirstId Order by InsertDateTime),InsertDateTime) DistanceWithPreviousStep
+					From [Atlas].reading.Tracking t
+					Join [Atlas].reading.FlowStep s
+						ON t.FlowStepId=s.Id
+					Where t.TrackNumber = @TrackNumber
+					Order By t.InsertDateTime ASC;";
         }
         private string GetByTrackNumbersQuery()
         {
@@ -298,6 +339,38 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
 					Order By 
 						t.TrackNumber Asc,
 						t.InsertDateTime Asc ";
+        }
+        private string GetCartableQuery()
+        {
+            return $@"Select 
+						t.Id,
+						t.FirstId FirstTrackingId,
+						t.BlockId,
+						t.TrackNumber,
+						t.ZoneId,
+						t51.C2 ZoneTitle,
+						t.FromReadingNumber,
+						t.ToReadingNumber,
+						firstT.InsertDateJalali TrackingStartDateJalali,
+						firstT.InsertDateTime TrackingStartDateTime,
+						t.CounterReaderCode,
+						t.CounterReaderName,
+						t.CounterReaderId,
+						t.ItemCustomerCount,
+						t.OverallCustomerCount
+					From Atlas.reading.Tracking t
+					Join Atlas.reading.Tracking firstT
+						ON t.FirstId=firstT.FirstId AND firstT.FlowStepId=1
+					Join Atlas.reading.FlowStep ft
+						ON t.FlowStepId=ft.Id
+					Join Db70.dbo.T51 t51	
+						On t.ZoneId=t51.C0
+					Where 
+						t.Seen = 0 AND
+						t.ZoneId IN @ZoneIds AND
+						@FromReadingNumber IS NULL OR
+						@ToReadingNumber IS NULL OR
+						(@ToReadingNumber>t.FromReadingNumber AND @FromReadingNumber<t.ToReadingNumber)";
         }
     }
 }
