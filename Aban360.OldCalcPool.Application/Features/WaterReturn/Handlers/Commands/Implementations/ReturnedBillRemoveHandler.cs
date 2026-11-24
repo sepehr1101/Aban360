@@ -88,6 +88,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             {
                 throw new ReturnedBillException(ExceptionLiterals.InvalidRemoveReturnedAfterLockDate);
             }
+            await BillsValidate(repairInfo);
             IEnumerable<BedBesCreateDto> bedBesInfoList = await _bedBesQueryService.Get(new ZoneCustomerFromToDateDto((int)repairInfo.Town, (int)repairInfo.Radif, repairInfo.PriDate, repairInfo.TodayDate));
             if (bedBesInfoList.Where(b => b.Del == false).Any())
             {
@@ -171,6 +172,16 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             {
                 var message = string.Join(", ", validationResult.Errors.Select(x => x.ErrorMessage));
                 throw new CustomValidationException(message);
+            }
+        }
+        private async Task BillsValidate(RepairGetDto repairInfo)
+        {
+            ZoneCustomerToDateDto zoneCustomerDateInfo = new((int)repairInfo.Town, (int)repairInfo.Radif, repairInfo.TodayDate);
+            string dbName = GetDbName((int)repairInfo.Town);
+            int billsCountAfterCurrentDate = await _bedBesQueryService.GetAfterDate(zoneCustomerDateInfo, dbName);
+            if (billsCountAfterCurrentDate > 0)
+            {
+                throw new ReturnedBillException(ExceptionLiterals.InvalidRemoveReturnedByAfterBill);
             }
         }
     }
