@@ -9,11 +9,11 @@ using System.Data;
 
 namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations
 {
-    public sealed class RemovedBillCommandService
+    public sealed class RemoveBillCommandService
     {
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
-        public RemovedBillCommandService(
+        public RemoveBillCommandService(
                 IDbConnection connection,
                 IDbTransaction transaction)
         {

@@ -120,9 +120,13 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	r.UsageId AS UsageId,
                     	TRIM(r.TrackNumber) TrackNumber,
                     	r.RegisterDate collate SQL_Latin1_General_CP1_CI_AS AS RegisterDateJalali,
-                        IIF(r.Amount>0 AND TypeCode NOT IN (3,4,6) , r.Amount, 0) DebtAmount,
-                        IIF(r.FinalAmount>0, r.FinalAmount,0) AS AmountAfterDiscount,  
-                    	IIF(TypeCode in (3,4,6) AND r.FinalAmount<0, -1*r.FinalAmount, IIF(r.finalAmount<0,r.FinalAmount,0)) AS CreditAmount,                    	                     
+                        CASE WHEN r.Amount > 0 AND TypeCode NOT IN (3,4,6) THEN r.Amount ELSE 0 END DebtAmount,
+                        CASE WHEN r.FinalAmount > 0 THEN r.FinalAmount ELSE 0 END AS AmountAfterDiscount,
+                        CASE
+                            WHEN TypeCode IN (3,4,6) AND r.FinalAmount < 0 THEN -1 * r.FinalAmount
+                            WHEN (r.TypeCode NOT IN (3,4,6) OR r.TypeCode IS NULL) AND r.FinalAmount < 0 THEN -1 * r.FinalAmount
+                            ELSE 0
+                        END AS CreditAmount,
                     	'' AS BankDateJalali,
                     	'' AS BankName,
                     	ISNULL(r.ItemTitle,N'')+N' '+ISNULL(r.TypeId,'') AS Description	,
@@ -142,9 +146,9 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                     	0 AS UsageId,
                     	'' AS TrackNumber,
                     	p.RegisterDay AS RegisterDateJalali,
-                        IIF(p.Amount>0, 0, -1*p.Amount) AS DebtAmount,
-                        IIF(p.Amount>0, 0, -1*p.Amount) AmountAfterDiscount,
-                    	IIF(p.Amount>0,p.Amount,0) AS CreditAmount,                    	
+                        CASE WHEN p.Amount > 0 THEN 0 ELSE -1 * p.Amount END AS DebtAmount,
+                        CASE WHEN p.Amount > 0 THEN 0 ELSE -1 * p.Amount END AmountAfterDiscount,
+                        CASE WHEN p.Amount > 0 THEN p.Amount ELSE 0 END AS CreditAmount,
                     	p.RegisterDay AS BankDateJalali,
                     	p.BankName,
                     	p.BankName +' - '+p.PaymentGateway AS Description,
