@@ -22,6 +22,16 @@ void Check(bool condition, string message)
     Console.WriteLine("PASS: " + message);
 }
 
+string confirmationSource = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "ReturnBillSetConfirmHandler.cs"));
+string removalSource = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "ReturnedBillRemoveHandler.cs"));
+Check(confirmationSource.Contains("UpdateAmount(memberInfo.BillId, (long)repairCreateDto.Baha * -1)")
+    && confirmationSource.Contains("memberInfo.CustomerNumber), (long)repairCreateDto.Baha * -1, zoneDbName)"),
+    "Confirmation subtracts the repair amount from both balances");
+Check(removalSource.Contains("(long)repairInfo.Baha, billId, appUser)")
+    && removalSource.Contains("UpdateAmount(billId, amount)")
+    && removalSource.Contains("hRepairInsertDto.CustomerNumber), amount, DateTime.Now.ToShortPersianDateString(), dbName)"),
+    "Removal adds the stored repair amount to both balances");
+
 var handlerType = typeof(IReturnBillBaseHandler).Assembly.GetType(
     "Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Implementations.ReturnBillBaseHandler", true)!;
 var configuration = new ConfigurationBuilder().Build();

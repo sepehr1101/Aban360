@@ -1,5 +1,8 @@
-﻿using Aban360.Common.BaseEntities;
-using Aban360.Common.Extensions;
+using Aban360.Common.BaseEntities;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Literals;
+using Microsoft.Data.SqlClient;
+using System.Data;
 using Aban360.ReportPool.Domain.Base;
 using Aban360.ReportPool.Domain.Features.ConsumersInfo.Dto;
 using Aban360.ReportPool.Domain.Features.Transactions;
@@ -33,12 +36,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
                 {
                     WaterEventsSummaryOutputDataDto row = data.ElementAt(i);
                     row.EventDateJalali = row.PayDateJalali == null ? row.CurrentMeterDate : row.PayDateJalali;
-                    if (row.TypeCode == 7 || row.TypeCode == 17 /*17: قبض ابطال شده*/)
-                    {
-                        row.Remained = lastRemained;
-                        continue;
-                    }
-                    lastRemained = lastRemained + (row.DebtAmount.Value - row.CreditAmount);
+                    lastRemained += GetBalanceChange(row);
                     row.Remained = lastRemained;
                 }
             }
@@ -84,6 +82,49 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Imlementations
             }
             return result;
         }
+        public async Task<long> ReconcileDebtAsync(string billId, int zoneId, int customerNumber, CancellationToken cancellationToken)
+        {
+            string dbName = GetDbName(zoneId);
+            await using SqlConnection connection = _sqlReportConnection;
+            await connection.OpenAsync(cancellationToken);
+            await using SqlTransaction transaction = (SqlTransaction)await connection.BeginTransactionAsync(IsolationLevel.ReadUncommitted, cancellationToken);
+
+            CommandDefinition read = new(GetSubscriptionEventsDataQuery(false), new { billId }, transaction, cancellationToken: cancellationToken);
+            IEnumerable<WaterEventsSummaryOutputDataDto> rows = await connection.QueryAsync<WaterEventsSummaryOutputDataDto>(read);
+            if (!rows.Any())
+            {
+                throw new InvalidCustomerCommandException("کاردکس مشترک ردیفی برای محاسبه مانده ندارد.");
+            }
+
+            long debt = rows.Sum(GetBalanceChange);
+            string update = $@"
+                UPDATE [{dbName}].dbo.members
+                SET bed_bes = @debt
+                WHERE town = @zoneId AND radif = @customerNumber AND TRIM(bill_id) = @billId;
+                IF @@ROWCOUNT <> 1
+                    SELECT 0;
+                ELSE
+                BEGIN
+                    UPDATE CustomerWarehouse.dbo.WaterDebt
+                    SET Debt = @debt
+                    WHERE TRIM(BillId) = @billId;
+                    SELECT @@ROWCOUNT;
+                END";
+            CommandDefinition write = new(update, new { billId, zoneId, customerNumber, debt }, transaction, cancellationToken: cancellationToken);
+            if (await connection.QuerySingleAsync<int>(write) != 1)
+            {
+                throw new InvalidCustomerCommandException(ExceptionLiterals.InvalidUpdateWaterDebt);
+            }
+
+            await transaction.CommitAsync(cancellationToken);
+            return debt;
+        }
+
+        private static long GetBalanceChange(WaterEventsSummaryOutputDataDto row)
+        {
+            return row.TypeCode is 7 or 17 ? 0 : row.DebtAmount.Value - row.CreditAmount;
+        }
+
         private string GetSubscriptionEventsDataQuery(bool hasRemovedBills)
         {
             string withoutRemovedBillsQuery = @"

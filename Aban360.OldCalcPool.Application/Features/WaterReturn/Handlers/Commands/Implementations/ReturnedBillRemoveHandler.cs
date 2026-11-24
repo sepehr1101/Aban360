@@ -128,8 +128,8 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                     await bedBesCommandService.UpdateDel(bedBesDelUpdateDto, dbName);
                     int hRepairId = await hRepairCommandService.Insert(hRepairInsertDto, dbName);
                     await repairCommandService.Delete(repairDeleteDto, dbName);
-                    await waterDebtCommandService.UpdateAmount(billId, amount * -1);
-                    await membersCommandService.UpdateBedbes(new ZoneIdAndCustomerNumber(hRepairInsertDto.ZoneId, hRepairInsertDto.CustomerNumber), -1 * amount, DateTime.Now.ToShortPersianDateString(), dbName);
+                    await waterDebtCommandService.UpdateAmount(billId, amount);
+                    await membersCommandService.UpdateBedbes(new ZoneIdAndCustomerNumber(hRepairInsertDto.ZoneId, hRepairInsertDto.CustomerNumber), amount, DateTime.Now.ToShortPersianDateString(), dbName);
                     await billCommandService.UpdateOldDbDel(billsDelUpdateDto);
                     await billCommandService.Delete(billRemoveByIdDto);
                     await autoBackCommandService.UpdateIsDeleted(hRepairInsertDto.MinutesNumber, ReportLiterals.Atlas);

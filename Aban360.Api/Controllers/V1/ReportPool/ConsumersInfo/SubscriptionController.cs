@@ -44,6 +44,14 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
             return Ok(reportId);
         }
 
+        [HttpPost("v1/subscription/reconcile-debt")]
+        [ProducesResponseType(typeof(ApiResponseEnvelope<long>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ReconcileDebt([FromBody] SearchInput input, CancellationToken cancellationToken)
+        {
+            long debt = await _c0_subscriptionEventHandler.ReconcileDebtAsync(input.Input, CurrentUser, cancellationToken);
+            return Ok(debt);
+        }
+
         //with-last-db
         [HttpPost]
         [Route("~/v1/subscription/events-summary-lastdb")]

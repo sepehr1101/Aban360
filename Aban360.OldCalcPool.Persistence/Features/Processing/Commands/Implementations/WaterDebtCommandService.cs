@@ -49,31 +49,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 throw new ReadingException(ExceptionLiterals.InvalidUpdateWaterDebt);
             }
         }
-        private DataTable UpdateDebtAmountDataTable(IEnumerable<MembersFazelabCountAndDebtAmountUpdateDto> input)
-        {
-            DataTable table = new DataTable();
-
-            table.Columns.Add("ZoneId", typeof(int));
-            table.Columns.Add("CustomerNumber", typeof(int));
-            table.Columns.Add("BillId", typeof(string));
-            table.Columns.Add("Amount", typeof(long));
-
-            foreach (var item in input)
-            {
-                table.Rows.Add(item.ZoneId, item.CustomerNumber, item.BillId, item.Amount);
-            }
-            return table;
-        }
-        private string GetUpdateDebtAmountCreateTmpTableCommand()
-        {
-            return $@"Create Table #temp
-                    (
-                    	ZoneId int Not Null,
-                    	CustomerNumber  int Not Null,
-                    	BillId  nvarchar(20) Not Null,
-                    	Amount bigint Not Null
-                    )";
-        }
+     
         private string GetUpdateDebtAmountCommand()
         {
             return $@"Update w

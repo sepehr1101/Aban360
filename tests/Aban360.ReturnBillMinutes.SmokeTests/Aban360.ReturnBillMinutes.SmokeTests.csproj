@@ -7,5 +7,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../Aban360.OldCalcPool.Application/Aban360.OldCalcPool.Application.csproj" />
+    <None Include="../../Aban360.OldCalcPool.Application/Features/WaterReturn/Handlers/Commands/Implementations/ReturnBillSetConfirmHandler.cs" Link="ReturnBillSetConfirmHandler.cs" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../Aban360.OldCalcPool.Application/Features/WaterReturn/Handlers/Commands/Implementations/ReturnedBillRemoveHandler.cs" Link="ReturnedBillRemoveHandler.cs" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

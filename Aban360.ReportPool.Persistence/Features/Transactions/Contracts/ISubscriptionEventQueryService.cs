@@ -6,6 +6,7 @@ namespace Aban360.ReportPool.Persistence.Features.Transactions.Contracts
 {
     public interface ISubscriptionEventQueryService
     {
+        Task<long> ReconcileDebtAsync(string billId, int zoneId, int customerNumber, CancellationToken cancellationToken);
         //Task<IEnumerable<EventsSummaryOutputDataDto>>
         Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> GetEventsSummaryDtos(SubscriptionCardexInput input);
         Task<IEnumerable<WaterEventsSummaryOutputDataDto>> GetBillDto(int zoneId, string registerDate, string fromReadingNumber, string toReadingNumber);

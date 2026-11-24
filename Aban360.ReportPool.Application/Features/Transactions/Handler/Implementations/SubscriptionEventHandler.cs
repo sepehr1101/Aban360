@@ -1,5 +1,7 @@
-﻿using Aban360.Common.BaseEntities;
+using Aban360.Common.BaseEntities;
 using Aban360.Common.Exceptions;
+using Aban360.Common.ApplicationUser;
+using Aban360.Common.Db.Services;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
@@ -21,11 +23,13 @@ namespace Aban360.ReportPool.Application.Features.Transactions.Handler.Implement
         private readonly ISubscriptionEventWithLastDbQueryService _subscriptionEventWithLastDbQueryService;
         private readonly IBillQueryService _billQueryService;
         private readonly ICustomerInfoQueryService _customerInfoQueryService;
+        private readonly ICommonZoneService _commonZoneService;
+
         public SubscriptionEventHandler(
             ISubscriptionEventQueryService subscriptionEventQueryService,
             ISubscriptionEventWithLastDbQueryService subscriptionEventWithLastDbQueryService,
             IBillQueryService billQueryService,
-            ICustomerInfoQueryService customerInfoQueryService)
+            ICustomerInfoQueryService customerInfoQueryService, ICommonZoneService commonZoneService)
         {
             _subscriptionEventQueryService = subscriptionEventQueryService;
             _subscriptionEventQueryService.NotNull(nameof(subscriptionEventQueryService));
@@ -38,6 +42,20 @@ namespace Aban360.ReportPool.Application.Features.Transactions.Handler.Implement
 
             _customerInfoQueryService = customerInfoQueryService;
             _customerInfoQueryService.NotNull(nameof(customerInfoQueryService));
+            _commonZoneService = commonZoneService;
+        }
+
+        public async Task<long> ReconcileDebtAsync(string billId, IAppUser appUser, CancellationToken cancellationToken)
+        {
+            if (string.IsNullOrWhiteSpace(billId) || !await _billQueryService.HasBillId(billId))
+            {
+                throw new InvalidBillIdException(ExceptionLiterals.BillIdNotFound);
+            }
+
+            ZoneIdAndCustomerNumberOutputDto customer = await _customerInfoQueryService.GetZoneIdAndCustomerNumber(billId);
+            await _commonZoneService.IsUserInZone(appUser, customer.ZoneId);
+            return await _subscriptionEventQueryService.ReconcileDebtAsync(
+                billId, customer.ZoneId, customer.CustomerNumber, cancellationToken);
         }
 
         public async Task<ReportOutput<WaterEventsSummaryOutputHeaderDto, WaterEventsSummaryOutputDataDto>> Handle(SubscriptionCardexInput input, CancellationToken cancellationToken)
