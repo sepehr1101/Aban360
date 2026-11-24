@@ -175,7 +175,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                     	b.BillId=@billId AND
                         b.CounterStateCode NOT IN (4,7) And
 						b.TypeId In (N'قبض', N'علی الحساب') {idPart} 
-                    order by NextDay desc";
+                    order by NextDay desc, b.Id DESC";
         }
 
         private string GetItemsQuery(string idPart = "")
@@ -185,7 +185,7 @@ namespace Aban360.ReportPool.Persistence.Features.WaterInvoice.Implementations
                          SELECT TOP 1 *
                          FROM [CustomerWarehouse].dbo.Bills
                          WHERE BillId = @billId  AND TypeId IN (N'قبض', N'علی الحساب') {idPart} 
-                         ORDER BY NextDay DESC
+                         ORDER BY NextDay DESC, Id DESC
                      ) b
                      CROSS APPLY (
                          VALUES
