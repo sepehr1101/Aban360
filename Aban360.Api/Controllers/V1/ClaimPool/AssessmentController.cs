@@ -175,7 +175,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
         public async Task<IActionResult> ReAssessment([FromBody] SetReAssessmentTimeInputDto inputDto, CancellationToken cancellationToken)
         {
             int userName = UserService.GetUserCode(CurrentUser.Username);
-            SetAssessmentTimeDataOutputDto result = await _c1_reAssessmentRequestHandler.Handle(inputDto, userName, cancellationToken);
+            SetAssessmentTimeDataOutputDto result = await _c1_reAssessmentRequestHandler.Handle(inputDto, userName, CurrentUser, cancellationToken);
             SetAssessmentTimeOutputDto outputDto = GetAssessmentTimeOutputDto(hasCustomerSms: true, hasAssessmentSms: true, result);
             return Ok(outputDto);
         }

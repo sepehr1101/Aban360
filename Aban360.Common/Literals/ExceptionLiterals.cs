@@ -359,6 +359,8 @@
         public static string InvalidSiphon150 => $"سیفون 150 فرزند نامعتبر است";
         public static string InvalidSiphon200 => $"سیفون 200 فرزند نامعتبر است";
         public static string NotFoundArticle11 => $"اطلاعات ماده11 یافت نشد.";
+        public static string InvalidInsertArticle11 => $"خطا در ذخیره ماده11";
+        public static string InvalidRemoveArticle11 => $"خطا در ویرایش ماده11";
 
         public static string NotFountOpenRequest => "درخواستی با وضعیت نیمه‌تمام یافت نشد.";
         public static string CantSetTime => "امکان انتساب زمانبندی ارزیابی وجود ندارد";

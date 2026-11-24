@@ -26,10 +26,6 @@ namespace Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementation
         {
             string command = GetInsertQuery();
             int recordCount = await _sqlRonnection.ExecuteAsync(command, inputDto, _transaction);
-            if (recordCount <= 0)
-            {
-                throw new InvalidTrackingException(ExceptionLiterals.InvalidInsertAssessment);
-            }
         }
         public async Task Update(AssessmentUpdateDto inputDto)
         {
