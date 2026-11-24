@@ -3,7 +3,6 @@ using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Input;
 using Aban360.OldCalcPool.Persistence.Constants;
-using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Contracts;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
@@ -15,10 +14,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         private readonly IDbConnection _connection;
         private readonly IDbTransaction _transaction;
         private static string tableName = "KasrHa";
-        //public KasrHaService(IConfiguration configuration)
-        //    : base(configuration)
-        //{
-        //}
+
         public KasrHaCommandService(
                 IDbConnection connection,
                 IDbTransaction transaction)
@@ -36,25 +32,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
             await _connection.ExecuteAsync(query, input, _transaction);
         }
         public async Task Insert(ICollection<KasrHaDto> input,string dbName)
-        {
-            //using (var connection = _connection)
-            //{
-            //connection.Open();
-
-            //using (var transaction = connection.BeginTransaction())
-            //{
-            //    try
-            //    {
+        {           
             await _connection.ExecuteAsync(GetCreateQuery(dbName), input, transaction: _transaction);
-            //transaction.Commit();
-            //}
-            //catch (Exception ex)
-            //{
-            //    transaction.Rollback();
-            //    throw new IWaterCalculationAddException(ExceptionLiterals.UnSuccessfulToSave(tableName));
-            //}
-            //}
-            //}
         }
         public async Task InsertByBulk(ICollection<KasrHaDto> input, string dbName)
         {
@@ -206,11 +185,6 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                     )
                     DELETE TOP (1) FROM MatchingDiscounts
                     WHERE (SELECT COUNT_BIG(*) FROM MatchingDiscounts) = 1;";
-        }
-
-        private string GetDbName(int zoneId)
-        {
-            return zoneId > 140000 ? "Abfar" : zoneId.ToString();
         }
     }
 }
