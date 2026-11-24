@@ -110,7 +110,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Services
         private static int _NowGenerateBillinvalidGTAmount = 500_000_000;
         private static int _NowGenerateBillinvalidLTConsumption = 1;
         private static int _NowGenerateBillinvalidLTDistanceDay = 10;
-        private static int _ExpireCurrentMothToGenerateBill = 5;
+        private static int _ExpireCurrentMothToGenerateBill = 8;
         public BillGenerationService(IHttpContextAccessor contextAccessor, ICustomerInfoService customerInfoService, IOldTariffEngine tariffEngine, ICommonMemberQueryService commonMemberQueryService, IBedBesQueryService bedBesQueryService, IConfiguration configuration, IValidator<FreeGenerateBillInputDto> validator, IVariabService variabService, IValidator<GenerateBillInputDto> generateBillvalidator, ICommonZoneService commonZoneService, ISubscriptionEventQueryService subscriptionEventQueryService, IOpLogCommandService opLogCommandService, IValidator<NowGenerateBillInputDto> nowGenerateBillvalidator, INowGenerateBillRequestService requestService) : base(configuration)
         {
             _contextAccessor = contextAccessor;
@@ -630,7 +630,7 @@ namespace Aban360.OldCalcPool.Application.Features.Processing.Services
                 if (currentDate.Value < DateTime.Now.AddMonths(-_ExpireCurrentMothToGenerateBill).ToDateOnly())
                 {
                     var message = string.Join(",", $" تاریخ قرائت نباید بیش از {_ExpireCurrentMothToGenerateBill} ماه پیش باشد.");
-                    throw new InvalidBillCommandException(message);
+                    //throw new InvalidBillCommandException(message);
                 }
             }
         }
