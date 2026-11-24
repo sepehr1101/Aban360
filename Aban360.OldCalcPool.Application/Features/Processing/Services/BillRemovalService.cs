@@ -94,6 +94,7 @@ internal sealed class BillRemovalService : AbstractBaseConnection, IBillRemovalS
                 WaterDebtCommandService waterDebtCommandService = new(connection, transaction);
                 RemoveBillCommandService removedBillCommandService = new(connection, transaction);
                 OpLogWithTransactionCommandService opLogCommandService = new(_contextAccessor, connection, transaction);
+
                 await bedBesCommandService.Delete(removeBill.Id, removeBill.ZoneId, dbName);
                 if (removeBill.Discount > 0)
                 {
