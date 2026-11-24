@@ -271,6 +271,7 @@
         public static string InvalidBoundAndBlockStartReadingNumber => "شماره اشتراک اولین مسیر و شروع مسیر مغایرت دارد.";
         public static string InvalidStartReadingNumber => "خطا در شماره اشتراک. شروع مسیر جاری و پایان مسیر قبلی برابر است. نام مسیر:{0}";
         public static string InvalidCounterStateId => "شناسه وضعیت کنتور نامعتبر است.";
+        public static string InvalidPreviousStepId => "خطا در نوع آخرین وضعیت روند";
 
 
 

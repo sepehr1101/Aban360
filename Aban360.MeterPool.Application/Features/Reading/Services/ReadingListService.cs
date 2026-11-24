@@ -133,13 +133,13 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
         IEnumerable<TrackingGetDto> trackingInfo = await _trackingQueryService.Get(appUser.UserId, _createPathFlowStepId);
         IEnumerable<Guid> trackingIds = trackingInfo.Select(t => t.Id).ToList();
         IEnumerable<DetailGetDto> detailInfo = await _detailQueryService.GetByTrackIds(trackingIds);
-        TrackingSeenUpdateDto trackingSeenUpdateDto = new(trackingInfo.Select(t => t.BlockId).Distinct().ToList(), true);
+        TrackingListSeenUpdateDto trackingSeenUpdateDto = new(trackingInfo.Select(t => t.BlockId).Distinct().ToList(), true);
         TrackingDuplicateInsertDto trackingDuplicateInsertDto = new(trackingIds, _downloadByReadigFlowStepId, appUser.UserId);
         await GetReaderCartableExecSql(trackingDuplicateInsertDto, trackingSeenUpdateDto);
         return await GetReaderCartableGetResult(trackingInfo, detailInfo, cancellationToken);
     }
 
-    private async Task GetReaderCartableExecSql(TrackingDuplicateInsertDto trackingDuplicateInsertDto, TrackingSeenUpdateDto trackingSeenUpdateDto)
+    private async Task GetReaderCartableExecSql(TrackingDuplicateInsertDto trackingDuplicateInsertDto, TrackingListSeenUpdateDto trackingSeenUpdateDto)
     {
         using (IDbConnection connection = _sqlReportConnection)
         {
@@ -280,13 +280,13 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
     {
         //appUser Validate
         IEnumerable<TrackingGetDto> trackingsInfo = await OffloadTrackingValidate(inputDto, appUser);
-        await OffloadDetailValidate(inputDto);
+        //await OffloadDetailValidate(inputDto);
         var (trackingDuplicateDto, trackingUpdateSeenDto) = OffloadGetTrackingDuplicateList(trackingsInfo, appUser);
         IEnumerable<DetailUpdateDto> detailsUpdateList = OffloadGetDetailUpdateList(inputDto, appUser);
         await OffloadExecSql(trackingDuplicateDto, trackingUpdateSeenDto, detailsUpdateList);
     }
 
-    private async Task OffloadExecSql(TrackingDuplicateInsertDto trackingDuplicateDto, TrackingSeenUpdateDto trackingUpdateSeenDto, IEnumerable<DetailUpdateDto> detailUpdateList)
+    private async Task OffloadExecSql(TrackingDuplicateInsertDto trackingDuplicateDto, TrackingListSeenUpdateDto trackingUpdateSeenDto, IEnumerable<DetailUpdateDto> detailUpdateList)
     {
         using (IDbConnection connection = _sqlReportConnection)
         {
@@ -360,12 +360,12 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
         }
     }
 
-    private (TrackingDuplicateInsertDto, TrackingSeenUpdateDto) OffloadGetTrackingDuplicateList(IEnumerable<TrackingGetDto> trackingsInfo, IAppUser appUser)
+    private (TrackingDuplicateInsertDto, TrackingListSeenUpdateDto) OffloadGetTrackingDuplicateList(IEnumerable<TrackingGetDto> trackingsInfo, IAppUser appUser)
     {
         IEnumerable<TrackingGetDto> trackingToUpdate = trackingsInfo.Where(tracking => tracking.FlowStepId == (int)ReadingFlowStepEnum.DownloadByReader).Distinct().ToList();
         IEnumerable<Guid> trackingIds = trackingToUpdate.Select(tracking => tracking.Id).ToList();
         IEnumerable<Guid> blockIds = trackingToUpdate.Select(tracking => tracking.BlockId).Distinct().ToList();
-        TrackingSeenUpdateDto trackingUpdateSeenDto = new(blockIds, true);
+        TrackingListSeenUpdateDto trackingUpdateSeenDto = new(blockIds, true);
         TrackingDuplicateInsertDto trackingDuplicateDto = new(trackingIds, (int)ReadingFlowStepEnum.StartReading, appUser.UserId);
         return (trackingDuplicateDto, trackingUpdateSeenDto);
     }
@@ -377,7 +377,7 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
 
     public async Task FinishAsync(long trackNumber, IAppUser appUser, CancellationToken cancellationToken)
     {
-        TrackingGetDto trackingsInfo = await _trackingQueryService.Get(trackNumber);
+        TrackingGetDto trackingsInfo = await _trackingQueryService.GetLatest(trackNumber);
         if (trackingsInfo.FlowStepId != (int)ReadingFlowStepEnum.StartReading)
         {
             throw new ReadingException(string.Format(ExceptionLiterals.InvalidTrackingStepFlowToFinish, trackingsInfo.FlowStepTitle));
@@ -389,11 +389,12 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
             throw new ReadingException(string.Format(ExceptionLiterals.InvalidFinishTrackingByUncompleteDetail, uncompleteDetailList?.Count() ?? 0));
         }
 
-        TrackingDuplicateInsertDto newTrackingDto = new(new List<Guid>() { trackingsInfo.Id }.ToList(), (int)ReadingFlowStepEnum.OffLoad, appUser.UserId);
-        await FinishExecSql(newTrackingDto);
+        TrackingListSeenUpdateDto trackingUpdateSeenDto = new(new List<Guid> { trackingsInfo.BlockId}, true);
+        TrackingDuplicateInsertDto newTrackingDto = new(new List<Guid>() { trackingsInfo.Id }.ToList(), (int)ReadingFlowStepEnum.FinishByReader, appUser.UserId);
+        await FinishExecSql(trackingUpdateSeenDto,newTrackingDto);
     }
 
-    private async Task FinishExecSql(TrackingDuplicateInsertDto newTrackingDto)
+    private async Task FinishExecSql(TrackingListSeenUpdateDto trackingUpdateSeenDto, TrackingDuplicateInsertDto newTrackingDto)
     {
         using (IDbConnection connection = _sqlReportConnection)
         {
@@ -405,6 +406,7 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
             using (IDbTransaction transaction = connection.BeginTransaction(IsolationLevel.ReadUncommitted))
             {
                 TrackingCommandService trackingCommandService = new(connection, transaction);
+                await trackingCommandService.UpdateSeen(trackingUpdateSeenDto);
                 await trackingCommandService.InsertDuplicate(newTrackingDto);
                 transaction.Commit();
             }

@@ -41,14 +41,14 @@ internal sealed class RequestRegistrationService : AbstractBaseConnection, IRequ
     private readonly IMoshtrakService _moshtrakService;
     private readonly IValidator<RequestNewBranchInputDto> _validator;
     static string _insertWayTitle = ReportLiterals.RayabPersian;
-    static int _setAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentResult;
+    static int _setAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentTime;
     static int _firstStepStatusId = (int)TrackingStatusEnum.RequestRegistered;
     static int saleRequestTypeId = ReportLiterals.SaleRequestTypeId;
     static int _requestOrigin = 12;
     private readonly IValidator<RequestAfterSaleInputDto> _createAfterSaleValidator;
     static string _createAfterSaleInsertWayTitle = ReportLiterals.RayabPersian;
     static int _afterSaleRequestServiceId = ReportLiterals.AfterSaleRequestTypeId;
-    static int _createAfterSaleSetAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentResult;
+    static int _createAfterSaleSetAssessmentTimeStatusId = (int)TrackingStatusEnum.SetAssessmentTime;
     static int _createAfterSaleFirstStepStatusId = (int)TrackingStatusEnum.RequestRegistered;
     static int _createAfterSaleRequestOrigin = 12;
     private readonly ITrackingQueryService _trackingQueryService;
