@@ -2,11 +2,11 @@
 {
     public record TrackingSeenUpdateDto
     {
-        public IEnumerable<Guid> BlockIds { get; set; }
+        public Guid TrackingId { get; set; }
         public bool Seen { get; set; }
-        public TrackingSeenUpdateDto(IEnumerable<Guid> blockIds, bool seen)
+        public TrackingSeenUpdateDto(Guid trackingId, bool seen)
         {
-            BlockIds = blockIds;
+            TrackingId = trackingId;
             Seen = seen;
         }
         public TrackingSeenUpdateDto()
