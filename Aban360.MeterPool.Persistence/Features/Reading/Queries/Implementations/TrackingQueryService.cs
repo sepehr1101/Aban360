@@ -31,7 +31,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Queries.Implementations
             }
             return result;
         }
-        public async Task<TrackingGetDto> Get(long trackNumber)
+        public async Task<TrackingGetDto> GetLatest(long trackNumber)
         {
             string query = GetByTrackNumberQuery();
             TrackingGetDto? result = await _sqlReportConnection.QueryFirstOrDefaultAsync<TrackingGetDto>(query, new { trackNumber });

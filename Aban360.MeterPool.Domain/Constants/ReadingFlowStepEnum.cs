@@ -5,7 +5,7 @@
         CreatePath = 1,
         DownloadByReader = 2,
         StartReading = 3,
-        OffLoad = 4,
+        FinishByReader = 4,
         DownloadFile = 5,
         ReturnToCreatePath = 6,
         ReturnToReading = 7,

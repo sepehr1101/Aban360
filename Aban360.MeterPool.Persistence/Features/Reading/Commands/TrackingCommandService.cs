@@ -41,11 +41,20 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
 
             await bulkCopy.WriteToServerAsync(dataTable);
         }
+        public async Task UpdateSeen(TrackingListSeenUpdateDto input)
+        {
+            string command = GetUpdateByBlockIdsSeenCommand();
+            int recordEffected = await _connection.ExecuteAsync(command, input, _transaction);
+            if (recordEffected != (input.BlockIds?.Count() ?? 0))
+            {
+                throw new ReadingException(ExceptionLiterals.InvalidTrackingUpdateRecord);
+            }
+        }
         public async Task UpdateSeen(TrackingSeenUpdateDto input)
         {
             string command = GetUpdateSeenCommand();
             int recordEffected = await _connection.ExecuteAsync(command, input, _transaction);
-            if (recordEffected != (input.BlockIds?.Count() ?? 0))
+            if (recordEffected != 1)
             {
                 throw new ReadingException(ExceptionLiterals.InvalidTrackingUpdateRecord);
             }
@@ -196,11 +205,17 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
                         Id IN @TrackingIds --AND
                         --FlowStepId = {(int)ReadingFlowStepEnum.CreatePath}";
         }
-        private string GetUpdateSeenCommand()
+        private string GetUpdateByBlockIdsSeenCommand()
         {
             return $@"Update [Atlas].reading.Tracking
                     Set Seen = @Seen
                     Where BlockId IN @BlockIds AND Seen = 0";
+        }
+        private string GetUpdateSeenCommand()
+        {
+            return $@"Update [Atlas].reading.Tracking
+                    Set Seen = @Seen
+                    Where Id=@TrackingId AND Seen = 0";
         }
     }
 }
