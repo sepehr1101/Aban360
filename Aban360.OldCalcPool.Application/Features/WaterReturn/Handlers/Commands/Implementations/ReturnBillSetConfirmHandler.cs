@@ -139,7 +139,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                     await autoBackCommandService.UpdateIsConfirmed((int)repairCreateDto.JalaseNo, atlasDbName);
                     await autoBackCommandService.Create(autoBacksCreateDto, zoneDbName, false);
                     int repairId = await repairCommandService.Insert(repairCreateDto, zoneDbName);
-                    await waterDebtCommandService.UpdateAmount(memberInfo.BillId, (long)repairCreateDto.Baha);
+                    await waterDebtCommandService.UpdateAmount(memberInfo.BillId, (long)repairCreateDto.Baha * -1);
                     await membersCommandService.UpdateBedbes(new ZoneIdAndCustomerNumber(memberInfo.ZoneId, memberInfo.CustomerNumber), (long)repairCreateDto.Baha * -1, zoneDbName);
                     await billCommandService.InsertReturnByRepair(repairId, zoneDbName);
                     await billCommandService.UpdateOldDbDel(billsIdToReturn);

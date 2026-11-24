@@ -300,6 +300,7 @@
         public static string InvalidReturn(string returnCauseTitle) => $@" در 4 سال اخیر، قبض برگشتی {returnCauseTitle} صادر شده";
         public static string InvalidRemoveReturnedAfterLockDate => "تاریخ برگشتی بعد از بسته شدن حساب است.";
         public static string InvalidInputAmountGTBedBes => "جمع مبالغ وارد شده بزرگتر از قبوض انتخاب شده است.";
+        public static string InvalidRemoveReturnedByAfterBill => "امکان حذف برگشتی وجود ندارد. پس از قبض جاری، قبض صادر شده.";
 
 
         //Tax

@@ -339,6 +339,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
             IEnumerable<BedBesWithDelOutputDto> result = await _sqlReportConnection.QueryAsync<BedBesWithDelOutputDto>(query, input);
             return result;
         }
+        public async Task<int> GetAfterDate(ZoneCustomerToDateDto input, string dbName)
+        {
+            string query = GetCountAfterDateQuery(dbName);
+            int count = await _sqlReportConnection.QueryFirstOrDefaultAsync<int>(query, input);
+            return count;
+        }
+
         public async Task<BedBesPreviousNumberAndDateOutputDto?> GetPreviousDateAndNumber(ZoneIdAndCustomerNumber input, string billId, bool hasException)
         {
             string dbName = GetDbName(input.ZoneId);
@@ -1110,6 +1117,17 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
 	                    b.date_bed > '1405/06/01' AND
                     	b.date_bed BETWEEN @FromDateJalali AND @ToDateJalali 
                     Order By date_bed desc";
+        }
+        private string GetCountAfterDateQuery(string dbName)
+        {
+            return $@"Select Count(1)
+                    From [{dbName}].dbo.bed_bes
+                    Where 
+                    	radif = @CustomerNumber  AND
+                        town = @ZoneId AND
+                    	cod_vas NOT IN (4,7,8) AND
+                    	type = 1 AND
+                    	pri_date >= @ToDate ";
         }
     }
 }
