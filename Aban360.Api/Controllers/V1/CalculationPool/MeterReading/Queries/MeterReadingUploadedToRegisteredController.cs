@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
             _reportGenerator.NotNull(nameof(reportGenerator));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("uploaded-to-registered-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterReadingUploadToRegisteredHeaderOutputDto, MeterReadingUploadToRegisteredSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw([FromBody] MeterReadingUploadToRegisteredInputDto inputDto, CancellationToken cancellationToken)
@@ -32,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
             return Ok(result);
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("uploaded-to-registered-excel/{connectionId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MeterReadingUploadToRegisteredInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExcel(string connectionId, [FromBody] MeterReadingUploadToRegisteredInputDto inputDto, CancellationToken cancellationToken)

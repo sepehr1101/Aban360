@@ -26,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
             _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("main-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ConnectDisconnectMainHeaderOutputDto, ConnectDisconnectMainDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ConnectDisconnectMainInputDto inputDto, CancellationToken cancellationToken)
@@ -35,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.PaymentsTransactions
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("main-excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, ConnectDisconnectMainInputDto inputDto, CancellationToken cancellationToken)
         {

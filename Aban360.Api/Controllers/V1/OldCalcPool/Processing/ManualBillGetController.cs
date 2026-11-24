@@ -27,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             _reportGenerator.NotNull(nameof(reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("get")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ManualBillHeaderOutputDto, ManualBillDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(ManualBillInputDto inputDto, CancellationToken cancellationToken)
@@ -37,7 +37,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         }
 
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, ManualBillInputDto inputDto, CancellationToken cancellationToken)
         {

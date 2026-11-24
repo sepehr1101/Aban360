@@ -26,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
             _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ExcessPatternHeaderOutputDto, ExcessPatternDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(ExcessPatternInputDto inputDto, CancellationToken cancellationToken)
@@ -35,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
             return Ok(debtorByDay);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, ExcessPatternInputDto inputDto, CancellationToken cancellationToken)
         {

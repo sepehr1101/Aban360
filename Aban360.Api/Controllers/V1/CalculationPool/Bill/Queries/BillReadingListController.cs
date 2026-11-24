@@ -18,7 +18,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Queries
             _billReadingListGetHandler.NotNull(nameof(billReadingListGetHandler));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("all")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<BillReadingListHeaderOutputDto, BillReadingListDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll([FromBody] BillReadingListInputDto inputDto, CancellationToken cancellationToken)

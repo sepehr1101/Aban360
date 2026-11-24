@@ -18,7 +18,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries
             _billReturnLookupsService.NotNull(nameof(billReturnLookupsService));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("bills")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<BillsCanReturnOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> BillsToReturnedGet([FromBody] SearchInput input, CancellationToken cancellationToken)

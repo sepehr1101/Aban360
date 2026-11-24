@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             _usageGroup3Service.NotNull(nameof(usageGroup3Service));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("insert")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<UsageGroup3InsertDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Insert([FromBody] UsageGroup3InsertDto inputDto, CancellationToken cancellationToken)
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             return Ok(id);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<UsageGroup3UpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] UsageGroup3UpdateDto inputDto, CancellationToken cancellationToken)

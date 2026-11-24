@@ -26,8 +26,8 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.CollectBills
         }
 
         /// <summary>ساخت و دانلود فایل ZIP اطلاعات یک روز مشخص</summary>
-        /// <remarks>تاریخ شمسی با قالب yyyy/MM/dd در dateJalali ارسال شود. برای فرانت از POST با بدنه JSON استفاده کنید؛ ورودی GET فعلی نیز از بدنه خوانده می‌شود. پاسخ موفق خود فایل ZIP است، نه JSON؛ پاسخ را به‌صورت blob دریافت کنید.</remarks>
-        [HttpPost, HttpGet]
+        /// <remarks>تاریخ شمسی با قالب yyyy/MM/dd در dateJalali ارسال شود. برای فرانت از POST با بدنه JSON استفاده کنید. پاسخ موفق خود فایل ZIP است، نه JSON؛ پاسخ را به‌صورت blob دریافت کنید.</remarks>
+        [HttpPost]
         [Route("file-create")]
         public async Task<FileStreamResult> CreateFile(CollectBillsByDateJalaliInputDto inputDto, CancellationToken cancellationToken)
         {

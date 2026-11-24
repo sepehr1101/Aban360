@@ -27,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.Sms
             _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<SendSmsToMobileHeaderOutputDto, SendSmsToMobileDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(SendSmsToMobileInputDto input, CancellationToken cancellationToken)
@@ -36,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.Sms
             return Ok(SendSmsToMobile);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, SendSmsToMobileInputDto inputDto, CancellationToken cancellationToken)
         {

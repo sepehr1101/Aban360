@@ -26,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
             _reportGenerator.NotNull(nameof(reportGenerator));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<MeterDuplicateChangeWithCustomerDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Raw(MeterDuplicateChangeWithCustomerInputDto inputDto, CancellationToken cancellationToken)

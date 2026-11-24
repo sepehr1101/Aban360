@@ -58,7 +58,7 @@ namespace Aban360.Api.Controllers.V1.TaxPool.MaaherTSP
             return Ok(sentInvoiceRecieve);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("~/v1/tax/excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, SearchByIdInput inputDto, CancellationToken cancellationToken)
         {

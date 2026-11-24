@@ -258,7 +258,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("~/v1/assessment/duplicate-excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, AssessmentDuplicateInputDto inputDto, CancellationToken cancellationToken)
         {

@@ -20,7 +20,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             _motherChildRequestService.NotNull(nameof(motherChildRequestService));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("set-common-siphon")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CommonSiphonRequestInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetCommonSiphon([FromBody] CommonSiphonRequestInputDto inputDto, CancellationToken cancellationToken)
@@ -30,7 +30,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(inputDto);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("update-common-siphon")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CommonSiphonUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateCommonSiphon([FromBody] CommonSiphonUpdateInputDto inputDto, CancellationToken cancellationToken)
@@ -39,7 +39,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(inputDto);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("set-mother-child")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MotherChildRequestInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetMotherChild([FromBody] MotherChildRequestInputDto inputDto, CancellationToken cancellationToken)
@@ -49,7 +49,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(inputDto);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("update-mother-child")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MotherChildUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateMotherChild([FromBody] MotherChildUpdateInputDto inputDto, CancellationToken cancellationToken)
@@ -58,7 +58,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Commands
             return Ok(inputDto);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("delete-mother-child")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MotherChildUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteMotherChild([FromBody] SearchNumericInput inputDto, CancellationToken cancellationToken)

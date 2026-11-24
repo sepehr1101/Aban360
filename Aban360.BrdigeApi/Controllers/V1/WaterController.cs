@@ -27,7 +27,7 @@ namespace Aban360.BrdigeApi.Controllers.V1
             _c2_subscriptionEventHandler.NotNull(nameof(c2_subscriptionEventHandler));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("tanker")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TankerWaterCalculationOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Calculation([FromBody] TankerWaterCalculationInputDto input, CancellationToken cancellationToken)
@@ -36,7 +36,7 @@ namespace Aban360.BrdigeApi.Controllers.V1
             return Ok(result);
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("tanker-set-pay")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TankerWaterSetPayInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetPay([FromBody] TankerWaterSetPayInputDto input, CancellationToken cancellationToken)

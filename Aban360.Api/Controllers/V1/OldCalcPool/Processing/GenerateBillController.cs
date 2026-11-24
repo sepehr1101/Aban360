@@ -43,7 +43,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             _opLogCommandService.NotNull(nameof(opLogCommandService));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("calc")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<NewBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Calculation(GenerateBillInputDto inputDto, CancellationToken cancellationToken)
@@ -52,7 +52,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("free")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<NewBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> FreeCalculation(FreeGenerateBillInputDto inputDto, CancellationToken cancellationToken)

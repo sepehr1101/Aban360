@@ -14,6 +14,7 @@
         public string? GisAccuracy { get; set; }
 
         public bool? CounterNumberShown { get; set; }
+        public string? Traverse { get; set; }
         public string? Description { get; set; }
         public int? AttemptCount { get; set; }
         public bool? IsLocked { get; set; }

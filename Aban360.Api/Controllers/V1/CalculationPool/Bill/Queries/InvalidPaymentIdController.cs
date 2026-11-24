@@ -18,7 +18,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Queries
             _invalidPaymentIdGetHandler.NotNull(nameof(invalidPaymentIdGetHandler));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("invalid-payment-id")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<InvalidPaymentIdHeaderOutputDto, InvalidPaymentIdDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromBody] InvalidPaymentIdInputDto inputDto, CancellationToken cancellationToken)

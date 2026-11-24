@@ -18,7 +18,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Queries
             _customerGetByBillIdHandler.NotNull(nameof(customerGetByBillIdHandler));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("get-to-update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<SubscriptionGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get([FromBody] SearchInput inputDto, CancellationToken cancellationToken)

@@ -1,5 +1,7 @@
 ﻿using FluentValidation;
+using Aban360.Common.Caching;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Scrutor;
 using System.Reflection;
 
@@ -9,6 +11,7 @@ namespace Aban360.ReportPool.Application.Extensions
     {
         public static void AddReportPoolApplicationInjections(this IServiceCollection services)
         {
+            services.TryAddSingleton<IQueryCache, MemoryQueryCache>();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 

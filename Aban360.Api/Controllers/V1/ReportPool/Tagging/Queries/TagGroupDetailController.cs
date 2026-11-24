@@ -35,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.Tagging.Queries
             return Ok(result);
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, TagsInputDto inputDto, CancellationToken cancellationToken)
         {

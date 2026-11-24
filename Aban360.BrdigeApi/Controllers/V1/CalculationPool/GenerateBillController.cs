@@ -18,7 +18,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
             _billGenerationService.NotNull(nameof(billGenerationService));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("issue")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<NewBillOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Generate(GenerateBillInputDto inputDto, CancellationToken cancellationToken)

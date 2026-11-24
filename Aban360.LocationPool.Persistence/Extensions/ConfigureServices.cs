@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Scrutor;
 using System.Reflection;
 
@@ -11,10 +11,12 @@ namespace Aban360.LocationPool.Persistence.Extensions
             services.Scan(scan =>
                 scan
                     .FromAssemblies(Assembly.GetExecutingAssembly())
-                    .AddClasses(publicOnly: false)
+                    .AddClasses(classes => classes.Where(type => !ConfigureMergedRepositories.IsMergedRepository(type)), publicOnly: false)
                     .UsingRegistrationStrategy(RegistrationStrategy.Append)
                     .AsImplementedInterfaces()
                     .WithScopedLifetime());
+
+            services.AddMergedPersistenceRepositories();
         }
     }
 }

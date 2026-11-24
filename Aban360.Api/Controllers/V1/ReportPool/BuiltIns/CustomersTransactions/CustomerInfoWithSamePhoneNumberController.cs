@@ -19,7 +19,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             _customerInfoWithSameMobileNumber.NotNull(nameof(_customerInfoWithSameMobileNumber));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<CustomerInfoWithSameMobileNumberHeaderOutputDto, CustomerInfoWithSameMobileNumberDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw([FromBody] SearchInput input, CancellationToken cancellationToken)
