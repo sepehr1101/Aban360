@@ -200,13 +200,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         WHERE TOWN = @ZoneId AND
                               radif = @CustomerNumber AND
                               barge = @Barge AND
-                              Pri_date = @PreviousDateJalali AND
                               today_date = @CurrentDateJalali AND
-                              pri_no = @PreviousNumber AND
-                              today_no = @CurrentNumber AND
                               masraf = @Consumption AND
-                              SH_GHABS = @BillId AND
-                              SH_PARD = @PaymentId AND
                               date_bed = @RegisterDateJalali
                     )
                     DELETE TOP (1) FROM MatchingDiscounts

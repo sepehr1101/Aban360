@@ -58,7 +58,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         {
             string command = GetDeleteByDetailCommand();
             int recordCount = await _connection.ExecuteAsync(command, input, _transaction);
-            if (recordCount <= 0)
+            if (recordCount != 1)
             {
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidRemoveBill);
             }
@@ -415,14 +415,19 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         }
         private string GetDeleteByDetailCommand()
         {
-            return $@"Delete [CustomerWarehouse].dbo.Bills
-                    Where 
-                    	ZoneId=@ZoneId AND
-                    	CustomerNumber=@CustomerNumber AND
-                    	PreviousDay=@PreviousDateJalali AND
-                    	PreviousNumber=@previousNumber AND
-                    	NextDay=@CurrentDateJalali AND
-                    	NextNumber=@CurrentNumber ";
+            return $@";WITH DeleteCte AS (
+                         SELECT TOP (1) Id,BillId
+                         FROM [CustomerWarehouse].dbo.Bills
+                         Where 
+                    	    ZoneId=@ZoneId AND
+                    	    CustomerNumber=@CustomerNumber AND
+                    	    PreviousDay=@PreviousDateJalali AND
+                    	    PreviousNumber=@previousNumber AND
+                    	    NextDay=@CurrentDateJalali AND
+                    	    NextNumber=@CurrentNumber AND
+                            TypeCode=1
+                         ORDER BY RegisterDay DESC, Id DESC)
+                         DELETE FROM DeleteCte;";
         }
         private string GetDeleteByIdCommand()
         {
