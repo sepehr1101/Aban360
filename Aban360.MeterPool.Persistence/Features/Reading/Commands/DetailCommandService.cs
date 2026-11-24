@@ -152,6 +152,7 @@ namespace Aban360.MeterPool.Persistence.Features.Reading.Commands
                     	X = @X,
                     	GisAccuracy = @GisAccuracy,
                     	CounterNumberShown = @CounterNumberShown,
+                        Traverse = COALESCE(@Traverse, Traverse),
                     	Description = @Description,
                     	AttemptCount = @AttemptCount,
                     	IsLocked = @IsLocked,

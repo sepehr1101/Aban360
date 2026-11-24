@@ -372,7 +372,7 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
 
     private IEnumerable<DetailUpdateDto> OffloadGetDetailUpdateList(IEnumerable<MeterReadingListOffLoadInputDto> inputDto, IAppUser appUser)
     {
-        return inputDto.Select(input => new DetailUpdateDto() { Id = input.Id, CounterNumber = input.CounterNumber, LocationDateTime = input.LocationDateTime, PhoneDateTime = input.PhoneDateTime, CurrentCounterStateCode = input.CurrentCounterStateCode.Value, Y = input.Y, X = input.X, GisAccuracy = input.GisAccuracy, CounterNumberShown = input.CounterNumberShown, Description = input.Description, AttemptCount = input.AttemptCount, IsLocked = input.IsLocked, HighLowStateId = input.HighLowStateId, OffLoadDateTime = _currentDateTime, OffloadDateJalali = _currentDateJalali, OffLoadTime = $"{_currentDateTime.TimeOfDay.Hours.ToString()}:{_currentDateTime.TimeOfDay.Minutes.ToString()}", OffLoadBy = appUser.UserId, }).ToList();
+        return inputDto.Select(input => new DetailUpdateDto() { Id = input.Id, CounterNumber = input.CounterNumber, LocationDateTime = input.LocationDateTime, PhoneDateTime = input.PhoneDateTime, CurrentCounterStateCode = input.CurrentCounterStateCode.Value, Y = input.Y, X = input.X, GisAccuracy = input.GisAccuracy, CounterNumberShown = input.CounterNumberShown, Traverse = input.Traverse, Description = input.Description, AttemptCount = input.AttemptCount, IsLocked = input.IsLocked, HighLowStateId = input.HighLowStateId, OffLoadDateTime = _currentDateTime, OffloadDateJalali = _currentDateJalali, OffLoadTime = $"{_currentDateTime.TimeOfDay.Hours.ToString()}:{_currentDateTime.TimeOfDay.Minutes.ToString()}", OffLoadBy = appUser.UserId, }).ToList();
     }
 
     public async Task FinishAsync(long trackNumber, IAppUser appUser, CancellationToken cancellationToken)
@@ -389,7 +389,7 @@ internal sealed class ReadingListService : AbstractBaseConnection, IReadingListS
             throw new ReadingException(string.Format(ExceptionLiterals.InvalidFinishTrackingByUncompleteDetail, uncompleteDetailList?.Count() ?? 0));
         }
 
-        TrackingDuplicateInsertDto newTrackingDto = new(new List<Guid>() { trackingsInfo.Id }.ToList(), (int)ReadingFlowStepEnum.Upload, appUser.UserId);
+        TrackingDuplicateInsertDto newTrackingDto = new(new List<Guid>() { trackingsInfo.Id }.ToList(), (int)ReadingFlowStepEnum.Offload, appUser.UserId);
         await FinishExecSql(newTrackingDto);
     }
 

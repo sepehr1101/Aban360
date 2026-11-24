@@ -18,7 +18,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
             _meterReadingChangeReportsService.NotNull(nameof(meterReadingChangeReportsService));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("updated")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterReadingDetailUpdatedHeaderOutptuDto, MeterReadingDetailUpdatedDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUpdated([FromBody] MeterReadingDetailUpdatedInputDto inputDto, CancellationToken cancellationToken)

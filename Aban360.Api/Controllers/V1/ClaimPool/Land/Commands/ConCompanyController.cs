@@ -26,7 +26,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             _conCompanyPersonnelService.NotNull(nameof(conCompanyPersonnelService));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("insert")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ConCompanyInsertInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Insert([FromBody] ConCompanyInsertInputDto inputDto, CancellationToken cancellationToken)
@@ -35,7 +35,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             return Ok(inputDto);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ConCompanyUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] ConCompanyUpdateDto inputDto, CancellationToken cancellationToken)
@@ -89,7 +89,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("personnel-insert")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ConCompanyPersonnelInsertInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> InsertPersonnel([FromBody] ConCompanyPersonnelInsertInputDto inputDto, CancellationToken cancellationToken)
@@ -98,7 +98,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             return Ok(inputDto);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("personnel-update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ConCompanyPersonnelUpdateInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdatePersonnel([FromBody] ConCompanyPersonnelUpdateInputDto inputDto, CancellationToken cancellationToken)
@@ -107,7 +107,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land.Commands
             return Ok(inputDto);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("personnel-remove")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ConCompanyPersonnelRemoveInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> RemovePersonnel([FromBody] ConCompanyPersonnelRemoveInputDto inputDto, CancellationToken cancellationToken)

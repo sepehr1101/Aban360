@@ -27,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
             _reportGenerator.NotNull(nameof(reportGenerator));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterDuplicateChangeHeaderOutputDto, MeterDuplicateChangeDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Raw(MeterDuplicateChangeInputDto inputDto, CancellationToken cancellationToken)
@@ -36,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.ServiceLinkTransactions
             return Ok(result);
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> Excel(string connectionId, MeterDuplicateChangeInputDto inputDto, CancellationToken cancellationToken)
         {

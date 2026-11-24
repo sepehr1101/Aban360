@@ -24,7 +24,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             _bedBesCreateHadler.NotNull(nameof(bedBesCreateHadler));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("test-by-current-data")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbBahaCalculationDetails>), StatusCodes.Status200OK)]
         [AllowAnonymous]
@@ -34,7 +34,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("test-by-previous-data")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbBahaCalculationDetails>), StatusCodes.Status200OK)]
         [AllowAnonymous]
@@ -44,7 +44,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("test-imaginary")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbBahaCalculationDetails>), StatusCodes.Status200OK)]
         [AllowAnonymous]
@@ -55,7 +55,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         }
         
         
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("by-average")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbBahaCalculationDetails>), StatusCodes.Status200OK)]
         [AllowAnonymous]
@@ -66,7 +66,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.Processing
         }
         
         
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("by-previous-average")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AbBahaCalculationDetails>), StatusCodes.Status200OK)]
         [AllowAnonymous]

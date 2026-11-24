@@ -38,7 +38,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
             return Ok(dailyStatement);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [AllowTimeWindowFilter]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, ReadingDailyStatementInputDto inputDto, CancellationToken cancellationToken)

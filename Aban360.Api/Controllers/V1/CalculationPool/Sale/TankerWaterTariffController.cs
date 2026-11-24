@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
             _tankerWaterOperationsService.NotNull(nameof(tankerWaterOperationsService));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("set-pay")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TankerWaterSetPayInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SetPay([FromBody] TankerWaterSetPayInputDto input, CancellationToken cancellationToken)
@@ -30,7 +30,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale
             return Ok(input);
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("calc")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TankerWaterCalculationOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Calculation([FromBody] TankerWaterCalculationInputDto input, CancellationToken cancellationToken)

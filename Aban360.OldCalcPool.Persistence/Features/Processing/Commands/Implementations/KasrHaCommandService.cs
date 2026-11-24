@@ -76,7 +76,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         {
             string command = GetDeleteCommand(dbName);
             int rowCount = await _connection.ExecuteAsync(command, input, _transaction);
-            if (rowCount == 0)
+            if (rowCount != 1)
             {
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidRemoveBill);
             }
@@ -193,19 +193,24 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         }
         private string GetDeleteCommand(string dbName)
         {
-            return $"Delete From [{dbName}].dbo.kasr_ha " +
-                    @"Where 
-                    	TOWN = @ZoneId AND
-                    	radif = @CustomerNumber AND
-                    	barge = @Barge AND
-                    	Pri_date = @PreviousDateJalali AND
-                    	today_date = @CurrentDateJalali AND
-                    	pri_no = @PreviousNumber AND
-                    	today_no = @CurrentNumber AND
-                    	masraf = @Consumption AND
-                    	SH_GHABS = @BillId AND
-                    	SH_PARD = @PaymentId AND
-                    	date_bed = @RegisterDateJalali ";
+            // قفل‌ها تا پایان تراکنش از تغییر مجموعهٔ ردیف‌های منطبق جلوگیری می‌کنند.
+            return $@";WITH MatchingDiscounts AS (
+                        SELECT *
+                        FROM [{dbName}].dbo.kasr_ha WITH (UPDLOCK, HOLDLOCK)
+                        WHERE TOWN = @ZoneId AND
+                              radif = @CustomerNumber AND
+                              barge = @Barge AND
+                              Pri_date = @PreviousDateJalali AND
+                              today_date = @CurrentDateJalali AND
+                              pri_no = @PreviousNumber AND
+                              today_no = @CurrentNumber AND
+                              masraf = @Consumption AND
+                              SH_GHABS = @BillId AND
+                              SH_PARD = @PaymentId AND
+                              date_bed = @RegisterDateJalali
+                    )
+                    DELETE TOP (1) FROM MatchingDiscounts
+                    WHERE (SELECT COUNT_BIG(*) FROM MatchingDiscounts) = 1;";
         }
 
         private string GetDbName(int zoneId)

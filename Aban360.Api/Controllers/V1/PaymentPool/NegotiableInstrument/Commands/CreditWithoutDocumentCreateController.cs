@@ -25,7 +25,7 @@ namespace Aban360.Api.Controllers.V1.PaymentPool.NegotiableInstrument.Commands
             _documentService.NotNull(nameof(documentService));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("create")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<CreditWithoutDocumentCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create(CreditWithoutDocumentCreateDto createDto, CancellationToken cancellationToken)

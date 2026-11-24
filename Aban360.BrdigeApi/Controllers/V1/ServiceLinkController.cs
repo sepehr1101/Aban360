@@ -50,7 +50,7 @@ namespace Aban360.BrdigeApi.Controllers.V1
             _c8_connectDisconnectSetResultHandler.NotNull(nameof(c8_connectDisconnectSetResultHandler));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("inquiry")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<ServiceLinkInquiryOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> InquaryDetail(ServiceLinkInquiryInputDto inputDto, CancellationToken cancellationToken)
@@ -76,7 +76,7 @@ namespace Aban360.BrdigeApi.Controllers.V1
             return Ok(inputDto);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("register-manual")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ServiceLinkRegisterManualInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ManualRegister(ServiceLinkRegisterManualInputDto inputDto, CancellationToken cancellationToken)
@@ -114,7 +114,7 @@ namespace Aban360.BrdigeApi.Controllers.V1
             return Ok(fee);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("check-pay")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<PaymentInquiryOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> checkPay(PaymentInquiryInputDto input, CancellationToken cancellationToken)

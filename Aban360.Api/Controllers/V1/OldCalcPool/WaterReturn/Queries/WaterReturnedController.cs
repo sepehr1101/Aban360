@@ -32,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("remove")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<WaterReturedRemoveInputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> RemoveReturned(WaterReturedRemoveInputDto inputDto, CancellationToken cancellationToken)

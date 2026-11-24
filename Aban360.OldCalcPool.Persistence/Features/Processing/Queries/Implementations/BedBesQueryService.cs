@@ -809,7 +809,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                         t51.C2 ZoneTitle,
                         t46.C0 RegionId,
                         t46.C2 RegionTitle,
-                        b.town CustomerNumber,
+                        b.radif CustomerNumber,
                         b.sh_ghabs1 BillId,
                         b.sh_pard1 PayId,
                         b.baha SumItems,
@@ -821,7 +821,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Implementa
                          On b.town=t51.C0
                      Join [Db70].dbo.T46 t46
                          On t51.C1=t46.C0
-                     Where radif=@customerNumber and date_bed>='1405/03/01'";
+                     Where radif=@customerNumber and date_bed>='1405/06/01'";
         }
         private string GetIdWithDateIntervalQuery(string dbName)
         {

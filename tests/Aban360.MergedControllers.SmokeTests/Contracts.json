@@ -744,7 +744,6 @@
     "Project": "Api",
     "Route": "v1/assessment/duplicate-excel/{connectionId}",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "GetExcel",
@@ -2519,7 +2518,6 @@
     "Project": "Api",
     "Route": "v1/collect-bills/file-create",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "CreateFile",
@@ -8015,7 +8013,6 @@
     "Project": "Api",
     "Route": "v1/installation-date-assignment/single",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "GetSingle",
@@ -8045,7 +8042,6 @@
     "Project": "Api",
     "Route": "v1/installation-date-assignment/update",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "Update",
@@ -9699,7 +9695,6 @@
     "Project": "Api",
     "Route": "v1/meter-reading/generate-list",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "GenerateList",
@@ -15996,7 +15991,6 @@
     "Project": "Api",
     "Route": "v1/subscription-assignment/single",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "GetSingle",
@@ -16028,7 +16022,6 @@
     "Project": "Api",
     "Route": "v1/subscription-assignment/update",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "Update",
@@ -16061,7 +16054,6 @@
     "Project": "Api",
     "Route": "v1/subscription-assignment/update-by-tracknumber",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "UpdateByTrackNumber",
@@ -17107,7 +17099,6 @@
     "Project": "Api",
     "Route": "v1/tanker-water-distance-tariff/get",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "GetAll",
@@ -17199,7 +17190,6 @@
     "Project": "Api",
     "Route": "v1/tanker-water-tariff/calc",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "Calculation",
@@ -17231,7 +17221,6 @@
     "Project": "Api",
     "Route": "v1/tanker-water-tariff/set-pay",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "SetPay",
@@ -17950,7 +17939,6 @@
     "Project": "Api",
     "Route": "v1/tax/excel/{connectionId}",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "GetExcel",
@@ -19947,7 +19935,6 @@
     "Project": "Api",
     "Route": "v1/usage/excel/{connectionId}",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "GetExcel",
@@ -19977,7 +19964,6 @@
     "Project": "Api",
     "Route": "v1/usage/raw",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "GetRaw",
@@ -22374,7 +22360,6 @@
     "Project": "Bridge",
     "Route": "v1/bill-return/confirm",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "Confirm",
@@ -22406,7 +22391,6 @@
     "Project": "Bridge",
     "Route": "v1/bill-return/full",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "FullReturn",
@@ -22438,7 +22422,6 @@
     "Project": "Bridge",
     "Route": "v1/bill-return/partial",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "PartialReturn",
@@ -22809,7 +22792,6 @@
     "Project": "Bridge",
     "Route": "v1/service-link/check-pay",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "checkPay",
@@ -22894,7 +22876,6 @@
     "Project": "Bridge",
     "Route": "v1/service-link/inquiry",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "InquaryDetail",
@@ -23048,7 +23029,6 @@
     "Project": "Bridge",
     "Route": "v1/service-link/register-manual",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "ManualRegister",
@@ -23140,7 +23120,6 @@
     "Project": "Bridge",
     "Route": "v1/water/tanker",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "Calculation",
@@ -23172,7 +23151,6 @@
     "Project": "Bridge",
     "Route": "v1/water/tanker-set-pay",
     "Verbs": [
-      "GET",
       "POST"
     ],
     "Action": "SetPay",

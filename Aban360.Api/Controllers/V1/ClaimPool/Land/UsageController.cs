@@ -87,7 +87,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
             return Ok(usages);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("~/v1/usage/raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<UsageHeaderOutputDto, UsageDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(UsageInputDto inputDto, CancellationToken cancellationToken)
@@ -96,7 +96,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
             return Ok(c1_usage);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("~/v1/usage/excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, UsageInputDto inputDto, CancellationToken cancellationToken)
         {

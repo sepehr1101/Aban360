@@ -1,6 +1,4 @@
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
-using Aban360.ClaimPool.Application.Features.Request.Handler.Commands.Create.Contracts;
-using Aban360.ClaimPool.Application.Features.Request.Handler.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Constants;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Commands;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
@@ -162,7 +160,7 @@ internal sealed class CalculationRequestWorkflowService : AbstractBaseConnection
         IEnumerable<SaleAndAfterSaleDataOutputDto> resultData = data.Select(s => new SaleAndAfterSaleDataOutputDto(s.Id, s.Title, s.Amount + s.Discount, s.Discount, s.Amount, s.DiscountTypeId, s.DiscountTypeTitle, s.Removable));
         long amount = resultData?.Sum(c => c.Amount) ?? 0;
         long discount = resultData?.Sum(c => c.Discount) ?? 0;
-        SaleAndAfterSaleHeaderOutputDto header = new(amount, discount, amount - discount, resultData?.Count() ?? 0); //todo: true or not
+        SaleAndAfterSaleHeaderOutputDto header = new(amount, discount, amount - discount, resultData?.Count() ?? 0, trackingInfo.TrackId); //todo: true or not
         return new ReportOutput<SaleAndAfterSaleHeaderOutputDto, SaleAndAfterSaleDataOutputDto>(_title, header, resultData);
     }
 }

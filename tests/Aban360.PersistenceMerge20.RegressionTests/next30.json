@@ -1,0 +1,542 @@
+[
+  {
+    "Name": "Tariff",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Rule/Commands/Implementations/TariffCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Rule/Queries/Implementations/TariffQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Rule/Repositories/TariffRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Rule.Commands.Implementations.TariffCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Rule.Queries.Implementations.TariffQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Rule.Repositories.TariffRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_tariff": "_tariff"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Rule/Commands/Contracts/ITariffCommandService.cs": "CB3390BA913FD9B8D91D3950CA8B8EBB1E90BBD41059475F6AC9327BFAED9D7D",
+      "Aban360.CalculationPool.Persistence/Features/Rule/Queries/Contracts/ITariffQueryService.cs": "A032CC8ACA98CEA9A09721DBA8F1F4CCC69ECBD599D8FA4BCA4874396E54379A"
+    }
+  },
+  {
+    "Name": "TariffConstant",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Rule/Commands/Implementations/TariffConstantCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Rule/Queries/Implementations/TariffConstantQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Rule/Repositories/TariffConstantRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Rule.Commands.Implementations.TariffConstantCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Rule.Queries.Implementations.TariffConstantQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Rule.Repositories.TariffConstantRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_tariffConstant": "_tariffConstant"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Rule/Commands/Contracts/ITariffConstantCommandService.cs": "0D5B40EB2408ECC9CC6A0FE5E96B7108848FE1C7482F1CFF2AD0F4AE0E581F20",
+      "Aban360.CalculationPool.Persistence/Features/Rule/Queries/Contracts/ITariffConstantQueryService.cs": "5B98933264646A5FF9328993D32FD640422339F0D4DF88F4B583101755718622"
+    }
+  },
+  {
+    "Name": "RequestEstate",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Implementations/RequestEstateCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Implementations/RequestEstateQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Repositories/RequestEstateRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations.RequestEstateCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations.RequestEstateQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Draft.Repositories.RequestEstateRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_requestEstate": "_requestEstates"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Contracts/IRequestEstateCommandService.cs": "3B525B5D52CEE13BCEC992BE477EDA5CDA41565D3C6EE9337A3D9B6069CB327F",
+      "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Contracts/IRequestEstateQueryService.cs": "62975BD4850562E9E27A5A2C8B55D537705356524D56EFDD22C819B07E12714E"
+    }
+  },
+  {
+    "Name": "RequestFlat",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Implementations/RequestFlatCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Implementations/RequestFlatQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Repositories/RequestFlatRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations.RequestFlatCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations.RequestFlatQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Draft.Repositories.RequestFlatRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_requestFlat": "_requestFlat"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Contracts/IRequestFlatCommandService.cs": "17B7DB9BF080536A073486C6EC3164B4D11B9EA70DA76C3B1812694D48F0D6D2",
+      "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Contracts/IRequestFlatQueryService.cs": "C8CE70070A41FC5478FFCDCA93F67C9668CAEF51AA3BB0BE54A25DF2CC40BC4A"
+    }
+  },
+  {
+    "Name": "RequestIndividual",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Implementations/RequestIndividualCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Implementations/RequestIndividualQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Repositories/RequestIndividualRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations.RequestIndividualCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations.RequestIndividualQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Draft.Repositories.RequestIndividualRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_requestIndividual": "_requestIndividual"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Contracts/IRequestIndividualCommandService.cs": "9C1017A93EA83AFB4AED8C6E06D900C12E6943B1E41EC97736730708FF703C07",
+      "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Contracts/IRequestIndividualQueryService.cs": "64FF00C387D0447C5BEAE87D196EA72C579B839D432E03A058CD55E3D807763B"
+    }
+  },
+  {
+    "Name": "RequestIndividualDiscountType",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Implementations/RequestIndividualDiscountTypeCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Implementations/RequestIndividualDiscountTypeQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Repositories/RequestIndividualDiscountTypeRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations.RequestIndividualDiscountTypeCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations.RequestIndividualDiscountTypeQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Draft.Repositories.RequestIndividualDiscountTypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_requestIndividualDiscountType": "_requestIndividualDiscountType"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Contracts/IRequestIndividualDiscountTypeCommandService.cs": "14BEDA48E7B42E4F2AC331400F8A99D36E740E3E5913FC9D42B5611D9E0C611F",
+      "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Contracts/IRequestIndividualDiscountTypeQueryService.cs": "A6A3DD0AA5C2660D527F3968AE63A74F552A692D5194732FCF0C2CB5A6A55CB3"
+    }
+  },
+  {
+    "Name": "RequestIndividualEstate",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Implementations/RequestIndividualEstateCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Implementations/RequestIndividualEstateQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Repositories/RequestIndividualEstateRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations.RequestIndividualEstateCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations.RequestIndividualEstateQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Draft.Repositories.RequestIndividualEstateRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_requestIndividualEstate": "_requestIndividualEstate"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Contracts/IRequestIndividualEstateCommandService.cs": "D8B7F85DBA11571D38C79E173ABB31A02E40F4C4A3DC8C74D8C5B3C084F31032",
+      "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Contracts/IRequestIndividualEstateQueryService.cs": "520333263F8BF791232B400BF1F07D956BE5AEBEE96985D992E28E6F462566CD"
+    }
+  },
+  {
+    "Name": "RequestIndividualTag",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Implementations/RequestIndividualTagCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Implementations/RequestIndividualTagQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Repositories/RequestIndividualTagRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations.RequestIndividualTagCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations.RequestIndividualTagQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Draft.Repositories.RequestIndividualTagRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_requestIndividualTag": "_requestIndividualTag"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Contracts/IRequestIndividualTagCommandService.cs": "0077F1D8A12C7389D3E5D45638D804B6520A98D885F605D68E0CA11261EE5C01",
+      "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Contracts/IRequestIndividualTagQueryService.cs": "65874496B5E7D33A0DC548E10920B0EEAF387D4BCA4B38F98FFAFF0E32BF6453"
+    }
+  },
+  {
+    "Name": "RequestSiphon",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Implementations/RequestSiphonCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Implementations/RequestSiphonQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Repositories/RequestSiphonRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations.RequestSiphonCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations.RequestSiphonQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Draft.Repositories.RequestSiphonRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_requestSiphon": "_requestSiphon"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Contracts/IRequestSiphonCommandService.cs": "DE375ED85C543C422D91DD4F108E833A54373DE6B93C3B5C6C0B0383334193E7",
+      "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Contracts/IRequestSiphonQueryService.cs": "2E56A77A832E2D9735450F53B0D9D9E5AF86C518C012C1A00ADAB606047146DE"
+    }
+  },
+  {
+    "Name": "RequestTracking",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Implementations/RequestTrackingCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Implementations/RequestTrackingQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Repositories/RequestTrackingRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations.RequestTrackingCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations.RequestTrackingQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Draft.Repositories.RequestTrackingRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_requestTracking": "_requestTracking"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Contracts/IRequestTrackingCommandService.cs": "2CFAA512517D935B7F1A34D022B224E935E73C14A1CEC31D1410B756BE221F25",
+      "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Contracts/IRequestTrackingQueryService.cs": "4F6897CD3A497A711611D20F10D78D501929A01AF9973697C84EE8F98A82F94E"
+    }
+  },
+  {
+    "Name": "RequestUser",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Implementations/RequestUserCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Implementations/RequestUserQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Repositories/RequestUserRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations.RequestUserCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations.RequestUserQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Draft.Repositories.RequestUserRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_requestUser": "_requestUsers"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Contracts/IRequestUserCommandService.cs": "79EAE46A93D85D8D8457C020D129FF1C942FDF37D371EF2A0BF3A99CD18EC6E8",
+      "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Contracts/IRequestUserQueryService.cs": "685E8ACA9C45C58B7A2BFD52B874C5E49517ADA7CF0A4D12E29513961A83ADD5"
+    }
+  },
+  {
+    "Name": "RequestWaterMeter",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Implementations/RequestWaterMeterCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Implementations/RequestWaterMeterQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Repositories/RequestWaterMeterRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations.RequestWaterMeterCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations.RequestWaterMeterQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Draft.Repositories.RequestWaterMeterRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_requestWaterMeter": "_requestWaterMeter"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Contracts/IRequestWaterMeterCommandService.cs": "02294A2EF5CE263CD4980F74A169AF2C25FC40A89B7DD281109BBFEDF01142B0",
+      "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Contracts/IRequestWaterMeterQueryService.cs": "DE6A2D8E64E1FC66F4BDC34C8EE71B89F2BDE514B343D86BFF0F59FD241383C4"
+    }
+  },
+  {
+    "Name": "RequestWaterMeterSiphon",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Implementations/RequestWaterMeterSiphonCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Implementations/RequestWaterMeterSiphonQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Repositories/RequestWaterMeterSiphonRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations.RequestWaterMeterSiphonCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations.RequestWaterMeterSiphonQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Draft.Repositories.RequestWaterMeterSiphonRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_requestWaterMeterSiphon": "_requestWaterMeterSiphon"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Contracts/IRequestWaterMeterSiphonCommandService.cs": "6DAA77BB87FE281D38C14152C8D1CD408B6A1DDAC8BF9FBA6A63AE4AB6C15CB4",
+      "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Contracts/IRequestWaterMeterSiphonQueryService.cs": "D9312F608126195F258F40906E506975DC9B2082E2CFED46103F46AA964C1D15"
+    }
+  },
+  {
+    "Name": "RequestWaterMeterTag",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Implementations/RequestWaterMeterTagCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Implementations/RequestWaterMeterTagQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Draft/Repositories/RequestWaterMeterTagRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Draft.Commands.Implementations.RequestWaterMeterTagCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Draft.Queries.Implementations.RequestWaterMeterTagQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Draft.Repositories.RequestWaterMeterTagRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_requestWaterMeterTag": "_requestWaterMeterTag"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Draft/Commands/Contracts/IRequestWaterMeterTagCommandService.cs": "CFCA015641D8409886A7215B5DEE69960A6F9FB97E2D650D84990C386EB51595",
+      "Aban360.ClaimPool.Persistence/Features/Draft/Queries/Contracts/IRequestWaterMeterTagQueryService.cs": "C4966F94D5C836E5F534CF78A0523B368EF52FD93B092298B82052165A703320"
+    }
+  },
+  {
+    "Name": "CapacityCalculationIndex",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/CapacityCalculationIndexCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/CapacityCalculationIndexQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/CapacityCalculationIndexRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.CapacityCalculationIndexCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations.CapacityCalculationIndexQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.CapacityCalculationIndexRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_capacityCalculationIndex": "_capacityCalculationIndex"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/ICapacityCalculationIndexCommandService.cs": "AE0C89C0805D67ADF5492F03D0D17FF3BE8DB2329F30E6E26E0BF8B319B9814A",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/ICapacityCalculationIndexQueryService.cs": "92EB218067183E6CEFBD93753CEC866E631CA47C780BFE06FA4E329D9DE10CF2"
+    }
+  },
+  {
+    "Name": "ConstructionType",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/ConstructionTypeCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/ConstructionTypeQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/ConstructionTypeRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.ConstructionTypeCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations.ConstructionTypeQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.ConstructionTypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_constructionTypes": "_constructionTypes"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IConstructionTypeCommandService.cs": "90F426AC7E50561A627CBD67168A58D065A3C9DCFA4FAFD5A0533F8DC3409935",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IConstructionTypeQueryService.cs": "4356693CD4B931053A0BE0DD0B12AEC5E8662C1BC7862DD087F5FBE4586D7C78"
+    }
+  },
+  {
+    "Name": "EstateBoundType",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/EstateBoundTypeCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/EstateBoundTypeQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/EstateBoundTypeRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.EstateBoundTypeCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations.EstateBoundTypeQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.EstateBoundTypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_estateBoundType": "_estateBoundType"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IEstateBoundTypeCommandService.cs": "1836A7F71E1F71F766C3FA3B045D44C2E93914A3DB6D0CE93C10D8CC585D3F45",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IEstateBoundTypeQueryService.cs": "8AAD7DCC7918D341FE41B4394B4AD0770570621FF718FB73426C2C64A6FBF23C"
+    }
+  },
+  {
+    "Name": "Estate",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/EstateCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/EstateQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/EstateRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.EstateCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations.EstateQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.EstateRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_estate": "_estate"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IEstateCommandService.cs": "176E948250CC360E908327258D8C1BCF868900D51B509D3A06906AAD09C5A699",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IEstateQueryService.cs": "70237A5474278C4352903705D67059FFD738FBF9DAEE43C6F1D71C58092B5A8E"
+    }
+  },
+  {
+    "Name": "EstateWaterResource",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/EstateWaterResourceCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/EstateWaterResourceQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/EstateWaterResourceRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.EstateWaterResourceCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations.EstateWaterResourceQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.EstateWaterResourceRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_estateWaterResource": "_estateWaterResource"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IEstateWaterResourceCommandService.cs": "9C40560AFF486EF1371924B503210AC82E75F6D4CFEDC12126DECF8E4CA680AA",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IEstateWaterResourceQueryService.cs": "125EE0A6A67E476BE4FE1B15C64FA0F0F96C8C89A775E7308CB3DCB9E4ECBBA8"
+    }
+  },
+  {
+    "Name": "Flat",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/FlatCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/FlatQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/FlatRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.FlatCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations.FlatQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.FlatRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_flat": "_flat"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IFlatCommandService.cs": "03E727ACAE4660554526D11B4D684A5919251416D99EB9FC7D712615A9FF0F1F",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IFlatQueryService.cs": "3CEA201B47E40C9E920631C4D1EFD98E50500DF574310BD5AC4BA279E88DEF55"
+    }
+  },
+  {
+    "Name": "Guild",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/GuildCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/GuildQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/GuildRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.GuildCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations.GuildQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.GuildRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_guild": "_guild"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IGuildCommandService.cs": "2A07E342318F55F8D1E964614AA63445C5D8FE1658621CE2E6AF21976660D5A0",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IGuildQueryService.cs": "F07AE6C914ACB2E15462DA0AD799C2493DF9988961D2AAEB139876B459F78AB1"
+    }
+  },
+  {
+    "Name": "Handover",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/HandoverCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/HandoverQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/HandoverRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.HandoverCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations.HandoverQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.HandoverRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_handover": "_handover"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IHandoverCommandService.cs": "1E013771107040EE3677ABF04543DD4D3DC86C836F3ABF6D6EB88EA243B98177",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IHandoverQueryService.cs": "274C31D0220F1AEBFF2F39557EDB7FA39D4D50597EE20BA31D7B3F56DE1911D5"
+    }
+  },
+  {
+    "Name": "OfficialHoliday",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/OfficialHolidayCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/OfficialHolidayQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/OfficialHolidayRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.OfficialHolidayCommandService",
+    "QueryType": "Aban360.UserPool.Persistence.Features.TimeTable.Queries.Implementations.OfficialHolidayQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.OfficialHolidayRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_officialHoliday": "_officialHoliday"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IOfficialHolidayCommandService.cs": "D95B99804A3024836491A9458D2F51316B0B41B57D1B2D41B710A14A6FFEC2A5",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IOfficialHolidayQueryService.cs": "E6AA720A0AE92C78EF715D959D238493C6F42F91B380BBD43F43362119A3CB77"
+    }
+  },
+  {
+    "Name": "Profession",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/ProfessionCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/ProfessionQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/ProfessionRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.ProfessionCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations.ProfessionQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.ProfessionRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_profession": "_profession"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IProfessionCommandService.cs": "FC5A3602FCCAE956C93CD775CD725B81374EF3A25B3E0C82A39D2BD5CDDE5F22",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IProfessionQueryService.cs": "3996CB4A4F935B695FD897F52902039C264EC04C53DB9694F42047907F007E04"
+    }
+  },
+  {
+    "Name": "UsageLevel1",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/UsageLevel1CommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/UsageLevel1QueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/UsageLevel1Repository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.UsageLevel1CommandService",
+    "QueryType": "Aban360.UserPool.Persistence.Features.TimeTable.Queries.Implementations.UsageLevel1QueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.UsageLevel1Repository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_usageLevel1": "_usageLevel1"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IUsageLevel1CommandService.cs": "5ABC790CB60CB0418159B8B42171A4392D7951896D2F03D34C258EE48E89280C",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IUsageLevel1QueryService.cs": "485D492843564BAD05803034B4BADA1CE65DD7B207117D9829E9536A1805345A"
+    }
+  },
+  {
+    "Name": "UsageLevel2",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/UsageLevel2CommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/UsageLevel2QueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/UsageLevel2Repository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.UsageLevel2CommandService",
+    "QueryType": "Aban360.UserPool.Persistence.Features.TimeTable.Queries.Implementations.UsageLevel2QueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.UsageLevel2Repository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_usageLevel2": "_usageLevel2"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IUsageLevel2CommandService.cs": "0BD48D8D701937B7ECA2F7410D92A2952A5B4F4404AFA2C375F7B507559B764C",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IUsageLevel2QueryService.cs": "5410945FAF3A747CCF1CDC2778BAF0BAFE75C06A982B5BE992D254DA51917383"
+    }
+  },
+  {
+    "Name": "UsageLevel3",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/UsageLevel3CommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/UsageLevel3QueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/UsageLevel3Repository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.UsageLevel3CommandService",
+    "QueryType": "Aban360.UserPool.Persistence.Features.TimeTable.Queries.Implementations.UsageLevel3QueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.UsageLevel3Repository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_usageLevel3": "_usageLevel3"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IUsageLevel3CommandService.cs": "172F85CAEF4F2D2AF883BE85F91BB3E2CD3993339DC319CFA6F67BD071058D37",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IUsageLevel3QueryService.cs": "EA1DDE3B656CDF8C1C263549225F6676E7A8E396855C057A8DC1BC193108F684"
+    }
+  },
+  {
+    "Name": "UsageLevel4",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/UsageLevel4CommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/UsageLevel4QueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/UsageLevel4Repository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.UsageLevel4CommandService",
+    "QueryType": "Aban360.UserPool.Persistence.Features.TimeTable.Queries.Implementations.UsageLevel4QueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.UsageLevel4Repository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_usageLevel4": "_usageLevel4"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IUsageLevel4CommandService.cs": "92BADC6C213122E3ACEBD0A93AD5C4FC15434782CFAEAF2F018B47961033E055",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IUsageLevel4QueryService.cs": "AA6E35D070B9F89BEAEADEFE5C2BC9D280AF0A0A9B8D4F9FBE222BBA235D9227"
+    }
+  },
+  {
+    "Name": "UserLeave",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/UserLeaveCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/UserLeaveQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/UserLeaveRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.UserLeaveCommandService",
+    "QueryType": "Aban360.UserPool.Persistence.Features.TimeTable.Queries.Implementations.UserLeaveQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.UserLeaveRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_userLeave": "_userLeave"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IUserLeaveCommandService.cs": "9E78CADB80B5D98321620F11769D593D0544337936C99E84644810DED8ABA2D3",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IUserLeaveQueryService.cs": "629F020B9390D78094B92C084FDCEA0690F75BE4E4D9F82E5F255017F029DF4D"
+    }
+  },
+  {
+    "Name": "UserWorkday",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/UserWorkdayCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/UserWorkdayQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/UserWorkdayRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.UserWorkdayCommandService",
+    "QueryType": "Aban360.UserPool.Persistence.Features.TimeTable.Queries.Implementations.UserWorkdayQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.UserWorkdayRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_userWorkday": "_userWorkday"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IUserWorkdayCommandService.cs": "EF7A400ABDBB24F7B07C58649F2F04AB3E6D0242FC31568E385039D33D8BFAFE",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IUserWorkdayQueryService.cs": "31F6909538A5427632B9744B0F9A516E77CFC6268CA107E811970DC5790FE81C"
+    }
+  }
+]

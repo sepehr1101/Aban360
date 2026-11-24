@@ -41,7 +41,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
             _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("detail-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterDiscountDetailHeaderOutputDto, WaterDiscountDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDetailRaw(WaterDiscountDetailInputDto inputDto, CancellationToken cancellationToken)
@@ -50,7 +50,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
             return Ok(WaterDiscountDetail);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("detail-excel/{connectionId}")]
         public async Task<IActionResult> GetDetailExcel(string connectionId, WaterDiscountDetailInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -71,7 +71,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
 
         ////////////////////////////////
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("detail-by-discount-type-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterDiscountDetailHeaderOutputDto, WaterDiscountDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDetailByDiscountTypeRaw(WaterDiscountByTypeDetailInputDto inputDto, CancellationToken cancellationToken)
@@ -80,7 +80,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
             return Ok(WaterDiscountDetail);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("detail-by-discount-type-excel/{connectionId}")]
         public async Task<IActionResult> GetDetailByDiscountTypeExcel(string connectionId, WaterDiscountByTypeDetailInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -101,7 +101,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
 
 
         ////////////////////////////////
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("summary-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterDiscountSummaryHeaderOutputDto, WaterDiscountSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetsummaryRaw(WaterDiscountSummaryInputDto inputDto, CancellationToken cancellationToken)
@@ -110,7 +110,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
             return Ok(WaterDiscountsummary);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("summary-excel/{connectionId}")]
         public async Task<IActionResult> GetsummaryExcel(string connectionId, WaterDiscountSummaryInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -131,7 +131,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
     
         
         ////////////////////////////////
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("summary-by-discount-type-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<WaterDiscountSummaryHeaderOutputDto, WaterDiscountSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSummaryByDiscountTypeRaw(WaterDiscountByTypeSummaryInputDto inputDto, CancellationToken cancellationToken)
@@ -140,7 +140,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.WaterMeterTransactions
             return Ok(WaterDiscountsummary);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("summary-by-discount-type-excel/{connectionId}")]
         public async Task<IActionResult> GetSummaryByDiscountTypeExcel(string connectionId, WaterDiscountByTypeSummaryInputDto inputDto, CancellationToken cancellationToken)
         {

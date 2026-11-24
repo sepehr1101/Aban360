@@ -19,7 +19,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
             _meterReadingChangeReportsService.NotNull(nameof(meterReadingChangeReportsService));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("excluded")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<MeterReadingDetailExcludedHeaderOutptuDto, MeterReadingDetailExcludedDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExcluded([FromBody] MeterReadingDetailExcludedInputDto inputDto, CancellationToken cancellationToken)
@@ -28,7 +28,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.MeterReading.Queries
             return Ok(result);
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("excluded-sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetStiExcluded([FromBody] MeterReadingDetailExcludedInputDto inputDto, CancellationToken cancellationToken)

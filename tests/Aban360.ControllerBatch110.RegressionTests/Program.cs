@@ -43,11 +43,22 @@ public static class Regression
             && typeof(ControllerBase).IsAssignableFrom(t) && !t.IsAbstract).ToArray();
         Check(current.Length == 19 && original.Length == 69, "Missing current controllers or pinned original snapshots.");
         var currentMethods = Endpoints(current).ToArray();
+        var bodyBoundPostOnlyRoutes = new HashSet<string>(StringComparer.Ordinal)
+        {
+            "v1/installation-date-assignment/single",
+            "v1/installation-date-assignment/update",
+            "v1/subscription-assignment/single",
+            "v1/subscription-assignment/update",
+            "v1/subscription-assignment/update-by-tracknumber",
+        };
         var cases = Endpoints(original).Select(old =>
         {
-            var matches = currentMethods.Where(n => n.Route == old.Route && n.Verbs.SequenceEqual(old.Verbs)).ToArray();
+            var expected = bodyBoundPostOnlyRoutes.Contains(old.Route)
+                ? old with { Verbs = old.Verbs.Where(verb => verb != "GET").ToArray() }
+                : old;
+            var matches = currentMethods.Where(n => n.Route == expected.Route && n.Verbs.SequenceEqual(expected.Verbs)).ToArray();
             Check(matches.Length == 1, "Missing/ambiguous merged action: " + old.Route);
-            return new Comparison(old, matches.Single());
+            return new Comparison(expected, matches.Single());
         }).ToArray();
         Check(cases.Length == 72 && currentMethods.Length == 72, "Expected all 72 batch actions.");
 

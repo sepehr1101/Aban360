@@ -18,7 +18,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
             _billItemsDetailGetByBillIdHandler.NotNull(nameof(billItemsDetailGetByBillIdHandler));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("item-details-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<FlatReportOutput<BillItemsHeaderOutputDto, BillItemsDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetBillItemDetailsRaw([FromBody] SearchByIdInput inputDto, CancellationToken cancellationToken)
@@ -27,7 +27,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
             return Ok(result);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("item-details-sti")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<JsonReportId>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetBillItemDetailsSti([FromBody] SearchByIdInput inputDto, CancellationToken cancellationToken)

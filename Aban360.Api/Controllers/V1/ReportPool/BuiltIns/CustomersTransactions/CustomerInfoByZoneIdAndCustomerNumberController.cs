@@ -24,7 +24,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<BillIdReppar>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(CustomerInfoByZoneAndCustomerNumberInputDto input, CancellationToken cancellationToken)

@@ -21,7 +21,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Commands
             _invoiceTogetherCreateHandler.NotNull(nameof(invoiceTogetherCreateHandler));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("create")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<InvoiceTogetherCreateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] InvoiceTogetherCreateDto createDto, CancellationToken cancellationToken)
