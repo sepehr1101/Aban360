@@ -18,7 +18,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Request.Queries
             _motherChildRequestService.NotNull(nameof(motherChildRequestService));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("display-parent-child")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<MotherChildOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(SearchNumericInput input, CancellationToken cancellationToken)

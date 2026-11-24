@@ -63,11 +63,11 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidRemoveBill);
             }
         }
-        public async Task Delete(ZoneIdAndCustomerNumber input)
+        public async Task DeleteForTanker(ZoneIdAndCustomerNumber input)
         {
             string command = GetDeleteByCustomerNumberCommand();
             int recordCount = await _connection.ExecuteAsync(command, input, _transaction);
-            if (recordCount <= 0)
+            if (recordCount != 1)
             {
                 throw new InvalidBillCommandException(Exceptionliterals.InvalidRemoveBill);
             }
@@ -434,10 +434,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         }
         private string GetDeleteByCustomerNumberCommand()
         {
-            return $@"Delete [CustomerWarehouse].dbo.Bills
-                    Where 
-                    	ZoneId=@ZoneId AND
-                    	CustomerNumber=@CustomerNumber ";
+            return @";WITH BillToDelete AS (
+                        SELECT TOP (1) Id
+                        FROM [CustomerWarehouse].dbo.Bills
+                        WHERE ZoneId = @ZoneId AND CustomerNumber = @CustomerNumber
+                        ORDER BY RegisterDay DESC, Id DESC
+                    )
+                    DELETE FROM BillToDelete;";
         }
         private string GetInsertReturnByRepairCommand(string dbName)
         {
@@ -563,16 +566,5 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
                         Id =@Id AND
                         TypeCode = @TypeCode";
         }
-        //private string GetTempTableFieldTitlesCommand()
-        //{
-        //    return @" CREATE TABLE #BillsTemp
-        //    (
-        //        ZoneId int,
-        //        UsageId numeric(2,0),
-        //        CustomerNumber numeric(10,0),
-        //        Consumption int,
-        //        IsSettlement bit
-        //    );";
-        //}
     }
 }

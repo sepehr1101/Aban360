@@ -20,7 +20,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
             _installationDateAssignmentService.NotNull(nameof(_installationDateAssignmentService));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("update")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<InstallationDateAssignmentUpdateDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update([FromBody] InstallationDateAssignmentUpdateDto updateDto, CancellationToken cancellationToken)
@@ -29,7 +29,7 @@ namespace Aban360.Api.Controllers.V1.ClaimPool.Land
             return Ok(updateDto);
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("single")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<InstallationDateAssignmentGetDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSingle([FromBody] SearchInput input, CancellationToken cancellationToken)

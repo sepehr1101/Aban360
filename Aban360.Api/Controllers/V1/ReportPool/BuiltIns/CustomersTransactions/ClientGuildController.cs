@@ -31,7 +31,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             _reportGenerator.NotNull(nameof(_reportGenerator));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("detail-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ClientGuildDetailHeaderOutputDto, ClientGuildDetailDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetDetailRaw(ClientGuildInputDto inputDto, CancellationToken cancellationToken)
@@ -40,7 +40,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             return Ok(ClientGuildDetail);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("detail-excel/{connectionId}")]
         public async Task<IActionResult> GetDetailExcel(string connectionId, ClientGuildInputDto inputDto, CancellationToken cancellationToken)
         {
@@ -59,7 +59,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             return Ok(reportId);
         }
         
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("summary-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<ClientGuildSummaryHeaderOutputDto, ClientGuildSummaryDataOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetsummaryRaw(ClientGuildInputDto inputDto, CancellationToken cancellationToken)
@@ -68,7 +68,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.CustomersTransactions
             return Ok(ClientGuildsummary);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("summary-excel/{connectionId}")]
         public async Task<IActionResult> GetsummaryExcel(string connectionId, ClientGuildInputDto inputDto, CancellationToken cancellationToken)
         {

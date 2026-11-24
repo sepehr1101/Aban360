@@ -4,6 +4,7 @@ public record WaterReceivablesHeaderOutputDto
 {
     public string Title { get; set; } = string.Empty;
     public WaterReceivablesGroupingEnum GroupBy { get; set; }
+    public string GroupByTitle { get; set; } = default!;
     public string FromDateJalali { get; set; } = string.Empty;
     public string ToDateJalali { get; set; } = string.Empty;
     public string ReportDateJalali { get; set; } = string.Empty;

@@ -1,5 +1,4 @@
 using Aban360.Api.Cronjobs;
-using Aban360.CalculationPool.Application.Features.Sale.Handlers.Queries.Contracts;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Input;
 using Aban360.CalculationPool.Domain.Features.Sale.Dto.Output;
 using Aban360.Common.BaseEntities;
@@ -24,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries
             _reportGenerator.NotNull(nameof(reportGenerator));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("get-raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ReportOutput<TankerWaterHeaderOutputDto, TankerWaterDateOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw([FromBody] TankerWaterInputDto inputDto, CancellationToken cancellationToken)
@@ -33,7 +32,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Sale.Queries
             return Ok(result);
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("get-excel/{connectionId}")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<TankerWaterInputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetExcel(string connectionId, [FromBody] TankerWaterInputDto inputDto, CancellationToken cancellationToken)

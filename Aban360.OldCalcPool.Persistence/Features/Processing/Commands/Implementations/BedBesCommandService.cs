@@ -310,8 +310,13 @@ namespace Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implement
         }
         private string GetDeleteQueryForTanker(string dbName)
         {
-            return $"Delete FROM [{dbName}].dbo.bed_bes " +
-                    "Where radif=@customerNumber AND town=@zoneId AND date_bed>='1405/08/01'";
+            return $@";WITH BillToDelete AS (
+                        SELECT TOP (1) id
+                        FROM [{dbName}].dbo.bed_bes
+                        WHERE radif = @customerNumber AND town = @zoneId AND date_bed >= '1405/08/01'
+                        ORDER BY date_bed DESC, id DESC
+                    )
+                    DELETE FROM BillToDelete;";
         }
         private string GetUpdateDelCommand(string dbName)
         {

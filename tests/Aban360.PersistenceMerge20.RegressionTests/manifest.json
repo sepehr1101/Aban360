@@ -1,0 +1,362 @@
+[
+  {
+    "Name": "DocumentEntity",
+    "Module": "Aban360.BlobPool.Persistence",
+    "CommandPath": "Aban360.BlobPool.Persistence/Features/DMS/Commands/Implementations/DocumentEntityCommandService.cs",
+    "QueryPath": "Aban360.BlobPool.Persistence/Features/DMS/Queries/Implementations/DocumentEntityQueryService.cs",
+    "RepositoryPath": "Aban360.BlobPool.Persistence/Features/DMS/Repositories/DocumentEntityRepository.cs",
+    "CommandType": "Aban360.BlobPool.Persistence.Features.DMS.Commands.Implementations.DocumentEntityCommandService",
+    "QueryType": "Aban360.BlobPool.Persistence.Features.DMS.Queries.Implementations.DocumentEntityQueryService",
+    "RepositoryType": "Aban360.BlobPool.Persistence.Features.DMS.Repositories.DocumentEntityRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_documentEntity": "_documentEntity"
+    },
+    "Contracts": {
+      "Aban360.BlobPool.Persistence/Features/DMS/Commands/Contracts/IDocumentEntityCommandService.cs": "E39F7A1212748BFC05AC5F2F2B01F48D58509203B3D32BD193F15953F7D61210",
+      "Aban360.BlobPool.Persistence/Features/DMS/Queries/Contracts/IDocumentEntityQueryService.cs": "66C9A06C19D0D654EADB69DBD74B000C79165E243D02F5D5AC34C665D0E84926"
+    }
+  },
+  {
+    "Name": "DocumentCategory",
+    "Module": "Aban360.BlobPool.Persistence",
+    "CommandPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Commands/Implementations/DocumentCategoryCommandService.cs",
+    "QueryPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Queries/Implementations/DocumentCategoryQueryService.cs",
+    "RepositoryPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Repositories/DocumentCategoryRepository.cs",
+    "CommandType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Commands.Implementations.DocumentCategoryCommandService",
+    "QueryType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Implementations.DocumentCategoryQueryService",
+    "RepositoryType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Repositories.DocumentCategoryRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_documentCategories": "_documentCategories"
+    },
+    "Contracts": {
+      "Aban360.BlobPool.Persistence/Features/Taxonomy/Commands/Contracts/IDocumentCategoryCommandService.cs": "E36FF80174D27E5A8EF9F5F528960B4EE2F0173E450BAE55A304B55FBE1158D5",
+      "Aban360.BlobPool.Persistence/Features/Taxonomy/Queries/Contracts/IDocumentCategoryQueryService.cs": "A1561A439908E31FF6355C5B3B95328BC187FD2C3E3E984A10F3B55267700B46"
+    }
+  },
+  {
+    "Name": "Document",
+    "Module": "Aban360.BlobPool.Persistence",
+    "CommandPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Commands/Implementations/DocumentCommandService.cs",
+    "QueryPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Queries/Implementations/DocumentQueryService.cs",
+    "RepositoryPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Repositories/DocumentRepository.cs",
+    "CommandType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Commands.Implementations.DocumentCommandService",
+    "QueryType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Implementations.DocumentQueryService",
+    "RepositoryType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Repositories.DocumentRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_document": "_document"
+    },
+    "Contracts": {
+      "Aban360.BlobPool.Persistence/Features/Taxonomy/Commands/Contracts/IDocumentCommandService.cs": "CA10871C967C58AC3C00B00EC78E2978A43E5FC30A633EF5068B2A6508867708",
+      "Aban360.BlobPool.Persistence/Features/Taxonomy/Queries/Contracts/IDocumentQueryService.cs": "B51586C62A1582FEE59E1B44F2EF82CAD942FAB8A138E41A3042DCBBFB8EDE17"
+    }
+  },
+  {
+    "Name": "DocumentType",
+    "Module": "Aban360.BlobPool.Persistence",
+    "CommandPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Commands/Implementations/DocumentTypeCommandService.cs",
+    "QueryPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Queries/Implementations/DocumentTypeQueryService.cs",
+    "RepositoryPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Repositories/DocumentTypeRepository.cs",
+    "CommandType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Commands.Implementations.DocumentTypeCommandService",
+    "QueryType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Implementations.DocumentTypeQueryService",
+    "RepositoryType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Repositories.DocumentTypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_documentTypes": "_documentTypes"
+    },
+    "Contracts": {
+      "Aban360.BlobPool.Persistence/Features/Taxonomy/Commands/Contracts/IDocumentTypeCommandService.cs": "856D170529C5ECC35DD079099DD9CB23D7DC8505E444CADF90E14A14D10FA7BD",
+      "Aban360.BlobPool.Persistence/Features/Taxonomy/Queries/Contracts/IDocumentTypeQueryService.cs": "27A3819D8BE380C88CF58447887A7FDDC64F40921562D3D36D0F3416B50BD278"
+    }
+  },
+  {
+    "Name": "ExecutableMimetype",
+    "Module": "Aban360.BlobPool.Persistence",
+    "CommandPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Commands/Implementations/ExecutableMimetypeCommandService.cs",
+    "QueryPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Queries/Implementations/ExecutableMimetypeQueryService.cs",
+    "RepositoryPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Repositories/ExecutableMimetypeRepository.cs",
+    "CommandType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Commands.Implementations.ExecutableMimetypeCommandService",
+    "QueryType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Implementations.ExecutableMimetypeQueryService",
+    "RepositoryType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Repositories.ExecutableMimetypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_executableMimetypes": "_executableMimetypes"
+    },
+    "Contracts": {
+      "Aban360.BlobPool.Persistence/Features/Taxonomy/Commands/Contracts/IExecutableMimetypeCommandService.cs": "F59A8316AAFCC1E666F5F0C9E9DD5D8760CA660E6CE075522BFDE31B49940D66",
+      "Aban360.BlobPool.Persistence/Features/Taxonomy/Queries/Contracts/IExecutableMimetypeQueryService.cs": "7EC977770E4246F934A38D444C2BAC8350E72E743E1BDD96F3AABE1C39645121"
+    }
+  },
+  {
+    "Name": "MimetypeCategory",
+    "Module": "Aban360.BlobPool.Persistence",
+    "CommandPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Commands/Implementations/MimetypeCategoryCommandService.cs",
+    "QueryPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Queries/Implementations/MimetypeCategoryQueryService.cs",
+    "RepositoryPath": "Aban360.BlobPool.Persistence/Features/Taxonomy/Repositories/MimetypeCategoryRepository.cs",
+    "CommandType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Commands.Implementations.MimetypeCategoryCommandService",
+    "QueryType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Queries.Implementations.MimetypeCategoryQueryService",
+    "RepositoryType": "Aban360.BlobPool.Persistence.Features.Taxonomy.Repositories.MimetypeCategoryRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_mimetypeCategories": "_mimetypeCategories"
+    },
+    "Contracts": {
+      "Aban360.BlobPool.Persistence/Features/Taxonomy/Commands/Contracts/IMimetypeCategoryCommandService.cs": "6DA307538AEDD51A5FB6BE63802D3E79D825D40DE6EDF3D6459936CFAA0356AE",
+      "Aban360.BlobPool.Persistence/Features/Taxonomy/Queries/Contracts/IMimetypeCategoryQueryService.cs": "8A37A181652B0349939601578FA5A66F45ED9B16631C08D516029BCD294108F5"
+    }
+  },
+  {
+    "Name": "CompanyService",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Implementations/CompanyServiceCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Implementations/CompanyServiceQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Repositories/CompanyServiceRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations.CompanyServiceCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations.CompanyServiceQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Bill.Repositories.CompanyServiceRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_companyService": "_companyService"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Contracts/ICompanyServiceCommandService.cs": "B11CC8BEDBA67856AC29C5A35FB3A410DBB95EAC01A497826B01DF1BBDD6BC1E",
+      "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Contracts/ICompanyServiceQueryService.cs": "23651E728F8C02934BE3BA409E554960E9B7E23974D8E9A6DE7EA0B57C808898"
+    }
+  },
+  {
+    "Name": "CompanyServiceOffering",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Implementations/CompanyServiceOfferingCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Implementations/CompanyServiceOfferingQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Repositories/CompanyServiceOfferingRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations.CompanyServiceOfferingCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations.CompanyServiceOfferingQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Bill.Repositories.CompanyServiceOfferingRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_companyServiceOffering": "_companyServiceOffering"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Contracts/ICompanyServiceOfferingCommandService.cs": "ACF5857FD1AF2D3CB8B645A1ED0400C4D87843D36AF6971F6D9D14CFB8837FB1",
+      "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Contracts/ICompanyServiceOfferingQueryService.cs": "D89A9D507FD53E8C554AA249DBBDA5003CF74000C42680F0B1EC27EF67A9B6D2"
+    }
+  },
+  {
+    "Name": "CompanyServiceType",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Implementations/CompanyServiceTypeCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Implementations/CompanyServiceTypeQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Repositories/CompanyServiceTypeRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations.CompanyServiceTypeCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations.CompanyServiceTypeQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Bill.Repositories.CompanyServiceTypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_companyServiceType": "_companyServiceType"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Contracts/ICompanyServiceTypeCommandService.cs": "F1C414ABF01C3E761C7E4B67476EE0803BAAF8F598F9366E84E1F98C3057E955",
+      "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Contracts/ICompanyServiceTypeQueryService.cs": "8BD68CB81AD95915101420F8C749AFF7386DA011DCA9CAB53B6D65EA12E8A6CF"
+    }
+  },
+  {
+    "Name": "ImpactSign",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Implementations/ImpactSignCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Implementations/ImpactSignQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Repositories/ImpactSignRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations.ImpactSignCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations.ImpactSignQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Bill.Repositories.ImpactSignRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_impactSign": "_impactSign"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Contracts/IImpactSignCommandService.cs": "B86677D476645D4BC339852126D258F65AF165048B09BE0A78350925CB933F6F",
+      "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Contracts/IImpactSignQueryService.cs": "80DADEE9040AC642E92085C2050F606DEB5EBE5851675FD3BC80BD6213694105"
+    }
+  },
+  {
+    "Name": "InvoiceInstallment",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Implementations/InvoiceInstallmentCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Implementations/InvoiceInstallmentQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Repositories/InvoiceInstallmentRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations.InvoiceInstallmentCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations.InvoiceInstallmentQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Bill.Repositories.InvoiceInstallmentRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_InvoinceInstallment": "_invoiceInstallment"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Contracts/IInvoiceInstallmentCommandService.cs": "BAF9CE1E8B23398D2B363AE64FE72264748EEDA5EABD0D98701DC86069FC85FC",
+      "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Contracts/IInvoiceInstallmentQueryService.cs": "056B709FFF89C22D30DF4F5FE7AB7AED164B2642B7A81DFFFE574B70C5732E70"
+    }
+  },
+  {
+    "Name": "InvoiceLineItemInsertMode",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Implementations/InvoiceLineItemInsertModeCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Implementations/InvoiceLineItemInsertModeQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Repositories/InvoiceLineItemInsertModeRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations.InvoiceLineItemInsertModeCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations.InvoiceLineItemInsertModeQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Bill.Repositories.InvoiceLineItemInsertModeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_InvoinceLineItemInsertMode": "_invoinceLineItemInsertMode"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Contracts/IInvoiceLineItemInsertModeCommandService.cs": "4D99E07DAA08184EF6323B18ECBE119D1E750639A395A958433F409BD5BE3046",
+      "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Contracts/IInvoiceLineItemInsertModeQueryService.cs": "C650E4B8742FC9BF3BE8ECBD72AC1386BA2B4FE5EEC23C2EA56A078334DBB593"
+    }
+  },
+  {
+    "Name": "InvoiceStatus",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Implementations/InvoiceStatusCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Implementations/InvoiceStatusQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Repositories/InvoiceStatusRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations.InvoiceStatusCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations.InvoiceStatusQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Bill.Repositories.InvoiceStatusRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_invoiceStatus": "_invoiceStatus"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Contracts/IInvoiceStatusCommandService.cs": "92DE705515D2A75DE4432D6768B64C2A79F4F40084B11FC3EF4FF566C514DFCD",
+      "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Contracts/IInvoiceStatusQueryService.cs": "15769535E3B92677CA7F7596EBFA33805E10A2DF1C77DB81D76AA82F797832FD"
+    }
+  },
+  {
+    "Name": "InvoiceType",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Implementations/InvoiceTypeCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Implementations/InvoiceTypeQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Repositories/InvoiceTypeRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations.InvoiceTypeCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations.InvoiceTypeQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Bill.Repositories.InvoiceTypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_InvoiceType": "_invoiceType"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Contracts/IInvoiceTypeCommandService.cs": "77C0A05069D22540F3C2367E706D465002022CB6762405412AD54057CC963B53",
+      "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Contracts/IInvoiceTypeQueryService.cs": "32E06679EA1E59D994B453C86473F785A78F13E8935908E0D422E0943347E301"
+    }
+  },
+  {
+    "Name": "LineItemType",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Implementations/LineItemTypeCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Implementations/LineItemTypeQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Repositories/LineItemTypeRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations.LineItemTypeCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations.LineItemTypeQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Bill.Repositories.LineItemTypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_lineItemType": "_lineItemType"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Contracts/ILineItemTypeCommandService.cs": "4F6C2665FC5EC75B3429773803EC0B8B1DCD7386C594451D32D2839AD66BF9A9",
+      "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Contracts/ILineItemTypeQueryService.cs": "109CCED51ABA8DEDB859C96AFC85D26607C973D2566E7FB42446DF35114B1435"
+    }
+  },
+  {
+    "Name": "LineItemTypeGroup",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Implementations/LineItemTypeGroupCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Implementations/LineItemTypeGroupQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Repositories/LineItemTypeGroupRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations.LineItemTypeGroupCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations.LineItemTypeGroupQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Bill.Repositories.LineItemTypeGroupRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_lineItemTypeGroup": "_lineItemTypeGroup"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Contracts/ILineItemTypeGroupCommandService.cs": "2A4EF6C886EDF6CE4C677528E0DCCE240D176CB85DD3DF0E52222F2B2F512309",
+      "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Contracts/ILineItemTypeGroupQueryService.cs": "F8F4A8EDBA76D2250B999E8C3B3A255731E31F4648CFB87836EEB2AFBB30D9C9"
+    }
+  },
+  {
+    "Name": "OfferingGroup",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Implementations/OfferingGroupCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Implementations/OfferingGroupQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Repositories/OfferingGroupRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations.OfferingGroupCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations.OfferingGroupQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Bill.Repositories.OfferingGroupRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_OfferingGroup": "_offeringGroup"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Contracts/IOfferingGroupCommandService.cs": "496703B0023C7AA5223AFA0E7E4623F9B4A207875888F0F1FCDF3CD857021DFB",
+      "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Contracts/IOfferingGroupQueryService.cs": "80871BB9CCFB3EDEFF77A864BBA01F307BFCCB6551310EA2D589B720E9BD7AF0"
+    }
+  },
+  {
+    "Name": "OfferingUnit",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Implementations/OfferingUnitCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Implementations/OfferingUnitQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Repositories/OfferingUnitRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations.OfferingUnitCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations.OfferingUnitQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Bill.Repositories.OfferingUnitRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_OfferingUnit": "_offeringUnit"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Contracts/IOfferingUnitCommandService.cs": "4179EC357548113E391C16612AE966B308BAF325523DB0B8608AD99B54BF1276",
+      "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Contracts/IOfferingUnitQueryService.cs": "52D5675510F56A5D77F3CF6DC2D9BAA92F6EE484F5FCFF6237B0B84EFF6BC384"
+    }
+  },
+  {
+    "Name": "WaterMeterChangeNumberHistory",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Implementations/WaterMeterChangeNumberHistoryCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Implementations/WaterMeterChangeNumberHistoryQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Bill/Repositories/WaterMeterChangeNumberHistoryRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Bill.Commands.Implementations.WaterMeterChangeNumberHistoryCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Bill.Queries.Implementations.WaterMeterChangeNumberHistoryQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Bill.Repositories.WaterMeterChangeNumberHistoryRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_readingPeriodType": "_waterMeterChangeNumberHistory"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Bill/Commands/Contracts/IWaterMeterChangeNumberHistoryCommandService.cs": "76C34FCEABAC91EB4E902DDD6124289A85F0C6F54F078F7CE96271528D78280E",
+      "Aban360.CalculationPool.Persistence/Features/Bill/Queries/Contracts/IWaterMeterChangeNumberHistoryQueryService.cs": "EADC834731D79F90C4715903625809BAA3BE2FA9C91339E2A14BA4E9939C9371"
+    }
+  },
+  {
+    "Name": "TariffCalculationMode",
+    "Module": "Aban360.CalculationPool.Persistence",
+    "CommandPath": "Aban360.CalculationPool.Persistence/Features/Rule/Commands/Implementations/TariffCalculationModeCommandService.cs",
+    "QueryPath": "Aban360.CalculationPool.Persistence/Features/Rule/Queries/Implementations/TariffCalculationModeQueryService.cs",
+    "RepositoryPath": "Aban360.CalculationPool.Persistence/Features/Rule/Repositories/TariffCalculationModeRepository.cs",
+    "CommandType": "Aban360.CalculationPool.Persistence.Features.Rule.Commands.Implementations.TariffCalculationModeCommandService",
+    "QueryType": "Aban360.CalculationPool.Persistence.Features.Rule.Queries.Implementations.TariffCalculationModeQueryService",
+    "RepositoryType": "Aban360.CalculationPool.Persistence.Features.Rule.Repositories.TariffCalculationModeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_tariffCalculationMode": "_tariffCalculationMode"
+    },
+    "Contracts": {
+      "Aban360.CalculationPool.Persistence/Features/Rule/Commands/Contracts/ITariffCalculationModeCommandService.cs": "4175B9B8AEA5A110B9FA051F64657D19210329A41831A65002E5C43BAAED6D88",
+      "Aban360.CalculationPool.Persistence/Features/Rule/Queries/Contracts/ITariffCalculationModeQueryService.cs": "4CB5C741678BAA930D0370BFC297A5BA293669B6EFAFD3487087D15921773720"
+    }
+  }
+]

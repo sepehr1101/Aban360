@@ -17,7 +17,7 @@ namespace Aban360.Api.Controllers.V1.CalculationPool.Bill.Queries
             _paymentIdHandler.NotNull(nameof(paymentIdHandler));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("generate-payment-id")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<string>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GeneratePaymentId(GeneratePaymentIdInputDto inputDto, CancellationToken cancellationToken)

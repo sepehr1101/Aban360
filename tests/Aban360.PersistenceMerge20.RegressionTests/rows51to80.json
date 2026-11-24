@@ -1,0 +1,542 @@
+[
+  {
+    "Name": "WaterResource",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Land/Commands/Implementations/WaterResourceCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Land/Queries/Implementations/WaterResourceQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Land/Repositories/WaterResourceRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations.WaterResourceCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Land.Queries.Implementations.WaterResourceQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Land.Repositories.WaterResourceRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_waterResource": "_waterResource"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Land/Commands/Contracts/IWaterResourceCommandService.cs": "B7D014CE24DE59EA1CBDA103AC73BF88D42BCDD503DB07CBEAE663B5BE2BA1FF",
+      "Aban360.ClaimPool.Persistence/Features/Land/Queries/Contracts/IWaterResourceQueryService.cs": "7ED8B6BB70CC87194DF8B62E905AFCF8C6C685E7C238101526C00CA36E7910CA"
+    }
+  },
+  {
+    "Name": "MeterDiameter",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Implementations/MeterDiameterCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Implementations/MeterDiameterQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Repositories/MeterDiameterRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations.MeterDiameterCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations.MeterDiameterQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Metering.Repositories.MeterDiameterRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_meterDiameter": "_meterDiameter"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Contracts/IMeterDiameterCommandService.cs": "0869EDF85D4CF9306E4AF5E72C94F7E1D9F789EA8E6CDEEFB4F8966E6A32C4C7",
+      "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Contracts/IMeterDiameterQueryService.cs": "9B9F3391AFF6098B0FA33869313741A18ED362B36EE8332281E76427AAE81180"
+    }
+  },
+  {
+    "Name": "MeterMaterial",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Implementations/MeterMaterialCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Implementations/MeterMaterialQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Repositories/MeterMaterialRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations.MeterMaterialCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations.MeterMaterialQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Metering.Repositories.MeterMaterialRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_meterMaterial": "_meterMaterial"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Contracts/IMeterMaterialCommandService.cs": "CF580C31D87165187FB27CF4B03236769FE6D441BB3D2B8250A0F8AF6AAB52F4",
+      "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Contracts/IMeterMaterialQueryService.cs": "E2F4F2923CB7F55A928F9BC41E941001B38869D34C1A2E18A2B454D1151BC49A"
+    }
+  },
+  {
+    "Name": "MeterProducer",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Implementations/MeterProducerCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Implementations/MeterProducerQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Repositories/MeterProducerRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations.MeterProducerCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations.MeterProducerQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Metering.Repositories.MeterProducerRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_meterProducer": "_meterProducer"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Contracts/IMeterProducerCommandService.cs": "63BC7B674904050759AA98508B3B65365B65E7E58DC009A8BFD40928D5232BB9",
+      "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Contracts/IMeterProducerQueryService.cs": "3A39E8C53DE66C24FDEB6931AE1218FE07378B0242D16441313B8E1B256FAF04"
+    }
+  },
+  {
+    "Name": "MeterType",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Implementations/MeterTypeCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Implementations/MeterTypeQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Repositories/MeterTypeRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations.MeterTypeCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations.MeterTypeQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Metering.Repositories.MeterTypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_meterType": "_meterType"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Contracts/IMeterTypeCommandService.cs": "37172169D8DA445AF677951BA9BE9CB2D9E56C7031ED23D4C3DD7B7E0126893A",
+      "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Contracts/IMeterTypeQueryService.cs": "DEDE867B6BD6B92E151253F66CDB173EAA4134803D52C1A4577A02693D2246FA"
+    }
+  },
+  {
+    "Name": "MeterUseType",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Implementations/MeterUseTypeCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Implementations/MeterUseTypeQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Repositories/MeterUseTypeRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations.MeterUseTypeCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations.MeterUseTypeQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Metering.Repositories.MeterUseTypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_meterUserType": "_meterUserType"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Contracts/IMeterUseTypeCommandService.cs": "6DC4136454B36FCB31FE0E1384984BE6AFA28DB3B424265A297333773CBE3854",
+      "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Contracts/IMeterUseTypeQueryService.cs": "99B95C5E3F7B172B13CD651D27D277DE0C44D7B197E98D52C2E70F7D6004988B"
+    }
+  },
+  {
+    "Name": "SubscriptionType",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Implementations/SubscriptionTypeCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Implementations/SubscriptionTypeQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Repositories/SubscriptionTypeRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations.SubscriptionTypeCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations.SubscriptionTypeQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Metering.Repositories.SubscriptionTypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_subscriptionType": "_subscriptionType"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Contracts/ISubscriptionTypeCommandService.cs": "8C5F43A12C8E62DAEA9BCF377DBCFEFC961C9DCB254AF20108B8A834CDC69F6F",
+      "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Contracts/ISubscriptionTypeQueryService.cs": "466118CB1B87B71F7ADC779A83AEEEDECA435B35070CE431C22A921C9FA5E03D"
+    }
+  },
+  {
+    "Name": "UseState",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Implementations/UseStateCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Implementations/UseStateQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Repositories/UseStateRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations.UseStateCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations.UseStateQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Metering.Repositories.UseStateRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_useState": "_useState"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Contracts/IUseStateCommandService.cs": "B1FF2D94065A180A5C6BEB2C1145FB6A9325DCE76EDED232F31A21172BEAF70D",
+      "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Contracts/IUseStateQueryService.cs": "18AA897D34C5F7C8741266717C3072896B123DD86B372063676D8632D4005D99"
+    }
+  },
+  {
+    "Name": "WaterMeter",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Implementations/WaterMeterCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Implementations/WaterMeterQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Repositories/WaterMeterRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations.WaterMeterCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations.WaterMeterQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Metering.Repositories.WaterMeterRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_wateMere": "_wateMere"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Contracts/IWaterMeterCommandService.cs": "D79A590D964CFC2DE008831E7E980A43D09DD31C70F0985CA89B8726FCC95259",
+      "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Contracts/IWaterMeterQueryService.cs": "22FE7640E9AA9DEF5B063CC4541C76F94D8C73566E751F915FC951F2ACFF3298"
+    }
+  },
+  {
+    "Name": "WaterMeterInstallationStructure",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Implementations/WaterMeterInstallationStructureCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Implementations/WaterMeterInstallationStructureQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Repositories/WaterMeterInstallationStructureRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations.WaterMeterInstallationStructureCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations.WaterMeterInstallationStructureQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Metering.Repositories.WaterMeterInstallationStructureRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_waterMeterInstallationStructure": "_waterMeterInstallationStructure"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Contracts/IWaterMeterInstallationMethodCommandService.cs": "D100461E3A347A35F134518764C4C2E273E6FA2DC9E2D89C35B8F986CFF55D36",
+      "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Contracts/IWaterMeterInstallationMethodQueryService.cs": "7EC14F2555DF02E4AF4C1B8DB4861A35083F7AE9C2BDA9E873E8EB11F4E17D23"
+    }
+  },
+  {
+    "Name": "WaterMeterTag",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Implementations/WaterMeterTagCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Implementations/WaterMeterTagQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Repositories/WaterMeterTagRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations.WaterMeterTagCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations.WaterMeterTagQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Metering.Repositories.WaterMeterTagRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_waterMeterTag": "_waterMeterTag"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Contracts/IWaterMeterTagCommandService.cs": "96146C6816366BA8E5C607F598E56EC4B428BD4C6170DAC6AF6FF61167DC5451",
+      "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Contracts/IWaterMeterTagQueryService.cs": "3B849AD20225697940045D72B463478EB25D0CDE109953A72D732467A4D3B90A"
+    }
+  },
+  {
+    "Name": "WaterMeterTagDefinition",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Implementations/WaterMeterTagDefinitionCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Implementations/WaterMeterTagDefinitionQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Metering/Repositories/WaterMeterTagDefinitionRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Metering.Commands.Implementations.WaterMeterTagDefinitionCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Metering.Queries.Implementations.WaterMeterTagDefinitionQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Metering.Repositories.WaterMeterTagDefinitionRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_waterMeterTagDefinitions": "_waterMeterTagDefinitions"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Metering/Commands/Contracts/IWaterMeterTagDefinitionCommandService.cs": "24C8DF072495507C8F36F46CD9C31E20786B175AF6219E3B847CE4F30DFD784F",
+      "Aban360.ClaimPool.Persistence/Features/Metering/Queries/Contracts/IWaterMeterTagDefinitionQueryService.cs": "FBA210468F9E17203FF61A99EE65032DD886E9620261E305EEEBF0DB1BE65DB4"
+    }
+  },
+  {
+    "Name": "Individual",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/People/Commands/Implementation/IndividualCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/People/Queries/Implementations/IndividualQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/People/Repositories/IndividualRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation.IndividualCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.People.Queries.Implementations.IndividualQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.People.Repositories.IndividualRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_individuals": "_individuals"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/People/Commands/Contracts/IIndividualCommandService.cs": "F015734CC76281F00F8AB457AB55ED5D1A2F53D9D3CF614422FA883C14A069B0",
+      "Aban360.ClaimPool.Persistence/Features/People/Queries/Contracts/IIndividualQueryService.cs": "5B540E95B238EFF05E7630E0428CE2C82B758B96FC74207C6B4FDD81B9C6E96D"
+    }
+  },
+  {
+    "Name": "IndividualDiscountType",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/People/Commands/Implementation/IndividualDiscountTypeCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/People/Queries/Implementations/IndividualDiscountTypeQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/People/Repositories/IndividualDiscountTypeRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation.IndividualDiscountTypeCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.People.Queries.Implementations.IndividualDiscountTypeQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.People.Repositories.IndividualDiscountTypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_individualDiscountType": "_individualDiscountType"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/People/Commands/Contracts/IIndividualDiscountTypeCommandService.cs": "C8A6FBB3325260532FE28E8471C64148F064017CF59C9B5E2AE000183508790C",
+      "Aban360.ClaimPool.Persistence/Features/People/Queries/Contracts/IIndividualDiscountTypeQueryService.cs": "24A9FA49219647520528FEFDE06EA5EE2C223D3C7FD91C7F7EAED3423C0AA0EC"
+    }
+  },
+  {
+    "Name": "IndividualEstate",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/People/Commands/Implementation/IndividualEstateCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/People/Queries/Implementations/IndividualEstateQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/People/Repositories/IndividualEstateRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation.IndividualEstateCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.People.Queries.Implementations.IndividualEstateQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.People.Repositories.IndividualEstateRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_individualEstates": "_individualEstates"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/People/Commands/Contracts/IIndividualEstateCommandService.cs": "80E8C8B8A59675CFD6666B72A7A73CA301CD93EDF6FBF0AB6CB52BE3E023C426",
+      "Aban360.ClaimPool.Persistence/Features/People/Queries/Contracts/IIndividualEstateQueryService.cs": "5C9C9BB8CD472779788399B39EAEC4D5BA2B3A540EECAF6B797799FB17273AED"
+    }
+  },
+  {
+    "Name": "IndividualEstateRelationType",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/People/Commands/Implementation/IndividualEstateRelationTypeCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/People/Queries/Implementations/IndividualEstateRelationTypeQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/People/Repositories/IndividualEstateRelationTypeRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation.IndividualEstateRelationTypeCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.People.Queries.Implementations.IndividualEstateRelationTypeQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.People.Repositories.IndividualEstateRelationTypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_individualEstateRelationTypes": "_individualEstateRelationTypes"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/People/Commands/Contracts/IIndividualEstateRelationTypeCommandService.cs": "853E84A1B286D8242E85AD225D0DA9A10875256D17E732432EE0FE9EC8765890",
+      "Aban360.ClaimPool.Persistence/Features/People/Queries/Contracts/IIndividualEstateRelationTypeQueryService.cs": "8C12457BC9E4008E6F3B88B03EEC371CF78BCF358145610609F3CCA1113F78AA"
+    }
+  },
+  {
+    "Name": "IndividualTag",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/People/Commands/Implementation/IndividualTagCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/People/Queries/Implementations/IndividualTagQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/People/Repositories/IndividualTagRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation.IndividualTagCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.People.Queries.Implementations.IndividualTagQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.People.Repositories.IndividualTagRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_IndividualTag": "_individualTag"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/People/Commands/Contracts/IIndividualTagCommandService.cs": "3DAFF1E5B6BC073647632847E8D50E1A8AE4568B8FB20D10A87C0266E2C813A9",
+      "Aban360.ClaimPool.Persistence/Features/People/Queries/Contracts/IIndividualTagQueryService.cs": "CA6FE59702BEB0848653B1F2C10FE967E772438E325C1E4A39E65C44F831BE77"
+    }
+  },
+  {
+    "Name": "IndividualTagDefinition",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/People/Commands/Implementation/IndividualTagDefinitionCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/People/Queries/Implementations/IndividualTagDefinitionQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/People/Repositories/IndividualTagDefinitionRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation.IndividualTagDefinitionCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.People.Queries.Implementations.IndividualTagDefinitionQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.People.Repositories.IndividualTagDefinitionRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_individualTagDefinitions": "_individualTagDefinitions"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/People/Commands/Contracts/IIndividualTagDefinitionCommandService.cs": "1DF8E60EAE5A001711DAE065E243EB9A0F7B023694737BC967C34A0CFF9783FC",
+      "Aban360.ClaimPool.Persistence/Features/People/Queries/Contracts/IIndividualTagDefinitionQueryService.cs": "F1AA0D702818B412BD129FAA4E7667C004FC9353B80CB042BE959730B3BBF694"
+    }
+  },
+  {
+    "Name": "IndividualType",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/People/Commands/Implementation/IndividualTypeCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/People/Queries/Implementations/IndividualTypeQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/People/Repositories/IndividualTypeRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.People.Commands.Implementation.IndividualTypeCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.People.Queries.Implementations.IndividualTypeQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.People.Repositories.IndividualTypeRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_individualTypes": "_individualTypes"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/People/Commands/Contracts/IIndividualTypeCommandService.cs": "ED3A7F0207509379CE6AD22B114FCA257E69A4F03D982EECC304C1C8ADBA9472",
+      "Aban360.ClaimPool.Persistence/Features/People/Queries/Contracts/IIndividualTypeQueryService.cs": "C41251BEEBC652F93D6EA2EC8910C0D1D7E0A793020B35278DF7E3F709F04BFE"
+    }
+  },
+  {
+    "Name": "Gateway",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/Request/Commands/Implementations/GatewayCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/Request/Queries/Implementations/GatewayQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/Request/Repositories/GatewayRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.Request.Commands.Implementations.GatewayCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.Request.Queries.Implementations.GatewayQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.Request.Repositories.GatewayRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_geteway": "_geteway"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/Request/Commands/Contracts/IGatewayCommandService.cs": "BDA805A902ACE918243828B336D05C14B9586F944628C7B1F64238A78186F93E",
+      "Aban360.ClaimPool.Persistence/Features/Request/Queries/Contracts/IGatewayQueryService.cs": "9B7C3263C7C7760A1EBFEDDECCB0D9205CDCBDE833BF1B088298459D257683A1"
+    }
+  },
+  {
+    "Name": "Siphon",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/WasteWater/Commands/Implementation/SiphonCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/WasteWater/Queries/Implementation/SiphonQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/WasteWater/Repositories/SiphonRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.WasteWater.Commands.Implementation.SiphonCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.WasteWater.Queries.Implementation.SiphonQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.WasteWater.Repositories.SiphonRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_siphon": "_siphon"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/WasteWater/Commands/Contracts/ISiphonCommandService.cs": "C3D55E6E88CC6F927C2CE7EBE5812986A742B9DB6A6B663E0A3ADBEE6AEF1C60",
+      "Aban360.ClaimPool.Persistence/Features/WasteWater/Queries/Contracts/ISiphonQueryService.cs": "D81C42EFB28843ACFE8EADD69BE5CA5197B3B4F19076F5198EC84E5DBDEA866B"
+    }
+  },
+  {
+    "Name": "SiphonDiameter",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/WasteWater/Commands/Implementation/SiphonDiameterCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/WasteWater/Queries/Implementation/siphonDiameterQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/WasteWater/Repositories/SiphonDiameterRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.WasteWater.Commands.Implementation.SiphonDiameterCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.WasteWater.Queries.Implementation.SiphonDiameterQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.WasteWater.Repositories.SiphonDiameterRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_siphonDiameter": "_siphonDiameter"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/WasteWater/Commands/Contracts/ISiphonDiameterCommandService.cs": "9C12518AF579C6DE0760EA05D3A3FE138BAA534F0D01C363F77EA183AEBF9E62",
+      "Aban360.ClaimPool.Persistence/Features/WasteWater/Queries/Contracts/ISiphonDiameterQueryService.cs": "0B57624047B0CD1C2D84D02EA597E3EAD6EC7C8864B52B11D9087352E9CE873B"
+    }
+  },
+  {
+    "Name": "SiphonMaterial",
+    "Module": "Aban360.ClaimPool.Persistence",
+    "CommandPath": "Aban360.ClaimPool.Persistence/Features/WasteWater/Commands/Implementation/SiphonMaterialCommandService.cs",
+    "QueryPath": "Aban360.ClaimPool.Persistence/Features/WasteWater/Queries/Implementation/siphonMaterialQueryService.cs",
+    "RepositoryPath": "Aban360.ClaimPool.Persistence/Features/WasteWater/Repositories/SiphonMaterialRepository.cs",
+    "CommandType": "Aban360.ClaimPool.Persistence.Features.WasteWater.Commands.Implementation.SiphonMaterialCommandService",
+    "QueryType": "Aban360.ClaimPool.Persistence.Features.WasteWater.Queries.Implementation.SiphonMaterialQueryService",
+    "RepositoryType": "Aban360.ClaimPool.Persistence.Features.WasteWater.Repositories.SiphonMaterialRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_siphonMaterial": "_siphonMaterial"
+    },
+    "Contracts": {
+      "Aban360.ClaimPool.Persistence/Features/WasteWater/Commands/Contracts/ISiphonMaterialCommandService.cs": "5CF7FE8DD801A475360F39E580B80A7000775F8307664D1A002F417421C65755",
+      "Aban360.ClaimPool.Persistence/Features/WasteWater/Queries/Contracts/ISiphonMaterialQueryService.cs": "0576C2383CDB605371BEE15B658CFD3C0AB9A6C3D09A27FE6A4296E6E3034344"
+    }
+  },
+  {
+    "Name": "EquipmentBroker",
+    "Module": "Aban360.InstallationPool.Persistence",
+    "CommandPath": "Aban360.InstallationPool.Persistence/Features/Commands/Implementations/EquipmentBrokerCommandService.cs",
+    "QueryPath": "Aban360.InstallationPool.Persistence/Features/Queries/Implementations/EquipmentBrokerQueryService.cs",
+    "RepositoryPath": "Aban360.InstallationPool.Persistence/Features/Repositories/EquipmentBrokerRepository.cs",
+    "CommandType": "Aban360.InstallationPool.Persistence.Features.Commands.Implementations.EquipmentBrokerCommandService",
+    "QueryType": "Aban360.InstallationPool.Persistence.Features.Queries.Implementations.EquipmentBrokerQueryService",
+    "RepositoryType": "Aban360.InstallationPool.Persistence.Features.Repositories.EquipmentBrokerRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_equipmentBroker": "_equipmentBroker"
+    },
+    "Contracts": {
+      "Aban360.InstallationPool.Persistence/Features/Commands/Contracts/IEquipmentBrokerCommandService.cs": "BAC74EA970E5DAC23D836FAEB68CB593E66F7212A3D5821B8FF906A6EF0822D2",
+      "Aban360.InstallationPool.Persistence/Features/Queries/Contracts/IEquipmentBrokerQueryService.cs": "4C8603DABCE1385BFB1EA1951BA307EAA71CD10C3AC61921BA11B4724B643895"
+    }
+  },
+  {
+    "Name": "EquipmentBrokerZone",
+    "Module": "Aban360.InstallationPool.Persistence",
+    "CommandPath": "Aban360.InstallationPool.Persistence/Features/Commands/Implementations/EquipmentBrokerZoneCommandService.cs",
+    "QueryPath": "Aban360.InstallationPool.Persistence/Features/Queries/Implementations/EquipmentBrokerZoneQueryService.cs",
+    "RepositoryPath": "Aban360.InstallationPool.Persistence/Features/Repositories/EquipmentBrokerZoneRepository.cs",
+    "CommandType": "Aban360.InstallationPool.Persistence.Features.Commands.Implementations.EquipmentBrokerZoneCommandService",
+    "QueryType": "Aban360.InstallationPool.Persistence.Features.Queries.Implementations.EquipmentBrokerZoneQueryService",
+    "RepositoryType": "Aban360.InstallationPool.Persistence.Features.Repositories.EquipmentBrokerZoneRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_equipmentBrokerZone": "_equipmentBrokerZone"
+    },
+    "Contracts": {
+      "Aban360.InstallationPool.Persistence/Features/Commands/Contracts/IEquipmentBrokerZoneCommandService.cs": "8E3F35260E877255DEC82B5B40362381E7D23047F82F6F0503C28584CF0D3A04",
+      "Aban360.InstallationPool.Persistence/Features/Queries/Contracts/IEquipmentBrokerZoneQueryService.cs": "76D88E1F2A1607EB728E98C074D5B5E3724150F19CD4B39D025D432EE4DD6A5C"
+    }
+  },
+  {
+    "Name": "SewageEquipmentBroker",
+    "Module": "Aban360.InstallationPool.Persistence",
+    "CommandPath": "Aban360.InstallationPool.Persistence/Features/Commands/Implementations/SewageEquipmentBrokerCommandService.cs",
+    "QueryPath": "Aban360.InstallationPool.Persistence/Features/Queries/Implementations/SewageEquipmentBrokerQueryService.cs",
+    "RepositoryPath": "Aban360.InstallationPool.Persistence/Features/Repositories/SewageEquipmentBrokerRepository.cs",
+    "CommandType": "Aban360.InstallationPool.Persistence.Features.Commands.Implementations.SewageEquipmentBrokerCommandService",
+    "QueryType": "Aban360.InstallationPool.Persistence.Features.Queries.Implementations.SewageEquipmentBrokerQueryService",
+    "RepositoryType": "Aban360.InstallationPool.Persistence.Features.Repositories.SewageEquipmentBrokerRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_sewageEquipmentBroker": "_sewageEquipmentBroker"
+    },
+    "Contracts": {
+      "Aban360.InstallationPool.Persistence/Features/Commands/Contracts/ISewageEquipmentBrokerCommandService.cs": "0C937D02370325EFBF7BB53BB69ACDFF15670F81D9B3D62C329FA6FA56CB9D17",
+      "Aban360.InstallationPool.Persistence/Features/Queries/Contracts/ISewageEquipmentBrokerQueryService.cs": "D4729BD85C5C75FEE59716F24AC214276E2E8E6647833752C19B790D13B656D1"
+    }
+  },
+  {
+    "Name": "SewageEquipmentBrokerZone",
+    "Module": "Aban360.InstallationPool.Persistence",
+    "CommandPath": "Aban360.InstallationPool.Persistence/Features/Commands/Implementations/SewageEquipmentBrokerZoneCommandService.cs",
+    "QueryPath": "Aban360.InstallationPool.Persistence/Features/Queries/Implementations/SewageEquipmentBrokerZoneQueryService.cs",
+    "RepositoryPath": "Aban360.InstallationPool.Persistence/Features/Repositories/SewageEquipmentBrokerZoneRepository.cs",
+    "CommandType": "Aban360.InstallationPool.Persistence.Features.Commands.Implementations.SewageEquipmentBrokerZoneCommandService",
+    "QueryType": "Aban360.InstallationPool.Persistence.Features.Queries.Implementations.SewageEquipmentBrokerZoneQueryService",
+    "RepositoryType": "Aban360.InstallationPool.Persistence.Features.Repositories.SewageEquipmentBrokerZoneRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_sewageEquipmentBrokerZone": "_sewageEquipmentBrokerZone"
+    },
+    "Contracts": {
+      "Aban360.InstallationPool.Persistence/Features/Commands/Contracts/ISewageEquipmentBrokerZoneCommandService.cs": "83E4342F59F8EDB5A5C001316E18F9B7D0FCDA7B0766900CFFE86DB0541685B4",
+      "Aban360.InstallationPool.Persistence/Features/Queries/Contracts/ISewageEquipmentBrokerZoneQueryService.cs": "ABF743D41BC4D43662B2DA58088A39B37701D2A38625EB720B9EC1B45F3507A4"
+    }
+  },
+  {
+    "Name": "CordinalDirection",
+    "Module": "Aban360.LocationPool.Persistence",
+    "CommandPath": "Aban360.LocationPool.Persistence/Features/MainHierarchy/Commands/Implementations/CordinalDirectionCommandService.cs",
+    "QueryPath": "Aban360.LocationPool.Persistence/Features/MainHierarchy/Queries/Implementations/CordinalDirectionQueryService.cs",
+    "RepositoryPath": "Aban360.LocationPool.Persistence/Features/MainHierarchy/Repositories/CordinalDirectionRepository.cs",
+    "CommandType": "Aban360.LocationPool.Persistence.Features.MainHierarchy.Commands.Implementations.CordinalDirectionCommandService",
+    "QueryType": "Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implementations.CordinalDirectionQueryService",
+    "RepositoryType": "Aban360.LocationPool.Persistence.Features.MainHierarchy.Repositories.CordinalDirectionRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_cordinalDirections": "_directions"
+    },
+    "Contracts": {
+      "Aban360.LocationPool.Persistence/Features/MainHierarchy/Commands/Contracts/ICordinalDirectionCommandService.cs": "F0539635069CF6FBC5E9D39FC0755476EBBA073C363DAF1128B8675FA511C25C",
+      "Aban360.LocationPool.Persistence/Features/MainHierarchy/Queries/Contracts/ICordinalDirectionQueryService.cs": "79DE350B9237D508C359D95C38CEBB8C954195D3CE6610237B5CC43E1AC16E4D"
+    }
+  },
+  {
+    "Name": "Country",
+    "Module": "Aban360.LocationPool.Persistence",
+    "CommandPath": "Aban360.LocationPool.Persistence/Features/MainHierarchy/Commands/Implementations/CountryCommandService.cs",
+    "QueryPath": "Aban360.LocationPool.Persistence/Features/MainHierarchy/Queries/Implementations/CountryQueryService.cs",
+    "RepositoryPath": "Aban360.LocationPool.Persistence/Features/MainHierarchy/Repositories/CountryRepository.cs",
+    "CommandType": "Aban360.LocationPool.Persistence.Features.MainHierarchy.Commands.Implementation.CountryCommandService",
+    "QueryType": "Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implementations.CountryQueryService",
+    "RepositoryType": "Aban360.LocationPool.Persistence.Features.MainHierarchy.Repositories.CountryRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_country": "_country"
+    },
+    "Contracts": {
+      "Aban360.LocationPool.Persistence/Features/MainHierarchy/Commands/Contracts/ICountryCommandService.cs": "474068C29BA723DCFC0D59F8A3E860A13A21F7FB19EEB3B7C9E0CB163ED50FDE",
+      "Aban360.LocationPool.Persistence/Features/MainHierarchy/Queries/Contracts/ICountryQueryService.cs": "DC6FF51E00DB8AEE9269D1AEBA7875366AFE00410A4550A739E6849D813A48CC"
+    }
+  },
+  {
+    "Name": "Headquarter",
+    "Module": "Aban360.LocationPool.Persistence",
+    "CommandPath": "Aban360.LocationPool.Persistence/Features/MainHierarchy/Commands/Implementations/HeadquarterCommandService.cs",
+    "QueryPath": "Aban360.LocationPool.Persistence/Features/MainHierarchy/Queries/Implementations/HeadquarterQueryService.cs",
+    "RepositoryPath": "Aban360.LocationPool.Persistence/Features/MainHierarchy/Repositories/HeadquarterRepository.cs",
+    "CommandType": "Aban360.LocationPool.Persistence.Features.MainHierarchy.Commands.Implementations.HeadquarterCommandService",
+    "QueryType": "Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Implementations.HeadquarterQueryService",
+    "RepositoryType": "Aban360.LocationPool.Persistence.Features.MainHierarchy.Repositories.HeadquarterRepository",
+    "FieldMap": {
+      "_uow": "_uow",
+      "_headquarterList": "_headquarter"
+    },
+    "Contracts": {
+      "Aban360.LocationPool.Persistence/Features/MainHierarchy/Commands/Contracts/IHeadquarterCommandService.cs": "054C5DCFE5587FB30D51CD6678CEE115314FB446B5EFBA7B429252DCF9B4180E",
+      "Aban360.LocationPool.Persistence/Features/MainHierarchy/Queries/Contracts/IHeadquarterQueryService.cs": "41BA8E335D2822A878CB258FF05753A0278AD14B733566E1644DA57280D8FF91"
+    }
+  }
+]

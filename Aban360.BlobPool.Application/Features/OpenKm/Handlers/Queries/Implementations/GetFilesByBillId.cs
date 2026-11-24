@@ -43,9 +43,10 @@ namespace Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Implemen
             {
                 throw new BaseException("شناسه قبض مقدار خالی وارد شده است");
             }
-            TrackingOutputDto tracking = await _trackingQueryService.GetLatest(input);
+            
             if (!string.IsNullOrWhiteSpace(trackNumber))
             {
+                TrackingOutputDto tracking = await _trackingQueryService.GetLatest(input);
                 if (!int.TryParse(trackNumber, out int parsedTrackNumber) ||
                     parsedTrackNumber <= 0 ||
                     tracking.TrackNumber != parsedTrackNumber)

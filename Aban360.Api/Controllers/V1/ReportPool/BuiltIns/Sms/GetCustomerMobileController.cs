@@ -17,7 +17,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.BuiltIns.Sms
             _getCustomerMobileHandler.NotNull(nameof(getCustomerMobileHandler));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("raw")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<GetCustomerMobileOutputDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetRaw(GetCustomerMobileInputDto input, CancellationToken cancellationToken)

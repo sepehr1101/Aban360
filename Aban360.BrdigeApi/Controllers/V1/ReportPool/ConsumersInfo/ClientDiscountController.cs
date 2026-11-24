@@ -28,7 +28,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
             _requestDiscountRemoveHandler.NotNull(nameof(requestDiscountRemoveHandler));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("add")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ClientDiscountInsertDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Add([FromBody] ClientDiscountInsertDto input, CancellationToken cancellationToken)
@@ -37,7 +37,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.ReportPool.ConsumersInfo
             return Ok(input);
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("edit")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<ClientDiscountInsertDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Edit([FromBody] ClientDiscountUpdateDto input, CancellationToken cancellationToken)

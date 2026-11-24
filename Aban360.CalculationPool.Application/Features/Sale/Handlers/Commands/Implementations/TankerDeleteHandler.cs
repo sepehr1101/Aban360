@@ -60,7 +60,6 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
         private async Task ExecSql(TankerDeleteDto tankerDeleteDto, ZoneIdAndCustomerNumber zoneIdAndCustomerNumber, IAppUser appUser, string opLogText)
         {
             string dbName = GetDbName(tankerDeleteDto.ZoneId);
-
             using (IDbConnection connection = _sqlReportConnection)
             {
                 if (connection.State != ConnectionState.Open)
@@ -76,7 +75,7 @@ namespace Aban360.CalculationPool.Application.Features.Sale.Handlers.Commands.Im
 
                     await tankerCommandService.Delete(tankerDeleteDto, dbName);
                     await bedBesCommandService.DeleteForTanker(zoneIdAndCustomerNumber, dbName);
-                    await billCommandService.Delete(zoneIdAndCustomerNumber);
+                    await billCommandService.DeleteForTanker(zoneIdAndCustomerNumber);
                     await opLogCommandService.Insert(opLogText, appUser);
 
                     transaction.Commit();

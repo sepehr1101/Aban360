@@ -9,3 +9,7 @@
 - If Windows tools are temporarily unavailable, report that limitation and resume in the Windows checkout when available. Do not search for or use a Linux copy as a fallback, and do not ask the user to change or reconnect their project merely because the active tool environment differs.
 - Check the active execution environment and project directory before running commands. If the session temporarily switches to Linux and this repository is absent, explain that the active execution environment has changed; do not conclude that the Windows project has been removed or disconnected.
 - Preserve existing workspace changes when resuming work in the Windows environment.
+
+## C# style
+
+- Prefer explicit types for local variables, including in `foreach` and `out` declarations. Use `var` only when an explicit type is impractical or unavailable, such as with anonymous types.

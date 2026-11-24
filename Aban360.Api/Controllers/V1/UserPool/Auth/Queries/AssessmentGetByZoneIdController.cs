@@ -17,7 +17,7 @@ namespace Aban360.Api.Controllers.V1.UserPool.Auth.Queries
             _userSearch.NotNull(nameof(userSearch));
         }
 
-        [HttpGet, HttpPost]
+        [HttpPost]
         [Route("assessment-by-zoneid")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<StringDictionary>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAssessmentByZoneId(SearchNumericInput inputDto, CancellationToken cancellationToken)

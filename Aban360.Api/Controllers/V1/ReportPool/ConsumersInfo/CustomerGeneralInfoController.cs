@@ -36,7 +36,7 @@ namespace Aban360.Api.Controllers.V1.ReportPool.ConsumersInfo
         }
 
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("excel/{connectionId}")]
         public async Task<IActionResult> GetExcel(string connectionId, CustomerGeneralInput searchInput, CancellationToken cancellationToken)
         {

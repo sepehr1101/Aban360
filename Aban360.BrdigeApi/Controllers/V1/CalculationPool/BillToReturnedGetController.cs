@@ -18,7 +18,7 @@ namespace Aban360.BrdigeApi.Controllers.V1.CalculationPool
             _billReturnLookupsService.NotNull(nameof(billReturnLookupsService));
         }
 
-        [HttpPost, HttpGet]
+        [HttpPost]
         [Route("return")]
         [ProducesResponseType(typeof(ApiResponseEnvelope<IEnumerable<BillsCanReturnOutputDto>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> BillsToReturnedGet([FromBody] SearchInput input, CancellationToken cancellationToken)

@@ -23,7 +23,7 @@ namespace Aban360.Api.Controllers.V1.SystemPool.Logging.Queries
         }
 
         [Route("upload")]
-        [HttpPost, HttpGet]
+        [HttpPost]
         [ProducesResponseType(typeof(ApiResponseEnvelope<AssessmentLogInsertDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> UploadFile(AssessmentLogInsertDto inputDto, CancellationToken cancellation)
         {
