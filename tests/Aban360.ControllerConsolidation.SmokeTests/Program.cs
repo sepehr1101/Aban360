@@ -152,6 +152,39 @@ finally
 {
     if (File.Exists(exportPath)) File.Delete(exportPath);
 }
+(string Route, string Action, string Verbs, string Response, bool Obsolete)[] meterFlowContracts =
+{
+    (Route: "initial-calculate", Action: "Calculate", Verbs: "POST", Response: "IEnumerable<MeterReadingDetailDataOutputDto>", Obsolete: true),
+    (Route: "consumption-check", Action: "CheckConsumption", Verbs: "POST", Response: "MeterReadingCheckedOutputDto", Obsolete: false),
+    (Route: "confirm", Action: "ConfirmCalculation", Verbs: "POST", Response: "int", Obsolete: true),
+    (Route: "amount-confirmed", Action: "CheckAmount", Verbs: "POST", Response: "MeterReadingCheckedOutputDto", Obsolete: false),
+    (Route: "amount-confirmed-then-send-sms", Action: "CheckAmountThenSendSms", Verbs: "POST", Response: "int", Obsolete: false),
+    (Route: "remove", Action: "RemoveFile", Verbs: "GET,POST", Response: "int", Obsolete: false)
+};
+List<ControllerActionDescriptor> meterFlowActions = allActions.Where(action =>
+    action.ControllerTypeInfo.AsType() == typeof(Aban360.Api.Controllers.V1.CalculationPool.MeterReading.MeterFlowController)).ToList();
+Check(meterFlowActions.Count == meterFlowContracts.Length, "Unexpected meter-flow action count.");
+foreach ((string route, string actionName, string verbs, string response, bool obsolete) in meterFlowContracts)
+{
+    ControllerActionDescriptor action = meterFlowActions.Single(candidate =>
+        candidate.AttributeRouteInfo?.Template == $"v1/meter-flow/{route}/{{id}}" &&
+        string.Join(",", Verbs(candidate)) == verbs);
+    foreach (string verb in Verbs(action))
+        Check(allActions.Count(candidate => candidate.AttributeRouteInfo?.Template == action.AttributeRouteInfo?.Template
+            && Verbs(candidate).Contains(verb)) == 1, "Conflicting meter-flow route: " + verb + " " + route);
+    Check(action.ControllerName == "MeterFlow" && action.ActionName == actionName, "Unexpected meter-flow action: " + route);
+    Check(action.Parameters.Select(p => TypeName(p.ParameterType) + " " + p.Name)
+        .SequenceEqual(new[] { "int id", "CancellationToken cancellationToken" }), "Meter-flow parameters changed: " + route);
+    ProducesResponseTypeAttribute metadata = action.MethodInfo.GetCustomAttributes<ProducesResponseTypeAttribute>().Single();
+    Check(metadata.StatusCode == 200 && TypeName(metadata.Type) == $"ApiResponseEnvelope<{response}>", "Meter-flow response changed: " + route);
+    Check(action.MethodInfo.IsDefined(typeof(ObsoleteAttribute), inherit: true) == obsolete, "Meter-flow deprecation changed: " + route);
+    Check(action.ControllerTypeInfo.IsDefined(typeof(AuthorizeAttribute), inherit: true)
+        && !action.MethodInfo.IsDefined(typeof(AllowAnonymousAttribute), inherit: true)
+        && !action.ControllerTypeInfo.IsDefined(typeof(AllowAnonymousAttribute), inherit: true)
+        && !action.FilterDescriptors.Any(filter => filter.Filter is TypeFilterAttribute),
+        "Meter-flow authorization changed: " + route);
+}
+Console.WriteLine("PASS: Six meter-flow actions match their pre-merge contracts.");
 Console.WriteLine($"PASS: {checks} checks; {controllerNames.Count} controllers, {baseline.Count} actions, " +
     $"{baseline.Sum(a => a.Verbs.Length)} HTTP method/route combinations match the pre-merge baseline.");
 Console.WriteLine("MVC discovery, route conflicts, bindings, response metadata, authorization and constructors checked without database access.");

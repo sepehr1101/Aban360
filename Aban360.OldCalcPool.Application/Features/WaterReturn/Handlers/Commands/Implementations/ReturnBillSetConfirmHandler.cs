@@ -99,11 +99,12 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             IEnumerable<BedBesWithDelOutputDto> bedBesIds = await _bedBesQueryService.GetByDateInterval(new ZoneCustomerFromToDateDto((int)repairInfo.Town, (int)repairInfo.Radif, repairInfo.PriDate, repairInfo.TodayDate), zoneDbName);
             IEnumerable<BedBesUpdateDelDto> bedBesUpdateDelDto = bedBesIds.Where(s => s.IsReturned == false).Select(s => new BedBesUpdateDelDto((int)repairInfo.Town, s.Id, true));
             BillFindReturnedInputDto returnedValues = new(memberInfo.ZoneId, memberInfo.CustomerNumber, (int)repairInfo.PriNo, (int)repairInfo.TodayNo, repairInfo.PriDate, repairInfo.TodayDate);
-            IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn = await GetBillsToReturn(returnedValues);
+            IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn = await GetBillsToReturn(returnedValues, false);
 
 
             if ((billsIdToReturn?.Count() ?? 0) != (bedBesUpdateDelDto?.Count() ?? 0))
             {
+                //var x = bedBesUpdateDelDto.ToList();
                 throw new ReturnedBillException(ExceptionLiterals.InvalidBillIdToReturn);
             }
 
@@ -111,7 +112,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             {
                 throw new ReturnedBillException(ExceptionLiterals.InvalidReturnDuplicate);
             }
-            IEnumerable<AutoBackCreateDto> autoBackCreate = autoBacksInfo.Select(a => GetAutoBackCreateDto(a));
+            IEnumerable<AutoBackCreateDto> autoBackCreate = autoBacksInfo.Select(GetAutoBackCreateDto);
             RepairCreateDto repairCreate = GetRepairCreateDto(repairInfo);
             string logText = string.Format(OpLogLiterals.BillReturnConfirmedOpLog, memberInfo.BillId, autoBackCreate?.FirstOrDefault()?.TedGhabs ?? 0, autoBackCreate?.FirstOrDefault()?.PriDate ?? string.Empty, autoBackCreate?.FirstOrDefault()?.TodayDate ?? string.Empty, autoBackCreate?.ElementAt(2)?.Baha ?? 0, input.ConfirmedNumber);
 
@@ -464,10 +465,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             FlatReportOutput<ReturnBillHeaderOutputDto, ReturnBillOutputDto> result = new(_title, header, data);
             return result;
         }
-        private async Task<IEnumerable<BillsOldDbDelUpdateDto>> GetBillsToReturn(BillFindReturnedInputDto returnedValues)
+        private async Task<IEnumerable<BillsOldDbDelUpdateDto>> GetBillsToReturn(BillFindReturnedInputDto returnedValues, bool catchDuplicate=true)
         {
             IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn = await _billQueryService.GetReturnedId(returnedValues);
-            if (billsIdToReturn.Where(b => b.OldDbDel == true).Any())
+            if (catchDuplicate && billsIdToReturn.Where(b => b.OldDbDel == true).Any())
             {
                 throw new ReturnedBillException(ExceptionLiterals.InvalidBillIdToReturn);
             }

@@ -1,5 +1,4 @@
-﻿using Aban360.ClaimPool.Persistence.Features.Land.Commands.Implementations;
-using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
+﻿using Aban360.ClaimPool.Persistence.Features.Land.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Constants.Literals;
@@ -15,7 +14,6 @@ using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.Processing.Dto.Queries.Output;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
 using Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Contracts;
-using Aban360.OldCalcPool.Persistence.Features.Processing.Commands.Implementations;
 using Aban360.OldCalcPool.Persistence.Features.Processing.Queries.Contracts;
 using Aban360.OldCalcPool.Persistence.Features.WaterReturn.Command.Implementations;
 using Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands;
@@ -91,11 +89,15 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
         }
 
 
-        public async Task<BillReturnManualOutputDto> Handle(ReturnBillManualInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
+        public async Task<BillReturnManualOutputDto>  Handle(ReturnBillManualInputDto inputDto, IAppUser appUser, CancellationToken cancellationToken)
         {
             string returnCauseTitle = await ValidateAndGetReturnCause(inputDto, cancellationToken);
             CustomerInfoOutputDto customerInfo = await _returnBillBaseHandler.RealDateValidate(appUser, inputDto.BillId, inputDto.FromDateJalali, inputDto.ToDateJalali);
             CustomerLastInfoGetDto memberInfo = await _memberQueryService.GetMembersBedBesTavizFlatInfo(customerInfo.ZoneId, customerInfo.Radif, true);
+            memberInfo.ChangeCause=memberInfo.ChangeCause ?? string.Empty;
+            memberInfo.ChangeDateJalali=memberInfo.ChangeDateJalali ?? string.Empty;
+            memberInfo.ChangeNumber = memberInfo.ChangeNumber ?? 0;
+            memberInfo.ChangeRegisterDateJalali = memberInfo.ChangeRegisterDateJalali ?? string.Empty;
 
             const int minutesNumber = 0;
             string dbName = GetDbName(customerInfo.ZoneId);
