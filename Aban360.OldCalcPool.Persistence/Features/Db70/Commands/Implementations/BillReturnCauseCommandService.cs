@@ -39,14 +39,14 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Commands.Implementations
         private string GetCreateQuery()
         {
             return @"use [Db70]
-                    Insert Into [Db70].dbo.BillReturnCause(Code,Title,IsInList,IsLastMeterValid,IsPartial,RegisterDateTime,RegisterByUserId)
-                    Values(@Code,@Title,@IsInList,@IsLastMeterValid,@IsPartial,@RegisterDateTime,@RegisterByUserId)";
+                    Insert Into [Db70].dbo.BillReturnCause(Code,Title,IsInList,IsLastMeterValid,IsPartial,HasConsumption,RegisterDateTime,RegisterByUserId)
+                    Values(@Code,@Title,@IsInList,@IsLastMeterValid,@IsPartial,@HasConsumption,@RegisterDateTime,@RegisterByUserId)";
         }
         private string GetUpdateQuery()
         {
             return @"use [Db70]
                     Update [Db70].dbo.BillReturnCause
-                    Set Code = @Code , Title = @Title , IsInList = @IsInList , IsLastMeterValid = @IsLastMeterValid , IsPartial = @IsPartial
+                    Set Code = @Code , Title = @Title , IsInList = @IsInList , IsLastMeterValid = @IsLastMeterValid , IsPartial = @IsPartial , HasConsumption = @HasConsumption
                     Where 
                         RemoveDateTime IS NULL AND 
                         Id=@Id";

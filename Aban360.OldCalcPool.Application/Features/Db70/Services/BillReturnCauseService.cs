@@ -186,7 +186,7 @@ internal sealed class BillReturnCauseService : AbstractBaseConnection, IBillRetu
     public async Task<IEnumerable<BillReturnCauseGetDto>> GetAllAsync(CancellationToken cancellationToken)
     {
         IEnumerable<BillReturnCauseGetDto> data = await _billReturnCauseQueryService.Get();
-        IEnumerable<BillReturnCauseGetDto> completeResult = data.Select(d => new BillReturnCauseGetDto() { Id = d.Id, Code = d.Code, Title = $"{d.Title} ({GetAllGetTitleCombineReturnType(d.Title, d.IsLastMeterValid)})", IsInList = d.IsInList, IsLastMeterValid = d.IsLastMeterValid, IsPartial = d.IsPartial, }).ToList();
+        IEnumerable<BillReturnCauseGetDto> completeResult = data.Select(d => new BillReturnCauseGetDto() { Id = d.Id, Code = d.Code, Title = $"{d.Title} ({GetAllGetTitleCombineReturnType(d.Title, d.IsLastMeterValid)})", IsInList = d.IsInList, IsLastMeterValid = d.IsLastMeterValid, IsPartial = d.IsPartial, HasConsumption = d.HasConsumption }).ToList();
         return completeResult;
     }
 

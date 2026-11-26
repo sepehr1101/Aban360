@@ -8,5 +8,6 @@
         public bool IsInList { get; set; }
         public bool IsLastMeterValid { get; set; }
         public bool IsPartial { get; set; }
+        public bool HasConsumption { get; set; }
     }
 }
