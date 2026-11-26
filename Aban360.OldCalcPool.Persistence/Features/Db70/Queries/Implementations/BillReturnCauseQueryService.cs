@@ -60,7 +60,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
                         Title,
                         IsInList,
                         IsLastMeterValid,
-                        IsPartial
+                        IsPartial,
+                        HasConsumption
                     From [Db70].dbo.BillReturnCause
                     Where 
                         RemoveDateTime IS NULL AND    
@@ -74,7 +75,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
                         Title,
                         IsInList,
                         IsLastMeterValid,
-                        IsPartial
+                        IsPartial,
+                        HasConsumption
                     From [Db70].dbo.BillReturnCause
                     Where 
                         RemoveDateTime IS NULL /*AND
@@ -88,7 +90,8 @@ namespace Aban360.OldCalcPool.Persistence.Features.Db70.Queries.Implementations
                         Title,
                         IsInList,
                         IsLastMeterValid,
-                        IsPartial
+                        IsPartial,
+                        HasConsumption
                     From [Db70].dbo.BillReturnCause
                     Where 
                         RemoveDateTime IS NULL AND
