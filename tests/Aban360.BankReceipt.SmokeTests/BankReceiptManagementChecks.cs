@@ -1,4 +1,6 @@
-﻿using Aban360.Common.Exceptions;
+using Aban360.PaymentPool.Application.Features.BankReceipt.Contracts;
+using Aban360.PaymentPool.Application.Features.BankReceipt.Services;
+using Aban360.Common.Exceptions;
 using Aban360.PaymentPool.Application.Features.BankReceipt.Implementations;
 using Aban360.PaymentPool.Domain.Features.BankReceipt.Dto;
 using Aban360.PaymentPool.Domain.Features.Remuneration.Entities;
@@ -16,8 +18,8 @@ internal static class BankReceiptManagementChecks
             throw new Exception(message);
         }
         var banks = new BankSource();
-        var bankHandler = new BankReceiptBankGetAllHandler(banks);
-        var list = (await bankHandler.Handle(default)).ToArray();
+        var bankHandler = new BankReceiptService(null!, banks, null!, null!, Array.Empty<IBankReceiptReconciliationService>(), null!);
+        var list = (await bankHandler.BankReceiptBankGetAllAsync(default)).ToArray();
         Check(list.Length == 2 && list[0].Id == 1 && list[1].Id == 2, "bank selection sorted");
         Check(list[0].CentralBankCode == "01" && list[0].Identifier == "AAA", "bank codes kept as strings");
         Check(list[0].Id != short.Parse(list[1].CentralBankCode), "internal bank identifier is separate from central code");
@@ -31,25 +33,25 @@ internal static class BankReceiptManagementChecks
         var otherBank = new FileRecord(2, owner, start.AddHours(1), false);
         var otherOwner = new FileRecord(1, stranger, start.AddHours(1), false);
         store.Files.AddRange(new[] { pending, committed, nextDay, previousDay, otherBank, otherOwner });
-        var handler = new BankReceiptDeleteHandler(store, banks);
-        await Reject(() => handler.Handle(new(0, "14040101"), owner, default), "invalid bank ID");
-        await Reject(() => handler.Handle(new(3, "14040101"), owner, default), "unknown bank");
-        await Reject(() => handler.Handle(new(1, "14041301"), owner, default), "invalid day");
-        await Reject(() => handler.Handle(new(1, "140401"), owner, default), "old date format rejected");
+        var handler = new BankReceiptService(store, banks, null!, null!, Array.Empty<IBankReceiptReconciliationService>(), null!);
+        await Reject(() => handler.BankReceiptDeleteAsync(new(0, "14040101"), owner, default), "invalid bank ID");
+        await Reject(() => handler.BankReceiptDeleteAsync(new(3, "14040101"), owner, default), "unknown bank");
+        await Reject(() => handler.BankReceiptDeleteAsync(new(1, "14041301"), owner, default), "invalid day");
+        await Reject(() => handler.BankReceiptDeleteAsync(new(1, "140401"), owner, default), "old date format rejected");
         Check(store.Calls == 0, "invalid input cannot delete");
-        var result = await handler.Handle(new(1, "1404/01/01"), owner, default);
+        var result = await handler.BankReceiptDeleteAsync(new(1, "1404/01/01"), owner, default);
         Check(result.DeletedFileCount == 2 && result.CommittedFileCount == 1, "delete only matching bank and upload day");
         Check(pending.Deleted && committed.Deleted && !nextDay.Deleted && !previousDay.Deleted, "day boundaries inclusive and exclusive");
         Check(!otherBank.Deleted && !otherOwner.Deleted, "bank and owner isolation");
         Check(committed.PaymentStillExists && committed.Description == "شرح ثابت" && !committed.DiscrepancyActive,
             "financial history and immutable notes retained");
-        var retry = await handler.Handle(new(1, "14040101"), owner, default);
+        var retry = await handler.BankReceiptDeleteAsync(new(1, "14040101"), owner, default);
         Check(retry.DeletedFileCount == 0 && retry.CommittedFileCount == 0, "repeated delete is harmless");
-        var empty = await handler.Handle(new(1, "14040103"), owner, default);
+        var empty = await handler.BankReceiptDeleteAsync(new(1, "14040103"), owner, default);
         Check(empty.DeletedFileCount == 0, "empty day");
         using var cancellation = new CancellationTokenSource(); cancellation.Cancel();
         int calls = store.Calls;
-        try { await handler.Handle(new(1, "14040101"), owner, cancellation.Token); throw new Exception("cancellation"); }
+        try { await handler.BankReceiptDeleteAsync(new(1, "14040101"), owner, cancellation.Token); throw new Exception("cancellation"); }
         catch (OperationCanceledException) { checks++; }
         Check(store.Calls == calls, "cancelled deletion does not reach persistence");
         return checks;

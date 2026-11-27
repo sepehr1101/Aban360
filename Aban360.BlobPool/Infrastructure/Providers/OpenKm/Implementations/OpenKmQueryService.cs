@@ -1,0 +1,376 @@
+﻿using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
+using Aban360.BlobPool.Domain.Providers.Dto;
+using Aban360.Common.Exceptions;
+using Aban360.Common.Authentication;
+using Aban360.Common.Extensions;
+using Aban360.Common.Literals;
+using HttpClientToCurl;
+using Microsoft.Extensions.Options;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
+using System.Web;
+
+namespace Aban260.BlobPool.Infrastructure.Features.DmsServices.Implementations
+{
+    internal sealed class OpenKmQueryService : IOpenKmQueryService
+    {
+        const string applicationJson = @"application/json";
+        string applicationXml = "application/xml";
+        string plainText = @"text/plain";
+        private readonly HttpClient _httpClient;
+        private readonly OpenKmOptions _options;
+        private readonly IEsbTokenProvider _tokenProvider;
+        private const string GroupNameFolder = "okg%3Amoshtarakin_folder";
+        private const string GroupNameFile = "okg%3Amoshtarakin_file";
+
+        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        public OpenKmQueryService(
+            IHttpClientFactory httpClientFactory,
+            IOptions<OpenKmOptions> options,
+            IEsbTokenProvider tokenProvider)
+        {
+            httpClientFactory.NotNull(nameof(httpClientFactory));
+
+            _httpClient = httpClientFactory.CreateClient(HttpClientNames.Kaj);
+            _httpClient.NotNull(nameof(_httpClient));
+
+            _options = options.Value;
+            _options.NotNull(nameof(_options));
+
+            _tokenProvider = tokenProvider;
+            _tokenProvider.NotNull(nameof(_tokenProvider));
+        }
+
+        public async Task<AuthenticationHeaderValue> GetAuthenticationHeaderAsync()//todo: to Private
+        {
+            return await _tokenProvider.GetAuthenticationHeaderAsync();
+        }
+
+        public async Task<FileListResponse> GetRemovedFiles(string directory)
+        {
+            string fldId = $"{_options.BaseDirectoryPath}{directory}/deleted";
+            return await GetChildren(fldId, false);
+        }
+        public async Task<FileListResponse> GetFilesTracknumber(string r_trackNumber)
+        {
+            string fldId = $"{_options.BaseDirectoryPath}{r_trackNumber}";
+            return await GetChildren(fldId, false);
+        }
+        public async Task<FileListResponse> GetFilesDiscount(string id)
+        {
+            string fldId = $"{_options.BaseDiscountPath}{id}";
+            return await GetChildren(fldId, false);
+        }
+        public async Task<FileListResponse> GetFilesByBillId(string billId)
+        {
+            string fldId = $"{_options.BaseDirectoryPath}{billId}";
+            return await GetChildren(fldId, false);
+        }
+        private async Task<FileListResponse> GetChildren(string fldId, bool isDiscount)
+        {
+            var authHeader = await GetAuthenticationHeaderAsync();
+
+            // Only append the relative path/query; BaseAddress comes from DI
+            var requestUrl = $"{_options.GetFilesListEndpoint}?fldId={Uri.EscapeDataString(fldId)}";
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+            request.Headers.CacheControl = new CacheControlHeaderValue { NoCache = true };
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new InvalidBillIdException(isDiscount ? ExceptionLiterals.InvalidDiscountFileName : ExceptionLiterals.DmsInfoNotFound);
+            }
+            string stringContent = await response.Content.ReadAsStringAsync();
+            try
+            {                
+                return JsonSerializer.Deserialize<FileListResponse>(stringContent, _jsonOptions);
+            }
+            catch (Exception e)
+            {                
+                FileListResponseSingle document = JsonSerializer.Deserialize<FileListResponseSingle>(stringContent, _jsonOptions);
+                FileListResponse documents = new FileListResponse()
+                {
+                    Documents = [document.Document]
+                };
+                return documents;
+            }
+        }
+
+        public async Task<byte[]> GetFileBinary(string documentId)
+        {
+            // Ensure Bearer token
+            AuthenticationHeaderValue authHeader = await GetAuthenticationHeaderAsync();
+            _httpClient.DefaultRequestHeaders.Authorization = authHeader;
+
+            // Build URL from configuration
+            string requestUrl = $"{_options.GetBinaryFileEndpoint}?docId={Uri.EscapeDataString(documentId)}";
+
+            HttpResponseMessage response = await _httpClient.GetAsync(requestUrl);
+            response.EnsureSuccessStatusCode();
+
+            // Read as byte array instead of string
+            return await response.Content.ReadAsByteArrayAsync();
+        }
+        public async Task<byte[]> GetImageThumbnail(string documentId)
+        {
+            // Ensure Bearer token
+            AuthenticationHeaderValue authHeader = await GetAuthenticationHeaderAsync();
+            _httpClient.DefaultRequestHeaders.Authorization = authHeader;
+
+            // Build URL from configuration
+            string requestUrl = $"{_options.GetThumbnailEndpoint}?docId={Uri.EscapeDataString(documentId)}";
+
+            HttpResponseMessage response = await _httpClient.GetAsync(requestUrl);
+            response.EnsureSuccessStatusCode();
+
+            // Read as byte array instead of string
+            return await response.Content.ReadAsByteArrayAsync();
+        }
+        public async Task<string> GetDownloadLink(string documentId, bool oneTimeUse)
+        {
+            var authHeader = await GetAuthenticationHeaderAsync();
+
+            // Only append the relative path/query; BaseAddress comes from DI
+            var requestUrl = $"{_options.GetDownloadLinkEndpoint}?uuid={documentId}&oneTimeUse={oneTimeUse.ToString().ToLower()}";
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+            string result = await response.Content.ReadAsStringAsync();
+            return result;
+        }
+        public async Task<MetaDataProperties> GetMetaDataProperties(string documentId)
+        {
+            var authHeader = await GetAuthenticationHeaderAsync();
+
+            // Only append the relative path/query; BaseAddress comes from DI
+            var requestUrl = $"{_options.GeMetadataEndpoint}?nodeId={documentId}&grpName={GroupNameFile}";
+
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+            using var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+            //   MetaDataProperties result = await response.Content.ReadFromJsonAsync<MetaDataProperties>();
+
+            string jsonResult = await response.Content.ReadAsStringAsync();
+            MetaDataProperties metaDataProperties;
+
+            if (jsonResult.Contains("[") && jsonResult.Contains("]"))
+            {
+                metaDataProperties = JsonSerializer.Deserialize<MetaDataProperties>(jsonResult);
+            }
+            else
+            {
+                PropertyGroupItem singleMetaData = JsonSerializer.Deserialize<MetaDataProperty>(jsonResult).RawMetaDatas;
+
+                metaDataProperties = new MetaDataProperties()
+                {
+                    RawMetaDatas = new List<PropertyGroupItem>
+                    {
+                        singleMetaData
+                    }
+                };
+            }
+
+            return metaDataProperties;
+        }
+
+        public async Task<SearchDocumentsResponse> SearchDocuments(string folderPath, string property, string path)
+        {
+            // Ensure Bearer token
+            var authHeader = await GetAuthenticationHeaderAsync();
+            _httpClient.DefaultRequestHeaders.Authorization = authHeader;
+
+            // Build URL from configuration
+            string requestUrl = $"{_options.SearchByMetadataEndpoint}?property={Uri.EscapeDataString(property)}&path={Uri.EscapeDataString(path)}";
+
+            // Post folderPath as JSON content
+            var content = new StringContent(folderPath, Encoding.UTF8, applicationJson);
+
+            var response = await _httpClient.PostAsync(requestUrl, content);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<SearchDocumentsResponse>(_jsonOptions);
+        }
+
+        public async Task<string> GetFolderUuid(string folderPath)
+        {
+            string baseUrl = $"{_options.BaseUrl}{_options.GetUuidEndpoint}";
+            string finalUrl = $"{baseUrl}?fldId={_options.BaseDirectoryPath}{folderPath}";
+
+            var authHeader = await GetAuthenticationHeaderAsync();
+            using var request = new HttpRequestMessage(HttpMethod.Get, finalUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            using var stream = await response.Content.ReadAsStreamAsync();
+            using var doc = await JsonDocument.ParseAsync(stream);
+            string? uuid = doc.RootElement.GetProperty("uuid").GetString();
+            if (uuid == null)
+            {
+                return "invalid uuid";
+            }
+            return uuid;
+        }
+        private void LogRequestToConsole(HttpRequestMessage requestMessage)
+        {
+            /*string curl = */_httpClient.GenerateCurlInFile(
+            requestMessage,
+            config =>
+            {
+                config.TurnOn = true;
+                config.NeedAddDefaultHeaders = true;
+            });
+            int x = 2;
+        }
+
+        //Commands
+        public async Task<bool> CheckFolderExists(string fldId)
+        {            
+            AuthenticationHeaderValue authHeader = await GetAuthenticationHeaderAsync();
+            string requestUrl = $"{_options.BaseUrl}{_options.PathExistsEndpoint}?fldId={HttpUtility.UrlEncode(_options.BaseDirectoryPath)}{fldId}";
+            using var request = new HttpRequestMessage(HttpMethod.Get, requestUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(plainText));
+            var response = await _httpClient.SendAsync(request);
+            if(await response.Content.ReadAsStringAsync()== "PathNotFoundException: Invalid path")
+            {
+                return false;
+            }
+            response.EnsureSuccessStatusCode();
+            return true;
+        }
+        public async Task<AddFileDto> AddFile(string path, StreamContent content, string fileName)
+        {
+            return await AddFile($"{_options.BaseDirectoryPath}", path, content, fileName);
+        }
+        public async Task<AddFileDto> AddFileDiscount(string path, StreamContent content, string fileName)
+        {
+            return await AddFile($"{_options.BaseDiscountPath}", path, content, fileName);
+        }
+        public async Task<string> CreateFolder(string folderName, string path)
+        {
+            string fullPath = string.IsNullOrEmpty(path)? 
+                $"{_options.BaseDirectoryPath}{folderName}": $"{_options.BaseDirectoryPath}{path}/{folderName}";
+            string url = $"{_options.AddFolderEndpoint}";
+
+            var content = new StringContent($"{fullPath}", Encoding.UTF8, applicationJson);
+            using var request = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = content
+            };
+
+            var authHeader = await GetAuthenticationHeaderAsync();
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));            
+            request.Headers.Authorization = authHeader;
+
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            using var stream = await response.Content.ReadAsStreamAsync();
+            using var doc = await JsonDocument.ParseAsync(stream);
+
+            string? uuid = doc.RootElement.GetProperty("uuid").GetString();
+            if (uuid == null)
+            {
+                return "invalid uuid";
+            }
+            //await EditFile(uuid);
+
+            return uuid;
+        }
+        public async Task AddOrUpdateMetadata(string body, string nodeId, bool isFile)
+        {
+            string grpName = isFile ? GroupNameFile : GroupNameFolder;
+            string requestUrl = $"{_options.BaseUrl}{_options.AddMetadataEndpoint}";
+            string finalUrl = $"{_options.BaseUrl}{_options.AddMetadataEndpoint}";
+            finalUrl = finalUrl + "?nodeId=" + nodeId + "&grpName=" + grpName;
+
+            var authHeader = await GetAuthenticationHeaderAsync();
+            using var request = new HttpRequestMessage(HttpMethod.Put, finalUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationXml));
+
+            StringContent content = new (body, Encoding.UTF8, applicationXml);
+            request.Content=content;
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string result = await response.Content.ReadAsStringAsync();
+        }
+        public async Task MarkNodeAsMetadatable(string nodeId, bool isFile)
+        {
+            string grpName = isFile ? GroupNameFile : GroupNameFolder;
+            string baseUrl = $"{_options.BaseUrl}{_options.MetadatableEndpoint}";
+            string finalUrl = $"{baseUrl}?nodeId={nodeId}&grpName={grpName}";
+
+            var authHeader = await GetAuthenticationHeaderAsync();
+            using var request = new HttpRequestMessage(HttpMethod.Put, finalUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+        }
+        public async Task RenameFolder(string folderUuid, string newName)
+        {           
+            string baseUrl = $"{_options.BaseUrl}{_options.RenameFolderEndpoint}";
+            string finalUrl = $"{baseUrl}?fldId={folderUuid}&newName={newName}";
+
+            var authHeader = await GetAuthenticationHeaderAsync();
+            using var request = new HttpRequestMessage(HttpMethod.Put, finalUrl);
+            request.Headers.Authorization = authHeader;
+            //request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task Move(string docUuid, string newPath)
+        {
+            newPath = $"{_options.BaseDirectoryPath}{newPath}";
+            string baseUrl = $"{_options.BaseUrl}{_options.MoveFileEndpoint}";
+            string finalUrl = $"{baseUrl}?docId={docUuid}&dstId={HttpUtility.UrlEncode(newPath)}";
+
+            var authHeader = await GetAuthenticationHeaderAsync();
+            using var request = new HttpRequestMessage(HttpMethod.Put, finalUrl);
+            request.Headers.Authorization = authHeader;
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+        }
+
+        //privates
+        private async Task<AddFileDto> AddFile(string basePath ,string path, StreamContent content, string fileName)
+        {
+            string docPath = nameof(docPath);
+
+            string fullPath = $"{basePath}{path}";
+            var requestUrl = $"{_options.AddFileEndpoint}";
+            var authHeader = await GetAuthenticationHeaderAsync();
+
+            using var form = new MultipartFormDataContent();
+            form.Add(content, nameof(content), fileName);
+            form.Add(new StringContent(fullPath), docPath);
+
+            using var request = new HttpRequestMessage(HttpMethod.Post, requestUrl);
+            request.Headers.Authorization = authHeader;
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(applicationJson));
+            request.Content = form;
+
+            var response = await _httpClient.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            AddFileDto result = await response.Content.ReadFromJsonAsync<AddFileDto>(_jsonOptions);
+            return result;
+        }
+    }
+}

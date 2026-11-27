@@ -31,8 +31,9 @@ namespace Aban360.Common.Db.Extensions
         }
         private static ServiceProvider CreateServices(IServiceCollection services, string connectionString)
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-                 .Where(assembly => assembly.GetName().Name.Contains("Persistence"))
+            System.Reflection.Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies()
+                 .Where(assembly => assembly.GetName().Name is string name &&
+                     (name.Contains("Persistence", StringComparison.Ordinal) || name is "Aban360.LocationPool" or "Aban360.CommunicationPool" or "Aban360.InstallationPool" or "Aban360.WorkflowPool" or "Aban360.SystemPool" or "Aban360.MeterPool" or "Aban360.PaymentPool" or "Aban360.TaxPool" or "Aban360.BlobPool"))
                  .ToArray();
             return services
                 .AddFluentMigratorCore()

@@ -14,7 +14,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Aban360.BlobPool.GatewayAddHoc\Aban360.BlobPool.GatewayAddHoc.csproj" />
+		<ProjectReference Include="..\Aban360.BlobPool\Aban360.BlobPool.csproj" />
 		<ProjectReference Include="..\Aban360.ClaimPool.Persistence\Aban360.ClaimPool.Persistence.csproj" />
 		<ProjectReference Include="..\Aban360.OldCalcPool.Application\Aban360.OldCalcPool.Application.csproj" />
 		<ProjectReference Include="..\Aban360.OldCalcPool.Persistence\Aban360.OldCalcPool.Persistence.csproj" />

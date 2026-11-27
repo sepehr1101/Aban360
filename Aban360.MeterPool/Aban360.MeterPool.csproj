@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <ProjectReference Include="..\Aban360.ClaimPool.Application\Aban360.ClaimPool.Application.csproj" />
+    <ProjectReference Include="..\Aban360.LocationPool\Aban360.LocationPool.csproj" />
+    <ProjectReference Include="..\Aban360.ReportPool.Application\Aban360.ReportPool.Application.csproj" />
+    <ProjectReference Include="..\Aban360.ReportPool.Domain\Aban360.ReportPool.Domain.csproj" />
+    <ProjectReference Include="..\Aban360.UserPool.Application\Aban360.UserPool.Application.csproj" />
+    <PackageReference Include="DNTPersianUtils.Core" Version="6.4.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.3.0" />
+    <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
+    <PackageReference Include="Scrutor" Version="6.0.1" />
+    <ProjectReference Include="..\Aban360.Common.Db\Aban360.Common.Db.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Persistence\DbSeeder\DataScript\Meter.sql">
+      <Link>DbSeeder\DataScript\Meter.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,24 @@
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
+using Scrutor;
+using System.Reflection;
+
+namespace Aban360.BlobPool.Application.Extenstions
+{
+    public static class ConfigureServices
+    {
+        public static void AddBlobPoolApplicationInjections(this IServiceCollection services)
+        {
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.Scan(scan =>
+                          scan
+                            .FromAssemblies(Assembly.GetExecutingAssembly())
+                            .AddClasses(classes => classes.InNamespaces("Aban360.BlobPool.Application"), publicOnly: false)
+                            .UsingRegistrationStrategy(RegistrationStrategy.Throw)
+                            .AsMatchingInterface()
+                            .WithScopedLifetime());
+        }
+    }
+}

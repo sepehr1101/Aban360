@@ -1,10 +1,11 @@
-﻿using Aban360.Common.BaseEntities;
+﻿using Aban360.Common.ApplicationUser;
+using Aban360.Common.BaseEntities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Aban360.UserPool.Domain.Features.Auth.Entities;
 
 [Table(nameof(User))]
-public class User: IHashableEntity
+public class User: IHashableEntity, IOperationLogUser
 {
     public Guid Id { get; set; }
     public string FullName { get; set; } = null!;

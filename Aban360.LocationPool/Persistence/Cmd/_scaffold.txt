@@ -1,0 +1,1 @@
+﻿dotnet ef dbcontext scaffold "Data Source=.;Encrypt=False;Database=Aban360;Integrated Security=false;User ID=admin;Password=pspihp;" Microsoft.EntityFrameworkCore.SqlServer  --project Aban360.LocationPool.Persistence --output-dir Scaffold

@@ -6,10 +6,11 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using Aban260.BlobPool.Infrastructure.Providers.OpenKm.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Contracts;
-using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Querys.Contracts;
 using Aban360.BlobPool.Application.Features.OpenKm.Handlers.Queries.Contracts;
+using Aban360.BlobPool.Application.Features.OpenKm.Services;
 using Aban360.BlobPool.Domain.Features.OpenKm;
 using Aban360.BlobPool.Domain.Providers.Dto;
+using Aban360.BlobPool.Persistence.Features.DmsServices.Queries.Contracts;
 using Aban360.ClaimPool.Domain.Features.Request.Dto.Queries;
 using Aban360.ClaimPool.Persistence.Features.Request.Queries.Contracts;
 using Aban360.Common.ApplicationUser;
@@ -166,11 +167,14 @@ foreach (string? number in new string?[] { null, "", "20", "00000000020" })
 {
     var lookup = new ArchiveLookupFixture();
     var files = await lookup.Run(number);
-    Check(files.Documents.Count == 0 && lookup.Calls.SequenceEqual(new[] { "tracking:123", "folder:123", "files:123" }),
-        "Bill lookup precedes OpenKM; optional and matching request numbers are accepted");
+    string[] expected = string.IsNullOrWhiteSpace(number)
+        ? ["folder:123", "files:123"]
+        : ["tracking:123", "folder:123", "files:123"];
+    Check(files.Documents.Count == 0 && lookup.Calls.SequenceEqual(expected),
+        "Optional request numbers are accepted; supplied numbers are validated before OpenKM");
 }
 var unknownBill = new ArchiveLookupFixture { LatestTrackNumber = null };
-try { await unknownBill.Run(null); throw new Exception("Unknown bill accepted"); }
+try { await unknownBill.Run("20"); throw new Exception("Unknown bill accepted for supplied request number"); }
 catch (InvalidBillIdException)
 {
     Check(unknownBill.Calls.SequenceEqual(new[] { "tracking:123" }), "Unknown bill rejected before OpenKM");
@@ -188,12 +192,12 @@ var renameLookup = new ArchiveLookupFixture { BillFolderExists = false };
 await renameLookup.Run("20");
 Check(renameLookup.Calls.SequenceEqual(new[] { "tracking:123", "folder:123", "member:123", "latest:20", "folder:r_20", "uuid:r_20", "rename:123", "files:123" }),
     "Matching request preserves existing folder rename flow");
-foreach (string? number in new string?[] { null, "", "20" })
+foreach (string? number in new string?[] { null, "" })
 {
     var subscriber = new ArchiveLookupFixture { BillFolderExists = false, MemberZoneId = 1 };
     var files = await subscriber.Run(number);
     Check(files.Documents.Count == 0 && subscriber.Calls.SequenceEqual(new[]
-        { "tracking:123", "folder:123", "member:123", "create:123", "metadata:created-folder:False" }),
+        { "folder:123", "member:123", "create:123", "metadata:created-folder:False" }),
         "Subscriber gets an empty bill folder and returns early");
 }
 foreach (int? zoneId in new int?[] { null, 0 })
@@ -202,10 +206,11 @@ foreach (int? zoneId in new int?[] { null, 0 })
     try { await applicant.Run(null); throw new Exception("Applicant without request accepted"); }
     catch (BaseException)
     {
-        Check(applicant.Calls.SequenceEqual(new[] { "tracking:123", "folder:123", "member:123" }),
+    Check(applicant.Calls.SequenceEqual(new[] { "folder:123", "member:123" }),
             "Missing or invalid subscriber does not create a bill folder");
     }
 }
+await BlobPoolRegistrationChecks.RunAsync(Check);
 Console.WriteLine($"Passed {checks} OpenKM checks.");
 
 static async Task<MetaDataProperties> ReadMetadataResponse(string json)
@@ -317,8 +322,15 @@ sealed class Fixture
             switch (method.Name)
             {
                 case "CheckFolderExists":
-                    if ((string)args[0]! != "r_10") throw new Exception("Unexpected source folder");
-                    return Task.FromResult(SourceExists);
+                    return (string)args[0]! switch
+                    {
+                        "r_10" => Task.FromResult(SourceExists),
+                        "123" => Task.FromResult(DestinationExists),
+                        _ => throw new InvalidOperationException("Unexpected folder")
+                    };
+                case "CreateFolder":
+                    DestinationExists = true;
+                    return Task.FromResult("folder");
                 case "GetFilesTracknumber": return Task.FromResult(new FileListResponse { Documents = Source.ToList() });
                 case "GetFilesByBillId": return Task.FromResult(new FileListResponse { Documents = Destination.ToList() });
                 case "GetFileBinary":
@@ -344,7 +356,8 @@ sealed class Fixture
             if (Denied) throw new BaseException("Access denied");
             return Task.FromResult<IEnumerable<int>>(new[] { 1 });
         });
-        var folders = Proxy.Create<ICreateFolderHandler>((_, _) => { DestinationExists = true; return Task.FromResult("folder"); });
+        IOpenKmMetaDataQueryServices metadata = Proxy.Create<IOpenKmMetaDataQueryServices>((method, _) =>
+            throw new InvalidOperationException(method.Name));
         var log = Proxy.Create<IOpLogCommandService>((_, args) =>
         {
             bool isCompletion = ((string)args[0]!).Contains("پایان کپی");
@@ -353,10 +366,10 @@ sealed class Fixture
             Audit.Add((string)args[0]!);
             return Task.CompletedTask;
         });
-        var type = typeof(ICopyTrackImagesToBillHandler).Assembly.GetType("Aban360.BlobPool.Application.Features.OpenKm.Handlers.Commands.Implementations.CopyTrackImagesToBillHandler", true)!;
+        var type = typeof(IOpenKmFoldersMetadataService).Assembly.GetType("Aban360.BlobPool.Application.Features.OpenKm.Services.OpenKmFoldersMetadataService", true)!;
         var logger = Activator.CreateInstance(typeof(NullLogger<>).MakeGenericType(type))!;
-        var handler = (ICopyTrackImagesToBillHandler)Activator.CreateInstance(type, openKm, tracking, zones, folders, log, logger)!;
-        return handler.Handle(input ?? new() { TrackNumber = 10, BillId = "123" }, new User(), token);
+        var handler = (IOpenKmFoldersMetadataService)Activator.CreateInstance(type, openKm, metadata, tracking, zones, log, logger)!;
+        return handler.CopyTrackImagesToBillAsync(input ?? new() { TrackNumber = 10, BillId = "123" }, new User(), token);
     }
 
     private async Task<AddFileDto> Upload(object?[] args)

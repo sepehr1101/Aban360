@@ -15,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Aban360.InstallationPool.Domain\Aban360.InstallationPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.InstallationPool.Persistence\Aban360.InstallationPool.Persistence.csproj" />
-    <ProjectReference Include="..\Aban360.LocationPool.GatewayAdhoc\Aban360.LocationPool.GatewayAdhoc.csproj" />
+    <ProjectReference Include="..\Aban360.LocationPool\Aban360.LocationPool.csproj" />
   </ItemGroup>
 
 </Project>

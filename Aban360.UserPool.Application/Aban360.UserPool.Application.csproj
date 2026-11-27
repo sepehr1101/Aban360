@@ -51,9 +51,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Aban360.ClaimPool.Persistence\Aban360.ClaimPool.Persistence.csproj" />
-    <ProjectReference Include="..\Aban360.NotificationPool.Application\Aban360.NotificationPool.Application.csproj" />
+    <ProjectReference Include="..\Aban360.NotificationPool\Aban360.NotificationPool.csproj" />
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
-    <ProjectReference Include="..\Aban360.LocationPool.GatewayAdhoc\Aban360.LocationPool.GatewayAdhoc.csproj" />
+    <ProjectReference Include="..\Aban360.LocationPool\Aban360.LocationPool.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.Domain\Aban360.UserPool.Domain.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.Infrastructure\Aban360.UserPool.Infrastructure.csproj" />
     <ProjectReference Include="..\Aban360.UserPool.Persistence\Aban360.UserPool.Persistence.csproj" />

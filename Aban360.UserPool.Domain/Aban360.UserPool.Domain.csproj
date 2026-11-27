@@ -25,7 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Aban360.Common\Aban360.Common.csproj" />
-    <ProjectReference Include="..\Aban360.LocationPool.Domain\Aban360.LocationPool.Domain.csproj" />
+    <ProjectReference Include="..\Aban360.LocationPool\Aban360.LocationPool.csproj" />
   </ItemGroup>
 
 </Project>

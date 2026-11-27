@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.10.0" />
+    <PackageReference Include="Scrutor" Version="6.0.1" />
+    <ProjectReference Include="..\Aban360.BlobPool\Aban360.BlobPool.csproj" />
+    <ProjectReference Include="..\Aban360.CalculationPool.GatewayAdhoc\Aban360.CalculationPool.GatewayAdhoc.csproj" />
+    <ProjectReference Include="..\Aban360.LocationPool\Aban360.LocationPool.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.3.0" />
+    <PackageReference Include="Dapper" Version="2.1.66" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.12" />
+    <ProjectReference Include="..\Aban360.Common.Db\Aban360.Common.Db.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Persistence\DbSeeder\DataScript\Bank.sql">
+      <Link>DbSeeder\DataScript\Bank.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Persistence\DbSeeder\DataScript\BankAccount.sql">
+      <Link>DbSeeder\DataScript\BankAccount.sql</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <InternalsVisibleTo Include="Aban360.BankReceipt.SmokeTests" />
+  </ItemGroup>
+</Project>

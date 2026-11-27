@@ -5,7 +5,6 @@ using Aban360.Common.Exceptions;
 using Aban360.Common.Extensions;
 using Aban360.Common.Literals;
 using Aban360.Common.Timing;
-using Aban360.UserPool.Domain.Features.Auth.Entities;
 using Dapper;
 using DNTPersianUtils.Core;
 using Microsoft.AspNetCore.Http;
@@ -56,7 +55,7 @@ namespace Aban360.Common.Db.Services
                 throw new InvalidDateException(ExceptionLiterals.InvalidInsertOpLog);
             }
         }
-        public async Task Insert(string text, User user)
+        public async Task Insert(string text, IOperationLogUser user)
         {
             LogInfo logInfo = DeviceDetection.GetLogInfo(_contextAccessor.HttpContext.Request);
             OpLogInsertDto insertDto = new()

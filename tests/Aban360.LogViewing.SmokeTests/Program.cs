@@ -5,6 +5,7 @@ using Aban360.Api.ExceptionHandlers;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
 using Aban360.SystemPool.Application.Features.Logging.Handlers.Queries.Implementations;
+using Aban360.SystemPool.Application.Features.Logging.Services;
 using Aban360.SystemPool.Domain.Contants;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Input;
 using Aban360.SystemPool.Domain.Features.Logging.Dto.Output;
@@ -184,9 +185,9 @@ try
         var path = Path.Combine(folder, "test.txt");
         File.WriteAllText(path, "test log");
         if (folder.Contains("Assessment"))
-            Check(new AssessmentLogGetByFileNameHandler().Handle("test.txt", default).Content == "test log", "Assessment file read");
+            Check(new AssessmentLogService().GetByFileName("test.txt", default).Content == "test log", "Assessment file read");
         else
-            Check(new MeterApkLogGetByFileNameHandler().Handle("test.txt", default).Content == "test log", "Meter file read");
+            Check(new MeterApkLogService().GetByFileName("test.txt", default).Content == "test log", "Meter file read");
         using (var exclusive = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
             Check(exclusive.Length > 0, "File read releases handle immediately");
         File.Delete(path);

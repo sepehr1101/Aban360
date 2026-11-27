@@ -1,3 +1,4 @@
+using Aban360.PaymentPool.Application.Features.BankReceipt.Services;
 using Aban360.PaymentPool.Domain.Features.BankReceipt.Dto;
 using System.Text;
 using System.Text.Json;
@@ -54,23 +55,23 @@ parser.Parse(nonWater, "18", "TEJ");
 Check(nonWater.Rows[0].Issues.Any(i => i.Code == "NotWater"), "non-water payment flagged");
 var repo = new MemoryRepository();
 var user = Guid.NewGuid();
-var handler = new BankReceiptFlowHandler(repo, new Banks(), parser, Array.Empty<IBankReceiptReconciliationService>());
-var id = await handler.Upload(new MemoryStream(Encoding.ASCII.GetBytes(text)), good.FileName, 1, user, "tester", default);
-await Reject(() => handler.Confirm(id, user, new(0, true), default), "confirm before validation");
-await Reject(() => handler.Reconcile(id, user, default), "reconcile before validation");
-await Reject(() => handler.Display(id, Guid.NewGuid(), default), "owner isolation");
-var valid = await handler.Validate(id, user, default);
+var handler = new BankReceiptService(null!, new Banks(), repo, parser, Array.Empty<IBankReceiptReconciliationService>(), null!);
+var id = await handler.BankReceiptFlowUploadAsync(new MemoryStream(Encoding.ASCII.GetBytes(text)), good.FileName, 1, user, "tester", default);
+await Reject(() => handler.BankReceiptFlowConfirmAsync(id, user, new(0, true), default), "confirm before validation");
+await Reject(() => handler.BankReceiptFlowReconcileAsync(id, user, default), "reconcile before validation");
+await Reject(() => handler.BankReceiptFlowDisplayAsync(id, Guid.NewGuid(), default), "owner isolation");
+var valid = await handler.BankReceiptFlowValidateAsync(id, user, default);
 Check(valid.SampleRows.Count == 1 && !valid.CanConfirm, "preview before reconciliation");
-var pending = await handler.Reconcile(id, user, default);
+var pending = await handler.BankReceiptFlowReconcileAsync(id, user, default);
 Check(pending.InvalidCount == 1 && pending.Rows[0].Issues.Any(i => i.Code == "ReconciliationPending"), "missing adapter blocks");
-await Reject(() => handler.Confirm(id, user, new(pending.Version, true), default), "unresolved cannot commit");
-handler = new(repo, new Banks(), parser, new[] { new Matches() });
-var reconciled = await handler.Reconcile(id, user, default);
-await Reject(() => handler.Confirm(id, user, new(reconciled.Version - 1, true), default), "stale version");
-int? uploader = await handler.Confirm(id, user, new(reconciled.Version, true), default);
+await Reject(() => handler.BankReceiptFlowConfirmAsync(id, user, new(pending.Version, true), default), "unresolved cannot commit");
+handler = new(null!, new Banks(), repo, parser, new[] { new Matches() }, null!);
+var reconciled = await handler.BankReceiptFlowReconcileAsync(id, user, default);
+await Reject(() => handler.BankReceiptFlowConfirmAsync(id, user, new(reconciled.Version - 1, true), default), "stale version");
+int? uploader = await handler.BankReceiptFlowConfirmAsync(id, user, new(reconciled.Version, true), default);
 Check(uploader == 42 && repo.Commits == 1, "commit matched payments");
-Check(await handler.Confirm(id, user, new(reconciled.Version, true), default) == 42 && repo.Commits == 1, "idempotent confirmation");
-await Reject(() => handler.Validate(id, user, default), "committed file immutable");
+Check(await handler.BankReceiptFlowConfirmAsync(id, user, new(reconciled.Version, true), default) == 42 && repo.Commits == 1, "idempotent confirmation");
+await Reject(() => handler.BankReceiptFlowValidateAsync(id, user, default), "committed file immutable");
 // Preview returns at most ten distinct rows, even for a larger valid file.
 var manyRows = Enumerable.Range(1, 15).Select(n =>
 {
@@ -79,41 +80,41 @@ var manyRows = Enumerable.Range(1, 15).Select(n =>
     return "0000015914040101" + b.PadLeft(13, '0') + p.PadLeft(13, '0') + "123456";
 });
 var manyText = "10911814040101" + "00000000000000001845" + "000000000015\n" + string.Join("\n", manyRows);
-var manyId = await handler.Upload(new MemoryStream(Encoding.ASCII.GetBytes(manyText)), good.FileName, 1, user, "tester", default);
-var preview = await handler.Validate(manyId, user, default);
+var manyId = await handler.BankReceiptFlowUploadAsync(new MemoryStream(Encoding.ASCII.GetBytes(manyText)), good.FileName, 1, user, "tester", default);
+var preview = await handler.BankReceiptFlowValidateAsync(manyId, user, default);
 Check(preview.ActualRecordCount == 15 && preview.SampleRows.Count == 10 && preview.SampleRows.Select(r => r.LineNumber).Distinct().Count() == 10, "random preview size");
 Check(preview.Issues.Count == 0 && preview.InvalidRecordCount == 0, "multi-row totals");
 repo.Duplicates.Add(preview.SampleRows[0].Hash);
-var repeats = await handler.Reconcile(manyId, user, default);
+var repeats = await handler.BankReceiptFlowReconcileAsync(manyId, user, default);
 Check(repeats.InvalidCount == 1 && repeats.Rows.Any(r => r.Issues.Any(i => i.Code == "AlreadyPaid")), "database duplicate");
 Check(repeats.CanConfirm && repeats.Rows.Count(r => r.CanPost) == 14, "duplicate excluded and remaining rows eligible");
 repo.Duplicates.Clear();
-handler = new(repo, new Banks(), parser, new[] { new Matches("OutsideIsfahan") });
-var outside = await handler.Reconcile(manyId, user, default);
+handler = new(null!, new Banks(), repo, parser, new[] { new Matches("OutsideIsfahan") }, null!);
+var outside = await handler.BankReceiptFlowReconcileAsync(manyId, user, default);
 Check(outside.InvalidCount == 15 && outside.Rows.All(r => r.Issues.Any(i => i.Code == "OutsideIsfahan")), "city mismatches exposed");
-await Reject(() => handler.Confirm(manyId, user, new(outside.Version, true), default), "city mismatch blocks commit");
-handler = new(repo, new Banks(), parser, new[] { new Matches("UnknownBillId") });
-var unknown = await handler.Reconcile(manyId, user, default);
+await Reject(() => handler.BankReceiptFlowConfirmAsync(manyId, user, new(outside.Version, true), default), "city mismatch blocks commit");
+handler = new(null!, new Banks(), repo, parser, new[] { new Matches("UnknownBillId") }, null!);
+var unknown = await handler.BankReceiptFlowReconcileAsync(manyId, user, default);
 Check(unknown.InvalidCount == 15 && unknown.Rows.All(r => r.Issues.Any(i => i.Code == "UnknownBillId")), "unknown bills exposed");
-await Reject(() => handler.Upload(new MemoryStream(), good.FileName, 1, user, "tester", default), "empty file");
+await Reject(() => handler.BankReceiptFlowUploadAsync(new MemoryStream(), good.FileName, 1, user, "tester", default), "empty file");
 Check(unknown.Rows.All(r => r.IsExcluded && r.ExclusionReasons.All(i => i.Message.Any(c => c >= '\u0600' && c <= '\u06ff'))), "excluded rows have Persian reasons");
-var malformedId = await handler.Upload(new MemoryStream(Encoding.ASCII.GetBytes(header + "\n123")), good.FileName, 1, user, "tester", default);
-await handler.Validate(malformedId, user, default);
-var malformedResult = await handler.Reconcile(malformedId, user, default);
+var malformedId = await handler.BankReceiptFlowUploadAsync(new MemoryStream(Encoding.ASCII.GetBytes(header + "\n123")), good.FileName, 1, user, "tester", default);
+await handler.BankReceiptFlowValidateAsync(malformedId, user, default);
+var malformedResult = await handler.BankReceiptFlowReconcileAsync(malformedId, user, default);
 Check(malformedResult.Rows.Single().RawData == "123" && malformedResult.Rows[0].IsExcluded, "malformed rows retained with reason");
-var subsidiaryId = await handler.Upload(new MemoryStream(Encoding.ASCII.GetBytes(text)), "TEJ14040101WA001.092", 1, user, "tester", default);
-var subsidiary = await handler.Validate(subsidiaryId, user, default);
+var subsidiaryId = await handler.BankReceiptFlowUploadAsync(new MemoryStream(Encoding.ASCII.GetBytes(text)), "TEJ14040101WA001.092", 1, user, "tester", default);
+var subsidiary = await handler.BankReceiptFlowValidateAsync(subsidiaryId, user, default);
 Check(subsidiary.ExcludedRecordCount == 1 && subsidiary.SampleRows[0].ExclusionReasons.Any(i => i.Code == "SubUtilityCode"), "file reasons propagated to receipt");
-Check(await handler.Confirm(manyId, user, new(unknown.Version, false), default) == null
-    && (await handler.Display(manyId, user, default)).Status == BankReceiptImportStatus.Rejected
+Check(await handler.BankReceiptFlowConfirmAsync(manyId, user, new(unknown.Version, false), default) == null
+    && (await handler.BankReceiptFlowDisplayAsync(manyId, user, default)).Status == BankReceiptImportStatus.Rejected
     && repo.Commits == 1, "rejection is recorded without payments");
-await Reject(() => handler.Confirm(manyId, user, new(unknown.Version, true), default), "rejected file cannot post");
-handler = new(repo, new Banks(), parser, new[] { new Matches() });
-var partialId = await handler.Upload(new MemoryStream(Encoding.ASCII.GetBytes(header + "\n" + row + "\n123")), good.FileName, 1, user, "tester", default);
-await handler.Validate(partialId, user, default);
-var partial = await handler.Reconcile(partialId, user, default);
+await Reject(() => handler.BankReceiptFlowConfirmAsync(manyId, user, new(unknown.Version, true), default), "rejected file cannot post");
+handler = new(null!, new Banks(), repo, parser, new[] { new Matches() }, null!);
+var partialId = await handler.BankReceiptFlowUploadAsync(new MemoryStream(Encoding.ASCII.GetBytes(header + "\n" + row + "\n123")), good.FileName, 1, user, "tester", default);
+await handler.BankReceiptFlowValidateAsync(partialId, user, default);
+var partial = await handler.BankReceiptFlowReconcileAsync(partialId, user, default);
 Check(partial.CanConfirm && partial.ExcludedRecordCount == 1, "malformed row excluded despite header count warning");
-Check(await handler.Confirm(partialId, user, new(partial.Version, true), default) == 42
+Check(await handler.BankReceiptFlowConfirmAsync(partialId, user, new(partial.Version, true), default) == 42
     && repo.LastPostedCount == 1, "only eligible payment posted");
 checks += await DiscrepancyChecks.Run(user, manyId);
 checks += await BankReceiptManagementChecks.Run();

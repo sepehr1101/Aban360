@@ -1,0 +1,12 @@
+﻿using Aban360.LocationPool.Domain.Features.MainHierarchy.Entities;
+
+namespace Aban360.LocationPool.Persistence.Features.MainHierarchy.Queries.Contracts
+{
+    public interface IReadingBlockQueryService
+    {
+        Task<ReadingBlock> Get(short id);
+        Task<ICollection<ReadingBlock>> Get();
+        Task<ICollection<ReadingBlock>> Get(IEnumerable<int> ids);
+        Task<ICollection<ReadingBlock>> GetByBoundId(int boundId);
+    }
+}

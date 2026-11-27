@@ -1,4 +1,6 @@
-﻿using Aban360.Common.Exceptions;
+using Aban360.PaymentPool.Application.Features.BankReceipt.Contracts;
+using Aban360.PaymentPool.Application.Features.BankReceipt.Services;
+using Aban360.Common.Exceptions;
 using Aban360.PaymentPool.Application.Features.BankReceipt.Implementations;
 using Aban360.PaymentPool.Domain.Features.BankReceipt.Dto;
 using Aban360.PaymentPool.Domain.Features.BankReceipt.Entities;
@@ -16,43 +18,43 @@ internal static class DiscrepancyChecks
             throw new Exception(message);
         }
         var repository = new Discrepancies(owner, importId);
-        var handler = new BankReceiptDiscrepancyHandler(repository);
+        var handler = new BankReceiptService(null!, null!, null!, null!, Array.Empty<IBankReceiptReconciliationService>(), repository);
         BankReceiptDiscrepancyReportInputDto Range() => new() { FromDate = "1404/01/01", ToDate = "14040101" };
-        var report = await handler.Report(Range(), owner, default);
+        var report = await handler.BankReceiptDiscrepancyReportAsync(Range(), owner, default);
         Check(report.TotalCount == 1 && report.Items.Single().CanDescribe, "pending discrepancy report");
         Check(repository.FromUtc == new DateTime(2025, 3, 20, 20, 0, 0, DateTimeKind.Utc)
             && repository.ToUtc == new DateTime(2025, 3, 21, 20, 0, 0, DateTimeKind.Utc), "inclusive local date boundaries converted to UTC");
         Check(report.Items.Single().Reasons[0].Message == "کد شهر شناسه قبض شناسایی نشد.", "Persian city reason");
-        await Reject(() => handler.Report(new() { FromDate = "14040102", ToDate = "14040101" }, owner, default), "reversed dates");
-        await Reject(() => handler.Report(new() { FromDate = "14041301", ToDate = "14041302" }, owner, default), "invalid Persian dates");
-        await Reject(() => handler.Report(new() { FromDate = "1/4/0/4/0/1/0/1", ToDate = "14040101" }, owner, default), "invalid date separators");
+        await Reject(() => handler.BankReceiptDiscrepancyReportAsync(new() { FromDate = "14040102", ToDate = "14040101" }, owner, default), "reversed dates");
+        await Reject(() => handler.BankReceiptDiscrepancyReportAsync(new() { FromDate = "14041301", ToDate = "14041302" }, owner, default), "invalid Persian dates");
+        await Reject(() => handler.BankReceiptDiscrepancyReportAsync(new() { FromDate = "1/4/0/4/0/1/0/1", ToDate = "14040101" }, owner, default), "invalid date separators");
         var page = Range(); page.PageSize = 201;
-        await Reject(() => handler.Report(page, owner, default), "oversized page");
+        await Reject(() => handler.BankReceiptDiscrepancyReportAsync(page, owner, default), "oversized page");
         page.PageSize = 200; page.PageNumber = int.MaxValue;
-        await Reject(() => handler.Report(page, owner, default), "page overflow");
-        await Reject(() => handler.Describe(importId, 2, new("  "), owner, default), "empty description");
-        await Reject(() => handler.Describe(importId, 2, new(new string('x', 2001)), owner, default), "long description");
-        await Reject(() => handler.Describe(importId, 1, new("شرح"), owner, default), "header not a receipt");
-        await Reject(() => handler.Describe(importId, 2, new("شرح"), Guid.NewGuid(), default), "description owner isolation");
-        Check((await handler.Report(Range(), Guid.NewGuid(), default)).TotalCount == 0, "report owner isolation");
-        await handler.Describe(importId, 2, new("  کد شهر نیازمند بررسی است  "), owner, default);
+        await Reject(() => handler.BankReceiptDiscrepancyReportAsync(page, owner, default), "page overflow");
+        await Reject(() => handler.BankReceiptDiscrepancyDescribeAsync(importId, 2, new("  "), owner, default), "empty description");
+        await Reject(() => handler.BankReceiptDiscrepancyDescribeAsync(importId, 2, new(new string('x', 2001)), owner, default), "long description");
+        await Reject(() => handler.BankReceiptDiscrepancyDescribeAsync(importId, 1, new("شرح"), owner, default), "header not a receipt");
+        await Reject(() => handler.BankReceiptDiscrepancyDescribeAsync(importId, 2, new("شرح"), Guid.NewGuid(), default), "description owner isolation");
+        Check((await handler.BankReceiptDiscrepancyReportAsync(Range(), Guid.NewGuid(), default)).TotalCount == 0, "report owner isolation");
+        await handler.BankReceiptDiscrepancyDescribeAsync(importId, 2, new("  کد شهر نیازمند بررسی است  "), owner, default);
         Check(repository.Item.Description == "کد شهر نیازمند بررسی است" && repository.Item.DescribedBy == owner
             && repository.Item.DescribedAt != null && !repository.Item.CanDescribe, "description recorded once with audit");
-        await Reject(() => handler.Describe(importId, 2, new("شرح جایگزین"), owner, default), "description immutable");
+        await Reject(() => handler.BankReceiptDiscrepancyDescribeAsync(importId, 2, new("شرح جایگزین"), owner, default), "description immutable");
         repository.Item.IsActive = false;
         var described = Range(); described.HasDescription = true;
-        var history = await handler.Report(described, owner, default);
+        var history = await handler.BankReceiptDiscrepancyReportAsync(described, owner, default);
         Check(history.TotalCount == 1 && history.Items.Single().Description == "کد شهر نیازمند بررسی است", "archived descriptions retained");
         var pending = Range(); pending.HasDescription = false;
-        Check((await handler.Report(pending, owner, default)).TotalCount == 0, "description filter");
+        Check((await handler.BankReceiptDiscrepancyReportAsync(pending, owner, default)).TotalCount == 0, "description filter");
         var active = Range(); active.IsActive = true;
-        Check((await handler.Report(active, owner, default)).TotalCount == 0, "active discrepancy filter");
+        Check((await handler.BankReceiptDiscrepancyReportAsync(active, owner, default)).TotalCount == 0, "active discrepancy filter");
         // The store's conditional write allows exactly one of two simultaneous submissions.
         var competingStore = new Discrepancies(owner, importId);
-        var competingHandler = new BankReceiptDiscrepancyHandler(competingStore);
+        var competingHandler = new BankReceiptService(null!, null!, null!, null!, Array.Empty<IBankReceiptReconciliationService>(), competingStore);
         async Task<bool> TryWrite(string text)
         {
-            try { await competingHandler.Describe(importId, 2, new(text), owner, default); return true; }
+            try { await competingHandler.BankReceiptDiscrepancyDescribeAsync(importId, 2, new(text), owner, default); return true; }
             catch (BaseException) { return false; }
         }
         var outcomes = await Task.WhenAll(Task.Run(() => TryWrite("شرح اول")), Task.Run(() => TryWrite("شرح دوم")));
