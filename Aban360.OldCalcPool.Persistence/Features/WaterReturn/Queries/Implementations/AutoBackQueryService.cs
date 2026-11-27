@@ -212,6 +212,7 @@ namespace Aban360.OldCalcPool.Persistence.Features.WaterReturn.Queries.Implement
                         tmp_mohlat AS TmpMohlat,
                         tmp_taviz_date AS TmpTavizDate,
                         Description,
+                        TransactionKind,
                         IsConfirmed,
                         IsDeleted
                     FROM [{dbName}].dbo.[autoback]

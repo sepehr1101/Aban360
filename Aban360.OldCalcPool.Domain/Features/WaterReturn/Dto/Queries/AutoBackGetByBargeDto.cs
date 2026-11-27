@@ -1,5 +1,6 @@
 ﻿namespace Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries
 {
+    using Aban360.OldCalcPool.Domain.Constants;
     public record AutoBackGetByBargeDto
     {
         public int Id { get; set; }
@@ -73,6 +74,7 @@
         public string DateSbt { get; set; }
         public decimal Avarez { get; set; }
         public string? Description { get; set; }
+        public WaterReturnTransactionKind? TransactionKind { get; set; }
         public bool IsConfirmed { get; set; }
         public bool IsDeleted { get; set; }
     }

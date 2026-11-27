@@ -106,6 +106,11 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             RepairCreateDto repairCreateDto = GetRepairDto(bedBesResult, memberInfo, inputDto, minutesNumber, bedBesUpdateDelDto?.Count() ?? 0, memberInfo.DebtAmount ?? 0);
             AutoBackCreateDto autoBackDto = GetAutoBackCreate(repairCreateDto, inputDto.Description);
             AutoBackCreateDto zeroAutoBackDto = GetZeroAutoBackCreate(repairCreateDto, inputDto.Description);
+            WaterReturnTransactionKind transactionKind = inputDto.ReturnType == ReturnBillManualTypeEnum.Returned
+                ? WaterReturnTransactionKind.ManualReturn
+                : WaterReturnTransactionKind.PositiveModification;
+            autoBackDto.TransactionKind = transactionKind;
+            zeroAutoBackDto.TransactionKind = transactionKind;
             ICollection<AutoBackCreateDto> autoBackCreateDto = new List<AutoBackCreateDto>() { zeroAutoBackDto, zeroAutoBackDto, autoBackDto };
            
             if (!inputDto.IsConfirm)

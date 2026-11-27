@@ -2,6 +2,7 @@
 using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Db.Constants.Literals;
+using Aban360.OldCalcPool.Domain.Constants;
 using Aban360.Common.Db.Dapper;
 using Aban360.Common.Db.Services;
 using Aban360.Common.Exceptions;
@@ -99,18 +100,21 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
             IEnumerable<BedBesWithDelOutputDto> bedBesIds = await _bedBesQueryService.GetByDateInterval(new ZoneCustomerFromToDateDto((int)repairInfo.Town, (int)repairInfo.Radif, repairInfo.PriDate, repairInfo.TodayDate), zoneDbName);
             IEnumerable<BedBesUpdateDelDto> bedBesUpdateDelDto = bedBesIds.Where(s => s.IsReturned == false).Select(s => new BedBesUpdateDelDto((int)repairInfo.Town, s.Id, true));
             BillFindReturnedInputDto returnedValues = new(memberInfo.ZoneId, memberInfo.CustomerNumber, (int)repairInfo.PriNo, (int)repairInfo.TodayNo, repairInfo.PriDate, repairInfo.TodayDate);
-            IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn = await GetBillsToReturn(returnedValues, false);
+            WaterReturnTransactionKind? transactionKind = autoBacksInfo.First().TransactionKind;
+            bool catchDuplicate = transactionKind == WaterReturnTransactionKind.SystemReturn;
+            IEnumerable<BillsOldDbDelUpdateDto> billsIdToReturn = await GetBillsToReturn(returnedValues, catchDuplicate);
 
-
-            if ((billsIdToReturn?.Count() ?? 0) != (bedBesUpdateDelDto?.Count() ?? 0))
+            if (transactionKind is not (WaterReturnTransactionKind.ManualReturn or WaterReturnTransactionKind.PositiveModification))
             {
-                //var x = bedBesUpdateDelDto.ToList();
-                throw new ReturnedBillException(ExceptionLiterals.InvalidBillIdToReturn);
-            }
+                if ((billsIdToReturn?.Count() ?? 0) != (bedBesUpdateDelDto?.Count() ?? 0))
+                {
+                    throw new ReturnedBillException(ExceptionLiterals.InvalidBillIdToReturn);
+                }
 
-            if (autoBacksInfo.FirstOrDefault().IsConfirmed || bedBesIds.Where(b => b.IsReturned).Any())
-            {
-                throw new ReturnedBillException(ExceptionLiterals.InvalidReturnDuplicate);
+                if (bedBesIds.Any(b => b.IsReturned))
+                {
+                    throw new ReturnedBillException(ExceptionLiterals.InvalidReturnDuplicate);
+                }
             }
             IEnumerable<AutoBackCreateDto> autoBackCreate = autoBacksInfo.Select(GetAutoBackCreateDto);
             RepairCreateDto repairCreate = GetRepairCreateDto(repairInfo);
@@ -220,6 +224,7 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                 TmpDateBed = input.TmpDateBed,
                 TmpMohlat = input.TmpMohlat,
                 TmpTavizDate = input.TmpTavizDate,
+                TransactionKind = input.TransactionKind,
                 Group1 = input.Group1,
                 EdarehK = input.EdarehK,
                 DateSbt = input.DateSbt,

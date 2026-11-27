@@ -1,5 +1,6 @@
 ﻿namespace Aban360.OldCalcPools.Domain.Features.WaterReturn.Dto.Commands
 {
+    using Aban360.OldCalcPool.Domain.Constants;
     public record AutoBackCreateDto
     {
         public decimal Town { get; set; }
@@ -72,5 +73,6 @@
         public string DateSbt { get; set; }
         public decimal Avarez { get; set; }
         public string? Description { get; set; }
+        public WaterReturnTransactionKind? TransactionKind { get; set; }
     }
 }

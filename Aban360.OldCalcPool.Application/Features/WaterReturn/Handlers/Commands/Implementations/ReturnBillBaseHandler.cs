@@ -788,6 +788,10 @@ namespace Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands
                     bedBes.JalaseNo = minutesNumber;
                     newCalculation.JalaseNo = minutesNumber;
                     different.JalaseNo = minutesNumber;
+                    foreach (AutoBackCreateDto autoBack in datas)
+                    {
+                        autoBack.TransactionKind = WaterReturnTransactionKind.SystemReturn;
+                    }
                     RepairCreateDto repairCreateDto = GetRepairCreateDto(different);
                     string logText = string.Format(OpLogLiterals.BillReturnOpLog, returnMode, billId,
                         billCount, fromDateJalali, toDateJalali, different.Baha, minutesNumber);
