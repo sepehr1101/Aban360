@@ -1,11 +1,9 @@
-using Aban360.Common.ApplicationUser;
 using Aban360.Common.BaseEntities;
 using Aban360.Common.Categories.ApiResponse;
 using Aban360.Common.Extensions;
 using Aban360.OldCalcPool.Application.Features.WaterReturn.Handlers.Commands.Contracts;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Commands;
 using Aban360.OldCalcPool.Domain.Features.WaterReturn.Dto.Queries;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using IBillReturnLookupsService = global::Aban360.OldCalcPool.Application.Features.WaterReturn.Services.IBillReturnLookupsService;
 
@@ -20,6 +18,7 @@ namespace Aban360.Api.Controllers.V1.OldCalcPool.WaterReturn.Queries
         {
             _billReturnLookupsService = billReturnLookupsService;
             _billReturnLookupsService.NotNull(nameof(billReturnLookupsService));
+
             _returnedBillRemoveHandler = returnedBillRemoveHandler;
             _returnedBillRemoveHandler.NotNull(nameof(returnedBillRemoveHandler));
         }
